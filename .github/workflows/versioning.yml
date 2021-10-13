@@ -1,0 +1,33 @@
+name: Update Unity project semantic versioning
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create:
+    name: Update semver
+    runs-on: ubuntu-latest
+
+    steps:
+      # You must ALWAYS checkout your repo so that actions in the workflow can use it.
+      - name: Checkout 
+        uses: actions/checkout@v2
+
+      - name: Find ProjectSettings.asset & increment its bundleVersion number
+        uses: AlexHolderDeveloper/UnityAutomatedSemver@v1.0.1
+        id: semver-update
+        with:
+          semver-update-type: 'patch' # version number: "major.minor.patch"
+
+      # Validate that the number has been incremented correctly.
+      - name: Get the new semver number
+        run: echo "The new semver number for this Unity project is ${{ steps.semver-update.outputs.semver-number }}"
+
+      # Commit & push the updated semver number back into the repo. Yes, you have to fetch & pull in your local workstation after this step is done.
+      - name: Push changed files back to repo
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Updated semver via automated action."
+          commit_options: '--no-verify --signoff'

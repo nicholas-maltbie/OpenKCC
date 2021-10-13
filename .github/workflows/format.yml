@@ -1,0 +1,30 @@
+name: dotnet-format
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+on: [pull_request] # This will run on every pull request. 
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "check-format"
+  check-format:
+    # The type of runner that the job will run on
+    runs-on: Ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.301
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      # Lists only the committed files in order to evaluate only those.
+      - id: changed_files
+        uses: futuratrepadeira/changed-files@v3.2.1
+        with:
+          repo-token: ${{ github.token }}
+          pattern: '^.*\.(cs|CS)$'
+      - run: dotnet tool restore # Restore dotnet tools. This handles cache implicitly.
+      - name: Format Csharp files
+        if: steps.changed_files.outputs.files_created != '' || steps.changed_files.outputs.files_updated != ''
+        run: dotnet format . --folder --include ${{ steps.changed_files.outputs.files_created }} ${{ steps.changed_files.outputs.files_updated }} --exclude Library --check # Call format but just do a check to see if everything is in order.
