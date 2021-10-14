@@ -29,9 +29,32 @@ namespace nickmaltbie.OpenKCC.Character
         public const float MaxAngleShoveRadians = 90.0f;
 
         /// <summary>
-        /// Player collider for checking things
+        /// Player collider for checking collisions.
         /// </summary>
-        public CapsuleCollider capsuleCollider;
+        private CapsuleCollider capsuleCollider;
+
+        [Header("Input Controls")]
+
+        /// <summary>
+        /// Action reference for moving the player.
+        /// </summary>
+        [Tooltip("Action reference for moving the player")]
+        [SerializeField]
+        private InputActionReference moveAction;
+
+        /// <summary>
+        /// Action reference for jumping.
+        /// </summary>
+        [Tooltip("Action reference for moving the player")]
+        [SerializeField]
+        private InputActionReference jumpAction;
+
+        /// <summary>
+        /// Action reference for sprinting.
+        /// </summary>
+        [Tooltip("Action reference for moving the player")]
+        [SerializeField]
+        private InputActionReference sprintAction;
 
         [Header("Ground Checking")]
 
@@ -84,11 +107,18 @@ namespace nickmaltbie.OpenKCC.Character
         [Header("Motion Settings")]
 
         /// <summary>
-        /// Speed of player movement
+        /// Speed of player movement when walking.
         /// </summary>
         [Tooltip("Speed of player when walking")]
         [SerializeField]
-        private float movementSpeed = 7.5f;
+        private float walkingSpeed = 7.5f;
+
+        /// <summary>
+        /// Speed of player when sprinting.
+        /// </summary>
+        [Tooltip("Speed of player when sprinting")]
+        [SerializeField]
+        private float sprintSpeed = 10.0f;
 
         /// <summary>
         /// Velocity of player jump in units per second
@@ -228,6 +258,11 @@ namespace nickmaltbie.OpenKCC.Character
         /// Is the player attempting to jump.
         /// </summary>
         private bool attemptingJump;
+
+        /// <summary>
+        /// Is the player sprinting.
+        /// </summary>
+        private bool isSprinting;
 
         /// <summary>
         /// How long has the player been falling.
@@ -474,6 +509,20 @@ namespace nickmaltbie.OpenKCC.Character
             feetFollowObj.transform.SetParent(transform);
         }
 
+        public void OnEnable()
+        {
+            this.jumpAction.action.performed += this.OnJump;
+            this.moveAction.action.performed += this.OnMove;
+            this.sprintAction.action.performed += this.OnSprint;
+        }
+
+        public void OnDisable()
+        {
+            this.jumpAction.action.performed -= this.OnJump;
+            this.moveAction.action.performed -= this.OnMove;
+            this.sprintAction.action.performed -= this.OnSprint;
+        }
+
         public void FixedUpdate()
         {
             if (this.Frozen)
@@ -567,7 +616,7 @@ namespace nickmaltbie.OpenKCC.Character
                 // Compute player jump if they are attempting to jump
                 bool jumped = PlayerJump(fixedDeltaTime);
 
-                Vector3 movement = RotatedMovement * movementSpeed;
+                Vector3 movement = RotatedMovement * (isSprinting ? sprintSpeed : walkingSpeed);
 
                 // If the player is standing on the ground, project their movement onto the ground plane
                 // This allows them to walk up gradual slopes without facing a hit in movement speed
@@ -795,15 +844,21 @@ namespace nickmaltbie.OpenKCC.Character
         /// pushing the player at maxPushSpeed out of overlapping objects as to not violently teleport
         /// the player when they overlap with another object.
         /// </summary>
-        public float PushOutOverlapping()
+        /// <returns>Total distance player was pushed.</returns>
+        public Vector3 PushOutOverlapping()
         {
             float fixedDeltaTime = Time.fixedDeltaTime;
             return PushOutOverlapping(maxPushSpeed * fixedDeltaTime);
         }
 
-        public float PushOutOverlapping(float maxDistance)
+        /// <summary>
+        /// Push a player out of overlappin objects with a max distance.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance the player can be pushed</param>
+        /// <returns>Total distance player was pushed.</returns>
+        public Vector3 PushOutOverlapping(float maxDistance)
         {
-            float pushed = 0.0f;
+            Vector3 pushed = Vector3.zero;
             foreach (Collider overlap in this.GetOverlapping())
             {
                 Physics.ComputePenetration(
@@ -812,8 +867,9 @@ namespace nickmaltbie.OpenKCC.Character
                     out Vector3 direction, out float distance
                 );
                 float distPush = Mathf.Min(maxDistance, distance);
-                transform.position += direction.normalized * distPush;
-                pushed += distPush;
+                Vector3 push = direction.normalized * distPush;
+                transform.position += push;
+                pushed += push;
             }
             return pushed;
         }
@@ -970,28 +1026,23 @@ namespace nickmaltbie.OpenKCC.Character
             // We're done, player was moved as part of loop
         }
 
-        public void OnMove(InputAction.CallbackContext context)
-        {
-            Vector2 movement = context.ReadValue<Vector2>();
-            inputMovement = new Vector3(movement.x, 0, movement.y);
-            inputMovement = inputMovement.magnitude > 1 ? inputMovement / inputMovement.magnitude : inputMovement;
-        }
-
-        public void OnJump(InputAction.CallbackContext context)
-        {
-            attemptingJump = (PlayerInputManager.playerMovementState == PlayerInputState.Allow) && context.ReadValueAsButton();
-        }
-
-        public void OnSprint(InputAction.CallbackContext context)
-        {
-            // isSprinting = context.ReadValueAsButton();
-        }
-
+        /// <summary>
+        /// Knock a player prone for a given period of time.
+        /// </summary>
+        /// <param name="minProneTime"></param>
+        /// <param name="maxProneTime"></param>
         public void KnockPlayerProne(float minProneTime, float maxProneTime)
         {
             KnockPlayerProne(minProneTime, maxProneTime, Vector3.zero, Vector3.zero);
         }
 
+        /// <summary>
+        /// Knock the player prone for a given time and with an initial velocity.
+        /// </summary>
+        /// <param name="minProneTime">Minimum time for player to be prone.</param>
+        /// <param name="maxProneTime">Maximum time for player to be prone.</param>
+        /// <param name="linearVelocity">Linear velocity of player when knocked prone.</param>
+        /// <param name="angularVelocity">Angular velocity of player when knocked prone.</param>
         public void KnockPlayerProne(
             float minProneTime,
             float maxProneTime,
@@ -1003,6 +1054,33 @@ namespace nickmaltbie.OpenKCC.Character
             remainingMaxProneTime = maxProneTime;
             characterRigidbody.velocity = linearVelocity;
             characterRigidbody.angularVelocity = angularVelocity;
+        }
+
+        /// <summary>
+        /// Action for when player attempts to move.
+        /// </summary>
+        public void OnMove(InputAction.CallbackContext context)
+        {
+            Vector2 movement = context.ReadValue<Vector2>();
+            inputMovement = new Vector3(movement.x, 0, movement.y);
+            inputMovement = inputMovement.magnitude > 1 ? inputMovement / inputMovement.magnitude : inputMovement;
+        }
+
+        /// <summary>
+        /// Action for when player attempts to jump.
+        /// </summary>
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            attemptingJump = context.ReadValueAsButton();
+            UnityEngine.Debug.Log($"Jump Action: {attemptingJump}");
+        }
+
+        /// <summary>
+        /// Action for when player attempts to sprint.
+        /// </summary>
+        public void OnSprint(InputAction.CallbackContext context)
+        {
+            isSprinting = context.ReadValueAsButton();
         }
     }
 }

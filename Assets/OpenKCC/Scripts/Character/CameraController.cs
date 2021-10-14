@@ -7,6 +7,24 @@ namespace nickmaltbie.OpenKCC.Character
 {
     public class CameraController : MonoBehaviour
     {
+        [Header("Input Actions")]
+
+        /// <summary>
+        /// Action to rotate camera.
+        /// </summary>
+        [Tooltip("Player look action to rotate camera.")]
+        [SerializeField]
+        private InputActionReference lookAction;
+
+        /// <summary>
+        /// Zoom action to zoom in and out.
+        /// </summary>
+        [Tooltip("Player zoom action with camera.")]
+        [SerializeField]
+        private InputActionReference zoomAction;
+
+        [Header("Rotation Bounds")]
+
         /// <summary>
         /// Maximum pitch for rotating character camera in degrees
         /// </summary>
@@ -98,6 +116,11 @@ namespace nickmaltbie.OpenKCC.Character
         private float pitchChange;
 
         /// <summary>
+        /// Zoom change from mousewheel.
+        /// </summary>
+        private float zoomAxis;
+
+        /// <summary>
         /// Objects to ignore when drawing raycast for camera
         /// </summary>
         private List<GameObject> ignoreObjects = new List<GameObject>();
@@ -151,8 +174,17 @@ namespace nickmaltbie.OpenKCC.Character
         {
             Vector2 look = context.ReadValue<Vector2>();
             look *= PlayerInputManager.mouseSensitivity;
-            yawChange = look.x;
-            pitchChange = look.y;
+            this.yawChange = look.x;
+            this.pitchChange = look.y;
+        }
+
+        /// <summary>
+        /// Zoom camera in and out
+        /// </summary>
+        /// <param name="context"></param>
+        public void OnZoom(InputAction.CallbackContext context)
+        {
+            this.zoomAxis = context.ReadValue<Vector2>().y;
         }
 
         private float pitch;
@@ -184,7 +216,7 @@ namespace nickmaltbie.OpenKCC.Character
                 yawChange = rotationRate * deltaTime * yawChange;
                 Yaw += yawChange;
                 Pitch += rotationRate * deltaTime * -1 * pitchChange;
-                // zoomChange = zoomSpeed * deltaTime * -1 * unityService.GetAxis("Mouse ScrollWheel");
+                zoomChange = zoomSpeed * deltaTime * -1 * zoomAxis;
             }
             // Clamp rotation of camera between minimum and maximum specified pitch
             Pitch = Mathf.Clamp(Pitch, minPitch, maxPitch);
@@ -251,6 +283,18 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             Yaw %= 360;
+        }
+
+        public void OnEnable()
+        {
+            this.zoomAction.action.performed += this.OnZoom;
+            this.lookAction.action.performed += this.OnLook;
+        }
+
+        public void OnDisable()
+        {
+            this.zoomAction.action.performed -= this.OnZoom;
+            this.lookAction.action.performed -= this.OnLook;
         }
     }
 }

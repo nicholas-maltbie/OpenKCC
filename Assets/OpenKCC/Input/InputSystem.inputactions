@@ -15,15 +15,15 @@
                 },
                 {
                     "name": "Jump",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "bca05cba-8116-4a1d-9624-dc2929c1d827",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
                 },
                 {
                     "name": "Interact",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "0ed934b6-561e-48cb-a120-77501fb43610",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -38,9 +38,25 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Sprint",
+                    "type": "PassThrough",
+                    "id": "7bafe59b-a70f-48e9-ac67-802ef9097aef",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Look",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "fb8d5e39-01f1-46e5-98de-be5b1d1f8f23",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Zoom",
+                    "type": "PassThrough",
+                    "id": "3320648e-a821-491f-bb3b-9cde6b475a53",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
@@ -258,6 +274,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Forward",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9ec47b3c-5107-415d-91c5-15a50508f281",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "65be4679-cf19-42f2-ba82-87a224159c07",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
