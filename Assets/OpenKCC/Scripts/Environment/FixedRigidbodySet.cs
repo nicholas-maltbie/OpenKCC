@@ -52,26 +52,32 @@ namespace PropHunt.Environment
 
         public void FixedUpdate()
         {
-            // move object by velocity
-            Vector3 deltaPos = Time.fixedDeltaTime * linearVelocity;
-            if (localTranslation && transform.parent != null)
+            if (linearVelocity.magnitude > 0)
             {
-                this.rigidbody.MovePosition(transform.parent.position + transform.localPosition + deltaPos);
-            }
-            else
-            {
-                this.rigidbody.MovePosition(transform.position + deltaPos);
+                // move object by velocity
+                Vector3 deltaPos = Time.fixedDeltaTime * linearVelocity;
+                if (localTranslation && transform.parent != null)
+                {
+                    this.rigidbody.MovePosition(transform.parent.position + transform.localPosition + deltaPos);
+                }
+                else
+                {
+                    this.rigidbody.MovePosition(transform.position + deltaPos);
+                }
             }
 
-            // rotate object by rotation
-            Quaternion deltaRotation = Quaternion.Euler(Time.fixedDeltaTime * angularVelocity);
-            if (localRotation && transform.parent != null)
+            if (angularVelocity.magnitude > 0)
             {
-                this.rigidbody.MoveRotation(transform.parent.rotation * transform.localRotation * deltaRotation);
-            }
-            else
-            {
-                this.rigidbody.MoveRotation(transform.rotation * deltaRotation);
+                // rotate object by rotation
+                Quaternion deltaRotation = Quaternion.Euler(Time.fixedDeltaTime * angularVelocity);
+                if (localRotation && transform.parent != null)
+                {
+                    this.rigidbody.MoveRotation(transform.parent.rotation * transform.localRotation * deltaRotation);
+                }
+                else
+                {
+                    this.rigidbody.MoveRotation(transform.rotation * deltaRotation);
+                }
             }
         }
     }

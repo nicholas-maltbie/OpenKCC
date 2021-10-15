@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 201897667505009235}
   - component: {fileID: 201897667505009233}
   m_Layer: 0
-  m_Name: Block
+  m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -140,7 +140,7 @@ GameObject:
   m_Component:
   - component: {fileID: 201897667958577489}
   m_Layer: 0
-  m_Name: Rotating Block
+  m_Name: Rotating Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

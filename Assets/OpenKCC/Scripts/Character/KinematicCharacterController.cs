@@ -597,9 +597,12 @@ namespace nickmaltbie.OpenKCC.Character
                 // with the moving ground object.
                 MoveWithGround();
 
-                PushOutOverlapping();
-
                 CheckGrounded();
+
+                if(PushOutOverlapping().magnitude > 0)
+                {
+                    CheckGrounded();
+                }
 
                 // Update player velocity based on grounded state
                 if (!Falling)
