@@ -1,5 +1,4 @@
 using UnityEngine;
-using MLAPI.Messaging;
 
 namespace nickmaltbie.OpenKCC.Environment.Pushable
 {
@@ -9,13 +8,11 @@ namespace nickmaltbie.OpenKCC.Environment.Pushable
     public interface IPushable
     {
         /// <summary>
-        /// Send a command to push an object at a specific position.
+        /// Push an object at a specific position.
         /// </summary>
         /// <param name="force">Force vector applied to the object.</param>
         /// <param name="point">Point to apply force on the object.</param>
         /// <param name="forceMode">Mode of the force being applied.</param>
-        /// <param name="sourceId">Id of the player pushing this object.</param>
-        [ServerRpc(RequireOwnership = false)]
-        void PushObjectServerRpc(Vector3 force, Vector3 point, int forceMode, ulong sourceId);
+        void PushObject(Vector3 force, Vector3 point, int forceMode);
     }
 }

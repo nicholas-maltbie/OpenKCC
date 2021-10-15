@@ -1,12 +1,11 @@
-using MLAPI;
-using MLAPI.Messaging;
+using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Environment
 {
     /// <summary>
     /// Detect when players stand on this object
     /// </summary>
-    public abstract class DetectPlayerStand : NetworkBehaviour
+    public abstract class DetectPlayerStand : MonoBehaviour
     {
         /// <summary>
         /// When a player steps onto this tile
