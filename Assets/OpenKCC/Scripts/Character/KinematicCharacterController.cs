@@ -1072,7 +1072,6 @@ namespace nickmaltbie.OpenKCC.Character
         public void OnJump(InputAction.CallbackContext context)
         {
             attemptingJump = context.ReadValueAsButton();
-            UnityEngine.Debug.Log($"Jump Action: {attemptingJump}");
         }
 
         /// <summary>
