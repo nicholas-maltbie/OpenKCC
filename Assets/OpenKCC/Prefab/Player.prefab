@@ -153,13 +153,13 @@ MonoBehaviour:
   walkingSpeed: 7.5
   sprintSpeed: 10
   jumpVelocity: 5
-  maxJumpAngle: 85
+  maxJumpAngle: 75
   jumpAngleWeightFactor: 0.2
   jumpCooldown: 0.5
   coyoteTime: 0.25
   maxBounces: 5
   pushDecay: 0.9
-  anglePower: 0.5
+  anglePower: 1
   maxPushSpeed: 1
   verticalSnapDown: 0.2
   stepUpDepth: 0.1
