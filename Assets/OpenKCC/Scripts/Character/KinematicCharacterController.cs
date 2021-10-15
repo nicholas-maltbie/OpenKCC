@@ -597,9 +597,9 @@ namespace nickmaltbie.OpenKCC.Character
                 // with the moving ground object.
                 MoveWithGround();
 
-                CheckGrounded();
-
                 PushOutOverlapping();
+
+                CheckGrounded();
 
                 // Update player velocity based on grounded state
                 if (!Falling)
@@ -866,7 +866,7 @@ namespace nickmaltbie.OpenKCC.Character
                     overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
                     out Vector3 direction, out float distance
                 );
-                float distPush = Mathf.Min(maxDistance, distance);
+                float distPush = Mathf.Min(maxDistance, distance + Epsilon);
                 Vector3 push = direction.normalized * distPush;
                 transform.position += push;
                 pushed += push;
