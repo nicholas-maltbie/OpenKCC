@@ -599,7 +599,7 @@ namespace nickmaltbie.OpenKCC.Character
 
                 CheckGrounded();
 
-                if(PushOutOverlapping().magnitude > 0)
+                if (PushOutOverlapping().magnitude > 0)
                 {
                     CheckGrounded();
                 }
