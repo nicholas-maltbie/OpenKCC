@@ -818,6 +818,8 @@ namespace nickmaltbie.OpenKCC.Character
             transform.position += (verticalSnapDown * 0.5f) * surfaceNormal;
             SnapPlayerDown(-surfaceNormal, verticalSnapDown);
 
+            CheckGrounded();
+
             movingGroundDisplacement = transform.position - moveWithGroundStart;
         }
 

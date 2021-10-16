@@ -92,7 +92,7 @@ MonoBehaviour:
   baseCameraOffset: {x: 0, y: 0, z: 0}
   minCameraDistance: 0
   maxCameraDistance: 4
-  currentDistance: 0
+  currentDistance: 2
   zoomSpeed: 0.1
   cameraRaycastMask:
     serializedVersion: 2
