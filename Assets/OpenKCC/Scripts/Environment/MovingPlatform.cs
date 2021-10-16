@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using MLAPI;
 
 namespace nickmaltbie.OpenKCC.Environment
 {
@@ -8,7 +7,7 @@ namespace nickmaltbie.OpenKCC.Environment
     /// Script to translate a rigidbody object between two positions.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    public class MovingPlatform : NetworkBehaviour
+    public class MovingPlatform : MonoBehaviour
     {
         /// <summary>
         /// Velocity at which this platform should move
@@ -33,11 +32,6 @@ namespace nickmaltbie.OpenKCC.Environment
 
         public void FixedUpdate()
         {
-            // if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsServer)
-            // {
-            //     return;
-            // }
-
             if (targetsList == null || targetsList.Count == 0)
             {
                 return;

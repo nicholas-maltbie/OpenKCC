@@ -1,10 +1,9 @@
-﻿using MLAPI.Serialization;
-using nickmaltbie.OpenKCC.Character;
+﻿using nickmaltbie.OpenKCC.Character;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Animation
 {
-    public struct CharacterAnimatorState : INetworkSerializable
+    public struct CharacterAnimatorState
     {
         public Vector2 move;
         public bool moving;
@@ -13,17 +12,6 @@ namespace nickmaltbie.OpenKCC.Animation
         public bool jumping;
         public bool falling;
         public bool longFalling;
-
-        public void NetworkSerialize(NetworkSerializer serializer)
-        {
-            serializer.Serialize(ref move);
-            serializer.Serialize(ref moving);
-            serializer.Serialize(ref rotation);
-            serializer.Serialize(ref turning);
-            serializer.Serialize(ref jumping);
-            serializer.Serialize(ref falling);
-            serializer.Serialize(ref longFalling);
-        }
     }
 
     public class CharacterAnimator : MonoBehaviour

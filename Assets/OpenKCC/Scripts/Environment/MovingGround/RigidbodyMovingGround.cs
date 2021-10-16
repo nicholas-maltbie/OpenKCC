@@ -7,11 +7,11 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
     /// </summary>
     public class RigidbodyMovingGround : MonoBehaviour, IMovingGround
     {
+        /// <summary>
+        /// Rigidbody attached to this object.
+        /// </summary>
         [SerializeField]
         protected Rigidbody attachedRigidbody;
-
-        [SerializeField]
-        protected NetworkRigidbody attachedNetworkRigidbody;
 
         /// <summary>
         /// How much of the objects velocity should a player retain when leaving the surface of the object via jump or
@@ -39,19 +39,11 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
             {
                 attachedRigidbody = GetComponent<Rigidbody>();
             }
-            if (attachedNetworkRigidbody == null)
-            {
-                attachedNetworkRigidbody = GetComponent<NetworkRigidbody>();
-            }
         }
 
         /// <inheritdoc/>
         public Vector3 GetVelocityAtPoint(Vector3 point, float deltaTime)
         {
-            if (attachedNetworkRigidbody != null)
-            {
-                return attachedNetworkRigidbody.GetVelocityAtPoint(point);
-            }
             return attachedRigidbody.GetPointVelocity(point);
         }
 

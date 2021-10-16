@@ -1,4 +1,3 @@
-using MLAPI;
 using nickmaltbie.OpenKCC.Environment.Pushable;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
@@ -37,11 +36,10 @@ namespace nickmaltbie.OpenKCC.Character
 
             // Apply the push
             body.AddForceAtPosition(pushForce, hit.point, ForceMode.Force);
-            pushable.PushObjectServerRpc(
+            pushable.PushObject(
                 pushForce,
                 hit.point,
-                (int)ForceMode.Force,
-                NetworkManager.Singleton.LocalClientId);
+                (int)ForceMode.Force);
         }
     }
 }

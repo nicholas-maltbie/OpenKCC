@@ -599,7 +599,10 @@ namespace nickmaltbie.OpenKCC.Character
 
                 CheckGrounded();
 
-                PushOutOverlapping();
+                if (PushOutOverlapping().magnitude > 0)
+                {
+                    CheckGrounded();
+                }
 
                 // Update player velocity based on grounded state
                 if (!Falling)
@@ -815,6 +818,8 @@ namespace nickmaltbie.OpenKCC.Character
             transform.position += (verticalSnapDown * 0.5f) * surfaceNormal;
             SnapPlayerDown(-surfaceNormal, verticalSnapDown);
 
+            CheckGrounded();
+
             movingGroundDisplacement = transform.position - moveWithGroundStart;
         }
 
@@ -866,7 +871,7 @@ namespace nickmaltbie.OpenKCC.Character
                     overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
                     out Vector3 direction, out float distance
                 );
-                float distPush = Mathf.Min(maxDistance, distance);
+                float distPush = Mathf.Min(maxDistance, distance + Epsilon);
                 Vector3 push = direction.normalized * distPush;
                 transform.position += push;
                 pushed += push;
@@ -1072,7 +1077,6 @@ namespace nickmaltbie.OpenKCC.Character
         public void OnJump(InputAction.CallbackContext context)
         {
             attemptingJump = context.ReadValueAsButton();
-            UnityEngine.Debug.Log($"Jump Action: {attemptingJump}");
         }
 
         /// <summary>
