@@ -159,7 +159,7 @@ MonoBehaviour:
   jumpCooldown: 0.5
   coyoteTime: 0.25
   maxBounces: 5
-  pushDecay: 0.9
+  pushDecay: 0.25
   anglePower: 1
   maxPushSpeed: 50
   verticalSnapDown: 0.2
