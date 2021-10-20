@@ -1495,14 +1495,6 @@ MonoBehaviour:
     m_ActionName: Player/Look[/Mouse/delta]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 04cf4c18-3190-4ab3-a318-eb918e165214
-    m_ActionName: Player/Forward[/Keyboard/leftShift]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 01410572-e941-40b5-b45f-c5b2c59ca171
-    m_ActionName: Player/Backward[/Keyboard/leftCtrl]
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: 7bafe59b-a70f-48e9-ac67-802ef9097aef
     m_ActionName: Player/Sprint[/Keyboard/leftShift]
   - m_PersistentCalls:
@@ -1937,7 +1929,7 @@ PrefabInstance:
       objectReference: {fileID: 8387962290575963714}
     - target: {fileID: 3507953994769131740, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: m_Size
-      value: 0.9142857
+      value: 0.91714287
       objectReference: {fileID: 0}
     - target: {fileID: 4115343917428215393, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: menuController
@@ -2045,7 +2037,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7782518715594943783, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 30
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 8206280652279874878, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: m_Name
