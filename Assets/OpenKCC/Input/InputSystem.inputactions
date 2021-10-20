@@ -7,7 +7,7 @@
             "actions": [
                 {
                     "name": "Move",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "8ea09493-fee6-42c4-ac08-4022f4cc5408",
                     "expectedControlType": "Axis",
                     "processors": "",
@@ -60,22 +60,6 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "Forward",
-                    "type": "Button",
-                    "id": "04cf4c18-3190-4ab3-a318-eb918e165214",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press"
-                },
-                {
-                    "name": "Backward",
-                    "type": "Button",
-                    "id": "01410572-e941-40b5-b45f-c5b2c59ca171",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -224,22 +208,22 @@
                 },
                 {
                     "name": "",
-                    "id": "6e8612af-32f2-40fc-9a1e-f3bf937f2bcb",
-                    "path": "<Gamepad>/rightStick",
+                    "id": "c96028cb-8761-4c17-958b-56b81de2e641",
+                    "path": "<Pointer>/delta",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Keyboard&Mouse;Touch",
                     "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "c96028cb-8761-4c17-958b-56b81de2e641",
-                    "path": "<Pointer>/delta",
+                    "id": "6e8612af-32f2-40fc-9a1e-f3bf937f2bcb",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse;Touch",
+                    "groups": ";Gamepad",
                     "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -252,28 +236,6 @@
                     "processors": "",
                     "groups": "Joystick",
                     "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "54d360b7-ba76-42f3-b4da-d13fe361b6b6",
-                    "path": "<Keyboard>/leftCtrl",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Backward",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "65177b74-5b51-4ede-b040-2ac7f6fba989",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Forward",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

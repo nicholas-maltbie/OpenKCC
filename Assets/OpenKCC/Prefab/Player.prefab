@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 1443923188}
   - component: {fileID: 1014123492234295141}
   - component: {fileID: 3373348097961067066}
-  - component: {fileID: 1739634697357727297}
+  - component: {fileID: 6826506219202058344}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -159,7 +159,7 @@ MonoBehaviour:
   jumpCooldown: 0.5
   coyoteTime: 0.25
   maxBounces: 5
-  pushDecay: 0.9
+  pushDecay: 0.25
   anglePower: 1
   maxPushSpeed: 50
   verticalSnapDown: 0.2
@@ -213,7 +213,7 @@ MonoBehaviour:
   kcc: {fileID: 1928389238801210311}
   cameraController: {fileID: 1928389238801210314}
   animator: {fileID: 5452054172197868652}
---- !u!114 &1739634697357727297
+--- !u!114 &6826506219202058344
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-  m_NotificationBehavior: 2
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -239,26 +239,13 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents:
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1928389238801210311}
-        m_TargetAssemblyTypeName: nickmaltbie.OpenKCC.Character.KinematicCharacterController,
-          Assembly-CSharp
-        m_MethodName: OnMove
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 8ea09493-fee6-42c4-ac08-4022f4cc5408
-    m_ActionName: Player/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+    m_ActionName: Player/Move[/Keyboard/e,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: bca05cba-8116-4a1d-9624-dc2929c1d827
-    m_ActionName: Player/Jump[/Keyboard/space]
+    m_ActionName: Player/Jump[/Keyboard/f]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 0ed934b6-561e-48cb-a120-77501fb43610
@@ -277,12 +264,8 @@ MonoBehaviour:
     m_ActionName: Player/Look[/Mouse/delta]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 04cf4c18-3190-4ab3-a318-eb918e165214
-    m_ActionName: Player/Forward[/Keyboard/leftShift]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 01410572-e941-40b5-b45f-c5b2c59ca171
-    m_ActionName: Player/Backward[/Keyboard/leftCtrl]
+    m_ActionId: 3320648e-a821-491f-bb3b-9cde6b475a53
+    m_ActionName: Player/Zoom[/Mouse/scroll]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: e9ea2153-a41c-4da0-9c54-c767c562bb40
@@ -323,10 +306,6 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: d7430d8f-71d9-483c-8731-3fd065fcf16e
     m_ActionName: UI/TrackedDeviceOrientation
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 3320648e-a821-491f-bb3b-9cde6b475a53
-    m_ActionName: Player/Zoom[/Mouse/scroll]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
