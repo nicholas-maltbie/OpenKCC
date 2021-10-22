@@ -19,6 +19,7 @@ jobs:
           - 2021.1.19f1
         platform:
           - StandaloneWindows64 # Build a Windows standalone.
+          - WebGL
     steps:
       - uses: actions/checkout@v2
 
