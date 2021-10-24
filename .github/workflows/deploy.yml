@@ -47,7 +47,7 @@ jobs:
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-          buildMethod: OfficialBuild_WebGL
+          buildMethod: ScriptBatch.OfficialBuild_WebGL
 
       # Deploy build to gh-pages branch
       - name: Deploy
