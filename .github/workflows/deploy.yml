@@ -50,6 +50,7 @@ jobs:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
+          buildMethod: ScriptBatch.OfficialBuild_WebGL
 
       - name: run test list command
         run: echo 'hello world'
