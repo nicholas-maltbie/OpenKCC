@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 318e77410ca16da45ad603481bde0002, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: ed1d7b14405f8a349ae75b4e3d77f8e6, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -44324,12 +44324,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: ddb394e9fa1c83a40afbf4201c8ac5e2, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: ddb394e9fa1c83a40afbf4201c8ac5e2, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: b5f42e8484f4e8f44889950053cf298e, type: 2}
     - target: {fileID: 919132149155446097, guid: ddb394e9fa1c83a40afbf4201c8ac5e2, type: 3}
       propertyPath: m_Name
       value: smooth-surface
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ddb394e9fa1c83a40afbf4201c8ac5e2, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ddb394e9fa1c83a40afbf4201c8ac5e2, type: 3}
@@ -46618,7 +46626,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
