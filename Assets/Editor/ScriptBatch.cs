@@ -92,8 +92,29 @@ public class ScriptBatch : IPostprocessBuildWithReport
         BuildPipeline.BuildPlayer(options);
     }
 
-    [MenuItem("Build/Test Build")]
-    public static void TestBuild()
+    [MenuItem("Build/Official WebGL Build")]
+    public static void OfficialBuild_WebGL()
+    {
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
+        BuildPlayerOptions options = new BuildPlayerOptions
+        {
+            scenes = GetScenes(),
+            locationPathName = $"Builds/OpenKCC-WebGL",
+            targetGroup = BuildTargetGroup.WebGL,
+            target = BuildTarget.WebGL,
+            options = BuildOptions.Development
+        };
+
+        // Build player.
+        BuildPipeline.BuildPlayer(options);
+    }
+
+    public static void TestBuild_WebGL()
+    {
+        WebGLBuild();
+    }
+
+    public static void TestBuild_Win64()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
 

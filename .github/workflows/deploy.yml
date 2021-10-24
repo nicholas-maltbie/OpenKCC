@@ -1,0 +1,82 @@
+name: Build and Deploy WebGL
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
+
+jobs:
+  buildAndDeploy:
+    name: Build and Deploy for ${{ matrix.platform }} on version ${{ matrix.unityVersion }}
+    runs-on: Ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        unityVersion:
+          - 2021.1.19f1
+        targetPlatform:
+          - WebGL # WebGL.
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Cache Library Folder
+        uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ matrix.platform }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
+          restore-keys: |
+            Library-${{ matrix.platform }}-
+
+      - name: Cache git lfs
+        uses: actions/cache@v2
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1.2
+          # use previous cache if current one is not found
+          restore-keys: |
+            ${{ runner.os }}-lfs-
+
+      - name: Pull lfs data, if not cached
+        run: git lfs pull
+
+      - name: Find ProjectSettings.asset & increment its bundleVersion number
+        uses: AlexHolderDeveloper/UnityAutomatedSemver@v1.0.1
+        id: semver-update
+        with:
+          semver-update-type: 'patch' # version number: "major.minor.patch"
+
+      # Validate that the number has been incremented correctly.
+      - name: Get the new semver number
+        run: echo "The new semver number for this Unity project is ${{ steps.semver-update.outputs.semver-number }}"
+
+      # Commit & push the updated semver number back into the repo. Yes, you have to fetch & pull in your local workstation after this step is done.
+      - name: Push changed files back to repo
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Updated semver via automated action."
+          commit_options: '--no-verify --signoff'
+
+      # Build the game deployment at build
+      - uses: game-ci/unity-builder@v2.0-alpha-6
+        with:
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
+          targetPlatform: ${{ matrix.targetPlatform }}
+          buildMethod: ScriptBatch.OfficialBuild_WebGL
+
+      # Deploy build to gh-pages branch
+      - name: Deploy
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: gh-pages
+          FOLDER: ./Builds/OpenKCC-WebGL
+          SQUASH_HISTORY: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
