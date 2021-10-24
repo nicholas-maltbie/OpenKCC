@@ -8,13 +8,15 @@ env:
 
 jobs:
   buildAndDeploy:
-    name: Build for ${{ matrix.platform }} on version ${{ matrix.unityVersion }}
+    name: Build and Deploy for ${{ matrix.platform }} on version ${{ matrix.unityVersion }}
     runs-on: Ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         unityVersion:
           - 2021.1.19f1
+        targetPlatform:
+          - WebGL # WebGL.
 
     steps:
       - uses: actions/checkout@v2
@@ -47,9 +49,7 @@ jobs:
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-          buildMethod: ScriptBatch.OfficialBuild_WebGL
-
-      - uses: the-coding-turtle/ga-file-list@v0.2
+          targetPlatform: ${{ matrix.targetPlatform }}
 
       - name: run test list command
         run: echo 'hello world'
@@ -64,6 +64,6 @@ jobs:
         env:
           REPO: self
           BRANCH: gh-pages
-          FOLDER: build
+          FOLDER: build/${{ matrix.targetPlatform }}/${{ matrix.targetPlatform }}
           SQUASH_HISTORY: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
