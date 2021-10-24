@@ -42,12 +42,12 @@ jobs:
       - name: Pull lfs data, if not cached
         run: git lfs pull
 
-      # Build the game deployment at Builds/OpenKCC-WebGL
+      # Build the game deployment at build
       - uses: game-ci/unity-builder@v2.0-alpha-6
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-          buildMethod: ScriptBatch.OfficialBuild_WebGL
+          targetPlatform: WebGL
 
       # Deploy build to gh-pages branch
       - name: Deploy
@@ -55,5 +55,5 @@ jobs:
         env:
           REPO: self
           BRANCH: gh-pages
-          FOLDER: Builds/OpenKCC-WebGL
+          FOLDER: build
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
