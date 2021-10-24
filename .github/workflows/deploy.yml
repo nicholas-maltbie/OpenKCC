@@ -55,5 +55,6 @@ jobs:
         env:
           REPO: self
           BRANCH: gh-pages
-          FOLDER: Builds
+          FOLDER: .
+          SQUASH_HISTORY: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
