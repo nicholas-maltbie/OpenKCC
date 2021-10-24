@@ -1,15 +1,15 @@
-name: Build Verification
+name: Build and Deploy WebGL
 
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches:
+      - master
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
 
 jobs:
-  buildForSomePlatforms:
+  buildAndDeploy:
     name: Build for ${{ matrix.platform }} on version ${{ matrix.unityVersion }}
     runs-on: Ubuntu-20.04
     strategy:
@@ -17,9 +17,7 @@ jobs:
       matrix:
         unityVersion:
           - 2021.1.19f1
-        buildMethod:
-          - WebGL
-          - Win64
+
     steps:
       - uses: actions/checkout@v2
 
@@ -46,8 +44,18 @@ jobs:
       - name: Pull lfs data, if not cached
         run: git lfs pull
 
+      # Build the game deployment at Builds/OpenKCC-WebGL
       - uses: game-ci/unity-builder@v2.0-alpha-6
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-          buildMethod: ScriptBatch.TestBuild_${{ matrix.buildMethod }}
+          buildMethod: ScriptBatch.OfficialBuild_WebGL
+
+      # Deploy build to gh-pages branch
+      - name: Deploy
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: gh-pages
+          FOLDER: Builds/OpenKCC-WebGL
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
