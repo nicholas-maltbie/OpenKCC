@@ -51,6 +51,13 @@ jobs:
 
       - uses: the-coding-turtle/ga-file-list@v0.2
 
+      - name: run test list command
+        run: echo 'hello world'
+      
+      - name: run test list command 2
+        run: find .
+      
+
       # Deploy build to gh-pages branch
       - name: Deploy
         uses: s0/git-publish-subdir-action@develop
