@@ -9,8 +9,37 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
 
 jobs:
+  updateSemver:
+    name: Update semver
+    runs-on: ubuntu-latest
+
+    steps:
+      # You must ALWAYS checkout your repo so that actions in the workflow can use it.
+      - name: Checkout 
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Find ProjectSettings.asset & increment its bundleVersion number
+        uses: AlexHolderDeveloper/UnityAutomatedSemver@v1.0.1
+        id: semver-update
+        with:
+          semver-update-type: 'patch' # version number: "major.minor.patch"
+
+      # Validate that the number has been incremented correctly.
+      - name: Get the new semver number
+        run: echo "The new semver number for this Unity project is ${{ steps.semver-update.outputs.semver-number }}"
+
+      # Commit & push the updated semver number back into the repo. Yes, you have to fetch & pull in your local workstation after this step is done.
+      - name: Push changed files back to repo
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Updated semver via automated action."
+          commit_options: '--no-verify --signoff'
+
   buildAndDeploy:
-    name: Build and Deploy for ${{ matrix.platform }} on version ${{ matrix.unityVersion }}
+    name: Build and Deploy for ${{ matrix.targetPlatform }} on version ${{ matrix.unityVersion }}
+    needs: updateSemver
     runs-on: Ubuntu-20.04
     strategy:
       fail-fast: false
@@ -45,23 +74,6 @@ jobs:
 
       - name: Pull lfs data, if not cached
         run: git lfs pull
-
-      - name: Find ProjectSettings.asset & increment its bundleVersion number
-        uses: AlexHolderDeveloper/UnityAutomatedSemver@v1.0.1
-        id: semver-update
-        with:
-          semver-update-type: 'patch' # version number: "major.minor.patch"
-
-      # Validate that the number has been incremented correctly.
-      - name: Get the new semver number
-        run: echo "The new semver number for this Unity project is ${{ steps.semver-update.outputs.semver-number }}"
-
-      # Commit & push the updated semver number back into the repo. Yes, you have to fetch & pull in your local workstation after this step is done.
-      - name: Push changed files back to repo
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Updated semver via automated action."
-          commit_options: '--no-verify --signoff'
 
       # Build the game deployment at build
       - uses: game-ci/unity-builder@v2.0-alpha-6
