@@ -46,7 +46,7 @@ jobs:
       - name: Pull lfs data, if not cached
         run: git lfs pull
 
-      - uses: game-ci/unity-builder@v2.0-alpha-6
+      - uses: game-ci/unity-builder@v2.0-alpha-13
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}

@@ -49,12 +49,19 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           buildMethod: ScriptBatch.OfficialBuild_WebGL
 
+      uses: the-coding-turtle/ga-file-list@v0.2
+      with:
+        directory: "configs"
+        file_extension: "yml"
+        ignore_files_starts_with: "ignore_;test;config-"
+        ignore_files_starts_with_delimiter: ";"
+
       # Deploy build to gh-pages branch
       - name: Deploy
         uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
           BRANCH: gh-pages
-          FOLDER: .
+          FOLDER: build
           SQUASH_HISTORY: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
