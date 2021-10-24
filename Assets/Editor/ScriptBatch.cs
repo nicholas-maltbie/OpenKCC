@@ -95,6 +95,7 @@ public class ScriptBatch : IPostprocessBuildWithReport
     [MenuItem("Build/Official WebGL Build")]
     public static void OfficialBuild_WebGL()
     {
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
