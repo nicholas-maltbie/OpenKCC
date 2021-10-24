@@ -165,6 +165,12 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void Awake()
         {
+            // Skip setup on WebGL Build
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                return;
+            }
+
             // Load settings if it hasn't already been configured
             if (!ScreenLoading.setupDisplay)
             {
