@@ -10,7 +10,7 @@ env:
 
 jobs:
   buildForSomePlatforms:
-    name: Build for ${{ matrix.platform }} on version ${{ matrix.unityVersion }}
+    name: Build for ${{ matrix.buildMethod }} on version ${{ matrix.unityVersion }}
     runs-on: Ubuntu-20.04
     strategy:
       fail-fast: false

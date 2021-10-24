@@ -49,6 +49,12 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: WebGL
 
+      - uses: game-ci/unity-builder@v2.0-alpha-6
+        with:
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
+          buildMethod: OfficialBuild_WebGL
+
       # Deploy build to gh-pages branch
       - name: Deploy
         uses: s0/git-publish-subdir-action@develop
