@@ -7,7 +7,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
     /// <summary>
     /// Rebind a composite set of inputs
     /// </summary>
-    public class RebindCompositeInput : MonoBehaviour
+    public class RebindCompositeInput : MonoBehaviour, IBindingControl
     {
         /// <summary>
         /// Prefix for input mapping for saving to player preferences
@@ -112,8 +112,27 @@ namespace nickmaltbie.OpenKCC.UI.Actions
                 .OnMatchWaitForAnother(0.1f)
                 .WithTimeout(5.0f)
                 .OnComplete(operation => RebindComplete(index))
+                .OnCancel(operation => RebindCancel(index))
                 .Start();
         }
+        
+        /// <summary>
+        /// Cancel the rebinding process for a given component of this composite axis.
+        /// </summary>
+        public void RebindCancel(int index)
+        {
+            int bindingIndex = index + 1;
+
+            rebindingGroups[index].bindingDisplayNameText.text = GetKeyReadableName(bindingIndex);
+            rebindingOperation.Dispose();
+
+            rebindingGroups[index].startRebinding.gameObject.SetActive(true);
+            rebindingGroups[index].waitingForInputObject.SetActive(false);
+            menuController.allowInputChanges = true;
+            inputAction.action.Enable();
+            inputAction.action.actionMap.Enable();
+        }
+
 
         /// <summary>
         /// Finish the rebinding process for a given component of this composite axis.
@@ -139,6 +158,24 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             menuController.allowInputChanges = true;
             inputAction.action.Enable();
             inputAction.action.actionMap.Enable();
+        }
+
+        public void ResetBinding()
+        {
+            inputAction.action.RemoveAllBindingOverrides();
+            for (int bindingIndex = 1; bindingIndex <= rebindingGroups.Length; bindingIndex++)
+            {
+                PlayerPrefs.DeleteKey(InputMappingKey(bindingIndex));
+            }
+        }
+
+        public void UpdateDisplay()
+        {
+            for (int index = 0; index < rebindingGroups.Length; index++)
+            {
+                int bindingIndex = index + 1;
+                rebindingGroups[index].bindingDisplayNameText.text = GetKeyReadableName(bindingIndex);
+            }
         }
     }
 }

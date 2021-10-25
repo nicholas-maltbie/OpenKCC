@@ -284,7 +284,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Cancel",
+                    "name": "OpenMenu",
                     "type": "Button",
                     "id": "8d0c0094-dc57-4415-bf10-a3f3e0ff1f6b",
                     "expectedControlType": "Button",
@@ -631,7 +631,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Cancel",
+                    "action": "OpenMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

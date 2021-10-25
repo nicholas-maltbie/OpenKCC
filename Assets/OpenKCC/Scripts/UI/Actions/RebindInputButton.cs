@@ -7,12 +7,17 @@ namespace nickmaltbie.OpenKCC.UI.Actions
     /// <summary>
     /// Rebind an individual button input action
     /// </summary>
-    public class RebindInputButton : MonoBehaviour
+    public class RebindInputButton : MonoBehaviour, IBindingControl
     {
         /// <summary>
         /// Prefix for input mapping for saving to player preferences
         /// </summary>
         public const string inputMappingPlayerPrefPrefix = "Input Mapping";
+
+        /// <summary>
+        /// Path used to cancel binding mid operation
+        /// </summary>
+        public string cancelPath = "<Keyboard>/escape";
 
         /// <summary>
         /// Input action being modified
@@ -84,11 +89,27 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             rebindingOperation = inputAction.action.PerformInteractiveRebinding(0)
                 .WithControlsExcluding("<Pointer>/position") // Don't bind to mouse position
                 .WithControlsExcluding("<Pointer>/delta")    // To avoid accidental input from mouse motion
-                .WithCancelingThrough("<Keyboard>/escape")
+                .WithCancelingThrough(cancelPath)
                 .OnMatchWaitForAnother(0.1f)
                 .WithTimeout(5.0f)
                 .OnComplete(operation => RebindComplete())
+                .OnCancel(operation => RebindCancel())
                 .Start();
+        }
+        
+        /// <summary>
+        /// Cancel the rebinding process for a given component of this composite axis.
+        /// </summary>
+        public void RebindCancel()
+        {
+            bindingDisplayNameText.text = GetKeyReadableName();
+            rebindingOperation.Dispose();
+
+            startRebinding.gameObject.SetActive(true);
+            waitingForInputObject.SetActive(false);
+            menuController.allowInputChanges = true;
+            inputAction.action.Enable();
+            inputAction.action.actionMap.Enable();
         }
 
         /// <summary>
@@ -113,6 +134,17 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             menuController.allowInputChanges = true;
             inputAction.action.Enable();
             inputAction.action.actionMap.Enable();
+        }
+
+        public void ResetBinding()
+        {
+            PlayerPrefs.DeleteKey(InputMappingKey);
+            inputAction.action.RemoveAllBindingOverrides();
+        }
+
+        public void UpdateDisplay()
+        {
+            bindingDisplayNameText.text = GetKeyReadableName();
         }
     }
 }

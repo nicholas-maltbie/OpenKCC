@@ -1929,7 +1929,7 @@ PrefabInstance:
       objectReference: {fileID: 8387962290575963714}
     - target: {fileID: 3507953994769131740, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: m_Size
-      value: 0.91714287
+      value: 0.94285715
       objectReference: {fileID: 0}
     - target: {fileID: 4115343917428215393, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: menuController
@@ -1943,6 +1943,10 @@ PrefabInstance:
       propertyPath: m_Text
       value: Spectate Next
       objectReference: {fileID: 0}
+    - target: {fileID: 5814903274503923395, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
+      propertyPath: menuController
+      value: 
+      objectReference: {fileID: 8387962290575963714}
     - target: {fileID: 6074740762125336973, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: m_Text
       value: Spectate Previous
@@ -2037,7 +2041,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7782518715594943783, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 29
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8206280652279874878, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: m_Name
