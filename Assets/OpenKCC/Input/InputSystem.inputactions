@@ -284,7 +284,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Cancel",
+                    "name": "OpenMenu",
                     "type": "Button",
                     "id": "8d0c0094-dc57-4415-bf10-a3f3e0ff1f6b",
                     "expectedControlType": "Button",
@@ -626,12 +626,23 @@
                 },
                 {
                     "name": "",
+                    "id": "c14e29a8-327e-4f47-9cef-d5c853b3ce33",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "a7654d59-9748-45bc-8cbc-cf4461ed84cd",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Cancel",
+                    "action": "OpenMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

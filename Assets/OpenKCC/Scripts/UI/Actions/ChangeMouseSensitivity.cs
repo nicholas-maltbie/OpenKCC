@@ -7,7 +7,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
     /// <summary>
     /// Actions to adjust mouse Sensitivity via sliders
     /// </summary>
-    public class ChangeMouseSensitivity : MonoBehaviour
+    public class ChangeMouseSensitivity : MonoBehaviour, IBindingControl
     {
 
         public const string mouseSensitivityPlayerPref = "MouseSensitivity";
@@ -58,7 +58,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         public void Awake()
         {
             PlayerInputManager.mouseSensitivity = PlayerPrefs.GetFloat(
-                mouseSensitivityPlayerPref, PlayerInputManager.mouseSensitivity);
+                mouseSensitivityPlayerPref, PlayerInputManager.DefaultMouseSensitivity);
             slider.SetValueWithoutNotify(GetSliderValue(PlayerInputManager.mouseSensitivity));
             // Update saved and current value on player input
             slider.onValueChanged.AddListener(value =>
@@ -66,6 +66,17 @@ namespace nickmaltbie.OpenKCC.UI.Actions
                 PlayerInputManager.mouseSensitivity = GetMouseSensitivity(value);
                 PlayerPrefs.SetFloat(mouseSensitivityPlayerPref, PlayerInputManager.mouseSensitivity);
             });
+        }
+
+        public void ResetBinding()
+        {
+            PlayerPrefs.DeleteKey(mouseSensitivityPlayerPref);
+            PlayerInputManager.mouseSensitivity = PlayerInputManager.DefaultMouseSensitivity;
+        }
+
+        public void UpdateDisplay()
+        {
+            slider.SetValueWithoutNotify(GetSliderValue(PlayerInputManager.mouseSensitivity));
         }
     }
 }

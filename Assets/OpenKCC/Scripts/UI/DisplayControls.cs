@@ -43,7 +43,12 @@ namespace nickmaltbie.OpenKCC.UI
             }
         }
 
-        public void OnScreenLoaded()
+        public void Start()
+        {
+            UpdateDisplay();
+        }
+
+        public void UpdateDisplay()
         {
             List<string> lines = new List<string>();
             lines.Add("Controls (rebind in settings)");
@@ -54,6 +59,11 @@ namespace nickmaltbie.OpenKCC.UI
             }
 
             GetComponent<Text>().text = string.Join("\n", lines);
+        }
+
+        public void OnScreenLoaded()
+        {
+            UpdateDisplay();
         }
 
         public void OnScreenUnloaded()

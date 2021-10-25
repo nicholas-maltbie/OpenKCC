@@ -32,5 +32,10 @@ namespace nickmaltbie.OpenKCC.Character
         /// Mouse sensitivity multiplier (should be between 0.05 and 1.0 hopefully)
         /// </summary>
         public static float mouseSensitivity = 0.25f;
+
+        /// <summary>
+        /// Default mouse sensitivity
+        /// </summary>
+        public const float DefaultMouseSensitivity = 0.25f;
     }
 }
