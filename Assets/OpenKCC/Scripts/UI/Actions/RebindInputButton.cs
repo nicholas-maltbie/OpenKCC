@@ -96,7 +96,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
                 .OnCancel(operation => RebindCancel())
                 .Start();
         }
-        
+
         /// <summary>
         /// Cancel the rebinding process for a given component of this composite axis.
         /// </summary>
