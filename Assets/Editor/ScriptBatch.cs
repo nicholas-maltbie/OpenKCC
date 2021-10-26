@@ -37,6 +37,7 @@ public class ScriptBatch : IPostprocessBuildWithReport
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.WebGL, ScriptingImplementation.IL2CPP);
         PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.template = "APPLICATION:NickTemplate";
 
         // Get filename.
         string[] levels = GetScenes();
@@ -96,6 +97,7 @@ public class ScriptBatch : IPostprocessBuildWithReport
     public static void OfficialBuild_WebGL()
     {
         PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
+        PlayerSettings.WebGL.template = "PROJECT:NickTemplate";
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
