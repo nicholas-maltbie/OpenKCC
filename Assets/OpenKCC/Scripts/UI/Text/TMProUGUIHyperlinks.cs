@@ -25,21 +25,21 @@ namespace nickmaltbie.OpenKCC.UI.Text
         private Color32 usedHoveredColor = new Color32(0xFD, 0x5E, 0xFD, 0xFF);
         [SerializeField]
         private Color32 usedPressedColor = new Color32(0xCF, 0x00, 0xCF, 0xFF);
-    
+
         private List<Color32[]> startColors = new List<Color32[]>();
         private TextMeshProUGUI textMeshPro;
         private Dictionary<int, bool> usedLinks = new Dictionary<int, bool>();
         private int hoveredLinkIndex = -1;
         private int pressedLinkIndex = -1;
         private Camera mainCamera;
-    
+
         void Awake()
         {
             textMeshPro = GetComponent<TextMeshProUGUI>();
-    
+
             mainCamera = Camera.main;
         }
-    
+
         public void OnPointerDown(PointerEventData eventData)
         {
             int linkIndex = GetLinkIndex();
@@ -62,7 +62,7 @@ namespace nickmaltbie.OpenKCC.UI.Text
             }
             else pressedLinkIndex = -1;
         }
-    
+
         public void OnPointerUp(PointerEventData eventData)
         {
             int linkIndex = GetLinkIndex();
@@ -77,7 +77,7 @@ namespace nickmaltbie.OpenKCC.UI.Text
             }
             pressedLinkIndex = -1;
         }
-    
+
         private void LateUpdate()
         {
             int linkIndex = GetLinkIndex();
@@ -107,16 +107,16 @@ namespace nickmaltbie.OpenKCC.UI.Text
                 hoveredLinkIndex = -1;
             }
         }
-    
+
         private int GetLinkIndex()
         {
             return TMP_TextUtilities.FindIntersectingLink(textMeshPro, Mouse.current.position.ReadValue(), null);
         }
-    
+
         private List<Color32[]> SetLinkColor(int linkIndex, Color32 color)
         {
             TMP_LinkInfo linkInfo = textMeshPro.textInfo.linkInfo[linkIndex];
-    
+
             var oldVertexColors = new List<Color32[]>(); // Store the old character colors
             int underlineIndex = -1;
             for (int i = 0; i < linkInfo.linkTextLength; i++)
@@ -126,7 +126,7 @@ namespace nickmaltbie.OpenKCC.UI.Text
                 var charInfo = textMeshPro.textInfo.characterInfo[characterIndex];
                 int meshIndex = charInfo.materialReferenceIndex; // Get the index of the material/subtext object used by this character.
                 int vertexIndex = charInfo.vertexIndex; // Get the index of the first vertex of this character.
-    
+
                 // This array contains colors for all vertices of the mesh (might be multiple chars)
                 Color32[] vertexColors = textMeshPro.textInfo.meshInfo[meshIndex].colors32;
                 oldVertexColors.Add(new Color32[] { vertexColors[vertexIndex + 0], vertexColors[vertexIndex + 1], vertexColors[vertexIndex + 2], vertexColors[vertexIndex + 3] });
@@ -147,11 +147,11 @@ namespace nickmaltbie.OpenKCC.UI.Text
                     }
                 }
             }
-    
+
             textMeshPro.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
             return oldVertexColors;
         }
-    
+
         private void ResetLinkColor(int linkIndex, List<Color32[]> startColors)
         {
             TMP_LinkInfo linkInfo = textMeshPro.textInfo.linkInfo[linkIndex];
@@ -162,7 +162,7 @@ namespace nickmaltbie.OpenKCC.UI.Text
                 var charInfo = textMeshPro.textInfo.characterInfo[characterIndex];
                 int meshIndex = charInfo.materialReferenceIndex;
                 int vertexIndex = charInfo.vertexIndex;
-    
+
                 Color32[] vertexColors = textMeshPro.textInfo.meshInfo[meshIndex].colors32;
                 if (charInfo.isVisible)
                 {
@@ -180,7 +180,7 @@ namespace nickmaltbie.OpenKCC.UI.Text
                     }
                 }
             }
-    
+
             textMeshPro.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
         }
     }
