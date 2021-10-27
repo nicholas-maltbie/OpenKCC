@@ -10,6 +10,10 @@ namespace nickmaltbie.OpenKCC.UI.Text
     /// <summary>
     /// This class handles basic link color behavior, supports also underline (static only)
     /// Does not support strike-through, but can be easily implemented in the same way as the underline
+    /// 
+    /// forum post reference - https://forum.unity.com/threads/textmeshpro-hyperlinks.1091296/
+    /// 
+    /// https://github.com/EpsilonD3lta/UnityUtilities/blob/master/Scripts/Runtime/TMProUGUIHyperlinks.cs
     /// </summary>
     [DisallowMultipleComponent()]
     [RequireComponent(typeof(TextMeshProUGUI))]
