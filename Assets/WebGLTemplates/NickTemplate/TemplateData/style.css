@@ -21,9 +21,15 @@ body { padding: 0; margin: 0 }
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 15px;
+    padding: 8px;
     background-color: #aaa;
     text-align: center;
+}
+
+#footer>p
+{
+    margin: 0;
+    padding-bottom: 5px;
 }
 
 .undecorated-link
@@ -33,4 +39,23 @@ body { padding: 0; margin: 0 }
 undecorated-link:visited
 {
     color: #0000EE;
+}
+
+.svg-icon {
+    width: 32px;
+    height: 32px;
+    display: block;
+}
+.social-media-list {
+    list-style: none;
+    display: inline-flex;
+    margin-left: 0;
+    position: relative;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.social-media-list>li {
+    margin: 0;
+    padding-left: 5px;
 }

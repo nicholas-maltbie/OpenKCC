@@ -6,6 +6,16 @@
     <title>Unity WebGL Player | {{{ PRODUCT_NAME }}}</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134298967-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-134298967-1');
+    </script>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -28,6 +38,14 @@
       <p>This is an open source Kinematic Character Controller hosted at <a
       href="https://github.com/nicholas-maltbie/OpenKCC" class="undecorated-link">
       https://github.com/nicholas-maltbie/OpenKCC </a></p>
+      <ul class="social-media-list">
+        <li><a href="https://www.youtube.com/channel/UCoGYwhYV-ar1d7b3niqqDQw" title="UCoGYwhYV-ar1d7b3niqqDQw">
+          <img width="32px" height="32px" class="svg-icon" src="assets/icons/youtube.svg" alt="youtube social link">
+        </a></li>
+        <li><a href="https://github.com/nicholas-maltbie" title="nicholas-maltbie">
+          <img width="32px" height="32px" class="svg-icon" src="assets/icons/github.svg" alt="github social link">
+        </a></li>
+      </ul>
     </div>
     <script>
       var container = document.querySelector("#unity-container");
