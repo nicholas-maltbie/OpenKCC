@@ -124,7 +124,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// <summary>
         /// Text for the confirm dialog information
         /// </summary>
-        public Text confirmDialogText;
+        public UnityEngine.UI.Text confirmDialogText;
 
         /// <summary>
         /// Get the fullscreen mode integer based on a selected fullscreen mode

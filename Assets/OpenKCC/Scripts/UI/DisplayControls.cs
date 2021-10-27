@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace nickmaltbie.OpenKCC.UI
 {
-    [RequireComponent(typeof(Text))]
+    [RequireComponent(typeof(UnityEngine.UI.Text))]
     public class DisplayControls : MonoBehaviour, IScreenComponent
     {
         public InputActionReference[] inputActions = null;
@@ -58,7 +58,7 @@ namespace nickmaltbie.OpenKCC.UI
                 lines.Add($"{inputAction.name}: {GetKeyReadableName(inputAction.action)}");
             }
 
-            GetComponent<Text>().text = string.Join("\n", lines);
+            GetComponent<UnityEngine.UI.Text>().text = string.Join("\n", lines);
         }
 
         public void OnScreenLoaded()

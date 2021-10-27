@@ -26,7 +26,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// <summary>
         /// Binding display name for showing the control button description
         /// </summary>
-        public Text bindingDisplayNameText = null;
+        public UnityEngine.UI.Text bindingDisplayNameText = null;
         /// <summary>
         /// Button to start rebinding for the given input action
         /// </summary>

@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 namespace nickmaltbie.OpenKCC.UI
 {
-    [RequireComponent(typeof(Text))]
+    [RequireComponent(typeof(UnityEngine.UI.Text))]
     public class PopulateVersion : MonoBehaviour
     {
         public void Awake()
         {
-            GetComponent<Text>().text = $"Version - v{Application.version}";
+            GetComponent<UnityEngine.UI.Text>().text = $"Version - v{Application.version}";
         }
     }
 }
