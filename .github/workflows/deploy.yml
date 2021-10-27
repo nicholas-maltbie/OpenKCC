@@ -1,5 +1,7 @@
 name: Build and Deploy WebGL
 
+concurrency: production-${{ github.ref }}
+
 on:
   push:
     branches:
