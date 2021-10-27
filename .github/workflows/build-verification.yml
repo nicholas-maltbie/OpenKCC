@@ -28,9 +28,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: Library
-          key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
+          key: Library-${{ matrix.buildMethod }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
           restore-keys: |
-            Library-${{ matrix.targetPlatform }}-
+            Library-${{ matrix.buildMethod }}-
 
       - name: Cache git lfs
         uses: actions/cache@v2
