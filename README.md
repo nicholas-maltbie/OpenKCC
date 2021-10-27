@@ -7,6 +7,12 @@ This is an open source project licensed under a [MIT License](LICENSE.txt). Feel
 your own work. If you see an error in the project or have any suggestions, write an issue or make a pull request, I'll
 happy include any suggestions or ideas into the project.
 
+[![Demo of OpenKCC](Demo/sample-kcc.gif)](https://nickmaltbie.com/OpenKCC/)
+
+You can see a demo of the project running here: [https://nickmaltbie.com/OpenKCC/](https://nickmaltbie.com/OpenKCC/).
+The project hosted on the website is up to date with the most recent version on the `main` branch of this github repo
+and is automatically deployed with each update to the codebase.
+
 This library was developed as part of the Falling Parkour Project here -
 [https://github.com/nicholas-maltbie/FallingParkour](https://github.com/nicholas-maltbie/FallingParkour)
 
@@ -59,6 +65,24 @@ If you want to help with the project, feel free to make some changes and submit 
 This project is developed using Unity Release [2021.1.19f1](https://unity3d.com/unity/whats-new/2021.1.19). Install this
 version of Unity from Unity Hub using this link:
 [unityhub://2021.1.19f1/d0d1bb862f9d](unityhub://2021.1.19f1/d0d1bb862f9d).
+
+## Git LFS Setup
+
+Ensure that you also have git lfs installed. It should be setup to auto-track certain types of files as determined in
+the `.gitattributes` file. If the command to install git-lfs `git lfs install` is giving you trouble, try looking into the
+[installation guide](https://git-lfs.github.com/).
+
+```
+# Run this inside the repository after cloning it
+# May need to run this on linux
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+sudo apt-get install git-lfs
+```
+
+Once git lfs is installed, from in the repo, run the following command to pull objects for development.
+```
+git lfs pull
+```
 
 ## Githooks Setup
 

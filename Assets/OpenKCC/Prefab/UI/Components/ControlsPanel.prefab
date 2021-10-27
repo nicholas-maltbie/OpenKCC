@@ -3152,7 +3152,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7467466614829769287}
-  - component: {fileID: 4988522079240527787}
   - component: {fileID: 5814903274503923395}
   m_Layer: 5
   m_Name: Open Menu
@@ -3183,54 +3182,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -210}
   m_SizeDelta: {x: 0, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4988522079240527787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8386859378663481375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81d56ec667d0a8742a0efadfc1e58e60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  actionReference: {fileID: 1152416210319569963, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-  bindings:
-  - platform: 17
-    actionBinding:
-      m_Name: Action Binding
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 60284d71-5baf-4878-a7ea-fc0440ea04ac
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings:
-      - m_Name: 
-        m_Id: 33f43ae5-1100-48c1-b0c4-fd803b7d73a4
-        m_Path: <Keyboard>/e
-        m_Interactions: 
-        m_Processors: 
-        m_Groups: 
-        m_Action: Action Binding
-        m_Flags: 0
-  - platform: 7
-    actionBinding:
-      m_Name: Action Binding
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 60284d71-5baf-4878-a7ea-fc0440ea04ac
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings:
-      - m_Name: 
-        m_Id: 33f43ae5-1100-48c1-b0c4-fd803b7d73a4
-        m_Path: <Keyboard>/p
-        m_Interactions: 
-        m_Processors: 
-        m_Groups: 
-        m_Action: Action Binding
-        m_Flags: 0
 --- !u!114 &5814903274503923395
 MonoBehaviour:
   m_ObjectHideFlags: 0
