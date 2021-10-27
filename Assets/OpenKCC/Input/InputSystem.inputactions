@@ -269,7 +269,7 @@
             "actions": [
                 {
                     "name": "Navigate",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "e9ea2153-a41c-4da0-9c54-c767c562bb40",
                     "expectedControlType": "Vector2",
                     "processors": "",
@@ -277,7 +277,7 @@
                 },
                 {
                     "name": "Submit",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "558b280e-5543-4776-b4e4-43e4b1fb8b60",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -285,7 +285,7 @@
                 },
                 {
                     "name": "OpenMenu",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "8d0c0094-dc57-4415-bf10-a3f3e0ff1f6b",
                     "expectedControlType": "Button",
                     "processors": "",
