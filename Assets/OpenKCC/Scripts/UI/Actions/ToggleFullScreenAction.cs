@@ -13,13 +13,13 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         public string whenWindowed = "Maximize";
 
         private Button button;
-        private Text buttonText;
+        private UnityEngine.UI.Text buttonText;
 
         protected override void Awake()
         {
             base.Awake();
             this.button = GetComponent<Button>();
-            this.buttonText = this.button.GetComponentInChildren<Text>();
+            this.buttonText = this.button.GetComponentInChildren<UnityEngine.UI.Text>();
         }
 
         public void Update()

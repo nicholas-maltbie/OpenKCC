@@ -32,7 +32,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             /// <summary>
             /// Location of descriptive name of button
             /// </summary>
-            public Text bindingDisplayNameText;
+            public UnityEngine.UI.Text bindingDisplayNameText;
             /// <summary>
             /// Button used to start rebinding operation
             /// </summary>
