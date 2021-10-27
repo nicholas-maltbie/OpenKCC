@@ -9,7 +9,8 @@
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}}></canvas>
+      <!-- <canvas id="unity-canvas" width={{{ WIDTH }}} height={{{ HEIGHT }}}></canvas> -->
+      <canvas id="unity-canvas" width=960 height=600></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -22,6 +23,11 @@
         <div id="unity-fullscreen-button"></div>
         <div id="unity-build-title">{{{ PRODUCT_NAME }}} v{{{ PRODUCT_VERSION }}}</div>
       </div>
+    </div>
+    <div id="footer">
+      <p>This is an open source Kinematic Character Controller hosted at <a
+      href="https://github.com/nicholas-maltbie/OpenKCC" class="undecorated-link">
+      https://github.com/nicholas-maltbie/OpenKCC </a></p>
     </div>
     <script>
       var container = document.querySelector("#unity-container");
