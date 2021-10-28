@@ -62,7 +62,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: Library
-          key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
+          key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Packages/manifest.json') }}-v.1.1
           restore-keys: |
             Library-${{ matrix.targetPlatform }}-
       - name: Cache git lfs
