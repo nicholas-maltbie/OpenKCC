@@ -116,7 +116,6 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
             scenes = GetScenes(),
             locationPathName = $"Builds/OpenKCC-WebGL",
             target = BuildTarget.WebGL,
-            options = BuildOptions.Development
         };
 
         // Build player.
