@@ -55,7 +55,6 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     public static void WebGLBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.WebGL, ScriptingImplementation.IL2CPP);
-        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
 
         // Get filename.
@@ -131,6 +130,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
 
     public static void TestBuild_WebGL()
     {
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
         WebGLBuild();
     }
 
