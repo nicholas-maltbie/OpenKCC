@@ -111,6 +111,8 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     public static void OfficialBuild_WebGL()
     {
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.decompressionFallback = true;
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
