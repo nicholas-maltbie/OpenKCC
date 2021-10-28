@@ -1,9 +1,10 @@
+using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-public class ScriptBatch : IPostprocessBuildWithReport
+public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithReport
 {
     public static string VersionNumber => $"v{Application.version}";
 
@@ -19,8 +20,26 @@ public class ScriptBatch : IPostprocessBuildWithReport
         };
     }
 
+    public void OnPreprocessBuild(BuildReport report)
+    {
+        if (report.summary.platform == BuildTarget.WebGL)
+        {
+            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        }
+    }
+
     public void OnPostprocessBuild(BuildReport report)
     {
+        if (report.summary.platform == BuildTarget.WebGL)
+        {
+            // Copy the web.config to the output path
+            File.Copy(
+                System.IO.Path.Combine(Application.dataPath, "Config", "web.config"),
+                System.IO.Path.Combine(report.summary.outputPath, "Build", "web.config"));
+        }
+
+        // Restore default settings
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
     }
 
     [MenuItem("Build/Build All")]
@@ -96,7 +115,6 @@ public class ScriptBatch : IPostprocessBuildWithReport
     [MenuItem("Build/Official WebGL Build")]
     public static void OfficialBuild_WebGL()
     {
-        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
         BuildPlayerOptions options = new BuildPlayerOptions
         {
