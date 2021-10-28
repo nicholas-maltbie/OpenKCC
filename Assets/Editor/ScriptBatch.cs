@@ -55,6 +55,8 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     public static void WebGLBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.WebGL, ScriptingImplementation.IL2CPP);
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.decompressionFallback = true;
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
 
         // Get filename.
@@ -115,6 +117,8 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     public static void OfficialBuild_WebGL()
     {
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.decompressionFallback = false;
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
@@ -130,7 +134,6 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
 
     public static void TestBuild_WebGL()
     {
-        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
         WebGLBuild();
     }
 
