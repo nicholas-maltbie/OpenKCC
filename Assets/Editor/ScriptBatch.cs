@@ -22,10 +22,6 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
 
     public void OnPreprocessBuild(BuildReport report)
     {
-        if (report.summary.platform == BuildTarget.WebGL)
-        {
-            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
-        }
     }
 
     public void OnPostprocessBuild(BuildReport report)
@@ -55,7 +51,6 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     public static void WebGLBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.WebGL, ScriptingImplementation.IL2CPP);
-        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
 
         // Get filename.
@@ -116,13 +111,13 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     public static void OfficialBuild_WebGL()
     {
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.decompressionFallback = true;
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
             locationPathName = $"Builds/OpenKCC-WebGL",
-            targetGroup = BuildTargetGroup.WebGL,
             target = BuildTarget.WebGL,
-            options = BuildOptions.Development
         };
 
         // Build player.
