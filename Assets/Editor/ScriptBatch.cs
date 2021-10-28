@@ -21,6 +21,8 @@ public class ScriptBatch : IPostprocessBuildWithReport
 
     public void OnPostprocessBuild(BuildReport report)
     {
+        // Restore default settings
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
     }
 
     [MenuItem("Build/Build All")]
@@ -96,7 +98,7 @@ public class ScriptBatch : IPostprocessBuildWithReport
     [MenuItem("Build/Official WebGL Build")]
     public static void OfficialBuild_WebGL()
     {
-        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Brotli;
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
         BuildPlayerOptions options = new BuildPlayerOptions
         {
