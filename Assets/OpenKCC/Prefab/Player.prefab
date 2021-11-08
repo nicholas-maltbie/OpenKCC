@@ -150,7 +150,7 @@ MonoBehaviour:
   standingDistance: 0.1
   groundCheckDistance: 5
   maxWalkAngle: 60
-  gravity: {x: 0, y: -10, z: 0}
+  gravity: {x: 0, y: -20, z: 0}
   walkingSpeed: 7.5
   sprintSpeed: 10
   jumpVelocity: 5

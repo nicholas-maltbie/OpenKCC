@@ -7,7 +7,7 @@ This is an open source project licensed under a [MIT License](LICENSE.txt). Feel
 your own work. If you see an error in the project or have any suggestions, write an issue or make a pull request, I'll
 happy include any suggestions or ideas into the project.
 
-[![Demo of OpenKCC](Demo/sample-kcc.gif)](https://nickmaltbie.com/OpenKCC/)
+[![Designing Character Controllers Video Introduction](Demo/sample-kcc.gif)](https://youtu.be/Hv4CQMCxSWE)
 
 You can see a demo of the project running here: [https://nickmaltbie.com/OpenKCC/](https://nickmaltbie.com/OpenKCC/).
 The project hosted on the website is up to date with the most recent version on the `main` branch of this github repo
@@ -22,7 +22,8 @@ I will be making a video series discussing how the Open KCC works and going into
 work, describing game design in general, and details about the unity engine and virtual environments.
 
 As these videos are created they will be listed here:
-* [Next Video] Designing Character Controllers.
+* [Designing Character Controllers](https://youtu.be/Hv4CQMCxSWE)
+* Projection Based Movement
 
 # Features
 
