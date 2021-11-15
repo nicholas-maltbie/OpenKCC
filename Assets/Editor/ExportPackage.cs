@@ -9,9 +9,9 @@ public class ExportPackage : MonoBehaviour
     public static readonly string[] AssetPaths = {
         Path.Combine(ScriptBatch.AssetDirectory, "OpenKCC"),
     };
-    
+
     public static string PackagePath => Path.Combine(
-        ScriptBatch.BuildDirectory, $"OpenKCC-v{ScriptBatch.VersionNumber}.unitypackage");
+        ScriptBatch.BuildDirectory, $"OpenKCC-{ScriptBatch.VersionNumber}.unitypackage");
 
     [MenuItem("Build/Package/Export Package")]
     public static void ExportAssetPackage()
