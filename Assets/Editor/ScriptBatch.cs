@@ -9,7 +9,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     public const string BuildDirectory = "Builds";
 
     public const string AssetDirectory = "Assets";
-    
+
     public static string VersionNumber => $"v{Application.version}";
 
     public static string AppName => $"{Application.productName}";
