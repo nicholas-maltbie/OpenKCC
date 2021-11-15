@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithReport
 {
+    public const string BuildDirectory = "Builds";
+
+    public const string AssetDirectory = "Assets";
+    
     public static string VersionNumber => $"v{Application.version}";
 
     public static string AppName => $"{Application.productName}";
@@ -16,7 +20,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     {
         return new string[]
         {
-            "Assets/OpenKCC/Scenes/SampleScene.unity"
+            System.IO.Path.Combine(AssetDirectory, "OpenKCC/Scenes/SampleScene.unity")
         };
     }
 
@@ -38,7 +42,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
     }
 
-    [MenuItem("Build/Build All")]
+    [MenuItem("Build/Demo/Build All")]
     public static void BuildAll()
     {
         WebGLBuild();
@@ -47,7 +51,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         WindowsBuild();
     }
 
-    [MenuItem("Build/WebGL Build")]
+    [MenuItem("Build/Demo/WebGL Build")]
     public static void WebGLBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.WebGL, ScriptingImplementation.IL2CPP);
@@ -55,19 +59,19 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
 
         // Get filename.
         string[] levels = GetScenes();
-        string appFolder = $"Builds/OpenKCC-WebGL-{VersionNumber}/OpenKCC";
+        string appFolder = Path.Combine(BuildDirectory, $"OpenKCC-WebGL-{VersionNumber}/OpenKCC");
 
         // Build player.
         BuildPipeline.BuildPlayer(levels, appFolder, BuildTarget.WebGL, BuildOptions.Development);
     }
 
-    [MenuItem("Build/MacOS Build")]
+    [MenuItem("Build/Demo/MacOS Build")]
     public static void MacOSBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
 
         // Get filename.
-        string path = $"Builds/OpenKCC-MacOS-{VersionNumber}";
+        string path = Path.Combine(BuildDirectory, $"OpenKCC-MacOS-{VersionNumber}");
         string[] levels = GetScenes();
 
         string appFolder = path + $"/{AppName}.app";
@@ -76,20 +80,20 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         BuildPipeline.BuildPlayer(levels, appFolder, BuildTarget.StandaloneOSX, BuildOptions.Development);
     }
 
-    [MenuItem("Build/Linux Build")]
+    [MenuItem("Build/Demo/Linux Build")]
     public static void LinuxBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
 
         // Get filename.
-        string path = $"Builds/OpenKCC-Linux-{VersionNumber}";
+        string path = Path.Combine(BuildDirectory, $"OpenKCC-Linux-{VersionNumber}");
         string[] levels = GetScenes();
 
         // Build player.
         BuildPipeline.BuildPlayer(levels, path + $"/{AppName}.x86_64", BuildTarget.StandaloneLinux64, BuildOptions.Development);
     }
 
-    [MenuItem("Build/Windows64 Build")]
+    [MenuItem("Build/Demo/Windows64 Build")]
     public static void WindowsBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
@@ -97,7 +101,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
-            locationPathName = $"Builds/OpenKCC-Win64-{VersionNumber}/{AppName}.exe",
+            locationPathName = Path.Combine(BuildDirectory, $"OpenKCC-Win64-{VersionNumber}/{AppName}.exe"),
             targetGroup = BuildTargetGroup.Standalone,
             target = BuildTarget.StandaloneWindows64,
             options = BuildOptions.Development
@@ -107,7 +111,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         BuildPipeline.BuildPlayer(options);
     }
 
-    [MenuItem("Build/Official WebGL Build")]
+    [MenuItem("Build/Demo/Official WebGL Build")]
     public static void OfficialBuild_WebGL()
     {
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
@@ -116,7 +120,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
-            locationPathName = $"Builds/OpenKCC-WebGL",
+            locationPathName = Path.Combine(BuildDirectory, $"OpenKCC-WebGL"),
             target = BuildTarget.WebGL,
         };
 
@@ -136,7 +140,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
-            locationPathName = $"Builds/OpenKCC-Test-Win64-{VersionNumber}/{AppName}.exe",
+            locationPathName = Path.Combine(BuildDirectory, $"OpenKCC-Test-Win64-{VersionNumber}/{AppName}.exe"),
             targetGroup = BuildTargetGroup.Standalone,
             target = BuildTarget.StandaloneWindows64,
             options = BuildOptions.Development
