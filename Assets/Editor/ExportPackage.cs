@@ -24,7 +24,15 @@ public class ExportPackage : MonoBehaviour
             ExportPackageOptions.Recurse |
                 ExportPackageOptions.Interactive |
                 ExportPackageOptions.IncludeDependencies);
-        using (var zipFile = new ZipFile(PackagePath + ".zip"))
+
+        string zipPath = PackagePath + ".zip";
+
+        if (File.Exists(zipPath))
+        {
+            File.Delete(zipPath);
+        }
+
+        using (var zipFile = new ZipFile(zipPath))
         {
             zipFile.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
             zipFile.AddFile(PackagePath, "");
