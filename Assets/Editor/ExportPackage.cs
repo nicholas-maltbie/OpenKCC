@@ -12,11 +12,25 @@ public class ExportPackage : MonoBehaviour
         Path.Combine(ScriptBatch.AssetDirectory, "OpenKCC"),
     };
 
+    public static readonly string[] ScriptsAssetPaths = {
+        Path.Combine(ScriptBatch.AssetDirectory, "OpenKCC", "Scripts"),
+    };
+
     public static string PackagePath => Path.Combine(
+        ScriptBatch.BuildDirectory, $"OpenKCC-Examples-{ScriptBatch.VersionNumber}.unitypackage");
+
+    public static string ScriptPackagePath => Path.Combine(
         ScriptBatch.BuildDirectory, $"OpenKCC-{ScriptBatch.VersionNumber}.unitypackage");
 
-    [MenuItem("Build/Package/Export Package")]
-    public static void ExportAssetPackage()
+    [MenuItem("Build/Package/Export All Packages")]
+    public static void ExportAllPackages()
+    {
+        ExportExampleAssetPackage();
+        ExportScriptsAssetPackage();
+    }
+
+    [MenuItem("Build/Package/Export Example Package")]
+    public static void ExportExampleAssetPackage()
     {
         AssetDatabase.ExportPackage(
             AssetPaths,
@@ -24,20 +38,17 @@ public class ExportPackage : MonoBehaviour
             ExportPackageOptions.Recurse |
                 ExportPackageOptions.Interactive |
                 ExportPackageOptions.IncludeDependencies);
+    }
 
-        string zipPath = PackagePath + ".zip";
-
-        if (File.Exists(zipPath))
-        {
-            File.Delete(zipPath);
-        }
-
-        using (var zipFile = new ZipFile(zipPath))
-        {
-            zipFile.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
-            zipFile.AddFile(PackagePath, "");
-            zipFile.Save();
-        }
+    [MenuItem("Build/Package/Export Scripts Package")]
+    public static void ExportScriptsAssetPackage()
+    {
+        AssetDatabase.ExportPackage(
+            ScriptsAssetPaths,
+            ScriptPackagePath,
+            ExportPackageOptions.Recurse |
+                ExportPackageOptions.Interactive |
+                ExportPackageOptions.IncludeDependencies);
     }
 
 }
