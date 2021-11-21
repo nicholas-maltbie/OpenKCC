@@ -22,7 +22,8 @@ I will be making a video series discussing how the Open KCC works and going into
 work, describing game design in general, and details about the unity engine and virtual environments.
 
 As these videos are created they will be listed here:
-* [Designing Character Controllers](https://youtu.be/Hv4CQMCxSWE)
+* [Designing Character Controllers Intro](https://youtu.be/Hv4CQMCxSWE)
+* [How Game Physics Lies to You!](https://youtu.be/rzD-Lm8pOX0)
 * Projection Based Movement
 
 # Features
