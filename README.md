@@ -23,7 +23,7 @@ work, describing game design in general, and details about the unity engine and 
 
 As these videos are created they will be listed here:
 * [Designing Character Controllers Intro](https://youtu.be/Hv4CQMCxSWE)
-* [How Game Physics Lies to You!](https://youtu.be/rzD-Lm8pOX0)
+* [Explaining The Physics Behind Games and Character Interactions](https://youtu.be/rzD-Lm8pOX0)
 * Projection Based Movement
 
 # Features
