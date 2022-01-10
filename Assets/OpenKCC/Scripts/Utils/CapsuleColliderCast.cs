@@ -86,7 +86,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
                     out Vector3 direction, out float distance
                 );
-                float distPush = Mathf.Min(maxDistance, distance + KinematicCharacterController.Epsilon);
+                float distPush = Mathf.Min(maxDistance, distance + KCCUtils.Epsilon);
                 Vector3 push = direction.normalized * distPush;
                 transform.position += push;
                 pushed += push;
