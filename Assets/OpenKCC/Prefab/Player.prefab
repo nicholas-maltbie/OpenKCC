@@ -155,7 +155,7 @@ MonoBehaviour:
   sprintSpeed: 10
   jumpVelocity: 6.5
   maxJumpAngle: 75
-  jumpAngleWeightFactor: 0.2
+  jumpAngleWeightFactor: 0
   jumpCooldown: 0.5
   coyoteTime: 0.25
   maxBounces: 5

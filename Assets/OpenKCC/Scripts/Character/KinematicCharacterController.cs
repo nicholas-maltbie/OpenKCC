@@ -33,7 +33,7 @@ namespace nickmaltbie.OpenKCC.Character
     /// Kinematic character controller to move the player character
     /// as a kinematic object
     /// </summary>
-    [RequireComponent(typeof(CapsuleCollider))]
+    [RequireComponent(typeof(CapsuleColliderCast))]
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(CameraController))]
     public class KinematicCharacterController : MonoBehaviour
@@ -51,7 +51,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Player collider for checking collisions.
         /// </summary>
-        private CapsuleCollider capsuleCollider;
+        private CapsuleColliderCast capsuleColliderCast;
 
         [Header("Input Controls")]
 
@@ -495,20 +495,6 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public bool Frozen { get; set; }
 
-        /// <summary>
-        /// Gets transformed parameters describing this capsule collider
-        /// </summary>
-        public (Vector3, Vector3, float, float) GetParams()
-        {
-            Vector3 center = transform.TransformPoint(capsuleCollider.center);
-            float radius = capsuleCollider.radius;
-            float height = capsuleCollider.height;
-
-            Vector3 bottom = center + Down * (height / 2 - radius);
-            Vector3 top = center + Up * (height / 2 - radius);
-            return (top, bottom, radius, height);
-        }
-
         public void OnDestroy()
         {
             GameObject.Destroy(feetFollowObj);
@@ -516,9 +502,9 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void Start()
         {
-            cameraController = GetComponent<CameraController>();
-            characterRigidbody = GetComponent<Rigidbody>();
-            capsuleCollider = GetComponent<CapsuleCollider>();
+            this.cameraController = GetComponent<CameraController>();
+            this.characterRigidbody = GetComponent<Rigidbody>();
+            this.capsuleColliderCast = GetComponent<CapsuleColliderCast>();
             feetFollowObj = new GameObject();
             feetFollowObj.name = "feetFollowObj";
             feetFollowObj.transform.SetParent(transform);
@@ -673,7 +659,9 @@ namespace nickmaltbie.OpenKCC.Character
                 feetFollowObj.transform.position = groundHitPosition;
                 footOffset = transform.position - groundHitPosition;
 
-                var currentStanding = GetHits(Down, standingDistance).Select(hit => hit.collider.gameObject).ToList();
+                var currentStanding = capsuleColliderCast
+                    .GetHits(Down, standingDistance)
+                    .Select(hit => hit.collider.gameObject).ToList();
 
                 // Detect if the floor the player is standing on has changed
                 // For each object that we are currently standing on that we were not standing on the previous update
@@ -696,50 +684,10 @@ namespace nickmaltbie.OpenKCC.Character
                 previousGrounded = startGrounded;
                 previousJumped = jumped;
                 previousGroundVelocity = GetGroundVelocity();
-                previousStanding = GetHits(Down, groundedDistance).Select(hit => hit.collider.gameObject).ToList();
+                previousStanding = capsuleColliderCast
+                    .GetHits(Down, groundedDistance)
+                    .Select(hit => hit.collider.gameObject).ToList();
             }
-        }
-
-        /// <summary>
-        /// Cast self and get the objects hit that exclude this object.
-        /// </summary>
-        /// <param name="direction">Direction to cast self collider.</param>
-        /// <param name="distance">Distance to cast self collider.</param>
-        /// <returns></returns>
-        public IEnumerable<RaycastHit> GetHits(Vector3 direction, float distance)
-        {
-            (Vector3 top, Vector3 bottom, float radius, _) = GetParams();
-            return Physics.CapsuleCastAll(top, bottom, radius, direction, distance, ~0, QueryTriggerInteraction.Ignore)
-                .Where(hit => hit.collider.transform != transform);
-        }
-
-        /// <summary>
-        /// Cast self in a given direction and get the first object hit.
-        /// </summary>
-        /// <param name="direction">Direction of the raycast.</param>
-        /// <param name="distance">Maximum distance of raycast.</param>
-        /// <param name="hit">First object hit and related information, will have a distance of Mathf.Infinity if none
-        /// is found.</param>
-        /// <returns>True if an object is hit within distance, false otherwise.</returns>
-        public bool CastSelf(Vector3 direction, float distance, out RaycastHit hit)
-        {
-            var closest = new RaycastHit() { distance = Mathf.Infinity };
-            bool hitSomething = false;
-            foreach (RaycastHit objHit in GetHits(direction, distance))
-            {
-                if (objHit.collider.gameObject.transform != gameObject.transform)
-                {
-                    if (objHit.distance < closest.distance)
-                    {
-                        closest = objHit;
-                    }
-
-                    hitSomething = true;
-                }
-            }
-
-            hit = closest;
-            return hitSomething;
         }
 
         /// <summary>
@@ -851,7 +799,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void SnapPlayerDown(Vector3 dir, float dist)
         {
-            bool didHit = CastSelf(dir, dist, out RaycastHit hit);
+            bool didHit = capsuleColliderCast.CastSelf(dir, dist, out var hit);
 
             if (didHit && hit.distance > Epsilon)
             {
@@ -868,37 +816,7 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 PushOutOverlapping()
         {
             float fixedDeltaTime = Time.fixedDeltaTime;
-            return PushOutOverlapping(maxPushSpeed * fixedDeltaTime);
-        }
-
-        /// <summary>
-        /// Push a player out of overlappin objects with a max distance.
-        /// </summary>
-        /// <param name="maxDistance">Maximum distance the player can be pushed</param>
-        /// <returns>Total distance player was pushed.</returns>
-        public Vector3 PushOutOverlapping(float maxDistance)
-        {
-            Vector3 pushed = Vector3.zero;
-            foreach (Collider overlap in GetOverlapping())
-            {
-                Physics.ComputePenetration(
-                    capsuleCollider, transform.position, transform.rotation,
-                    overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
-                    out Vector3 direction, out float distance
-                );
-                float distPush = Mathf.Min(maxDistance, distance + Epsilon);
-                Vector3 push = direction.normalized * distPush;
-                transform.position += push;
-                pushed += push;
-            }
-
-            return pushed;
-        }
-
-        public IEnumerable<Collider> GetOverlapping()
-        {
-            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams();
-            return Physics.OverlapCapsule(top, bottom, radius, ~0, QueryTriggerInteraction.Ignore).Where(c => c.transform != transform);
+            return capsuleColliderCast.PushOutOverlapping(maxPushSpeed * fixedDeltaTime);
         }
 
         /// <summary>
@@ -906,15 +824,14 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void CheckGrounded()
         {
-            bool didHit = CastSelf(Down, groundCheckDistance, out RaycastHit hit);
-            (_, _, _, _) = GetParams();
+            bool didHit = capsuleColliderCast.CastSelf(Down, groundCheckDistance, out var hit);
 
-            angle = Vector3.Angle(hit.normal, Up);
-            distanceToGround = hit.distance;
-            onGround = didHit;
-            surfaceNormal = hit.normal;
-            groundHitPosition = hit.distance > 0 ? hit.point : transform.position;
-            floor = hit.collider != null ? hit.collider.gameObject : null;
+            this.angle = Vector3.Angle(hit.normal, Up);
+            this.distanceToGround = hit.distance;
+            this.onGround = didHit;
+            this.surfaceNormal = hit.normal;
+            this.groundHitPosition = hit.distance > 0 ? hit.point : transform.position;
+            this.floor = hit.collider != null ? hit.collider.gameObject : null;
         }
 
         /// <summary>
@@ -937,7 +854,11 @@ namespace nickmaltbie.OpenKCC.Character
             transform.position += snapUp;
 
             Vector3 directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
-            bool didSnapHit = CastSelf(directionAfterSnap.normalized, Mathf.Max(stepUpDepth, momentum.magnitude), out RaycastHit snapHit);
+            bool didSnapHit = capsuleColliderCast
+                .CastSelf(
+                    directionAfterSnap.normalized,
+                    Mathf.Max(stepUpDepth, momentum.magnitude),
+                    out RaycastHit snapHit);
 
             // If they can move without instantly hitting something, then snap them up
             if ((!Falling || elapsedFalling <= snapBufferTime) && snapHit.distance > Epsilon && (!didSnapHit || snapHit.distance > stepUpDepth))
@@ -973,7 +894,7 @@ namespace nickmaltbie.OpenKCC.Character
                 // Do a cast of the collider to see if an object is hit during this
                 // movement bounce
                 float distance = momentum.magnitude;
-                if (!CastSelf(momentum.normalized, distance, out RaycastHit hit))
+                if (!capsuleColliderCast.CastSelf(momentum.normalized, distance, out RaycastHit hit))
                 {
                     // If there is no hit, move to desired position
                     transform.position += momentum;
