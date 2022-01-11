@@ -152,8 +152,12 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         BuildPipeline.BuildPlayer(options);
     }
 
-    public static void EmptyBuild()
+    [MenuItem("Assets/Sync Solution #&s")]
+    public static void SyncSolution()
     {
-
+        var editor = Type.GetType("UnityEditor.SyncVS, UnityEditor");
+        var SyncSolution = editor.GetMethod("SyncSolution", BindingFlags.Public | BindingFlags.Static);
+        SyncSolution.Invoke(null, null);
+        Debug.Log("Solution synced!");
     }
 }
