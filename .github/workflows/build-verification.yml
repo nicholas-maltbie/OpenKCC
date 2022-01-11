@@ -19,9 +19,6 @@ jobs:
           - WebGL
           - Win64
     steps:
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
-
       - uses: actions/checkout@v2
 
       - name: Create LFS file list
