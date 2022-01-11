@@ -26,6 +26,7 @@ using nickmaltbie.OpenKCC.Utils;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
 namespace nickmaltbie.OpenKCC.Character
 {
@@ -38,11 +39,6 @@ namespace nickmaltbie.OpenKCC.Character
     [RequireComponent(typeof(CameraController))]
     public class KinematicCharacterController : MonoBehaviour
     {
-        /// <summary>
-        /// Player collider for checking collisions.
-        /// </summary>
-        private CapsuleColliderCast capsuleColliderCast;
-
         [Header("Input Controls")]
 
         /// <summary>
@@ -335,6 +331,11 @@ namespace nickmaltbie.OpenKCC.Character
         private float elapsedUnderThreshold;
 
         /// <summary>
+        /// Did the player snap up steps or edges the previous frame
+        /// </summary>
+        private bool snapUpPrevious;
+
+        /// <summary>
         /// Is the player attempting to jump this frame.
         /// </summary>
         public bool AttemptingJump => attemptingJump;
@@ -348,6 +349,11 @@ namespace nickmaltbie.OpenKCC.Character
         /// How long has the player been falling.
         /// </summary>
         public float FallingTime => elapsedFalling;
+
+        /// <summary>
+        /// Can the player snap up this update?
+        /// </summary>
+        public bool CanSnapUp => snapUpPrevious || (!Falling || elapsedFalling <= snapBufferTime);
 
         /// <summary>
         /// Rigidbody attached to this character.
@@ -422,6 +428,16 @@ namespace nickmaltbie.OpenKCC.Character
         /// The velocity of the ground the previous frame
         /// </summary>
         private Vector3 previousGroundVelocity;
+
+        /// <summary>
+        /// Player collider for checking collisions.
+        /// </summary>
+        private CapsuleColliderCast capsuleColliderCast;
+
+        /// <summary>
+        /// Push action associated with this kcc.
+        /// </summary>
+        private CharacterPush characterPush;
 
         /// <summary>
         /// Previous objects that the player is standing on.
@@ -826,23 +842,33 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void MovePlayer(Vector3 movement)
         {
-            foreach (Vector3 position in KCCUtils.GetBounces(
+            bool snappedUp = false;
+
+            foreach ((Vector3 position, Ray _, MovementAction action) in KCCUtils.GetBounces(
                 maxBounces,
                 pushDecay,
                 verticalSnapUp,
                 stepUpDepth,
                 anglePower,
                 attemptingJump,
-                !Falling || elapsedFalling <= snapBufferTime,
+                CanSnapUp,
                 transform.position,
                 movement,
+                Up,
                 capsuleColliderCast,
-                GetComponent<CharacterPush>(),
-                GetComponent<Collider>(),
-                transform))
+                GetComponent<CharacterPush>()))
             {
-                transform.position = position;
+                if (action == MovementAction.Stop)
+                {
+                    transform.position = position;
+                }
+                else if (action == MovementAction.SnapUp)
+                {
+                    snappedUp = true;
+                }
             }
+
+            snapUpPrevious = snappedUp;
         }
 
         /// <summary>

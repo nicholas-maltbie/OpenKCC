@@ -6,8 +6,14 @@ namespace nickmaltbie.OpenKCC.Utils
     /// <summary>
     /// Abstraction to check for collisions and compute when this object would hit other objects.
     /// </summary>
-    interface IColliderCast
+    public interface IColliderCast
     {
+        /// <summary>
+        /// Gets the bounds of the collider.
+        /// </summary>
+        /// <returns>Bounds of this collider object.</returns>
+        Bounds GetBounds();
+
         /// <summary>
         /// Gets the list of objects overlapping with this object.
         /// </summary>

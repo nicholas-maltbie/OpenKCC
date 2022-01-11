@@ -93,5 +93,11 @@ namespace nickmaltbie.OpenKCC.Utils
             }
             return pushed;
         }
+
+        /// <inheritdoc/>
+        public Bounds GetBounds()
+        {
+            return capsuleCollider.bounds;
+        }
     }
 }

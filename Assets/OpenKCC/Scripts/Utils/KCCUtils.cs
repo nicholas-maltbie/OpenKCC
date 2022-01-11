@@ -6,11 +6,23 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils
 {
+
     /// <summary>
     /// Utility class for static functions involving kinematic character controller.
     /// </summary>
     public static class KCCUtils
     {
+        /// <summary>
+        /// Different actions associated with each update from the KCC Utils.
+        /// </summary>
+        public enum MovementAction
+        {
+            Move,
+            Bounce,
+            SnapUp,
+            Stop,
+        }
+
         /// <summary>
         /// Maximum angle between two colliding objects.
         /// </summary>
@@ -31,6 +43,9 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="distanceToSnap">Distance that the player is teleported up</param>
         /// <param name="hit">Wall/step that the player ran into</param>
         /// <param name="momentum">The remaining momentum of the player</param>
+        /// <param name="up">Direction of Up relative to the player</param>
+        /// <param name="colliderCast">Collider cast associated with the player</param>
+        /// <param name="momentum">reference to moving position of the player</param>
         /// <returns>True if the player had space on the ledge and was able to move, false if
         /// there was not enough room the player is moved back to their original position</returns>
         public static bool AttemptSnapUp(
@@ -39,7 +54,7 @@ namespace nickmaltbie.OpenKCC.Utils
             RaycastHit hit,
             Vector3 up,
             Vector3 momentum,
-            CapsuleColliderCast capsuleColliderCast,
+            IColliderCast colliderCast,
             ref Vector3 position)
         {
             // If we were to snap the player up and they moved forward, would they hit something?
@@ -48,7 +63,7 @@ namespace nickmaltbie.OpenKCC.Utils
             position += snapUp;
 
             Vector3 directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
-            bool didSnapHit = capsuleColliderCast
+            bool didSnapHit = colliderCast
                 .CastSelf(
                     directionAfterSnap.normalized,
                     Mathf.Max(stepUpDepth, momentum.magnitude),
@@ -70,7 +85,7 @@ namespace nickmaltbie.OpenKCC.Utils
             }
         }
 
-        public static IEnumerable<Vector3> GetBounces(
+        public static IEnumerable<(Vector3, Ray, MovementAction)> GetBounces(
             int maxBounces,
             float pushDecay,
             float verticalSnapUp,
@@ -80,10 +95,9 @@ namespace nickmaltbie.OpenKCC.Utils
             bool canSnapUp,
             Vector3 position,
             Vector3 movement,
-            CapsuleColliderCast capsuleColliderCast,
-            CharacterPush push,
-            Collider selfCollider,
-            Transform transform)
+            Vector3 up,
+            IColliderCast colliderCast,
+            CharacterPush push)
         {
             // Save current momentum
             Vector3 momentum = movement;
@@ -94,15 +108,18 @@ namespace nickmaltbie.OpenKCC.Utils
             // Continue computing while there is momentum and bounces remaining
             while (momentum.magnitude > Epsilon && bounces <= maxBounces)
             {
-                yield return position;
+                // Position of character at start of bounce
+                Vector3 initialPosition = position;
 
                 // Do a cast of the collider to see if an object is hit during this
                 // movement bounce
                 float distance = momentum.magnitude;
-                if (!capsuleColliderCast.CastSelf(momentum.normalized, distance, out RaycastHit hit))
+                if (!colliderCast.CastSelf(momentum.normalized, distance, out RaycastHit hit))
                 {
                     // If there is no hit, move to desired position
                     position += momentum;
+                    yield return (initialPosition, new Ray(position, Vector3.zero), MovementAction.Move);
+
                     // Exit as we are done bouncing
                     break;
                 }
@@ -134,51 +151,68 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 // Snap character vertically up if they hit something
                 //  close enough to their feet
-                float distanceToFeet = hit.point.y - (position - selfCollider.bounds.extents).y;
+                float distanceToFeet = hit.point.y - (position - colliderCast.GetBounds().extents).y;
                 if (canSnapUp && 
                     hit.distance > 0 &&
                     !attemptingJump &&
                     distanceToFeet < verticalSnapUp &&
                     distanceToFeet > 0)
                 {
+                    bool snappedUp = false;
                     // Sometimes snapping up the exact distance leads to odd behaviour around steps and walls.
                     // It's good to check the maximum and minimum snap distances and take whichever one works.
                     // Attempt to snap up the maximum vertical distance
-                    if (!AttemptSnapUp(
+                    snappedUp = AttemptSnapUp(
                         verticalSnapUp,
                         stepUpDepth,
                         hit,
-                        transform.TransformDirection(Vector3.up),
+                        up,
                         momentum,
-                        capsuleColliderCast,
-                        ref position))
+                        colliderCast,
+                        ref position);
+
+                    if (!snappedUp)
                     {
                         // If that movement doesn't work, snap them up the minimum vertical distance
-                        AttemptSnapUp(
+                        snappedUp = AttemptSnapUp(
                             distanceToFeet + Epsilon * 2, 
                             stepUpDepth,
                             hit,
-                            transform.TransformDirection(Vector3.up),
+                            up,
                             momentum,
-                            capsuleColliderCast,
+                            colliderCast,
                             ref position);
                     }
+
+                    if (snappedUp)
+                    {
+                        yield return (initialPosition, new Ray(position, momentum), MovementAction.SnapUp);
+                    }
                 }
+
                 // Only apply angular change if hitting something
                 // Get angle between surface normal and remaining movement
                 float angleBetween = Vector3.Angle(hit.normal, momentum) - 90.0f;
+
                 // Normalize angle between to be between 0 and 1
                 // 0 means no angle, 1 means 90 degree angle
                 angleBetween = Mathf.Min(MaxAngleShoveRadians, Mathf.Abs(angleBetween));
                 float normalizedAngle = angleBetween / MaxAngleShoveRadians;
+
                 // Reduce the momentum by the remaining movement that ocurred
                 momentum *= Mathf.Pow(1 - normalizedAngle, anglePower) * 0.9f + 0.1f;
+
                 // Rotate the remaining remaining movement to be projected along the plane 
                 // of the surface hit (emulate pushing against the object)
-                Vector3 projectedMomentum = Vector3.ProjectOnPlane(momentum, planeNormal).normalized * momentum.magnitude;
+                Vector3 projectedMomentum = Vector3.ProjectOnPlane(
+                    momentum,
+                    planeNormal).normalized * momentum.magnitude;
+                
+                // If projected momentum is less than original momentum (so if the projection broke due to float
+                // operations), then change this to just project along the vertical.
                 if (projectedMomentum.magnitude + Epsilon < momentum.magnitude)
                 {
-                    momentum = Vector3.ProjectOnPlane(momentum, transform.TransformDirection(Vector3.up)).normalized * momentum.magnitude;
+                    momentum = Vector3.ProjectOnPlane(momentum, up).normalized * momentum.magnitude;
                 }
                 else
                 {
@@ -187,10 +221,11 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 // Track number of times the character has bounced
                 bounces++;
+                yield return (initialPosition, new Ray(position, momentum), MovementAction.Bounce);
             }
             // We're done, player was moved as part of loop
 
-            yield return position;
+            yield return (position, new Ray(position, Vector3.zero), MovementAction.Stop);
             yield break;
         }
         
