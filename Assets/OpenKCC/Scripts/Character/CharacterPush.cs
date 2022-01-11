@@ -36,8 +36,8 @@ namespace nickmaltbie.OpenKCC.Character
         public void PushObject(IControllerColliderHit hit)
         {
             // Check if the thing we hit can be pushed
-            var body = hit.rigidbody;
-            var pushable = hit.gameObject.GetComponent<IPushable>();
+            Rigidbody body = hit.rigidbody;
+            IPushable pushable = hit.gameObject.GetComponent<IPushable>();
 
             // Do nothing if the object does not have a rigidbody or if
             //   the rigidbody is kinematic
@@ -49,9 +49,9 @@ namespace nickmaltbie.OpenKCC.Character
             _ = Vector3.zero;
             // If to the side, use the controller velocity
             // Project movement vector onto plane defined by gravity normal (horizontal plane)
-            var force = Vector3.ProjectOnPlane(hit.moveDirection, Vector3.down) * pushPower;
+            Vector3 force = Vector3.ProjectOnPlane(hit.moveDirection, Vector3.down) * pushPower;
 
-            var pushForce = force * pushPower;
+            Vector3 pushForce = force * pushPower;
 
             // Apply the push
             body.AddForceAtPosition(pushForce, hit.point, ForceMode.Force);

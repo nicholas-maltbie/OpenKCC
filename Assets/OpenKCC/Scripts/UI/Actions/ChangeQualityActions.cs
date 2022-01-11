@@ -42,7 +42,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         public void Awake()
         {
             // Load saved settings
-            var currentLevel = PlayerPrefs.GetInt(qualityLevelPlayerPrefKey, QualitySettings.GetQualityLevel());
+            int currentLevel = PlayerPrefs.GetInt(qualityLevelPlayerPrefKey, QualitySettings.GetQualityLevel());
             QualitySettings.SetQualityLevel(currentLevel);
             UnityEngine.Debug.Log($"Setting quality level to {QualitySettings.names[currentLevel]}");
 

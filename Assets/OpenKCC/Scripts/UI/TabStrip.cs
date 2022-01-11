@@ -46,7 +46,7 @@ namespace nickmaltbie.OpenKCC.UI
 
         protected void SetTabState(int index, bool picked)
         {
-            var affectedItem = TabCollection[index];
+            TabPair affectedItem = TabCollection[index];
             affectedItem.TabContent.interactable = picked;
             affectedItem.TabContent.blocksRaycasts = picked;
             affectedItem.TabContent.alpha = picked ? 1 : 0;
@@ -62,7 +62,7 @@ namespace nickmaltbie.OpenKCC.UI
 
         protected int? FindTabIndex(Button tabButton)
         {
-            var currentTabPair = TabCollection.FirstOrDefault(x => x.TabButton == tabButton);
+            TabPair currentTabPair = TabCollection.FirstOrDefault(x => x.TabButton == tabButton);
             if (currentTabPair == default)
             {
                 Debug.LogWarning("The tab " + DefaultTab.gameObject.name + " does not belong to the tab strip " + name + ".");
@@ -74,21 +74,21 @@ namespace nickmaltbie.OpenKCC.UI
 
         public void Start()
         {
-            for (var i = 0; i < TabCollection.Length; i++)
+            for (int i = 0; i < TabCollection.Length; i++)
             {
                 //Storing the current value of i in a locally scoped variable.
-                var index = i;
+                int index = i;
                 TabCollection[index].TabButton.onClick.AddListener(new UnityAction(() => PickTab(index)));
             }
             //Initialize all tabs to an unpicked state
-            for (var i = 0; i < TabCollection.Length; i++)
+            for (int i = 0; i < TabCollection.Length; i++)
             {
                 SetTabState(i, false);
             }
             //Pick the default tab
             if (TabCollection.Length > 0)
             {
-                var index = FindTabIndex(DefaultTab);
+                int? index = FindTabIndex(DefaultTab);
                 //If tab is invalid, instead default to the first tab.
                 if (index == null)
                 {

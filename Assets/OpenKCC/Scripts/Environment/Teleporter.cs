@@ -37,7 +37,7 @@ namespace nickmaltbie.OpenKCC.Environment
         public void OnTriggerEnter(Collider other)
         {
             // Check if the object has a character Collider
-            var cc = other.gameObject.GetComponent<CharacterController>();
+            CharacterController cc = other.gameObject.GetComponent<CharacterController>();
 
             // If the object has a character collider, temporarily disable it
             if (cc != null)

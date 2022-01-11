@@ -79,10 +79,10 @@ namespace nickmaltbie.OpenKCC.Animation
                 return;
             }
 
-            var jumping = kcc.CanJump && kcc.AttemptingJump;
-            var falling = kcc.IsProne || kcc.FallingTime >= fallingThreshold;
-            var jumpingOrFalling = falling || jumping;
-            var moving = !kcc.IsProne && !jumpingOrFalling && kcc.InputMovement.magnitude > movementDeadZone;
+            bool jumping = kcc.CanJump && kcc.AttemptingJump;
+            bool falling = kcc.IsProne || kcc.FallingTime >= fallingThreshold;
+            bool jumpingOrFalling = falling || jumping;
+            bool moving = !kcc.IsProne && !jumpingOrFalling && kcc.InputMovement.magnitude > movementDeadZone;
 
             animState.move = new Vector2(kcc.InputMovement.x, kcc.InputMovement.z);
             animState.moving = moving;

@@ -35,7 +35,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void ResetBindings()
         {
-            foreach (var control in GetComponentsInChildren<IBindingControl>())
+            foreach (IBindingControl control in GetComponentsInChildren<IBindingControl>())
             {
                 control.ResetBinding();
                 control.UpdateDisplay();

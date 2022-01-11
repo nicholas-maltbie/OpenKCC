@@ -86,11 +86,11 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         public Vector3 GetDisplacementAtPoint(Vector3 point, float deltaTime)
         {
             // Get relative position to previous start
-            var relativePosition = point - PreviousPosition;
+            Vector3 relativePosition = point - PreviousPosition;
             // Rotate point around center by change in attitude
-            var rotatedFinalPosition = ChangeAttitude * relativePosition;
+            Vector3 rotatedFinalPosition = ChangeAttitude * relativePosition;
             // Get the delta due to rotation
-            var deltaRotation = rotatedFinalPosition - relativePosition;
+            Vector3 deltaRotation = rotatedFinalPosition - relativePosition;
             // Shift point by total displacement
             return deltaRotation + Displacement;
         }

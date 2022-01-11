@@ -110,19 +110,19 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         public void Start()
         {
             // Setup sliders
-            for (var i = 0; i < settingsGroups.Length; i++)
+            for (int i = 0; i < settingsGroups.Length; i++)
             {
-                var settingsGroup = settingsGroups[i];
-                var group = settingsGroup.mixerGroup;
-                var soundKey = SoundVolumePrefixPlayerPrefKey + settingsGroup.mixerGroup.name;
+                AudioMixerSettingsGroup settingsGroup = settingsGroups[i];
+                AudioMixerGroup group = settingsGroup.mixerGroup;
+                string soundKey = SoundVolumePrefixPlayerPrefKey + settingsGroup.mixerGroup.name;
 
-                settingsGroup.mixerGroup.audioMixer.GetFloat($"{group.name} Volume", out var startingVolume);
+                settingsGroup.mixerGroup.audioMixer.GetFloat($"{group.name} Volume", out float startingVolume);
                 // Set the slider to match the saved value
                 settingsGroup.slider.SetValueWithoutNotify(GetSliderValue(startingVolume));
                 // Update saved and current value on player input
                 settingsGroup.slider.onValueChanged.AddListener(value =>
                 {
-                    var currentVolume = GetVolumeLevel(value);
+                    float currentVolume = GetVolumeLevel(value);
                     group.audioMixer.SetFloat($"{group.name} Volume", currentVolume);
 #if !UNITY_EDITOR
                     PlayerPrefs.SetFloat(soundKey, currentVolume);

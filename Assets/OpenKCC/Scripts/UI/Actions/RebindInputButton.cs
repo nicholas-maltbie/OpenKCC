@@ -80,7 +80,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         public void Awake()
         {
             // Load the default mapping saved to the file
-            var inputMapping = PlayerPrefs.GetString(InputMappingKey, string.Empty);
+            string inputMapping = PlayerPrefs.GetString(InputMappingKey, string.Empty);
             if (!string.IsNullOrEmpty(inputMapping))
             {
                 inputAction.action.ApplyBindingOverride(inputMapping);
@@ -135,10 +135,10 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// </summary>
         public void RebindComplete()
         {
-            var overridePath = inputAction.action.bindings[0].overridePath;
-            foreach (var input in GameObject.FindObjectsOfType<PlayerInput>())
+            string overridePath = inputAction.action.bindings[0].overridePath;
+            foreach (PlayerInput input in GameObject.FindObjectsOfType<PlayerInput>())
             {
-                var action = input.actions.FindAction(inputAction.name);
+                InputAction action = input.actions.FindAction(inputAction.name);
                 if (action != null)
                 {
                     action.ApplyBindingOverride(0, overridePath);

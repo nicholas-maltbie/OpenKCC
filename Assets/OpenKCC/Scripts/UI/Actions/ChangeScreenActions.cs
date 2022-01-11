@@ -151,7 +151,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// <returns>Index of fullscreen mode in the windowed dropdown selector</returns>
         public static int GetFullScreenModeDropdownIndex(FullScreenMode mode)
         {
-            for (var i = 0; i < ScreenLoading.windowedDropdownText.Length; i++)
+            for (int i = 0; i < ScreenLoading.windowedDropdownText.Length; i++)
             {
                 if (GetFullScreenMode(ScreenLoading.windowedDropdownText[i]) == mode)
                 {
@@ -269,9 +269,9 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             } : resolutions;
             resolutions = FilterResolutions(resolutions);
             var options = new List<string>();
-            for (var i = 0; i < resolutions.Length; i++)
+            for (int i = 0; i < resolutions.Length; i++)
             {
-                var option = resolutions[i].width + " x " + resolutions[i].height;
+                string option = resolutions[i].width + " x " + resolutions[i].height;
                 options.Add(option);
                 // Set selected resolution to current (or element 0 if not specificed)
                 if (i == 0 || Mathf.Approximately(resolutions[i].width, currentResolution.width)
@@ -309,7 +309,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             confirmPanel.alpha = 1.0f;
 
             // Wait for the user to answer (either by button or by timeout)
-            var answered = false;
+            bool answered = false;
             // Add listeners to yes and no buttons on confirm dialog
             confirmDialogYes.onClick.AddListener(() =>
             {
@@ -325,7 +325,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             settingsMenuController.allowInputChanges = false;
 
             // Wait for timeout... or exit early if the user has answered the question
-            for (var i = timeout; i >= 0 && !answered; i--)
+            for (int i = timeout; i >= 0 && !answered; i--)
             {
                 // Update the shown value
                 confirmDialogText.text = i.ToString();
@@ -407,7 +407,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void SetResolution(int resolutionIndex)
         {
-            var confirm = OpenConfirmChangesDialog();
+            IEnumerator confirm = OpenConfirmChangesDialog();
 
             currentResolution = resolutions[resolutionIndex];
             UpdateDisplayInfo();
@@ -416,7 +416,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void SetFullScreen(int fullScreenIndex)
         {
-            var confirm = OpenConfirmChangesDialog();
+            IEnumerator confirm = OpenConfirmChangesDialog();
 
             currentFullScreen = GetFullScreenMode(windowedDropdown.options[windowedDropdown.value].text.Trim());
             UpdateDisplayInfo();
@@ -425,7 +425,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void SetMonitor(int targetMonitor)
         {
-            var confirm = OpenConfirmChangesDialog();
+            IEnumerator confirm = OpenConfirmChangesDialog();
 
             currentDisplay = targetMonitor;
             UpdateDisplayInfo();

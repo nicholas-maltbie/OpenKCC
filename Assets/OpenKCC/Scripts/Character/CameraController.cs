@@ -192,7 +192,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void OnLook(InputAction.CallbackContext context)
         {
-            var look = context.ReadValue<Vector2>();
+            Vector2 look = context.ReadValue<Vector2>();
             look *= PlayerInputManager.mouseSensitivity;
             yawChange = look.x;
             pitchChange = look.y;
@@ -225,7 +225,7 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void Update()
         {
-            var deltaTime = Time.deltaTime;
+            float deltaTime = Time.deltaTime;
 
             float zoomChange = 0;
             // bound pitch between -180 and 180
@@ -252,14 +252,14 @@ namespace nickmaltbie.OpenKCC.Character
 
             // Set the local position of the camera to be the current rotation projected
             //   backwards by the current distance of the camera from the player
-            var cameraDirection = -cameraTransform.forward * currentDistance;
-            var cameraSource = CameraSource;
+            Vector3 cameraDirection = -cameraTransform.forward * currentDistance;
+            Vector3 cameraSource = CameraSource;
 
             // Draw a line from our camera source in the camera direction. If the line hits anything that isn't us
             // Limit the distance by how far away that object is
             // If we hit something
             if (PhysicsUtils.SphereCastFirstHitIgnore(ignoreObjects, cameraSource, 0.01f, cameraDirection, cameraDirection.magnitude,
-                cameraRaycastMask, QueryTriggerInteraction.Ignore, out var hit))
+                cameraRaycastMask, QueryTriggerInteraction.Ignore, out RaycastHit hit))
             {
                 // limit the movement by that hit
                 cameraDirection = cameraDirection.normalized * hit.distance;
@@ -268,11 +268,11 @@ namespace nickmaltbie.OpenKCC.Character
             CameraDistance = cameraDirection.magnitude;
             cameraTransform.position = cameraSource + cameraDirection;
 
-            var hittingSelf = PhysicsUtils.SphereCastAllow(gameObject, cameraSource + cameraDirection, 0.01f, -cameraDirection.normalized,
-                cameraDirection.magnitude, ~0, QueryTriggerInteraction.Ignore, out var selfHit);
+            bool hittingSelf = PhysicsUtils.SphereCastAllow(gameObject, cameraSource + cameraDirection, 0.01f, -cameraDirection.normalized,
+                cameraDirection.magnitude, ~0, QueryTriggerInteraction.Ignore, out RaycastHit selfHit);
 
             // float actualDistance = Mathf.Cos(Mathf.Deg2Rad * pitch) * cameraDirection.magnitude;
-            var actualDistance = hittingSelf ? selfHit.distance : cameraDirection.magnitude;
+            float actualDistance = hittingSelf ? selfHit.distance : cameraDirection.magnitude;
 
             if (thirdPersonCharacterBase != null)
             {
@@ -288,8 +288,8 @@ namespace nickmaltbie.OpenKCC.Character
 
                 if (actualDistance > shadowOnlyDistance && actualDistance < ditherDistance)
                 {
-                    var newOpacity = (actualDistance - shadowOnlyDistance) / (ditherDistance - minCameraDistance);
-                    var lerpPosition = transitionTime > 0 ? deltaTime * 1 / transitionTime : 1;
+                    float newOpacity = (actualDistance - shadowOnlyDistance) / (ditherDistance - minCameraDistance);
+                    float lerpPosition = transitionTime > 0 ? deltaTime * 1 / transitionTime : 1;
                     previousOpacity = Mathf.Lerp(previousOpacity, newOpacity, lerpPosition);
                     // Set opacity of character based on how close the camera is
                     MaterialUtils.RecursiveSetFloatProperty(thirdPersonCharacterBase, "_Opacity", previousOpacity);

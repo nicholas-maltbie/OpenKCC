@@ -73,7 +73,7 @@ namespace PropHunt.Environment
             if (linearVelocity.magnitude > 0)
             {
                 // move object by velocity
-                var deltaPos = Time.fixedDeltaTime * linearVelocity;
+                Vector3 deltaPos = Time.fixedDeltaTime * linearVelocity;
                 if (localTranslation && transform.parent != null)
                 {
                     rigidbody.MovePosition(transform.parent.position + transform.localPosition + deltaPos);

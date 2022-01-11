@@ -112,7 +112,7 @@ namespace nickmaltbie.OpenKCC.UI
         /// </summary>
         public void ClearHistory()
         {
-            var current = screenSequence.Last.Value;
+            string current = screenSequence.Last.Value;
             screenSequence.Clear();
             screenSequence.AddLast(current);
         }
@@ -151,16 +151,16 @@ namespace nickmaltbie.OpenKCC.UI
             // Setup dictionary of screens
             screenLookup = new Dictionary<string, GameObject>();
             // GetComponent<InputSystemUIInputModule>().actionsAsset = inputActions;
-            for (var idx = 0; idx < screenPrefabs.Count; idx++)
+            for (int idx = 0; idx < screenPrefabs.Count; idx++)
             {
-                var screenName = screenPrefabs[idx].name;
+                string screenName = screenPrefabs[idx].name;
                 // instantiate a copy of each screen and set all to disabled except current screen
                 UnityEngine.Debug.Log(screenPrefabs[idx].name);
                 var screen = GameObject.Instantiate(screenPrefabs[idx].gameObject);
                 // Set object parent to this for more organized hierarchy
                 screen.transform.SetParent(transform, worldPositionStays: false);
                 screenLookup[screenName] = screen;
-                var gameScreen = screen.GetComponent<GameScreen>();
+                GameScreen gameScreen = screen.GetComponent<GameScreen>();
                 screen.SetActive(true);
                 if (idx == initialScreen)
                 {
@@ -223,11 +223,11 @@ namespace nickmaltbie.OpenKCC.UI
                 screenSequence.RemoveFirst();
             }
 
-            var currentlyDisplayed = screenLookup[CurrentScreen];
-            var newDisplay = screenLookup[screenName];
+            GameObject currentlyDisplayed = screenLookup[CurrentScreen];
+            GameObject newDisplay = screenLookup[screenName];
 
-            var currentScreen = currentlyDisplayed.GetComponent<GameScreen>();
-            var nextScreen = newDisplay.GetComponent<GameScreen>();
+            GameScreen currentScreen = currentlyDisplayed.GetComponent<GameScreen>();
+            GameScreen nextScreen = newDisplay.GetComponent<GameScreen>();
 
             currentScreen.HideScreen();
             nextScreen.DisplayScreen();
@@ -252,7 +252,7 @@ namespace nickmaltbie.OpenKCC.UI
             // Remove the last element
             UIManager.Instance.screenSequence.RemoveLast();
             // Get the new target sequence
-            var previous = UIManager.Instance.screenSequence.Last.Value;
+            string previous = UIManager.Instance.screenSequence.Last.Value;
             // Cleanup the sequence to re-create opening this screen
             UIManager.Instance.screenSequence.RemoveLast();
             UIManager.RequestNewScreen(sender, previous);

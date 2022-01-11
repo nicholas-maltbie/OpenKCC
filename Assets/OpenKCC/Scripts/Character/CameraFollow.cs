@@ -51,7 +51,7 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             // Set main camera's parent to be this and set it's relative position and rotation to be zero
-            var mainCamera = Camera.main.gameObject;
+            GameObject mainCamera = Camera.main.gameObject;
             mainCamera.transform.rotation = cameraController.cameraTransform.rotation;
             mainCamera.transform.position = cameraController.cameraTransform.position;
 

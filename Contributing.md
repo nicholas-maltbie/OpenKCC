@@ -49,7 +49,7 @@ In order to finish your PR, ensure you code follows the style guidelines of the 
 
 ```
 dotnet tool restore
-dotnet format --fix-style warn -v d .\OpenKCC.csproj --check
+dotnet format --fix-style warn -v d .\OpenKCC.sln --check
 ```
 
 ## 5. Done

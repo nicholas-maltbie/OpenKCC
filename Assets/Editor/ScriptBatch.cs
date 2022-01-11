@@ -16,9 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using System.IO;
-using System.Reflection;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -78,8 +76,8 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
 
         // Get filename.
-        var levels = GetScenes();
-        var appFolder = Path.Combine(BuildDirectory, $"OpenKCC-WebGL-{VersionNumber}/OpenKCC");
+        string[] levels = GetScenes();
+        string appFolder = Path.Combine(BuildDirectory, $"OpenKCC-WebGL-{VersionNumber}/OpenKCC");
 
         // Build player.
         BuildPipeline.BuildPlayer(levels, appFolder, BuildTarget.WebGL, BuildOptions.Development);
@@ -91,10 +89,10 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
 
         // Get filename.
-        var path = Path.Combine(BuildDirectory, $"OpenKCC-MacOS-{VersionNumber}");
-        var levels = GetScenes();
+        string path = Path.Combine(BuildDirectory, $"OpenKCC-MacOS-{VersionNumber}");
+        string[] levels = GetScenes();
 
-        var appFolder = path + $"/{AppName}.app";
+        string appFolder = path + $"/{AppName}.app";
 
         // Build player.
         BuildPipeline.BuildPlayer(levels, appFolder, BuildTarget.StandaloneOSX, BuildOptions.Development);
@@ -106,8 +104,8 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
 
         // Get filename.
-        var path = Path.Combine(BuildDirectory, $"OpenKCC-Linux-{VersionNumber}");
-        var levels = GetScenes();
+        string path = Path.Combine(BuildDirectory, $"OpenKCC-Linux-{VersionNumber}");
+        string[] levels = GetScenes();
 
         // Build player.
         BuildPipeline.BuildPlayer(levels, path + $"/{AppName}.x86_64", BuildTarget.StandaloneLinux64, BuildOptions.Development);
@@ -179,7 +177,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
 
         // Unsupported Version
         Debug.Log("### ScriptBatch:PrepareSonarFiles - Started V2...");
-        System.Type T = System.Type.GetType("UnityEditor.SyncVS,UnityEditor");
+        var T = System.Type.GetType("UnityEditor.SyncVS,UnityEditor");
         System.Reflection.MethodInfo SyncSolution = T.GetMethod("SyncSolution", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
         SyncSolution.Invoke(null, null);
         Debug.Log("### ScriptBatch:PrepareSonarFiles - Ended V2...");

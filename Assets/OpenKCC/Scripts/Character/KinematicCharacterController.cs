@@ -500,12 +500,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public (Vector3, Vector3, float, float) GetParams()
         {
-            var center = transform.TransformPoint(capsuleCollider.center);
-            var radius = capsuleCollider.radius;
-            var height = capsuleCollider.height;
+            Vector3 center = transform.TransformPoint(capsuleCollider.center);
+            float radius = capsuleCollider.radius;
+            float height = capsuleCollider.height;
 
-            var bottom = center + Down * (height / 2 - radius);
-            var top = center + Up * (height / 2 - radius);
+            Vector3 bottom = center + Down * (height / 2 - radius);
+            Vector3 top = center + Up * (height / 2 - radius);
             return (top, bottom, radius, height);
         }
 
@@ -546,13 +546,13 @@ namespace nickmaltbie.OpenKCC.Character
                 return;
             }
 
-            var fixedDeltaTime = Time.fixedDeltaTime;
+            float fixedDeltaTime = Time.fixedDeltaTime;
 
             LinearVelocity = (transform.position - previousPosition) / fixedDeltaTime;
-            var deltaAngle = Quaternion.Angle(transform.rotation, previousRotation);
+            float deltaAngle = Quaternion.Angle(transform.rotation, previousRotation);
 
-            var linearSpeed = LinearVelocity.magnitude;
-            var angularSpeed = deltaAngle / fixedDeltaTime;
+            float linearSpeed = LinearVelocity.magnitude;
+            float angularSpeed = deltaAngle / fixedDeltaTime;
 
             previousPosition = transform.position;
             previousRotation = transform.rotation;
@@ -572,7 +572,7 @@ namespace nickmaltbie.OpenKCC.Character
                 distanceToGround = Mathf.Infinity;
 
                 // Exclude the floor's velocity from the linear speed calculation for checking prone
-                var movingSpeedCalculation = Mathf.Max(
+                float movingSpeedCalculation = Mathf.Max(
                     0,
                     linearSpeed - (movingGroundDisplacement / fixedDeltaTime).magnitude);
 
@@ -632,15 +632,15 @@ namespace nickmaltbie.OpenKCC.Character
                 }
 
                 // Compute player jump if they are attempting to jump
-                var jumped = PlayerJump(fixedDeltaTime);
+                bool jumped = PlayerJump(fixedDeltaTime);
 
-                var movement = RotatedMovement * (isSprinting ? sprintSpeed : walkingSpeed);
+                Vector3 movement = RotatedMovement * (isSprinting ? sprintSpeed : walkingSpeed);
 
                 // If the player is standing on the ground, project their movement onto the ground plane
                 // This allows them to walk up gradual slopes without facing a hit in movement speed
                 if (!Falling)
                 {
-                    var projectedMovement = Vector3.ProjectOnPlane(movement, surfaceNormal).normalized *
+                    Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, surfaceNormal).normalized *
                         movement.magnitude;
                     if (projectedMovement.magnitude + Epsilon >= movement.magnitude)
                     {
@@ -708,7 +708,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns></returns>
         public IEnumerable<RaycastHit> GetHits(Vector3 direction, float distance)
         {
-            (var top, var bottom, var radius, _) = GetParams();
+            (Vector3 top, Vector3 bottom, float radius, _) = GetParams();
             return Physics.CapsuleCastAll(top, bottom, radius, direction, distance, ~0, QueryTriggerInteraction.Ignore)
                 .Where(hit => hit.collider.transform != transform);
         }
@@ -724,8 +724,8 @@ namespace nickmaltbie.OpenKCC.Character
         public bool CastSelf(Vector3 direction, float distance, out RaycastHit hit)
         {
             var closest = new RaycastHit() { distance = Mathf.Infinity };
-            var hitSomething = false;
-            foreach (var objHit in GetHits(direction, distance))
+            bool hitSomething = false;
+            foreach (RaycastHit objHit in GetHits(direction, distance))
             {
                 if (objHit.collider.gameObject.transform != gameObject.transform)
                 {
@@ -748,14 +748,14 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns>The velocity of the ground at the point the player is standong on</returns>
         private Vector3 GetGroundVelocity()
         {
-            var groundVelocity = Vector3.zero;
-            var movingGround = floor == null ? null : floor.GetComponent<IMovingGround>();
+            Vector3 groundVelocity = Vector3.zero;
+            IMovingGround movingGround = floor == null ? null : floor.GetComponent<IMovingGround>();
             if (movingGround != null && !movingGround.AvoidTransferMomentum())
             {
                 // Weight movement of ground by ground movement weight
-                var velocityWeight =
+                float velocityWeight =
                     movingGround.GetMovementWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
-                var transferWeight =
+                float transferWeight =
                     movingGround.GetTransferMomentumWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
                 groundVelocity = movingGround.GetVelocityAtPoint(groundHitPosition, Time.fixedDeltaTime);
                 groundVelocity *= velocityWeight;
@@ -775,7 +775,7 @@ namespace nickmaltbie.OpenKCC.Character
             // Give the player some vertical velocity if they are jumping and grounded
             if (CanJump)
             {
-                var jumpDirection = (
+                Vector3 jumpDirection = (
                     (StandingOnGround ? surfaceNormal : Up) *
                     jumpAngleWeightFactor + Up * (1 - jumpAngleWeightFactor)
                     ).normalized;
@@ -798,9 +798,9 @@ namespace nickmaltbie.OpenKCC.Character
         {
             movingGroundDisplacement = Vector3.zero;
 
-            var moveWithGroundStart = transform.position;
+            Vector3 moveWithGroundStart = transform.position;
             // Check if we were standing on moving ground the previous frame
-            var movingGround = floor == null ? null : floor.GetComponent<IMovingGround>();
+            IMovingGround movingGround = floor == null ? null : floor.GetComponent<IMovingGround>();
             if (movingGround == null || !onGround || distanceToGround > groundedDistance)
             {
                 // We aren't standing on something, don't do anything
@@ -810,14 +810,14 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             // Get the displacement of the floor at the previous position
-            var displacement = movingGround.GetDisplacementAtPoint(groundHitPosition, Time.fixedDeltaTime);
+            Vector3 displacement = movingGround.GetDisplacementAtPoint(groundHitPosition, Time.fixedDeltaTime);
             // Check if we were standing on moving ground the previous frame
             if (feetFollowObj.transform.parent != transform)
             {
                 displacement = (feetFollowObj.transform.position + footOffset) - transform.position;
             }
 
-            var weight = movingGround.GetMovementWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
+            float weight = movingGround.GetMovementWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
 
             // Move player by floor displacement this frame
             transform.position += displacement * weight;
@@ -851,7 +851,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void SnapPlayerDown(Vector3 dir, float dist)
         {
-            var didHit = CastSelf(dir, dist, out var hit);
+            bool didHit = CastSelf(dir, dist, out RaycastHit hit);
 
             if (didHit && hit.distance > Epsilon)
             {
@@ -867,7 +867,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns>Total distance player was pushed.</returns>
         public Vector3 PushOutOverlapping()
         {
-            var fixedDeltaTime = Time.fixedDeltaTime;
+            float fixedDeltaTime = Time.fixedDeltaTime;
             return PushOutOverlapping(maxPushSpeed * fixedDeltaTime);
         }
 
@@ -878,16 +878,16 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns>Total distance player was pushed.</returns>
         public Vector3 PushOutOverlapping(float maxDistance)
         {
-            var pushed = Vector3.zero;
-            foreach (var overlap in GetOverlapping())
+            Vector3 pushed = Vector3.zero;
+            foreach (Collider overlap in GetOverlapping())
             {
                 Physics.ComputePenetration(
                     capsuleCollider, transform.position, transform.rotation,
                     overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
-                    out var direction, out var distance
+                    out Vector3 direction, out float distance
                 );
-                var distPush = Mathf.Min(maxDistance, distance + Epsilon);
-                var push = direction.normalized * distPush;
+                float distPush = Mathf.Min(maxDistance, distance + Epsilon);
+                Vector3 push = direction.normalized * distPush;
                 transform.position += push;
                 pushed += push;
             }
@@ -897,7 +897,7 @@ namespace nickmaltbie.OpenKCC.Character
 
         public IEnumerable<Collider> GetOverlapping()
         {
-            (var top, var bottom, var radius, var height) = GetParams();
+            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams();
             return Physics.OverlapCapsule(top, bottom, radius, ~0, QueryTriggerInteraction.Ignore).Where(c => c.transform != transform);
         }
 
@@ -906,7 +906,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void CheckGrounded()
         {
-            var didHit = CastSelf(Down, groundCheckDistance, out var hit);
+            bool didHit = CastSelf(Down, groundCheckDistance, out RaycastHit hit);
             (_, _, _, _) = GetParams();
 
             angle = Vector3.Angle(hit.normal, Up);
@@ -932,12 +932,12 @@ namespace nickmaltbie.OpenKCC.Character
         public bool AttemptSnapUp(float distanceToSnap, RaycastHit hit, Vector3 momentum)
         {
             // If we were to snap the player up and they moved forward, would they hit something?
-            var currentPosition = transform.position;
-            var snapUp = distanceToSnap * Up;
+            Vector3 currentPosition = transform.position;
+            Vector3 snapUp = distanceToSnap * Up;
             transform.position += snapUp;
 
-            var directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
-            var didSnapHit = CastSelf(directionAfterSnap.normalized, Mathf.Max(stepUpDepth, momentum.magnitude), out var snapHit);
+            Vector3 directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
+            bool didSnapHit = CastSelf(directionAfterSnap.normalized, Mathf.Max(stepUpDepth, momentum.magnitude), out RaycastHit snapHit);
 
             // If they can move without instantly hitting something, then snap them up
             if ((!Falling || elapsedFalling <= snapBufferTime) && snapHit.distance > Epsilon && (!didSnapHit || snapHit.distance > stepUpDepth))
@@ -958,22 +958,22 @@ namespace nickmaltbie.OpenKCC.Character
         public void MovePlayer(Vector3 movement)
         {
             // Save current momentum
-            var momentum = movement;
+            Vector3 momentum = movement;
 
-            var selfCollider = GetComponent<Collider>();
+            Collider selfCollider = GetComponent<Collider>();
             // current number of bounces
-            var bounces = 0;
+            int bounces = 0;
 
             // Character ability to push objects
-            var push = GetComponent<CharacterPush>();
+            CharacterPush push = GetComponent<CharacterPush>();
 
             // Continue computing while there is momentum and bounces remaining
             while (momentum.magnitude > Epsilon && bounces <= maxBounces)
             {
                 // Do a cast of the collider to see if an object is hit during this
                 // movement bounce
-                var distance = momentum.magnitude;
-                if (!CastSelf(momentum.normalized, distance, out var hit))
+                float distance = momentum.magnitude;
+                if (!CastSelf(momentum.normalized, distance, out RaycastHit hit))
                 {
                     // If there is no hit, move to desired position
                     transform.position += momentum;
@@ -995,7 +995,7 @@ namespace nickmaltbie.OpenKCC.Character
                     momentum *= pushDecay;
                 }
 
-                var fraction = hit.distance / distance;
+                float fraction = hit.distance / distance;
                 // Set the fraction of remaining movement (minus some small value)
                 transform.position += momentum * (fraction);
                 // Push slightly along normal to stop from getting caught in walls
@@ -1004,11 +1004,11 @@ namespace nickmaltbie.OpenKCC.Character
                 momentum *= (1 - fraction);
 
                 // Plane to project rest of movement onto
-                var planeNormal = hit.normal;
+                Vector3 planeNormal = hit.normal;
 
                 // Snap character vertically up if they hit something
                 //  close enough to their feet
-                var distanceToFeet = hit.point.y - (transform.position - selfCollider.bounds.extents).y;
+                float distanceToFeet = hit.point.y - (transform.position - selfCollider.bounds.extents).y;
                 if (hit.distance > 0 && !attemptingJump && distanceToFeet < verticalSnapUp && distanceToFeet > 0)
                 {
                     // Sometimes snapping up the exact distance leads to odd behaviour around steps and walls.
@@ -1022,16 +1022,16 @@ namespace nickmaltbie.OpenKCC.Character
                 }
                 // Only apply angular change if hitting something
                 // Get angle between surface normal and remaining movement
-                var angleBetween = Vector3.Angle(hit.normal, momentum) - 90.0f;
+                float angleBetween = Vector3.Angle(hit.normal, momentum) - 90.0f;
                 // Normalize angle between to be between 0 and 1
                 // 0 means no angle, 1 means 90 degree angle
                 angleBetween = Mathf.Min(MaxAngleShoveRadians, Mathf.Abs(angleBetween));
-                var normalizedAngle = angleBetween / MaxAngleShoveRadians;
+                float normalizedAngle = angleBetween / MaxAngleShoveRadians;
                 // Reduce the momentum by the remaining movement that ocurred
                 momentum *= Mathf.Pow(1 - normalizedAngle, anglePower) * 0.9f + 0.1f;
                 // Rotate the remaining remaining movement to be projected along the plane 
                 // of the surface hit (emulate pushing against the object)
-                var projectedMomentum = Vector3.ProjectOnPlane(momentum, planeNormal).normalized * momentum.magnitude;
+                Vector3 projectedMomentum = Vector3.ProjectOnPlane(momentum, planeNormal).normalized * momentum.magnitude;
                 if (projectedMomentum.magnitude + Epsilon < momentum.magnitude)
                 {
                     momentum = Vector3.ProjectOnPlane(momentum, Up).normalized * momentum.magnitude;
@@ -1082,7 +1082,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void OnMove(InputAction.CallbackContext context)
         {
-            var movement = context.ReadValue<Vector2>();
+            Vector2 movement = context.ReadValue<Vector2>();
             inputMovement = new Vector3(movement.x, 0, movement.y);
             inputMovement = inputMovement.magnitude > 1 ? inputMovement / inputMovement.magnitude : inputMovement;
         }

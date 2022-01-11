@@ -25,7 +25,7 @@ namespace nickmaltbie.OpenKCC.Utils
     {
         public static void RecursiveSetShadowCasingMode(GameObject original, ShadowCastingMode shadowCastingMode)
         {
-            foreach (var renderer in original.GetComponentsInChildren<Renderer>())
+            foreach (Renderer renderer in original.GetComponentsInChildren<Renderer>())
             {
                 renderer.shadowCastingMode = shadowCastingMode;
             }
@@ -33,9 +33,9 @@ namespace nickmaltbie.OpenKCC.Utils
 
         public static void RecursiveSetFloatProperty(GameObject original, string property, float value)
         {
-            foreach (var renderer in original.GetComponentsInChildren<Renderer>())
+            foreach (Renderer renderer in original.GetComponentsInChildren<Renderer>())
             {
-                foreach (var mat in renderer.materials)
+                foreach (Material mat in renderer.materials)
                 {
                     mat.SetFloat(property, value);
                 }
@@ -44,9 +44,9 @@ namespace nickmaltbie.OpenKCC.Utils
 
         public static void RecursiveSetColorProperty(GameObject original, string property, Color value)
         {
-            foreach (var renderer in original.GetComponentsInChildren<Renderer>())
+            foreach (Renderer renderer in original.GetComponentsInChildren<Renderer>())
             {
-                foreach (var mat in renderer.materials)
+                foreach (Material mat in renderer.materials)
                 {
                     mat.SetColor(property, value);
                 }

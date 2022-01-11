@@ -55,11 +55,11 @@ namespace nickmaltbie.OpenKCC.UI.Text
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            var linkIndex = GetLinkIndex();
+            int linkIndex = GetLinkIndex();
             if (linkIndex != -1) // Was pointer intersecting a link?
             {
                 pressedLinkIndex = linkIndex;
-                if (usedLinks.TryGetValue(linkIndex, out var isUsed) && isUsed) // Has the link been already used?
+                if (usedLinks.TryGetValue(linkIndex, out bool isUsed) && isUsed) // Has the link been already used?
                 {
                     // Have we hovered before we pressed? Touch input will first press, then hover
                     if (pressedLinkIndex != hoveredLinkIndex)
@@ -94,10 +94,10 @@ namespace nickmaltbie.OpenKCC.UI.Text
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            var linkIndex = GetLinkIndex();
+            int linkIndex = GetLinkIndex();
             if (linkIndex != -1 && linkIndex == pressedLinkIndex) // Was pointer intersecting the same link as OnPointerDown?
             {
-                var linkInfo = textMeshPro.textInfo.linkInfo[linkIndex];
+                TMP_LinkInfo linkInfo = textMeshPro.textInfo.linkInfo[linkIndex];
                 SetLinkColor(linkIndex, usedHoveredColor);
                 startColors.ForEach(c => c[0] = c[1] = c[2] = c[3] = usedColor);
                 usedLinks[linkIndex] = true;
@@ -115,20 +115,20 @@ namespace nickmaltbie.OpenKCC.UI.Text
 
         private List<Color32[]> SetLinkColor(int linkIndex, Color32 color)
         {
-            var linkInfo = textMeshPro.textInfo.linkInfo[linkIndex];
+            TMP_LinkInfo linkInfo = textMeshPro.textInfo.linkInfo[linkIndex];
 
             var oldVertexColors = new List<Color32[]>(); // Store the old character colors
-            var underlineIndex = -1;
-            for (var i = 0; i < linkInfo.linkTextLength; i++)
+            int underlineIndex = -1;
+            for (int i = 0; i < linkInfo.linkTextLength; i++)
             {
                 // For each character in the link string
-                var characterIndex = linkInfo.linkTextfirstCharacterIndex + i; // The current character index
-                var charInfo = textMeshPro.textInfo.characterInfo[characterIndex];
-                var meshIndex = charInfo.materialReferenceIndex; // Get the index of the material/subtext object used by this character.
-                var vertexIndex = charInfo.vertexIndex; // Get the index of the first vertex of this character.
+                int characterIndex = linkInfo.linkTextfirstCharacterIndex + i; // The current character index
+                TMP_CharacterInfo charInfo = textMeshPro.textInfo.characterInfo[characterIndex];
+                int meshIndex = charInfo.materialReferenceIndex; // Get the index of the material/subtext object used by this character.
+                int vertexIndex = charInfo.vertexIndex; // Get the index of the first vertex of this character.
 
                 // This array contains colors for all vertices of the mesh (might be multiple chars)
-                var vertexColors = textMeshPro.textInfo.meshInfo[meshIndex].colors32;
+                Color32[] vertexColors = textMeshPro.textInfo.meshInfo[meshIndex].colors32;
                 oldVertexColors.Add(new Color32[] { vertexColors[vertexIndex + 0], vertexColors[vertexIndex + 1], vertexColors[vertexIndex + 2], vertexColors[vertexIndex + 3] });
                 if (charInfo.isVisible)
                 {
@@ -141,7 +141,7 @@ namespace nickmaltbie.OpenKCC.UI.Text
                 if (charInfo.isVisible && charInfo.underlineVertexIndex > 0 && charInfo.underlineVertexIndex != underlineIndex && charInfo.underlineVertexIndex < vertexColors.Length)
                 {
                     underlineIndex = charInfo.underlineVertexIndex;
-                    for (var j = 0; j < 12; j++) // Underline seems to be always 3 quads == 12 vertices
+                    for (int j = 0; j < 12; j++) // Underline seems to be always 3 quads == 12 vertices
                     {
                         vertexColors[underlineIndex + j] = color;
                     }

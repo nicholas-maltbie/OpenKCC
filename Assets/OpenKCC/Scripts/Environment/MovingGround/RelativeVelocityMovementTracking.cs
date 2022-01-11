@@ -45,10 +45,10 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         /// <inheritdoc/>
         public override float GetMovementWeight(Vector3 point, Vector3 playerVelocity, float deltaTime)
         {
-            var objSpeed = GetVelocityAtPoint(point, deltaTime).magnitude;
-            var playerSpeed = playerVelocity.magnitude;
+            float objSpeed = GetVelocityAtPoint(point, deltaTime).magnitude;
+            float playerSpeed = playerVelocity.magnitude;
 
-            var relativeVelocity = Mathf.Abs(objSpeed - playerSpeed);
+            float relativeVelocity = Mathf.Abs(objSpeed - playerSpeed);
 
             if (relativeVelocity <= minimumVelocityThreshold)
             {

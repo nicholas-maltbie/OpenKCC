@@ -35,10 +35,10 @@ namespace nickmaltbie.OpenKCC.UI
             {
                 action.GetBindingDisplayString(
                     0,
-                    out var deviceLayoutName,
-                    out var controlPath,
+                    out string deviceLayoutName,
+                    out string controlPath,
                         InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
-                var name = InputControlPath.ToHumanReadableString(
+                string name = InputControlPath.ToHumanReadableString(
                     action.bindings[0].effectivePath,
                     InputControlPath.HumanReadableStringOptions.OmitDevice);
 
@@ -48,11 +48,11 @@ namespace nickmaltbie.OpenKCC.UI
             {
                 action.GetBindingDisplayString(
                     1,
-                    out var deviceLayoutName,
-                    out var controlPath,
+                    out string deviceLayoutName,
+                    out string controlPath,
                         InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
 
-                var names = string.Join("|", Enumerable.Range(1, 4)
+                string names = string.Join("|", Enumerable.Range(1, 4)
                     .Select(i => InputControlPath.ToHumanReadableString(
                         action.bindings[i].effectivePath,
                         InputControlPath.HumanReadableStringOptions.OmitDevice)));
@@ -71,7 +71,7 @@ namespace nickmaltbie.OpenKCC.UI
             var lines = new List<string>();
             lines.Add("Controls (rebind in settings)");
 
-            foreach (var inputAction in inputActions)
+            foreach (InputActionReference inputAction in inputActions)
             {
                 lines.Add($"{inputAction.name}: {GetKeyReadableName(inputAction.action)}");
             }

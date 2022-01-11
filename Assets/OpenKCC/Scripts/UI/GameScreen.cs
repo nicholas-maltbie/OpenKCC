@@ -34,7 +34,7 @@ namespace nickmaltbie.OpenKCC.UI
         /// <param name="uIInputModule"></param>
         public void SetupScreen(InputSystemUIInputModule uIInputModule)
         {
-            var playerInput = GetComponent<PlayerInput>();
+            PlayerInput playerInput = GetComponent<PlayerInput>();
             if (playerInput != null)
             {
                 playerInput.actions = uIInputModule.actionsAsset;
@@ -46,8 +46,8 @@ namespace nickmaltbie.OpenKCC.UI
         /// </summary>
         public void DisplayScreen()
         {
-            var playerInput = GetComponent<PlayerInput>();
-            var canvasGroup = GetComponent<CanvasGroup>();
+            PlayerInput playerInput = GetComponent<PlayerInput>();
+            CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
             if (canvasGroup != null)
             {
                 canvasGroup.alpha = 1.0f;
@@ -60,7 +60,7 @@ namespace nickmaltbie.OpenKCC.UI
                 playerInput.ActivateInput();
             }
 
-            foreach (var screenComponent in gameObject.GetComponentsInChildren<IScreenComponent>())
+            foreach (IScreenComponent screenComponent in gameObject.GetComponentsInChildren<IScreenComponent>())
             {
                 screenComponent.OnScreenLoaded();
             }
@@ -71,8 +71,8 @@ namespace nickmaltbie.OpenKCC.UI
         /// </summary>
         public void HideScreen()
         {
-            var playerInput = GetComponent<PlayerInput>();
-            var canvasGroup = GetComponent<CanvasGroup>();
+            PlayerInput playerInput = GetComponent<PlayerInput>();
+            CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
             if (canvasGroup != null)
             {
                 canvasGroup.alpha = 0.0f;
@@ -85,7 +85,7 @@ namespace nickmaltbie.OpenKCC.UI
                 playerInput.DeactivateInput();
             }
 
-            foreach (var screenComponent in gameObject.GetComponentsInChildren<IScreenComponent>())
+            foreach (IScreenComponent screenComponent in gameObject.GetComponentsInChildren<IScreenComponent>())
             {
                 screenComponent.OnScreenUnloaded();
             }

@@ -56,10 +56,10 @@ namespace nickmaltbie.OpenKCC.Environment
                 return;
             }
 
-            var deltaTime = Time.fixedDeltaTime;
-            var direction = (CurrentTarget.position - transform.position).normalized;
-            var displacement = direction * deltaTime * linearSpeed;
-            var distanceToTarget = Vector3.Distance(transform.position, CurrentTarget.position);
+            float deltaTime = Time.fixedDeltaTime;
+            Vector3 direction = (CurrentTarget.position - transform.position).normalized;
+            Vector3 displacement = direction * deltaTime * linearSpeed;
+            float distanceToTarget = Vector3.Distance(transform.position, CurrentTarget.position);
 
             if (direction == Vector3.zero || distanceToTarget < displacement.magnitude)
             {
