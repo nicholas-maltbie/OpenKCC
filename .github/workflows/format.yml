@@ -12,6 +12,7 @@ jobs:
   check-format:
     # The type of runner that the job will run on
     runs-on: Ubuntu-20.04
+    strategy:
       matrix:
         unityVersion:
           - 2021.1.19f1
