@@ -56,7 +56,7 @@ jobs:
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-          buildMethod: ScriptBatch.SyncSolution
+          buildMethod: ScriptBatch.TestBuild_WebGL
 
       # Lists only the committed files in order to evaluate only those.
       - id: changed_files
