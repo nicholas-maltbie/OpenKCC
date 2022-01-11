@@ -1,4 +1,22 @@
-﻿using System;
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+using System;
 using System.IO;
 using System.Reflection;
 using UnityEditor;
@@ -16,7 +34,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
 
     public static string AppName => $"{Application.productName}";
 
-    public int callbackOrder { get { return 0; } }
+    public int callbackOrder => 0;
 
     public static string[] GetScenes()
     {
@@ -60,8 +78,8 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
 
         // Get filename.
-        string[] levels = GetScenes();
-        string appFolder = Path.Combine(BuildDirectory, $"OpenKCC-WebGL-{VersionNumber}/OpenKCC");
+        var levels = GetScenes();
+        var appFolder = Path.Combine(BuildDirectory, $"OpenKCC-WebGL-{VersionNumber}/OpenKCC");
 
         // Build player.
         BuildPipeline.BuildPlayer(levels, appFolder, BuildTarget.WebGL, BuildOptions.Development);
@@ -73,10 +91,10 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
 
         // Get filename.
-        string path = Path.Combine(BuildDirectory, $"OpenKCC-MacOS-{VersionNumber}");
-        string[] levels = GetScenes();
+        var path = Path.Combine(BuildDirectory, $"OpenKCC-MacOS-{VersionNumber}");
+        var levels = GetScenes();
 
-        string appFolder = path + $"/{AppName}.app";
+        var appFolder = path + $"/{AppName}.app";
 
         // Build player.
         BuildPipeline.BuildPlayer(levels, appFolder, BuildTarget.StandaloneOSX, BuildOptions.Development);
@@ -88,8 +106,8 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
 
         // Get filename.
-        string path = Path.Combine(BuildDirectory, $"OpenKCC-Linux-{VersionNumber}");
-        string[] levels = GetScenes();
+        var path = Path.Combine(BuildDirectory, $"OpenKCC-Linux-{VersionNumber}");
+        var levels = GetScenes();
 
         // Build player.
         BuildPipeline.BuildPlayer(levels, path + $"/{AppName}.x86_64", BuildTarget.StandaloneLinux64, BuildOptions.Development);
@@ -100,7 +118,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
 
-        BuildPlayerOptions options = new BuildPlayerOptions
+        var options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
             locationPathName = Path.Combine(BuildDirectory, $"OpenKCC-Win64-{VersionNumber}/{AppName}.exe"),
@@ -119,7 +137,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
         PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
         PlayerSettings.WebGL.decompressionFallback = true;
-        BuildPlayerOptions options = new BuildPlayerOptions
+        var options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
             locationPathName = Path.Combine(BuildDirectory, $"OpenKCC-WebGL"),
@@ -139,7 +157,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
 
-        BuildPlayerOptions options = new BuildPlayerOptions
+        var options = new BuildPlayerOptions
         {
             scenes = GetScenes(),
             locationPathName = Path.Combine(BuildDirectory, $"OpenKCC-Test-Win64-{VersionNumber}/{AppName}.exe"),

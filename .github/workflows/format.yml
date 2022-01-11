@@ -26,6 +26,15 @@ jobs:
         with:
           dotnet-version: 3.1.301
 
+      - run: dotnet tool restore # Restore dotnet tools. This handles cache implicitly.
+
+      # Lists only the committed files in order to evaluate only those.
+      - id: changed_files
+        uses: futuratrepadeira/changed-files@v3.2.1
+        with:
+          repo-token: ${{ github.token }}
+          pattern: '^.*\.(cs|CS)$'
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
@@ -52,19 +61,11 @@ jobs:
       - name: Pull lfs data, if not cached
         run: git lfs pull
 
-      - uses: game-ci/unity-test-runner@v2
+      - uses: game-ci/unity-builder@v2.0-alpha-13
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-          buildMethod: ScriptBatch.TestBuild_WebGL
-
-      # Lists only the committed files in order to evaluate only those.
-      - id: changed_files
-        uses: futuratrepadeira/changed-files@v3.2.1
-        with:
-          repo-token: ${{ github.token }}
-          pattern: '^.*\.(cs|CS)$'
-      - run: dotnet tool restore # Restore dotnet tools. This handles cache implicitly.
+          buildMethod: ScriptBatch.SyncSolution
 
       - run: ls
 
@@ -72,6 +73,6 @@ jobs:
 
       - run: find . -type f -name \*.sln
 
-      # - name: Format Csharp files
-      #   if: steps.changed_files.outputs.files_created != '' || steps.changed_files.outputs.files_updated != ''
-      #   run: dotnet format --fix-style warn --verbosity detailed OpenKCC.csproj --include ${{ steps.changed_files.outputs.files_created }} ${{ steps.changed_files.outputs.files_updated }} --exclude Library --check # Call format but just do a check to see if everything is in order.
+      - name: Format Csharp files
+        if: steps.changed_files.outputs.files_created != '' || steps.changed_files.outputs.files_updated != ''
+        run: dotnet format --fix-style warn --verbosity detailed OpenKCC.csproj --include ${{ steps.changed_files.outputs.files_created }} ${{ steps.changed_files.outputs.files_updated }} --exclude Library --check # Call format but just do a check to see if everything is in order.

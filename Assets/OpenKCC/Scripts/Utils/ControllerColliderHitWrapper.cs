@@ -15,7 +15,6 @@
 // CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-//
 
 using UnityEngine;
 
@@ -88,7 +87,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Transform transform, Vector3 point, Vector3 normal, Vector3 moveDirection,
             float moveLength)
         {
-            this.collider = hit;
+            collider = hit;
             this.rigidbody = rigidbody;
             this.gameObject = gameObject;
             this.transform = transform;
