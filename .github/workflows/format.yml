@@ -27,4 +27,4 @@ jobs:
       - run: dotnet tool restore # Restore dotnet tools. This handles cache implicitly.
       - name: Format Csharp files
         if: steps.changed_files.outputs.files_created != '' || steps.changed_files.outputs.files_updated != ''
-        run: dotnet format . --folder --include ${{ steps.changed_files.outputs.files_created }} ${{ steps.changed_files.outputs.files_updated }} --exclude Library --check # Call format but just do a check to see if everything is in order.
+        run: dotnet format --fix-style warn --verbosity detailed OpenKCC.csproj --include ${{ steps.changed_files.outputs.files_created }} ${{ steps.changed_files.outputs.files_updated }} --exclude Library --check # Call format but just do a check to see if everything is in order.

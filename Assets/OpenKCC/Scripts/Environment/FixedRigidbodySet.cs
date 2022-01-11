@@ -1,4 +1,23 @@
-﻿using UnityEngine;
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+
+using UnityEngine;
 
 namespace PropHunt.Environment
 {
@@ -46,8 +65,8 @@ namespace PropHunt.Environment
 
         public void Start()
         {
-            this.rigidbody = GetComponent<Rigidbody>();
-            this.rigidbody.isKinematic = true;
+            rigidbody = GetComponent<Rigidbody>();
+            rigidbody.isKinematic = true;
         }
 
         public void FixedUpdate()
@@ -55,28 +74,28 @@ namespace PropHunt.Environment
             if (linearVelocity.magnitude > 0)
             {
                 // move object by velocity
-                Vector3 deltaPos = Time.fixedDeltaTime * linearVelocity;
+                var deltaPos = Time.fixedDeltaTime * linearVelocity;
                 if (localTranslation && transform.parent != null)
                 {
-                    this.rigidbody.MovePosition(transform.parent.position + transform.localPosition + deltaPos);
+                    rigidbody.MovePosition(transform.parent.position + transform.localPosition + deltaPos);
                 }
                 else
                 {
-                    this.rigidbody.MovePosition(transform.position + deltaPos);
+                    rigidbody.MovePosition(transform.position + deltaPos);
                 }
             }
 
             if (angularVelocity.magnitude > 0)
             {
                 // rotate object by rotation
-                Quaternion deltaRotation = Quaternion.Euler(Time.fixedDeltaTime * angularVelocity);
+                var deltaRotation = Quaternion.Euler(Time.fixedDeltaTime * angularVelocity);
                 if (localRotation && transform.parent != null)
                 {
-                    this.rigidbody.MoveRotation(transform.parent.rotation * transform.localRotation * deltaRotation);
+                    rigidbody.MoveRotation(transform.parent.rotation * transform.localRotation * deltaRotation);
                 }
                 else
                 {
-                    this.rigidbody.MoveRotation(transform.rotation * deltaRotation);
+                    rigidbody.MoveRotation(transform.rotation * deltaRotation);
                 }
             }
         }

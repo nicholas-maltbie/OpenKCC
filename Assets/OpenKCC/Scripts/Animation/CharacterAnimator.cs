@@ -1,4 +1,23 @@
-﻿using nickmaltbie.OpenKCC.Character;
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+
+using nickmaltbie.OpenKCC.Character;
 
 using UnityEngine;
 
@@ -48,21 +67,11 @@ namespace nickmaltbie.OpenKCC.Animation
         public CameraController cameraController;
 
         /// <summary>
-        /// Character controller to move character
-        /// </summary>
-        private CharacterController characterController;
-
-        /// <summary>
         /// Animator for controlling character
         /// </summary>
         public Animator animator;
 
         private CharacterAnimatorState animState = new CharacterAnimatorState();
-
-        public void Start()
-        {
-            this.characterController = this.GetComponent<CharacterController>();
-        }
 
         public void Update()
         {
@@ -71,17 +80,17 @@ namespace nickmaltbie.OpenKCC.Animation
                 return;
             }
 
-            bool jumping = kcc.CanJump && kcc.AttemptingJump;
-            bool falling = kcc.IsProne || kcc.FallingTime >= fallingThreshold;
-            bool jumpingOrFalling = falling || jumping;
-            bool moving = !kcc.IsProne && !jumpingOrFalling && kcc.InputMovement.magnitude > this.movementDeadZone;
+            var jumping = kcc.CanJump && kcc.AttemptingJump;
+            var falling = kcc.IsProne || kcc.FallingTime >= fallingThreshold;
+            var jumpingOrFalling = falling || jumping;
+            var moving = !kcc.IsProne && !jumpingOrFalling && kcc.InputMovement.magnitude > movementDeadZone;
 
             animState.move = new Vector2(kcc.InputMovement.x, kcc.InputMovement.z);
             animState.moving = moving;
             animState.rotation = cameraController.frameRotation > 0 ? 1 : -1;
             animState.turning = !moving &&
                 !jumpingOrFalling &&
-                Mathf.Abs(cameraController.frameRotation) > this.turningDeadZone;
+                Mathf.Abs(cameraController.frameRotation) > turningDeadZone;
             animState.jumping = jumping;
             animState.falling = falling;
             animState.longFalling = kcc.FallingTime >= longFallingThreshold;
@@ -99,5 +108,4 @@ namespace nickmaltbie.OpenKCC.Animation
             animator.SetBool("Long Falling", animState.longFalling);
         }
     }
-
 }

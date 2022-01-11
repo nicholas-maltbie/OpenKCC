@@ -1,4 +1,23 @@
-﻿using System;
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +56,6 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// Windowed states 
         /// </summary>
         public static readonly string[] windowedDropdownText = { fullScreenModeName, windowedModeName, borderlessWindowModeName };
-
 
     }
 
@@ -134,13 +152,14 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// <returns>Index of fullscreen mode in the windowed dropdown selector</returns>
         public static int GetFullScreenModeDropdownIndex(FullScreenMode mode)
         {
-            for (int i = 0; i < ScreenLoading.windowedDropdownText.Length; i++)
+            for (var i = 0; i < ScreenLoading.windowedDropdownText.Length; i++)
             {
                 if (GetFullScreenMode(ScreenLoading.windowedDropdownText[i]) == mode)
                 {
                     return i;
                 }
             }
+
             return 0;
         }
 
@@ -227,7 +246,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// <returns>Filters duplicates with the same width and height</returns>
         public static Resolution[] FilterResolutions(Resolution[] resolutions)
         {
-            HashSet<Resolution> resolutionSet = new HashSet<Resolution>();
+            var resolutionSet = new HashSet<Resolution>();
             resolutions.ToList().ForEach(resolution =>
                 resolutionSet.Add(new Resolution
                 {
@@ -243,17 +262,17 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// </summary>
         private void RefreshResolutionDropdown()
         {
-            this.resolutions = Screen.resolutions.OrderBy(i => new Tuple<int, int>(-i.width, -i.height)).ToArray();
+            resolutions = Screen.resolutions.OrderBy(i => new Tuple<int, int>(-i.width, -i.height)).ToArray();
             // Default resolutions if none are provided
-            this.resolutions = this.resolutions.Length == 0 ? new Resolution[] {
+            resolutions = resolutions.Length == 0 ? new Resolution[] {
                 new Resolution { width = 1920, height = 1080, refreshRate = 60 },
                 new Resolution { width = 1280, height = 720, refreshRate = 60 }
-            } : this.resolutions;
-            this.resolutions = FilterResolutions(this.resolutions);
-            List<string> options = new List<string>();
-            for (int i = 0; i < resolutions.Length; i++)
+            } : resolutions;
+            resolutions = FilterResolutions(resolutions);
+            var options = new List<string>();
+            for (var i = 0; i < resolutions.Length; i++)
             {
-                string option = resolutions[i].width + " x " + resolutions[i].height;
+                var option = resolutions[i].width + " x " + resolutions[i].height;
                 options.Add(option);
                 // Set selected resolution to current (or element 0 if not specificed)
                 if (i == 0 || Mathf.Approximately(resolutions[i].width, currentResolution.width)
@@ -291,7 +310,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             confirmPanel.alpha = 1.0f;
 
             // Wait for the user to answer (either by button or by timeout)
-            bool answered = false;
+            var answered = false;
             // Add listeners to yes and no buttons on confirm dialog
             confirmDialogYes.onClick.AddListener(() =>
             {
@@ -307,7 +326,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             settingsMenuController.allowInputChanges = false;
 
             // Wait for timeout... or exit early if the user has answered the question
-            for (int i = timeout; i >= 0 && !answered; i--)
+            for (var i = timeout; i >= 0 && !answered; i--)
             {
                 // Update the shown value
                 confirmDialogText.text = i.ToString();
@@ -389,7 +408,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void SetResolution(int resolutionIndex)
         {
-            IEnumerator confirm = OpenConfirmChangesDialog();
+            var confirm = OpenConfirmChangesDialog();
 
             currentResolution = resolutions[resolutionIndex];
             UpdateDisplayInfo();
@@ -398,7 +417,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void SetFullScreen(int fullScreenIndex)
         {
-            IEnumerator confirm = OpenConfirmChangesDialog();
+            var confirm = OpenConfirmChangesDialog();
 
             currentFullScreen = GetFullScreenMode(windowedDropdown.options[windowedDropdown.value].text.Trim());
             UpdateDisplayInfo();
@@ -407,9 +426,9 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void SetMonitor(int targetMonitor)
         {
-            IEnumerator confirm = OpenConfirmChangesDialog();
+            var confirm = OpenConfirmChangesDialog();
 
-            this.currentDisplay = targetMonitor;
+            currentDisplay = targetMonitor;
             UpdateDisplayInfo();
 
             // Update the dropdowns for resolution based on new screen

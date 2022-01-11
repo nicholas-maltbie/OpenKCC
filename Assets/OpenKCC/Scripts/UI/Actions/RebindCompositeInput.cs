@@ -1,4 +1,23 @@
-﻿using UnityEngine;
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -72,9 +91,9 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         {
             // Load the default mapping saved to the file
             // Start bindings at 1 as 0 is the composite start and 1 represents the first binding index
-            for (int i = 1; i <= rebindingGroups.Length; i++)
+            for (var i = 1; i <= rebindingGroups.Length; i++)
             {
-                string inputMapping = PlayerPrefs.GetString(InputMappingKey(i), string.Empty);
+                var inputMapping = PlayerPrefs.GetString(InputMappingKey(i), string.Empty);
                 if (!string.IsNullOrEmpty(inputMapping))
                 {
                     inputAction.action.ApplyBindingOverride(i, inputMapping);
@@ -84,9 +103,9 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void Start()
         {
-            for (int i = 0; i < rebindingGroups.Length; i++)
+            for (var i = 0; i < rebindingGroups.Length; i++)
             {
-                int temp = i;
+                var temp = i;
                 rebindingGroups[i].startRebinding.onClick.AddListener(() => StartRebinding(temp));
                 rebindingGroups[i].bindingDisplayNameText.text = GetKeyReadableName(i + 1);
             }
@@ -121,7 +140,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// </summary>
         public void RebindCancel(int index)
         {
-            int bindingIndex = index + 1;
+            var bindingIndex = index + 1;
 
             rebindingGroups[index].bindingDisplayNameText.text = GetKeyReadableName(bindingIndex);
             rebindingOperation.Dispose();
@@ -133,19 +152,21 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             inputAction.action.actionMap.Enable();
         }
 
-
         /// <summary>
         /// Finish the rebinding process for a given component of this composite axis.
         /// </summary>
         /// <param name="index">Index of binding (starting at 0)</param>
         public void RebindComplete(int index)
         {
-            int bindingIndex = index + 1;
-            string overridePath = inputAction.action.bindings[bindingIndex].overridePath;
-            foreach (PlayerInput input in GameObject.FindObjectsOfType<PlayerInput>())
+            var bindingIndex = index + 1;
+            var overridePath = inputAction.action.bindings[bindingIndex].overridePath;
+            foreach (var input in GameObject.FindObjectsOfType<PlayerInput>())
             {
-                InputAction action = input.actions.FindAction(inputAction.name);
-                if (action != null) action.ApplyBindingOverride(bindingIndex, overridePath);
+                var action = input.actions.FindAction(inputAction.name);
+                if (action != null)
+                {
+                    action.ApplyBindingOverride(bindingIndex, overridePath);
+                }
             }
 
             rebindingGroups[index].bindingDisplayNameText.text = GetKeyReadableName(bindingIndex);
@@ -163,7 +184,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         public void ResetBinding()
         {
             inputAction.action.RemoveAllBindingOverrides();
-            for (int bindingIndex = 1; bindingIndex <= rebindingGroups.Length; bindingIndex++)
+            for (var bindingIndex = 1; bindingIndex <= rebindingGroups.Length; bindingIndex++)
             {
                 PlayerPrefs.DeleteKey(InputMappingKey(bindingIndex));
             }
@@ -171,9 +192,9 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void UpdateDisplay()
         {
-            for (int index = 0; index < rebindingGroups.Length; index++)
+            for (var index = 0; index < rebindingGroups.Length; index++)
             {
-                int bindingIndex = index + 1;
+                var bindingIndex = index + 1;
                 rebindingGroups[index].bindingDisplayNameText.text = GetKeyReadableName(bindingIndex);
             }
         }

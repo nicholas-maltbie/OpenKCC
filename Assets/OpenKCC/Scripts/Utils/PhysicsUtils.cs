@@ -1,4 +1,22 @@
-﻿
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -16,9 +34,9 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <returns>True if a hit was detected, false otherwise</returns>
         public static bool FilterForFirstHitAllow(GameObject target, RaycastHit[] hits, out RaycastHit closest)
         {
-            bool hitSomething = false;
+            var hitSomething = false;
             closest = new RaycastHit { distance = Mathf.Infinity };
-            foreach (RaycastHit hit in hits)
+            foreach (var hit in hits)
             {
                 if (hit.collider.gameObject == target && hit.distance < closest.distance)
                 {
@@ -26,6 +44,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     closest = hit;
                 }
             }
+
             return hitSomething;
         }
 
@@ -39,9 +58,9 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <returns>True if a hit was detected, false otherwise</returns>
         public static bool FilterForFirstHitIgnore(List<GameObject> ignoreList, RaycastHit[] hits, out RaycastHit closest)
         {
-            bool hitSomething = false;
+            var hitSomething = false;
             closest = new RaycastHit { distance = Mathf.Infinity };
-            foreach (RaycastHit hit in hits)
+            foreach (var hit in hits)
             {
                 if (!ignoreList.Contains(hit.collider.gameObject) && hit.distance < closest.distance)
                 {
@@ -49,6 +68,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     closest = hit;
                 }
             }
+
             return hitSomething;
         }
 
@@ -62,9 +82,9 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <returns>True if a hit was detected, false otherwise</returns>
         public static bool FilterForFirstHitIgnore(GameObject ignore, RaycastHit[] hits, out RaycastHit closest)
         {
-            bool hitSomething = false;
+            var hitSomething = false;
             closest = new RaycastHit { distance = Mathf.Infinity };
-            foreach (RaycastHit hit in hits)
+            foreach (var hit in hits)
             {
                 if (hit.collider.gameObject != ignore && hit.distance < closest.distance)
                 {
@@ -72,6 +92,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     closest = hit;
                 }
             }
+
             return hitSomething;
         }
 

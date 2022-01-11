@@ -1,10 +1,28 @@
-﻿using System;
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.UI;
 
 namespace nickmaltbie.OpenKCC.UI
 {
@@ -95,7 +113,7 @@ namespace nickmaltbie.OpenKCC.UI
         /// </summary>
         public void ClearHistory()
         {
-            string current = screenSequence.Last.Value;
+            var current = screenSequence.Last.Value;
             screenSequence.Clear();
             screenSequence.AddLast(current);
         }
@@ -119,35 +137,35 @@ namespace nickmaltbie.OpenKCC.UI
                 return;
             }
 
-            if (this.screenPrefabs.Count == 0)
+            if (screenPrefabs.Count == 0)
             {
                 UnityEngine.Debug.Log("No valid screens to display for UIManager");
                 return;
             }
 
-            if (this.initialScreen < 0 || this.initialScreen > this.screenPrefabs.Count)
+            if (initialScreen < 0 || initialScreen > screenPrefabs.Count)
             {
-                UnityEngine.Debug.Log($"Initial Screen {this.initialScreen} invalid, defaulting to screen {0}");
-                this.initialScreen = 0;
+                UnityEngine.Debug.Log($"Initial Screen {initialScreen} invalid, defaulting to screen {0}");
+                initialScreen = 0;
             }
 
             // Setup dictionary of screens
-            this.screenLookup = new Dictionary<string, GameObject>();
+            screenLookup = new Dictionary<string, GameObject>();
             // GetComponent<InputSystemUIInputModule>().actionsAsset = inputActions;
-            for (int idx = 0; idx < this.screenPrefabs.Count; idx++)
+            for (var idx = 0; idx < screenPrefabs.Count; idx++)
             {
-                string screenName = screenPrefabs[idx].name;
+                var screenName = screenPrefabs[idx].name;
                 // instantiate a copy of each screen and set all to disabled except current screen
                 UnityEngine.Debug.Log(screenPrefabs[idx].name);
-                GameObject screen = GameObject.Instantiate(screenPrefabs[idx].gameObject);
+                var screen = GameObject.Instantiate(screenPrefabs[idx].gameObject);
                 // Set object parent to this for more organized hierarchy
-                screen.transform.SetParent(this.transform, worldPositionStays: false);
-                this.screenLookup[screenName] = screen;
-                GameScreen gameScreen = screen.GetComponent<GameScreen>();
+                screen.transform.SetParent(transform, worldPositionStays: false);
+                screenLookup[screenName] = screen;
+                var gameScreen = screen.GetComponent<GameScreen>();
                 screen.SetActive(true);
-                if (idx == this.initialScreen)
+                if (idx == initialScreen)
                 {
-                    this.CurrentScreen = screenName;
+                    CurrentScreen = screenName;
                     screenSequence.AddLast(screenName);
                     gameScreen.DisplayScreen();
                 }
@@ -158,7 +176,7 @@ namespace nickmaltbie.OpenKCC.UI
             }
 
             // Setup listening to event queue
-            UIManager.RequestScreenChange += this.HandleScreenRequest;
+            UIManager.RequestScreenChange += HandleScreenRequest;
         }
 
         public void OnDestroy()
@@ -167,7 +185,8 @@ namespace nickmaltbie.OpenKCC.UI
             {
                 UIManager.Instance = null;
             }
-            UIManager.RequestScreenChange -= this.HandleScreenRequest;
+
+            UIManager.RequestScreenChange -= HandleScreenRequest;
         }
 
         /// <summary>
@@ -177,7 +196,7 @@ namespace nickmaltbie.OpenKCC.UI
         /// <param name="eventArgs">arguments of screen change</param>
         public void HandleScreenRequest(object sender, RequestScreenChangeEventArgs eventArgs)
         {
-            this.SetScreen(eventArgs.newScreen);
+            SetScreen(eventArgs.newScreen);
         }
 
         /// <summary>
@@ -186,12 +205,13 @@ namespace nickmaltbie.OpenKCC.UI
         /// <param name="screenName">Name of the screen to display</param>
         public void SetScreen(string screenName)
         {
-            if (!this.screenLookup.ContainsKey(screenName))
+            if (!screenLookup.ContainsKey(screenName))
             {
                 UnityEngine.Debug.Log($"Screen name {screenName} not recognized as new screen");
                 return;
             }
-            if (screenName == this.CurrentScreen)
+
+            if (screenName == CurrentScreen)
             {
                 // no change, do nothing
                 return;
@@ -204,20 +224,20 @@ namespace nickmaltbie.OpenKCC.UI
                 screenSequence.RemoveFirst();
             }
 
-            GameObject currentlyDisplayed = this.screenLookup[this.CurrentScreen];
-            GameObject newDisplay = this.screenLookup[screenName];
+            var currentlyDisplayed = screenLookup[CurrentScreen];
+            var newDisplay = screenLookup[screenName];
 
-            GameScreen currentScreen = currentlyDisplayed.GetComponent<GameScreen>();
-            GameScreen nextScreen = newDisplay.GetComponent<GameScreen>();
+            var currentScreen = currentlyDisplayed.GetComponent<GameScreen>();
+            var nextScreen = newDisplay.GetComponent<GameScreen>();
 
             currentScreen.HideScreen();
             nextScreen.DisplayScreen();
 
-            ScreenChangeEventArgs changeEvent = new ScreenChangeEventArgs();
-            changeEvent.oldScreen = this.CurrentScreen;
+            var changeEvent = new ScreenChangeEventArgs();
+            changeEvent.oldScreen = CurrentScreen;
             changeEvent.newScreen = screenName;
 
-            this.CurrentScreen = screenName;
+            CurrentScreen = screenName;
 
             // invoke screen change event
             UIManager.ScreenChangeOccur?.Invoke(this, changeEvent);
@@ -233,7 +253,7 @@ namespace nickmaltbie.OpenKCC.UI
             // Remove the last element
             UIManager.Instance.screenSequence.RemoveLast();
             // Get the new target sequence
-            string previous = UIManager.Instance.screenSequence.Last.Value;
+            var previous = UIManager.Instance.screenSequence.Last.Value;
             // Cleanup the sequence to re-create opening this screen
             UIManager.Instance.screenSequence.RemoveLast();
             UIManager.RequestNewScreen(sender, previous);
@@ -247,7 +267,7 @@ namespace nickmaltbie.OpenKCC.UI
         /// <param name="name">Name of new screen to show</param>
         public static void RequestNewScreen(object sender, string name)
         {
-            RequestScreenChangeEventArgs request = new RequestScreenChangeEventArgs();
+            var request = new RequestScreenChangeEventArgs();
             request.newScreen = name;
             UIManager.RequestScreenChange?.Invoke(sender, request);
         }

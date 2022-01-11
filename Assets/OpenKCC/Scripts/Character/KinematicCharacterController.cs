@@ -1,4 +1,23 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
+
+using System.Collections.Generic;
 using System.Linq;
 
 using nickmaltbie.OpenKCC.Environment;
@@ -360,7 +379,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Intended direction of movement provided by.
         /// </summary>
-        public Vector3 InputMovement => this.inputMovement;
+        public Vector3 InputMovement => inputMovement;
 
         /// <summary>
         /// Player rotated movement that they intend to move.
@@ -370,7 +389,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Get the current object this player is standing on.
         /// </summary>
-        public GameObject Floor => this.floor;
+        public GameObject Floor => floor;
 
         /// <summary>
         /// Is the player currently prone?
@@ -409,11 +428,6 @@ namespace nickmaltbie.OpenKCC.Character
         /// Was the player grounded the start of this frame.
         /// </summary>
         private bool startGrounded;
-
-        /// <summary>
-        /// Was the player falling the previous frame.
-        /// </summary>
-        private bool previousFalling;
 
         /// <summary>
         /// The velocity of the ground the previous frame
@@ -503,9 +517,9 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void Start()
         {
-            this.cameraController = GetComponent<CameraController>();
-            this.characterRigidbody = GetComponent<Rigidbody>();
-            this.capsuleCollider = GetComponent<CapsuleCollider>();
+            cameraController = GetComponent<CameraController>();
+            characterRigidbody = GetComponent<Rigidbody>();
+            capsuleCollider = GetComponent<CapsuleCollider>();
             feetFollowObj = new GameObject();
             feetFollowObj.name = "feetFollowObj";
             feetFollowObj.transform.SetParent(transform);
@@ -513,53 +527,53 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void OnEnable()
         {
-            this.jumpAction.action.performed += this.OnJump;
-            this.moveAction.action.performed += this.OnMove;
-            this.sprintAction.action.performed += this.OnSprint;
+            jumpAction.action.performed += OnJump;
+            moveAction.action.performed += OnMove;
+            sprintAction.action.performed += OnSprint;
         }
 
         public void OnDisable()
         {
-            this.jumpAction.action.performed -= this.OnJump;
-            this.moveAction.action.performed -= this.OnMove;
-            this.sprintAction.action.performed -= this.OnSprint;
+            jumpAction.action.performed -= OnJump;
+            moveAction.action.performed -= OnMove;
+            sprintAction.action.performed -= OnSprint;
         }
 
         public void FixedUpdate()
         {
-            if (this.Frozen)
+            if (Frozen)
             {
                 // If frozen do not update or change any settings
                 return;
             }
 
-            float fixedDeltaTime = Time.fixedDeltaTime;
+            var fixedDeltaTime = Time.fixedDeltaTime;
 
-            LinearVelocity = (transform.position - this.previousPosition) / fixedDeltaTime;
-            float deltaAngle = Quaternion.Angle(transform.rotation, this.previousRotation);
+            LinearVelocity = (transform.position - previousPosition) / fixedDeltaTime;
+            var deltaAngle = Quaternion.Angle(transform.rotation, previousRotation);
 
-            float linearSpeed = LinearVelocity.magnitude;
-            float angularSpeed = deltaAngle / fixedDeltaTime;
+            var linearSpeed = LinearVelocity.magnitude;
+            var angularSpeed = deltaAngle / fixedDeltaTime;
 
-            this.previousPosition = transform.position;
-            this.previousRotation = transform.rotation;
+            previousPosition = transform.position;
+            previousRotation = transform.rotation;
 
             if (IsProne)
             {
-                this.remainingMaxProneTime -= fixedDeltaTime;
-                this.remainingMinProneTime -= fixedDeltaTime;
-                this.characterRigidbody.isKinematic = false;
-                this.characterRigidbody.velocity += this.gravity * fixedDeltaTime;
+                remainingMaxProneTime -= fixedDeltaTime;
+                remainingMinProneTime -= fixedDeltaTime;
+                characterRigidbody.isKinematic = false;
+                characterRigidbody.velocity += gravity * fixedDeltaTime;
 
                 CheckGrounded();
 
-                this.feetFollowObj.transform.parent = transform;
-                this.feetFollowObj.transform.localPosition = Vector3.zero;
-                this.feetFollowObj.transform.localRotation = Quaternion.identity;
-                this.distanceToGround = Mathf.Infinity;
+                feetFollowObj.transform.parent = transform;
+                feetFollowObj.transform.localPosition = Vector3.zero;
+                feetFollowObj.transform.localRotation = Quaternion.identity;
+                distanceToGround = Mathf.Infinity;
 
                 // Exclude the floor's velocity from the linear speed calculation for checking prone
-                float movingSpeedCalculation = Mathf.Max(
+                var movingSpeedCalculation = Mathf.Max(
                     0,
                     linearSpeed - (movingGroundDisplacement / fixedDeltaTime).magnitude);
 
@@ -583,11 +597,11 @@ namespace nickmaltbie.OpenKCC.Character
             }
             else
             {
-                this.transform.rotation = Quaternion.identity;
-                this.characterRigidbody.isKinematic = true;
-                this.characterRigidbody.velocity = Vector3.zero;
-                this.characterRigidbody.angularVelocity = Vector3.zero;
-                this.startGrounded = StandingOnGround;
+                transform.rotation = Quaternion.identity;
+                characterRigidbody.isKinematic = true;
+                characterRigidbody.velocity = Vector3.zero;
+                characterRigidbody.angularVelocity = Vector3.zero;
+                startGrounded = StandingOnGround;
 
                 // If player is not allowed to move, stop player movement
                 if (PlayerInputManager.playerMovementState == PlayerInputState.Deny)
@@ -610,24 +624,24 @@ namespace nickmaltbie.OpenKCC.Character
                 if (!Falling)
                 {
                     velocity = Vector3.zero;
-                    this.elapsedFalling = 0.0f;
+                    elapsedFalling = 0.0f;
                 }
                 else if (Falling)
                 {
                     velocity += gravity * fixedDeltaTime;
-                    this.elapsedFalling += fixedDeltaTime;
+                    elapsedFalling += fixedDeltaTime;
                 }
 
                 // Compute player jump if they are attempting to jump
-                bool jumped = PlayerJump(fixedDeltaTime);
+                var jumped = PlayerJump(fixedDeltaTime);
 
-                Vector3 movement = RotatedMovement * (isSprinting ? sprintSpeed : walkingSpeed);
+                var movement = RotatedMovement * (isSprinting ? sprintSpeed : walkingSpeed);
 
                 // If the player is standing on the ground, project their movement onto the ground plane
                 // This allows them to walk up gradual slopes without facing a hit in movement speed
                 if (!Falling)
                 {
-                    Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, surfaceNormal).normalized *
+                    var projectedMovement = Vector3.ProjectOnPlane(movement, surfaceNormal).normalized *
                         movement.magnitude;
                     if (projectedMovement.magnitude + Epsilon >= movement.magnitude)
                     {
@@ -680,7 +694,6 @@ namespace nickmaltbie.OpenKCC.Character
                     .ForEach(detectStand => detectStand.StepOff());
 
                 // Save state of player
-                previousFalling = Falling;
                 previousGrounded = startGrounded;
                 previousJumped = jumped;
                 previousGroundVelocity = GetGroundVelocity();
@@ -711,9 +724,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns>True if an object is hit within distance, false otherwise.</returns>
         public bool CastSelf(Vector3 direction, float distance, out RaycastHit hit)
         {
-            RaycastHit closest = new RaycastHit() { distance = Mathf.Infinity };
-            bool hitSomething = false;
-            foreach (RaycastHit objHit in GetHits(direction, distance))
+            var closest = new RaycastHit() { distance = Mathf.Infinity };
+            var hitSomething = false;
+            foreach (var objHit in GetHits(direction, distance))
             {
                 if (objHit.collider.gameObject.transform != gameObject.transform)
                 {
@@ -721,6 +734,7 @@ namespace nickmaltbie.OpenKCC.Character
                     {
                         closest = objHit;
                     }
+
                     hitSomething = true;
                 }
             }
@@ -735,14 +749,14 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns>The velocity of the ground at the point the player is standong on</returns>
         private Vector3 GetGroundVelocity()
         {
-            Vector3 groundVelocity = Vector3.zero;
-            IMovingGround movingGround = floor == null ? null : floor.GetComponent<IMovingGround>();
+            var groundVelocity = Vector3.zero;
+            var movingGround = floor == null ? null : floor.GetComponent<IMovingGround>();
             if (movingGround != null && !movingGround.AvoidTransferMomentum())
             {
                 // Weight movement of ground by ground movement weight
-                float velocityWeight =
+                var velocityWeight =
                     movingGround.GetMovementWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
-                float transferWeight =
+                var transferWeight =
                     movingGround.GetTransferMomentumWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
                 groundVelocity = movingGround.GetVelocityAtPoint(groundHitPosition, Time.fixedDeltaTime);
                 groundVelocity *= velocityWeight;
@@ -762,11 +776,11 @@ namespace nickmaltbie.OpenKCC.Character
             // Give the player some vertical velocity if they are jumping and grounded
             if (CanJump)
             {
-                Vector3 jumpDirection = (
+                var jumpDirection = (
                     (StandingOnGround ? surfaceNormal : Up) *
                     jumpAngleWeightFactor + Up * (1 - jumpAngleWeightFactor)
                     ).normalized;
-                velocity = GetGroundVelocity() + this.jumpVelocity * jumpDirection;
+                velocity = GetGroundVelocity() + jumpVelocity * jumpDirection;
                 elapsedSinceJump = 0.0f;
                 return true;
             }
@@ -785,9 +799,9 @@ namespace nickmaltbie.OpenKCC.Character
         {
             movingGroundDisplacement = Vector3.zero;
 
-            Vector3 moveWithGroundStart = transform.position;
+            var moveWithGroundStart = transform.position;
             // Check if we were standing on moving ground the previous frame
-            IMovingGround movingGround = floor == null ? null : floor.GetComponent<IMovingGround>();
+            var movingGround = floor == null ? null : floor.GetComponent<IMovingGround>();
             if (movingGround == null || !onGround || distanceToGround > groundedDistance)
             {
                 // We aren't standing on something, don't do anything
@@ -797,14 +811,14 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             // Get the displacement of the floor at the previous position
-            Vector3 displacement = movingGround.GetDisplacementAtPoint(groundHitPosition, Time.fixedDeltaTime);
+            var displacement = movingGround.GetDisplacementAtPoint(groundHitPosition, Time.fixedDeltaTime);
             // Check if we were standing on moving ground the previous frame
             if (feetFollowObj.transform.parent != transform)
             {
                 displacement = (feetFollowObj.transform.position + footOffset) - transform.position;
             }
 
-            float weight = movingGround.GetMovementWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
+            var weight = movingGround.GetMovementWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
 
             // Move player by floor displacement this frame
             transform.position += displacement * weight;
@@ -838,7 +852,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void SnapPlayerDown(Vector3 dir, float dist)
         {
-            bool didHit = CastSelf(dir, dist, out var hit);
+            var didHit = CastSelf(dir, dist, out var hit);
 
             if (didHit && hit.distance > Epsilon)
             {
@@ -854,7 +868,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns>Total distance player was pushed.</returns>
         public Vector3 PushOutOverlapping()
         {
-            float fixedDeltaTime = Time.fixedDeltaTime;
+            var fixedDeltaTime = Time.fixedDeltaTime;
             return PushOutOverlapping(maxPushSpeed * fixedDeltaTime);
         }
 
@@ -865,19 +879,20 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns>Total distance player was pushed.</returns>
         public Vector3 PushOutOverlapping(float maxDistance)
         {
-            Vector3 pushed = Vector3.zero;
-            foreach (Collider overlap in this.GetOverlapping())
+            var pushed = Vector3.zero;
+            foreach (var overlap in GetOverlapping())
             {
                 Physics.ComputePenetration(
                     capsuleCollider, transform.position, transform.rotation,
                     overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
-                    out Vector3 direction, out float distance
+                    out var direction, out var distance
                 );
-                float distPush = Mathf.Min(maxDistance, distance + Epsilon);
-                Vector3 push = direction.normalized * distPush;
+                var distPush = Mathf.Min(maxDistance, distance + Epsilon);
+                var push = direction.normalized * distPush;
                 transform.position += push;
                 pushed += push;
             }
+
             return pushed;
         }
 
@@ -892,15 +907,15 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void CheckGrounded()
         {
-            bool didHit = CastSelf(Down, groundCheckDistance, out var hit);
-            (var top, var bottom, var radius, var height) = GetParams();
+            var didHit = CastSelf(Down, groundCheckDistance, out var hit);
+            (_, _, _, _) = GetParams();
 
-            this.angle = Vector3.Angle(hit.normal, Up);
-            this.distanceToGround = hit.distance;
-            this.onGround = didHit;
-            this.surfaceNormal = hit.normal;
-            this.groundHitPosition = hit.distance > 0 ? hit.point : transform.position;
-            this.floor = hit.collider != null ? hit.collider.gameObject : null;
+            angle = Vector3.Angle(hit.normal, Up);
+            distanceToGround = hit.distance;
+            onGround = didHit;
+            surfaceNormal = hit.normal;
+            groundHitPosition = hit.distance > 0 ? hit.point : transform.position;
+            floor = hit.collider != null ? hit.collider.gameObject : null;
         }
 
         /// <summary>
@@ -918,12 +933,12 @@ namespace nickmaltbie.OpenKCC.Character
         public bool AttemptSnapUp(float distanceToSnap, RaycastHit hit, Vector3 momentum)
         {
             // If we were to snap the player up and they moved forward, would they hit something?
-            Vector3 currentPosition = transform.position;
-            Vector3 snapUp = distanceToSnap * Up;
+            var currentPosition = transform.position;
+            var snapUp = distanceToSnap * Up;
             transform.position += snapUp;
 
-            Vector3 directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
-            bool didSnapHit = this.CastSelf(directionAfterSnap.normalized, Mathf.Max(stepUpDepth, momentum.magnitude), out RaycastHit snapHit);
+            var directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
+            var didSnapHit = CastSelf(directionAfterSnap.normalized, Mathf.Max(stepUpDepth, momentum.magnitude), out var snapHit);
 
             // If they can move without instantly hitting something, then snap them up
             if ((!Falling || elapsedFalling <= snapBufferTime) && snapHit.distance > Epsilon && (!didSnapHit || snapHit.distance > stepUpDepth))
@@ -944,22 +959,22 @@ namespace nickmaltbie.OpenKCC.Character
         public void MovePlayer(Vector3 movement)
         {
             // Save current momentum
-            Vector3 momentum = movement;
+            var momentum = movement;
 
-            Collider selfCollider = GetComponent<Collider>();
+            var selfCollider = GetComponent<Collider>();
             // current number of bounces
-            int bounces = 0;
+            var bounces = 0;
 
             // Character ability to push objects
-            CharacterPush push = GetComponent<CharacterPush>();
+            var push = GetComponent<CharacterPush>();
 
             // Continue computing while there is momentum and bounces remaining
             while (momentum.magnitude > Epsilon && bounces <= maxBounces)
             {
                 // Do a cast of the collider to see if an object is hit during this
                 // movement bounce
-                float distance = momentum.magnitude;
-                if (!this.CastSelf(momentum.normalized, distance, out RaycastHit hit))
+                var distance = momentum.magnitude;
+                if (!CastSelf(momentum.normalized, distance, out var hit))
                 {
                     // If there is no hit, move to desired position
                     transform.position += momentum;
@@ -981,7 +996,7 @@ namespace nickmaltbie.OpenKCC.Character
                     momentum *= pushDecay;
                 }
 
-                float fraction = hit.distance / distance;
+                var fraction = hit.distance / distance;
                 // Set the fraction of remaining movement (minus some small value)
                 transform.position += momentum * (fraction);
                 // Push slightly along normal to stop from getting caught in walls
@@ -990,11 +1005,11 @@ namespace nickmaltbie.OpenKCC.Character
                 momentum *= (1 - fraction);
 
                 // Plane to project rest of movement onto
-                Vector3 planeNormal = hit.normal;
+                var planeNormal = hit.normal;
 
                 // Snap character vertically up if they hit something
                 //  close enough to their feet
-                float distanceToFeet = hit.point.y - (transform.position - selfCollider.bounds.extents).y;
+                var distanceToFeet = hit.point.y - (transform.position - selfCollider.bounds.extents).y;
                 if (hit.distance > 0 && !attemptingJump && distanceToFeet < verticalSnapUp && distanceToFeet > 0)
                 {
                     // Sometimes snapping up the exact distance leads to odd behaviour around steps and walls.
@@ -1008,16 +1023,16 @@ namespace nickmaltbie.OpenKCC.Character
                 }
                 // Only apply angular change if hitting something
                 // Get angle between surface normal and remaining movement
-                float angleBetween = Vector3.Angle(hit.normal, momentum) - 90.0f;
+                var angleBetween = Vector3.Angle(hit.normal, momentum) - 90.0f;
                 // Normalize angle between to be between 0 and 1
                 // 0 means no angle, 1 means 90 degree angle
                 angleBetween = Mathf.Min(MaxAngleShoveRadians, Mathf.Abs(angleBetween));
-                float normalizedAngle = angleBetween / MaxAngleShoveRadians;
+                var normalizedAngle = angleBetween / MaxAngleShoveRadians;
                 // Reduce the momentum by the remaining movement that ocurred
                 momentum *= Mathf.Pow(1 - normalizedAngle, anglePower) * 0.9f + 0.1f;
                 // Rotate the remaining remaining movement to be projected along the plane 
                 // of the surface hit (emulate pushing against the object)
-                Vector3 projectedMomentum = Vector3.ProjectOnPlane(momentum, planeNormal).normalized * momentum.magnitude;
+                var projectedMomentum = Vector3.ProjectOnPlane(momentum, planeNormal).normalized * momentum.magnitude;
                 if (projectedMomentum.magnitude + Epsilon < momentum.magnitude)
                 {
                     momentum = Vector3.ProjectOnPlane(momentum, Up).normalized * momentum.magnitude;
@@ -1068,7 +1083,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void OnMove(InputAction.CallbackContext context)
         {
-            Vector2 movement = context.ReadValue<Vector2>();
+            var movement = context.ReadValue<Vector2>();
             inputMovement = new Vector3(movement.x, 0, movement.y);
             inputMovement = inputMovement.magnitude > 1 ? inputMovement / inputMovement.magnitude : inputMovement;
         }
