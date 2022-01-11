@@ -3,21 +3,12 @@ name: dotnet-format
 # Controls when the action will run. Triggers the workflow on push or pull request
 on: [pull_request] # This will run on every pull request. 
 
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "check-format"
   check-format:
     # The type of runner that the job will run on
     runs-on: Ubuntu-20.04
-    strategy:
-      matrix:
-        unityVersion:
-          - 2021.1.19f1
-        buildMethod:
-          - empty
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -25,56 +16,15 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.301
-
-      - run: dotnet tool restore # Restore dotnet tools. This handles cache implicitly.
-
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
       # Lists only the committed files in order to evaluate only those.
       - id: changed_files
         uses: futuratrepadeira/changed-files@v3.2.1
         with:
           repo-token: ${{ github.token }}
           pattern: '^.*\.(cs|CS)$'
-
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Cache Library Folder
-        uses: actions/cache@v2
-        with:
-          path: Library
-          key: Library-${{ matrix.buildMethod }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
-          restore-keys: |
-            Library-${{ matrix.buildMethod }}-
-
-      - name: Cache git lfs
-        uses: actions/cache@v2
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1.2
-          # use previous cache if current one is not found
-          restore-keys: |
-            ${{ runner.os }}-lfs-
-
-      - name: Pull lfs data, if not cached
-        run: git lfs pull
-
-      - uses: game-ci/unity-builder@v2.0-alpha-13
-        with:
-          projectPath: ${{ matrix.projectPath }}
-          unityVersion: ${{ matrix.unityVersion }}
-          buildMethod: ScriptBatch.PrepareSonarFiles
-
-      - run: ls
-
-      - run: find . -type f -name \*.csproj
-
-      - run: find . -type f -name \*.sln
-
-      - run: find . -type f
-
+      - run: dotnet tool restore # Restore dotnet tools. This handles cache implicitly.
       - name: Format Csharp files
         if: steps.changed_files.outputs.files_created != '' || steps.changed_files.outputs.files_updated != ''
-        run: dotnet format --fix-style warn --verbosity detailed OpenKCC.csproj --include ${{ steps.changed_files.outputs.files_created }} ${{ steps.changed_files.outputs.files_updated }} --exclude Library --check # Call format but just do a check to see if everything is in order.
+        run: dotnet format . --folder --include ${{ steps.changed_files.outputs.files_created }} ${{ steps.changed_files.outputs.files_updated }} --exclude Library --check # Call format but just do a check to see if everything is in order.

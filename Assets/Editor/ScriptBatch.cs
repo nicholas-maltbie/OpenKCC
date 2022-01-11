@@ -170,7 +170,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         BuildPipeline.BuildPlayer(options);
     }
 
-    public static void PrepareSonarFiles ()
+    public static void PrepareSonarFiles()
     {
         Debug.Log("### ScriptBatch:PrepareSonarFiles - Started...");
         // We actually ask Unity to create the CSPROJ and SLN files.
