@@ -52,7 +52,7 @@ jobs:
       - name: Pull lfs data, if not cached
         run: git lfs pull
 
-      - uses: game-ci/unity-builder@v2.0-alpha-13
+      - uses: game-ci/unity-test-runner@v2
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
@@ -72,6 +72,6 @@ jobs:
 
       - run: find . -type f -name \*.sln
 
-      - name: Format Csharp files
-        if: steps.changed_files.outputs.files_created != '' || steps.changed_files.outputs.files_updated != ''
-        run: dotnet format --fix-style warn --verbosity detailed OpenKCC.csproj --include ${{ steps.changed_files.outputs.files_created }} ${{ steps.changed_files.outputs.files_updated }} --exclude Library --check # Call format but just do a check to see if everything is in order.
+      # - name: Format Csharp files
+      #   if: steps.changed_files.outputs.files_created != '' || steps.changed_files.outputs.files_updated != ''
+      #   run: dotnet format --fix-style warn --verbosity detailed OpenKCC.csproj --include ${{ steps.changed_files.outputs.files_created }} ${{ steps.changed_files.outputs.files_updated }} --exclude Library --check # Call format but just do a check to see if everything is in order.
