@@ -223,9 +223,9 @@ csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimenta
 
 # Prefer "var" everywhere
 dotnet_diagnostic.IDE0007.severity = error
-csharp_style_var_for_built_in_types = true:error
-csharp_style_var_when_type_is_apparent = true:error
-csharp_style_var_elsewhere = true:error
+csharp_style_var_for_built_in_types = false:error
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = false:error
 
 # Prefer method-like constructs to have a block body
 csharp_style_expression_bodied_methods = false:none
