@@ -1,4 +1,5 @@
-using nickmaltbie.OpenKCC.Character;
+﻿using nickmaltbie.OpenKCC.Character;
+
 using UnityEngine;
 using UnityEngine.UI;
 

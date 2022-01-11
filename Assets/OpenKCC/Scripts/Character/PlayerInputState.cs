@@ -1,4 +1,4 @@
-namespace nickmaltbie.OpenKCC.Character
+﻿namespace nickmaltbie.OpenKCC.Character
 {
     /// <summary>
     /// Current player input state, is the player allowed to give input or not

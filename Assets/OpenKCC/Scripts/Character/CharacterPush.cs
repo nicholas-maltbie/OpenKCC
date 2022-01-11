@@ -1,5 +1,6 @@
-using nickmaltbie.OpenKCC.Environment.Pushable;
+﻿using nickmaltbie.OpenKCC.Environment.Pushable;
 using nickmaltbie.OpenKCC.Utils;
+
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character

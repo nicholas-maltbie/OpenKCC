@@ -1,4 +1,5 @@
 ﻿using nickmaltbie.OpenKCC.Character;
+
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Animation
