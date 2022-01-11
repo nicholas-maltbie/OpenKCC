@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -148,5 +150,10 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
 
         // Build player.
         BuildPipeline.BuildPlayer(options);
+    }
+
+    public static void EmptyBuild()
+    {
+
     }
 }
