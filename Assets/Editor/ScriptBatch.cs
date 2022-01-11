@@ -170,12 +170,19 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         BuildPipeline.BuildPlayer(options);
     }
 
-    [MenuItem("Assets/Sync Solution #&s")]
-    public static void SyncSolution()
+    public static void PrepareSonarFiles ()
     {
-        var editor = Type.GetType("UnityEditor.SyncVS, UnityEditor");
-        var SyncSolution = editor.GetMethod("SyncSolution", BindingFlags.Public | BindingFlags.Static);
+        Debug.Log("### ScriptBatch:PrepareSonarFiles - Started...");
+        // We actually ask Unity to create the CSPROJ and SLN files.
+        bool success = EditorApplication.ExecuteMenuItem("Assets/Open C# Project");
+        Debug.Log("### ScriptBatch:PrepareSonarFiles - " + (success ? "Done" : "FAILED") + ".");
+
+        // Unsupported Version
+        Debug.Log("### ScriptBatch:PrepareSonarFiles - Started V2...");
+        System.Type T = System.Type.GetType("UnityEditor.SyncVS,UnityEditor");
+        System.Reflection.MethodInfo SyncSolution = T.GetMethod("SyncSolution", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
         SyncSolution.Invoke(null, null);
-        Debug.Log("Solution synced!");
+        Debug.Log("### ScriptBatch:PrepareSonarFiles - Ended V2...");
+        // ---
     }
 }

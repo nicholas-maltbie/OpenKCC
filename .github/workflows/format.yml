@@ -65,7 +65,7 @@ jobs:
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-          buildMethod: ScriptBatch.SyncSolution
+          buildMethod: ScriptBatch.PrepareSonarFiles
 
       - run: ls
 
