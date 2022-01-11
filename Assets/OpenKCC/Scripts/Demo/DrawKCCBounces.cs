@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
+using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
 namespace nickmaltbie.OpenKCC.Demo
 {
@@ -24,8 +27,23 @@ namespace nickmaltbie.OpenKCC.Demo
 
         public void OnDrawGizmos()
         {
+            Vector3 movement = kcc.GetProjectedMovement().normalized * movementDistance;
             // Get the bounces the player's movement would make
-            // List<(Vector3, Ray, MovementAction)> actions = new List<Vector3, Ray, MovementAction>()
+            List<(Vector3, Ray, MovementAction)> actions = new List<(Vector3, Ray, MovementAction)>(
+                KCCUtils.GetBounces(
+                    kcc.MaxBounces,
+                    kcc.PushDecay,
+                    kcc.VerticalSnapUp,
+                    kcc.StepUpDepth,
+                    kcc.AnglePower,
+                    kcc.AttemptingJump,
+                    kcc.CanSnapUp,
+                    kcc.transform.position,
+                    movement,
+                    kcc.Up,
+                    kcc.capsuleColliderCast,
+                    kcc.characterPush));
+            
         }
     }
 }
