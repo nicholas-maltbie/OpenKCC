@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -106,7 +106,7 @@ namespace nickmaltbie.OpenKCC.Utils
         {
             // If we were to snap the player up and they moved forward, would they hit something?
             Vector3 currentPosition = position;
-            Vector3 snapUp = distanceToSnap * up;
+            _ = distanceToSnap * up;
             Vector3 directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
             bool didSnapHit = colliderCast
                 .CastSelf(
@@ -206,7 +206,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 // Snap character vertically up if they hit something
                 //  close enough to their feet
                 float distanceToFeet = hit.point.y - (position - colliderCast.GetBounds().extents).y;
-                if (canSnapUp && 
+                if (canSnapUp &&
                     hit.distance > 0 &&
                     !attemptingJump &&
                     distanceToFeet < verticalSnapUp &&
@@ -228,7 +228,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     {
                         // If that movement doesn't work, snap them up the minimum vertical distance
                         snappedUp = AttemptSnapUp(
-                            distanceToFeet + Epsilon * 2, 
+                            distanceToFeet + Epsilon * 2,
                             stepUpDepth,
                             hit,
                             up,
@@ -267,7 +267,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 Vector3 projectedMomentum = Vector3.ProjectOnPlane(
                     momentum,
                     planeNormal).normalized * momentum.magnitude;
-                
+
                 // If projected momentum is less than original momentum (so if the projection broke due to float
                 // operations), then change this to just project along the vertical.
                 if (projectedMomentum.magnitude + Epsilon < momentum.magnitude)

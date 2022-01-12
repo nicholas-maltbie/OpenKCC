@@ -1,3 +1,20 @@
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 # if UNITY_EDITOR
 using UnityEditor;
@@ -19,10 +36,10 @@ namespace nickmaltbie.OpenKCC.Utils
             float _height,
             Color _color = default(Color))
         {
-            # if UNITY_EDITOR
+#if UNITY_EDITOR
             Gizmos.color = _color;
             Gizmos.DrawMesh(CapsuleMaker.CapsuleData(radius: _radius, depth: _height - _radius * 2), _pos, _rot);
-            # endif
+#endif
         }
 
         /// <summary>
@@ -41,15 +58,16 @@ namespace nickmaltbie.OpenKCC.Utils
             float _height,
             Color _color = default(Color))
         {
-            # if UNITY_EDITOR
+#if UNITY_EDITOR
             if (_color != default(Color))
             {
                 Handles.color = _color;
             }
-            Matrix4x4 angleMatrix = Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale);
+
+            var angleMatrix = Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale);
             using (new Handles.DrawingScope(angleMatrix))
             {
-                var pointOffset = (_height - (_radius * 2)) / 2;
+                float pointOffset = (_height - (_radius * 2)) / 2;
 
                 //draw sideways
                 Handles.DrawWireArc(Vector3.up * pointOffset, Vector3.left, Vector3.back, -180, _radius);
@@ -65,7 +83,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 Handles.DrawWireDisc(Vector3.up * pointOffset, Vector3.up, _radius);
                 Handles.DrawWireDisc(Vector3.down * pointOffset, Vector3.up, _radius);
             }
-            # endif
+#endif
         }
 
         public enum UvProfile : int
@@ -75,7 +93,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Uniform = 2
         }
 
-        public static Mesh CapsuleData (
+        public static Mesh CapsuleData(
             int longitudes = 32,
             int latitudes = 16,
             int rings = 0,
@@ -105,9 +123,9 @@ namespace nickmaltbie.OpenKCC.Utils
 
             // Initialize arrays.
             int vertLen = vertOffsetSouthCap + longitudes;
-            Vector3[ ] vs = new Vector3[vertLen];
-            Vector2[ ] vts = new Vector2[vertLen];
-            Vector3[ ] vns = new Vector3[vertLen];
+            var vs = new Vector3[vertLen];
+            var vts = new Vector2[vertLen];
+            var vns = new Vector3[vertLen];
 
             float toTheta = 2.0f * Mathf.PI / longitudes;
             float toPhi = Mathf.PI / latitudes;
@@ -123,7 +141,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     break;
 
                 case UvProfile.Uniform:
-                    vtAspectRatio = (float) halfLats / (ringsp1 + latitudes);
+                    vtAspectRatio = (float)halfLats / (ringsp1 + latitudes);
                     break;
 
                 case UvProfile.Fixed:
@@ -135,9 +153,9 @@ namespace nickmaltbie.OpenKCC.Utils
             float vtAspectNorth = 1.0f - vtAspectRatio;
             float vtAspectSouth = vtAspectRatio;
 
-            Vector2[ ] thetaCartesian = new Vector2[longitudes];
-            Vector2[ ] rhoThetaCartesian = new Vector2[longitudes];
-            float[ ] sTextureCache = new float[lonsp1];
+            var thetaCartesian = new Vector2[longitudes];
+            var rhoThetaCartesian = new Vector2[longitudes];
+            float[] sTextureCache = new float[lonsp1];
 
             // Polar vertices.
             for (int j = 0; j < longitudes; ++j)
@@ -146,24 +164,24 @@ namespace nickmaltbie.OpenKCC.Utils
                 float sTexturePolar = 1.0f - ((jf + 0.5f) * toTexHorizontal);
                 float theta = jf * toTheta;
 
-                float cosTheta = Mathf.Cos (theta);
-                float sinTheta = Mathf.Sin (theta);
+                float cosTheta = Mathf.Cos(theta);
+                float sinTheta = Mathf.Sin(theta);
 
-                thetaCartesian[j] = new Vector2 (cosTheta, sinTheta);
-                rhoThetaCartesian[j] = new Vector2 (
+                thetaCartesian[j] = new Vector2(cosTheta, sinTheta);
+                rhoThetaCartesian[j] = new Vector2(
                     radius * cosTheta,
                     radius * sinTheta);
 
                 // North.
-                vs[j] = new Vector3 (0.0f, summit, 0.0f);
-                vts[j] = new Vector2 (sTexturePolar, 1.0f);
-                vns[j] = new Vector3 (0.0f, 1.0f, 0f);
+                vs[j] = new Vector3(0.0f, summit, 0.0f);
+                vts[j] = new Vector2(sTexturePolar, 1.0f);
+                vns[j] = new Vector3(0.0f, 1.0f, 0f);
 
                 // South.
                 int idx = vertOffsetSouthCap + j;
-                vs[idx] = new Vector3 (0.0f, -summit, 0.0f);
-                vts[idx] = new Vector2 (sTexturePolar, 0.0f);
-                vns[idx] = new Vector3 (0.0f, -1.0f, 0.0f);
+                vs[idx] = new Vector3(0.0f, -summit, 0.0f);
+                vts[idx] = new Vector2(sTexturePolar, 0.0f);
+                vns[idx] = new Vector3(0.0f, -1.0f, 0.0f);
             }
 
             // Equatorial vertices.
@@ -179,15 +197,15 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 // North equator.
                 int idxn = vertOffsetNorthEquator + j;
-                vs[idxn] = new Vector3 (rtc.x, halfDepth, -rtc.y);
-                vts[idxn] = new Vector2 (sTexture, vtAspectNorth);
-                vns[idxn] = new Vector3 (tc.x, 0.0f, -tc.y);
+                vs[idxn] = new Vector3(rtc.x, halfDepth, -rtc.y);
+                vts[idxn] = new Vector2(sTexture, vtAspectNorth);
+                vns[idxn] = new Vector3(tc.x, 0.0f, -tc.y);
 
                 // South equator.
                 int idxs = vertOffsetSouthEquator + j;
-                vs[idxs] = new Vector3 (rtc.x, -halfDepth, -rtc.y);
-                vts[idxs] = new Vector2 (sTexture, vtAspectSouth);
-                vns[idxs] = new Vector3 (tc.x, 0.0f, -tc.y);
+                vs[idxs] = new Vector3(rtc.x, -halfDepth, -rtc.y);
+                vts[idxs] = new Vector2(sTexture, vtAspectSouth);
+                vns[idxs] = new Vector3(tc.x, 0.0f, -tc.y);
             }
 
             // Hemisphere vertices.
@@ -197,8 +215,8 @@ namespace nickmaltbie.OpenKCC.Utils
                 float phi = ip1f * toPhi;
 
                 // For coordinates.
-                float cosPhiSouth = Mathf.Cos (phi);
-                float sinPhiSouth = Mathf.Sin (phi);
+                float cosPhiSouth = Mathf.Cos(phi);
+                float sinPhiSouth = Mathf.Sin(phi);
 
                 // Symmetrical hemispheres mean cosine and sine only needs
                 // to be calculated once.
@@ -232,24 +250,24 @@ namespace nickmaltbie.OpenKCC.Utils
 
                     // North hemisphere.
                     int idxn = vertCurrLatNorth + j;
-                    vs[idxn] = new Vector3 (
+                    vs[idxn] = new Vector3(
                         rhoCosPhiNorth * tc.x,
                         zOffsetNorth,
                         -rhoCosPhiNorth * tc.y);
-                    vts[idxn] = new Vector2 (sTexture, tTexNorth);
-                    vns[idxn] = new Vector3 (
+                    vts[idxn] = new Vector2(sTexture, tTexNorth);
+                    vns[idxn] = new Vector3(
                         cosPhiNorth * tc.x,
                         -sinPhiNorth,
                         -cosPhiNorth * tc.y);
 
                     // South hemisphere.
                     int idxs = vertCurrLatSouth + j;
-                    vs[idxs] = new Vector3 (
+                    vs[idxs] = new Vector3(
                         rhoCosPhiSouth * tc.x,
                         zOffsetSouth,
                         -rhoCosPhiSouth * tc.y);
-                    vts[idxs] = new Vector2 (sTexture, tTexSouth);
-                    vns[idxs] = new Vector3 (
+                    vts[idxs] = new Vector2(sTexture, tTexSouth);
+                    vns[idxs] = new Vector3(
                         cosPhiSouth * tc.x,
                         -sinPhiSouth,
                         -cosPhiSouth * tc.y);
@@ -278,9 +296,9 @@ namespace nickmaltbie.OpenKCC.Utils
                         Vector2 rtc = rhoThetaCartesian[jMod];
                         float sTexture = sTextureCache[j];
 
-                        vs[idxCylLat] = new Vector3 (rtc.x, z, -rtc.y);
-                        vts[idxCylLat] = new Vector2 (sTexture, tTexture);
-                        vns[idxCylLat] = new Vector3 (tc.x, 0.0f, -tc.y);
+                        vs[idxCylLat] = new Vector3(rtc.x, z, -rtc.y);
+                        vts[idxCylLat] = new Vector2(sTexture, tTexture);
+                        vns[idxCylLat] = new Vector3(tc.x, 0.0f, -tc.y);
 
                         ++idxCylLat;
                     }
@@ -300,7 +318,7 @@ namespace nickmaltbie.OpenKCC.Utils
             int triOffsetSouthCap = triOffsetSouthHemi + hemiLons;
 
             int fsLen = triOffsetSouthCap + lons3;
-            int[ ] tris = new int[fsLen];
+            int[] tris = new int[fsLen];
 
             // Polar caps.
             for (int i = 0, k = 0, m = triOffsetSouthCap; i < longitudes; ++i, k += 3, m += 3)
@@ -382,15 +400,15 @@ namespace nickmaltbie.OpenKCC.Utils
                 }
             }
 
-            Mesh mesh = new Mesh ( );
+            var mesh = new Mesh();
             mesh.vertices = vs;
             mesh.uv = vts;
             mesh.normals = vns;
 
             // Triangles must be assigned last.
             mesh.triangles = tris;
-            mesh.RecalculateTangents ( );
-            mesh.Optimize ( );
+            mesh.RecalculateTangents();
+            mesh.Optimize();
             return mesh;
         }
     }

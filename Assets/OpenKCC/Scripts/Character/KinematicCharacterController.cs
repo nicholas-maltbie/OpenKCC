@@ -356,7 +356,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Push action associated with this kcc.
         /// </summary>
-        public CharacterPush characterPush  { get; private set; }
+        public CharacterPush characterPush { get; private set; }
 
         /// <summary>
         /// Rotation of the plane the player is viewing
@@ -420,7 +420,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         /// <returns>If a player is allowed to snap down</returns>
         public bool CanSnapDown => (StandingOnGround || elapsedFalling <= snapBufferTime) && (elapsedSinceJump >= snapBufferTime);
-        
+
         /// <summary>
         /// Is the player attempting to jump this frame.
         /// </summary>
@@ -509,7 +509,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Distance that the player can snap up when moving up stairs or vertical steps in terrain
         /// </summary>
-        public float VerticalSnapUp => verticalSnapUp; 
+        public float VerticalSnapUp => verticalSnapUp;
 
         /// <summary>
         /// Minimum depth of a stair for a user to climb up

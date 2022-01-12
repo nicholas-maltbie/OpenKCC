@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -73,6 +73,7 @@ namespace nickmaltbie.OpenKCC.Demo
             {
                 kcc = GetComponent<KinematicCharacterController>();
             }
+
             if (colliderCast == null)
             {
                 colliderCast = GetComponent<IColliderCast>();
@@ -109,14 +110,13 @@ namespace nickmaltbie.OpenKCC.Demo
                     null));
 
             int bounce = 0;
-
-            Vector3 finalPos = transform.position;;
+            _ = transform.position;
+            ;
 
             foreach (KCCBounce bounceData in bounces)
             {
 
                 Color orderColor = bounceColors[bounce % bounceColors.Length];
-
 
                 if (bounceData.action == MovementAction.Move || bounceData.action == MovementAction.Bounce)
                 {
