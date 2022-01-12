@@ -1,3 +1,20 @@
+// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character;
@@ -60,8 +77,6 @@ namespace nickmaltbie.OpenKCC.Utils
             // If we were to snap the player up and they moved forward, would they hit something?
             Vector3 currentPosition = position;
             Vector3 snapUp = distanceToSnap * up;
-            position += snapUp;
-
             Vector3 directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
             bool didSnapHit = colliderCast
                 .CastSelf(
@@ -158,11 +173,10 @@ namespace nickmaltbie.OpenKCC.Utils
                     distanceToFeet < verticalSnapUp &&
                     distanceToFeet > 0)
                 {
-                    bool snappedUp = false;
                     // Sometimes snapping up the exact distance leads to odd behaviour around steps and walls.
                     // It's good to check the maximum and minimum snap distances and take whichever one works.
                     // Attempt to snap up the maximum vertical distance
-                    snappedUp = AttemptSnapUp(
+                    bool snappedUp = AttemptSnapUp(
                         verticalSnapUp,
                         stepUpDepth,
                         hit,
@@ -228,6 +242,5 @@ namespace nickmaltbie.OpenKCC.Utils
             yield return (position, new Ray(position, Vector3.zero), MovementAction.Stop);
             yield break;
         }
-        
     }
 }

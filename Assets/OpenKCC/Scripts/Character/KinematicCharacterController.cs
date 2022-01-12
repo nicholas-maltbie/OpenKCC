@@ -21,9 +21,7 @@ using System.Linq;
 
 using nickmaltbie.OpenKCC.Environment;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
-using nickmaltbie.OpenKCC.Environment.Pushable;
 using nickmaltbie.OpenKCC.Utils;
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
@@ -455,7 +453,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Intended direction of movement provided by.
         /// </summary>
-        public Vector3 InputMovement => this.inputMovement;
+        public Vector3 InputMovement => inputMovement;
 
         /// <summary>
         /// Player rotated movement that they intend to move.
@@ -465,7 +463,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Get the current object this player is standing on.
         /// </summary>
-        public GameObject Floor => this.floor;
+        public GameObject Floor => floor;
 
         /// <summary>
         /// Is the player currently prone?
@@ -498,24 +496,24 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Maximum number of time player can bounce of walls/floors/objects during an update
         /// </summary>
-        public int MaxBounces => this.maxBounces;
+        public int MaxBounces => maxBounces;
 
         /// <summary>
         /// Decay value of momentum when hitting another object.
         /// Should be between [0, 1]
         /// </summary>
-        public float PushDecay => this.pushDecay;
+        public float PushDecay => pushDecay;
 
         /// <summary>
         /// Distance that the player can snap up when moving up stairs or vertical steps in terrain
         /// </summary>
-        public float VerticalSnapUp => this.verticalSnapUp; 
+        public float VerticalSnapUp => verticalSnapUp; 
 
         /// <summary>
         /// Minimum depth of a stair for a user to climb up
         /// (thinner steps than this value will not let the player climb)
         /// </summary>
-        public float StepUpDepth => this.stepUpDepth;
+        public float StepUpDepth => stepUpDepth;
 
         /// <summary>
         /// Decrease in momentum factor due to angle change when walking.
@@ -523,7 +521,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// values between [0, 1] so values smaller than 1 create a positive
         /// curve and grater than 1 for a negative curve.
         /// </summary>
-        public float AnglePower => this.anglePower;
+        public float AnglePower => anglePower;
 
         /// <summary>
         /// Is the character collider frozen in place as of now. When frozen, the character collider will
@@ -538,9 +536,9 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void Start()
         {
-            this.cameraController = GetComponent<CameraController>();
-            this.characterRigidbody = GetComponent<Rigidbody>();
-            this.capsuleColliderCast = GetComponent<CapsuleColliderCast>();
+            cameraController = GetComponent<CameraController>();
+            characterRigidbody = GetComponent<Rigidbody>();
+            capsuleColliderCast = GetComponent<CapsuleColliderCast>();
             feetFollowObj = new GameObject();
             feetFollowObj.name = "feetFollowObj";
             feetFollowObj.transform.SetParent(transform);
@@ -840,7 +838,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void SnapPlayerDown(Vector3 dir, float dist)
         {
-            bool didHit = capsuleColliderCast.CastSelf(dir, dist, out var hit);
+            bool didHit = capsuleColliderCast.CastSelf(dir, dist, out RaycastHit hit);
 
             if (didHit && hit.distance > KCCUtils.Epsilon)
             {
@@ -865,14 +863,14 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void CheckGrounded()
         {
-            bool didHit = capsuleColliderCast.CastSelf(Down, groundCheckDistance, out var hit);
+            bool didHit = capsuleColliderCast.CastSelf(Down, groundCheckDistance, out RaycastHit hit);
 
-            this.angle = Vector3.Angle(hit.normal, Up);
-            this.distanceToGround = hit.distance;
-            this.onGround = didHit;
-            this.surfaceNormal = hit.normal;
-            this.groundHitPosition = hit.distance > 0 ? hit.point : transform.position;
-            this.floor = hit.collider != null ? hit.collider.gameObject : null;
+            angle = Vector3.Angle(hit.normal, Up);
+            distanceToGround = hit.distance;
+            onGround = didHit;
+            surfaceNormal = hit.normal;
+            groundHitPosition = hit.distance > 0 ? hit.point : transform.position;
+            floor = hit.collider != null ? hit.collider.gameObject : null;
         }
 
         public void MovePlayer(Vector3 movement)

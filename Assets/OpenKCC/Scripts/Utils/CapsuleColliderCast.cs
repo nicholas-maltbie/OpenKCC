@@ -1,7 +1,23 @@
-using System;
+// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 using System.Collections.Generic;
 using System.Linq;
-using nickmaltbie.OpenKCC.Character;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils
@@ -27,12 +43,12 @@ namespace nickmaltbie.OpenKCC.Utils
         /// </summary>
         public (Vector3, Vector3, float, float) GetParams()
         {
-            var center = transform.TransformPoint(capsuleCollider.center);
-            var radius = capsuleCollider.radius;
-            var height = capsuleCollider.height;
+            Vector3 center = transform.TransformPoint(capsuleCollider.center);
+            float radius = capsuleCollider.radius;
+            float height = capsuleCollider.height;
 
-            var bottom = center + transform.TransformDirection(Vector3.down) * (height / 2 - radius);
-            var top = center + transform.TransformDirection(Vector3.up) * (height / 2 - radius);
+            Vector3 bottom = center + transform.TransformDirection(Vector3.down) * (height / 2 - radius);
+            Vector3 top = center + transform.TransformDirection(Vector3.up) * (height / 2 - radius);
 
             return (top, bottom, radius, height);
         }
@@ -40,7 +56,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <inheritdoc/>
         public IEnumerable<Collider> GetOverlapping()
         {
-            (var top, var bottom, var radius, var height) = GetParams();
+            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams();
             return Physics
                 .OverlapCapsule(top, bottom, radius, ~0, QueryTriggerInteraction.Ignore)
                 .Where(c => c.transform != transform);
@@ -49,7 +65,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <inheritdoc/>
         public IEnumerable<RaycastHit> GetHits(Vector3 direction, float distance)
         {
-            (var top, var bottom, var radius, _) = GetParams();
+            (Vector3 top, Vector3 bottom, float radius, _) = GetParams();
             return Physics.CapsuleCastAll(top, bottom, radius, direction, distance, ~0, QueryTriggerInteraction.Ignore)
                 .Where(hit => hit.collider.transform != transform);
         }
@@ -57,7 +73,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <inheritdoc/>
         public bool CastSelf(Vector3 direction, float distance, out RaycastHit hit)
         {
-            RaycastHit closest = new RaycastHit() { distance = Mathf.Infinity };
+            var closest = new RaycastHit() { distance = Mathf.Infinity };
             bool hitSomething = false;
             foreach (RaycastHit objHit in GetHits(direction, distance))
             {
@@ -67,6 +83,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     {
                         closest = objHit;
                     }
+
                     hitSomething = true;
                 }
             }
@@ -79,7 +96,7 @@ namespace nickmaltbie.OpenKCC.Utils
         public Vector3 PushOutOverlapping(float maxDistance)
         {
             Vector3 pushed = Vector3.zero;
-            foreach (Collider overlap in this.GetOverlapping())
+            foreach (Collider overlap in GetOverlapping())
             {
                 Physics.ComputePenetration(
                     capsuleCollider, transform.position, transform.rotation,
@@ -91,6 +108,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 transform.position += push;
                 pushed += push;
             }
+
             return pushed;
         }
 
