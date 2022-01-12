@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 3373348097961067066}
   - component: {fileID: 6826506219202058344}
   - component: {fileID: 1849976359}
+  - component: {fileID: 609951634059087576}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -324,7 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cedd7c49d565409428ddbc8473013759, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawInitialCollider: 0
+  drawInitialCollider: 1
   drawOverlapColliders: 1
   drawWhenStill: 1
   movementDistance: 5
@@ -342,6 +343,18 @@ MonoBehaviour:
   - {r: 0.49019608, g: 0.7882353, b: 0.972549, a: 1}
   - {r: 0.627451, g: 0.7647059, b: 0.91764706, a: 1}
   overlapColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &609951634059087576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928389238801210305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c42e37a994cc4d43a30612e8d4227e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1928389239579011581
 PrefabInstance:
   m_ObjectHideFlags: 0

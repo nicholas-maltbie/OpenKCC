@@ -23,6 +23,36 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils
 {
+    /// <summary>
+    /// Data structure describing a bounce of the KCC when moving throughout a scene.
+    /// </summary>
+    public struct KCCBounce
+    {
+        /// <summary>
+        /// Initial position before moving.
+        /// </summary>
+        public Vector3 initialPosition;
+
+        /// <summary>
+        /// Final position once finishing this bounce.
+        /// </summary>
+        public Vector3 finalPosition;
+
+        /// <summary>
+        /// Initial momentum when starting the move.
+        /// </summary>
+        public Vector3 initialMomentum;
+
+        /// <summary>
+        /// Remaining momentum after this bounce.
+        /// </summary>
+        public Vector3 remainingMomentum;
+
+        /// <summary>
+        /// Action that ocurred during this bounce.
+        /// </summary>
+        public KCCUtils.MovementAction action;
+    }
 
     /// <summary>
     /// Utility class for static functions involving kinematic character controller.
@@ -100,7 +130,7 @@ namespace nickmaltbie.OpenKCC.Utils
             }
         }
 
-        public static IEnumerable<(Vector3, Ray, MovementAction)> GetBounces(
+        public static IEnumerable<KCCBounce> GetBounces(
             int maxBounces,
             float pushDecay,
             float verticalSnapUp,
@@ -125,6 +155,7 @@ namespace nickmaltbie.OpenKCC.Utils
             {
                 // Position of character at start of bounce
                 Vector3 initialPosition = position;
+                Vector3 initialMomentum = momentum;
 
                 // Do a cast of the collider to see if an object is hit during this
                 // movement bounce
@@ -133,7 +164,15 @@ namespace nickmaltbie.OpenKCC.Utils
                 {
                     // If there is no hit, move to desired position
                     position += momentum;
-                    yield return (initialPosition, new Ray(position, Vector3.zero), MovementAction.Move);
+
+                    yield return new KCCBounce
+                    {
+                        initialPosition = initialPosition,
+                        finalPosition = position,
+                        initialMomentum = initialMomentum,
+                        remainingMomentum = Vector3.zero,
+                        action = MovementAction.Move,
+                    };
 
                     // Exit as we are done bouncing
                     break;
@@ -200,7 +239,14 @@ namespace nickmaltbie.OpenKCC.Utils
 
                     if (snappedUp)
                     {
-                        yield return (initialPosition, new Ray(position, momentum), MovementAction.SnapUp);
+                        yield return new KCCBounce
+                        {
+                            initialPosition = initialPosition,
+                            finalPosition = position,
+                            initialMomentum = initialMomentum,
+                            remainingMomentum = Vector3.zero,
+                            action = MovementAction.SnapUp,
+                        };
                     }
                 }
 
@@ -235,11 +281,25 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 // Track number of times the character has bounced
                 bounces++;
-                yield return (initialPosition, new Ray(position, momentum), MovementAction.Bounce);
+                yield return new KCCBounce
+                {
+                    initialPosition = initialPosition,
+                    finalPosition = position,
+                    initialMomentum = initialMomentum,
+                    remainingMomentum = Vector3.zero,
+                    action = MovementAction.Bounce,
+                };
             }
             // We're done, player was moved as part of loop
 
-            yield return (position, new Ray(position, Vector3.zero), MovementAction.Stop);
+            yield return new KCCBounce
+            {
+                initialPosition = position,
+                finalPosition = position,
+                initialMomentum = Vector3.zero,
+                remainingMomentum = Vector3.zero,
+                action = MovementAction.Stop,
+            };
             yield break;
         }
     }

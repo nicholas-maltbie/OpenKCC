@@ -884,7 +884,7 @@ namespace nickmaltbie.OpenKCC.Character
         {
             bool snappedUp = false;
 
-            foreach ((Vector3 position, Ray _, MovementAction action) in KCCUtils.GetBounces(
+            foreach (KCCBounce bounce in KCCUtils.GetBounces(
                 maxBounces,
                 pushDecay,
                 verticalSnapUp,
@@ -898,11 +898,11 @@ namespace nickmaltbie.OpenKCC.Character
                 capsuleColliderCast,
                 GetComponent<CharacterPush>()))
             {
-                if (action == MovementAction.Stop)
+                if (bounce.action == MovementAction.Stop)
                 {
-                    transform.position = position;
+                    transform.position = bounce.finalPosition;
                 }
-                else if (action == MovementAction.SnapUp)
+                else if (bounce.action == MovementAction.SnapUp)
                 {
                     snappedUp = true;
                 }

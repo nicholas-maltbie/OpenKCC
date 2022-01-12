@@ -78,7 +78,7 @@ namespace nickmaltbie.OpenKCC.Demo
                 colliderCast = GetComponent<IColliderCast>();
             }
 
-            Vector3 movement = kcc.GetProjectedMovement().normalized * movementDistance;
+            /*Vector3 movement = kcc.GetProjectedMovement().normalized * movementDistance;
 
             if (movement.magnitude == 0)
             {
@@ -88,10 +88,12 @@ namespace nickmaltbie.OpenKCC.Demo
                 }
 
                 movement = kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance;
-            }
+            }*/
+
+            Vector3 movement = kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance;
 
             // Get the bounces the player's movement would make
-            var bounces = new List<(Vector3, Ray, MovementAction)>(
+            var bounces = new List<KCCBounce>(
                 KCCUtils.GetBounces(
                     kcc.MaxBounces,
                     kcc.PushDecay,
@@ -110,54 +112,62 @@ namespace nickmaltbie.OpenKCC.Demo
 
             Vector3 finalPos = transform.position;;
 
-            foreach ((Vector3 initialPos, Ray remaining, MovementAction action) in bounces)
+            foreach (KCCBounce bounceData in bounces)
             {
+
                 Color orderColor = bounceColors[bounce % bounceColors.Length];
 
-                // Draw the initial capsule
-                if (action == MovementAction.Move)
-                {
-                    colliderCast.DrawMeshGizmo(
-                        new Color(orderColor.r, orderColor.g, orderColor.b, outlineAlpha),
-                        new Color(orderColor.r, orderColor.g, orderColor.b, fillAlpha),
-                        initialPos,
-                        transform.rotation);
-                    Gizmos.color = orderColor;
-                    Gizmos.DrawLine(initialPos, remaining.origin);
-                }
-                else if (action == MovementAction.Bounce)
-                {
-                    colliderCast.DrawMeshGizmo(
-                        new Color(orderColor.r, orderColor.g, orderColor.b, outlineAlpha),
-                        new Color(orderColor.r, orderColor.g, orderColor.b, fillAlpha),
-                        initialPos,
-                        transform.rotation);
-                    Gizmos.color = orderColor;
-                    Gizmos.DrawLine(initialPos, remaining.origin);
 
-                    Gizmos.color = overlapColor;
+                if (bounceData.action == MovementAction.Move || bounceData.action == MovementAction.Bounce)
+                {
+                    if (bounce == 0 && !drawInitialCollider)
+                    {
+                        // do nothing
+                    }
+                    else
+                    {
+                        colliderCast.DrawMeshGizmo(
+                            new Color(orderColor.r, orderColor.g, orderColor.b, outlineAlpha),
+                            new Color(orderColor.r, orderColor.g, orderColor.b, fillAlpha),
+                            bounceData.initialPosition,
+                            transform.rotation);
+                    }
+                }
+
+                // Draw the initial capsule
+                if (bounceData.action == MovementAction.Move)
+                {
+                    Gizmos.color = orderColor;
+                    Gizmos.DrawLine(bounceData.initialPosition, bounceData.finalPosition);
+                }
+                else if (bounceData.action == MovementAction.Bounce)
+                {
+                    Gizmos.color = orderColor;
+                    Gizmos.DrawLine(bounceData.initialPosition, bounceData.finalPosition);
+
+                    if (drawOverlapColliders)
+                    {
+                        colliderCast.DrawMeshGizmo(
+                            new Color(overlapColor.r, overlapColor.g, overlapColor.b, outlineAlpha),
+                            new Color(overlapColor.r, overlapColor.g, overlapColor.b, fillAlpha),
+                            bounceData.initialPosition + bounceData.initialMomentum,
+                            transform.rotation);
+                        Gizmos.color = overlapColor;
+                        Gizmos.DrawLine(bounceData.finalPosition, bounceData.initialPosition + bounceData.initialMomentum);
+                    }
+                }
+                else if (bounceData.action == MovementAction.Stop)
+                {
                     colliderCast.DrawMeshGizmo(
                         new Color(orderColor.r, orderColor.g, orderColor.b, outlineAlpha),
                         new Color(orderColor.r, orderColor.g, orderColor.b, fillAlpha),
-                        remaining.origin + remaining.direction,
+                        bounceData.finalPosition,
                         transform.rotation);
-                    Gizmos.DrawLine(initialPos, remaining.origin);
                 }
 
                 // If the type is a move, draw a capsule from start to end
-
-                finalPos = remaining.origin;
                 bounce++;
             }
-
-            Color finalColor = bounceColors[bounce % bounceColors.Length];
-
-            colliderCast.DrawMeshGizmo(
-                new Color(finalColor.r, finalColor.g, finalColor.b, outlineAlpha),
-                new Color(finalColor.r, finalColor.g, finalColor.b, fillAlpha),
-                finalPos,
-                transform.rotation);
-
         }
     }
 }
