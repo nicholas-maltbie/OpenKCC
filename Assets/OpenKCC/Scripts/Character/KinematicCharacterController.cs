@@ -362,7 +362,8 @@ namespace nickmaltbie.OpenKCC.Character
         /// Rotation of the plane the player is viewing
         /// </summary>
         private Quaternion HorizPlaneView =>
-            cameraController != null ? Quaternion.Euler(0, cameraController.Yaw, 0) : Quaternion.identity;
+            cameraController != null ?
+                Quaternion.Euler(0, cameraController.Yaw, 0) : Quaternion.Euler(0, transform.eulerAngles.y, 0);
 
         /// <summary>
         /// Previous objects that the player is standing on.
@@ -458,7 +459,8 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Player rotated movement that they intend to move.
         /// </summary>
-        public Vector3 RotatedMovement => HorizPlaneView * InputMovement;
+        /// <param name="inputMovement">Input movement vector of the player</param>
+        public Vector3 RotatedMovement(Vector3 inputMovement) => HorizPlaneView * inputMovement;
 
         /// <summary>
         /// Get the current object this player is standing on.
@@ -735,7 +737,12 @@ namespace nickmaltbie.OpenKCC.Character
 
         public Vector3 GetProjectedMovement()
         {
-            Vector3 movement = RotatedMovement * (isSprinting ? sprintSpeed : walkingSpeed);
+            return GetProjectedMovement(InputMovement);
+        }
+
+        public Vector3 GetProjectedMovement(Vector3 inputMovement)
+        {
+            Vector3 movement = RotatedMovement(inputMovement) * (isSprinting ? sprintSpeed : walkingSpeed);
 
             // If the player is standing on the ground, project their movement onto the ground plane
             // This allows them to walk up gradual slopes without facing a hit in movement speed

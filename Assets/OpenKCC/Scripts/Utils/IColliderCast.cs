@@ -62,5 +62,14 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="maxDistance">Maximum distance the player can be pushed</param>
         /// <returns>Direction to push the object, distance player was pushed.</returns>
         Vector3 PushOutOverlapping(float maxDistance);
+
+        /// <summary>
+        /// Draw a given mesh with the gizmos in the world.
+        /// </summary>
+        /// <param name="outlineColor">Color to draw outline of the mesh.</param>
+        /// <param name="fillColor">Color to draw the fill of the mesh.</param>
+        /// <param name="position">Position to draw the mesh in.</param>
+        /// <param name="rotation">Rotation to draw the mesh in.</param>
+        void DrawMeshGizmo(Color outlineColor, Color fillColor, Vector3 position, Quaternion rotation);
     }
 }

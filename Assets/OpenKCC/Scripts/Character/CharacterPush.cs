@@ -46,7 +46,6 @@ namespace nickmaltbie.OpenKCC.Character
                 return;
             }
 
-            _ = Vector3.zero;
             // If to the side, use the controller velocity
             // Project movement vector onto plane defined by gravity normal (horizontal plane)
             Vector3 force = Vector3.ProjectOnPlane(hit.moveDirection, Vector3.down) * pushPower;

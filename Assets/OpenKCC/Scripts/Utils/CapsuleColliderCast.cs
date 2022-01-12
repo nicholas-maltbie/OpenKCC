@@ -28,14 +28,18 @@ namespace nickmaltbie.OpenKCC.Utils
     [RequireComponent(typeof(CapsuleCollider))]
     public class CapsuleColliderCast : MonoBehaviour, IColliderCast
     {
+        private CapsuleCollider _capsuleCollider;
+
         /// <summary>
         /// Capsule Collider associated with this object.
         /// </summary>
-        private CapsuleCollider capsuleCollider;
-
-        public void Start()
+        private CapsuleCollider capsuleCollider
         {
-            capsuleCollider = GetComponent<CapsuleCollider>();
+            get
+            {
+                _capsuleCollider = _capsuleCollider == null ? GetComponent<CapsuleCollider>() : _capsuleCollider;
+                return _capsuleCollider;
+            }
         }
 
         /// <summary>
@@ -116,6 +120,23 @@ namespace nickmaltbie.OpenKCC.Utils
         public Bounds GetBounds()
         {
             return capsuleCollider.bounds;
+        }
+
+        /// <inheritdoc/>
+        public void DrawMeshGizmo(Color outlineColor, Color fillColor, Vector3 position, Quaternion rotation)
+        {
+            CapsuleMaker.DrawSolidCapsule(
+                position + capsuleCollider.center,
+                rotation,
+                capsuleCollider.radius,
+                capsuleCollider.height,
+                fillColor);
+            CapsuleMaker.DrawWireCapsule(
+                position + capsuleCollider.center,
+                rotation,
+                capsuleCollider.radius,
+                capsuleCollider.height,
+                outlineColor);
         }
     }
 }

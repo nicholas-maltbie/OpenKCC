@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 1014123492234295141}
   - component: {fileID: 3373348097961067066}
   - component: {fileID: 6826506219202058344}
+  - component: {fileID: 1849976359}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -311,6 +312,36 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1849976359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928389238801210305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cedd7c49d565409428ddbc8473013759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawInitialCollider: 0
+  drawOverlapColliders: 1
+  drawWhenStill: 1
+  movementDistance: 5
+  fillAlpha: 0.5
+  outlineAlpha: 1
+  bounceColors:
+  - {r: 0.08627451, g: 0.90588236, b: 0.19215687, a: 1}
+  - {r: 0, g: 0.9137255, b: 0.43137255, a: 1}
+  - {r: 0, g: 0.9098039, b: 0.6117647, a: 1}
+  - {r: 0, g: 0.90588236, b: 0.7647059, a: 1}
+  - {r: 0, g: 0.8901961, b: 0.88235295, a: 1}
+  - {r: 0, g: 0.87058824, b: 0.9607843, a: 1}
+  - {r: 0, g: 0.84705883, b: 1, a: 1}
+  - {r: 0.23137255, g: 0.81960785, b: 1, a: 1}
+  - {r: 0.49019608, g: 0.7882353, b: 0.972549, a: 1}
+  - {r: 0.627451, g: 0.7647059, b: 0.91764706, a: 1}
+  overlapColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1001 &1928389239579011581
 PrefabInstance:
   m_ObjectHideFlags: 0
