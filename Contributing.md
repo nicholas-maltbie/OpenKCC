@@ -47,6 +47,11 @@ As far as coding style, please try to stay consistent with [Csharp Coding Guidel
 
 In order to finish your PR, ensure you code follows the style guidelines of the project. The rules for our style are defined in the `.editorconfig` file and there is a pre-commit hook that will execute whenever you make a commit to the repository. In addition there is a github actions workflow that will verify the style of all changed files. 
 
+```
+dotnet tool restore
+dotnet format --fix-style warn -v d .\OpenKCC.sln --check
+```
+
 ## 5. Done
 
 If you follow all these steps, we should have a clean, working `main` branch.

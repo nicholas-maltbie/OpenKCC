@@ -1,9 +1,29 @@
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 using System.Collections.Generic;
 using System.Linq;
+
 using nickmaltbie.OpenKCC.Environment;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Environment.Pushable;
 using nickmaltbie.OpenKCC.Utils;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -358,7 +378,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Intended direction of movement provided by.
         /// </summary>
-        public Vector3 InputMovement => this.inputMovement;
+        public Vector3 InputMovement => inputMovement;
 
         /// <summary>
         /// Player rotated movement that they intend to move.
@@ -368,7 +388,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Get the current object this player is standing on.
         /// </summary>
-        public GameObject Floor => this.floor;
+        public GameObject Floor => floor;
 
         /// <summary>
         /// Is the player currently prone?
@@ -407,11 +427,6 @@ namespace nickmaltbie.OpenKCC.Character
         /// Was the player grounded the start of this frame.
         /// </summary>
         private bool startGrounded;
-
-        /// <summary>
-        /// Was the player falling the previous frame.
-        /// </summary>
-        private bool previousFalling;
 
         /// <summary>
         /// The velocity of the ground the previous frame
@@ -485,12 +500,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public (Vector3, Vector3, float, float) GetParams()
         {
-            var center = transform.TransformPoint(capsuleCollider.center);
-            var radius = capsuleCollider.radius;
-            var height = capsuleCollider.height;
+            Vector3 center = transform.TransformPoint(capsuleCollider.center);
+            float radius = capsuleCollider.radius;
+            float height = capsuleCollider.height;
 
-            var bottom = center + Down * (height / 2 - radius);
-            var top = center + Up * (height / 2 - radius);
+            Vector3 bottom = center + Down * (height / 2 - radius);
+            Vector3 top = center + Up * (height / 2 - radius);
             return (top, bottom, radius, height);
         }
 
@@ -501,9 +516,9 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void Start()
         {
-            this.cameraController = GetComponent<CameraController>();
-            this.characterRigidbody = GetComponent<Rigidbody>();
-            this.capsuleCollider = GetComponent<CapsuleCollider>();
+            cameraController = GetComponent<CameraController>();
+            characterRigidbody = GetComponent<Rigidbody>();
+            capsuleCollider = GetComponent<CapsuleCollider>();
             feetFollowObj = new GameObject();
             feetFollowObj.name = "feetFollowObj";
             feetFollowObj.transform.SetParent(transform);
@@ -511,21 +526,21 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void OnEnable()
         {
-            this.jumpAction.action.performed += this.OnJump;
-            this.moveAction.action.performed += this.OnMove;
-            this.sprintAction.action.performed += this.OnSprint;
+            jumpAction.action.performed += OnJump;
+            moveAction.action.performed += OnMove;
+            sprintAction.action.performed += OnSprint;
         }
 
         public void OnDisable()
         {
-            this.jumpAction.action.performed -= this.OnJump;
-            this.moveAction.action.performed -= this.OnMove;
-            this.sprintAction.action.performed -= this.OnSprint;
+            jumpAction.action.performed -= OnJump;
+            moveAction.action.performed -= OnMove;
+            sprintAction.action.performed -= OnSprint;
         }
 
         public void FixedUpdate()
         {
-            if (this.Frozen)
+            if (Frozen)
             {
                 // If frozen do not update or change any settings
                 return;
@@ -533,28 +548,28 @@ namespace nickmaltbie.OpenKCC.Character
 
             float fixedDeltaTime = Time.fixedDeltaTime;
 
-            LinearVelocity = (transform.position - this.previousPosition) / fixedDeltaTime;
-            float deltaAngle = Quaternion.Angle(transform.rotation, this.previousRotation);
+            LinearVelocity = (transform.position - previousPosition) / fixedDeltaTime;
+            float deltaAngle = Quaternion.Angle(transform.rotation, previousRotation);
 
             float linearSpeed = LinearVelocity.magnitude;
             float angularSpeed = deltaAngle / fixedDeltaTime;
 
-            this.previousPosition = transform.position;
-            this.previousRotation = transform.rotation;
+            previousPosition = transform.position;
+            previousRotation = transform.rotation;
 
             if (IsProne)
             {
-                this.remainingMaxProneTime -= fixedDeltaTime;
-                this.remainingMinProneTime -= fixedDeltaTime;
-                this.characterRigidbody.isKinematic = false;
-                this.characterRigidbody.velocity += this.gravity * fixedDeltaTime;
+                remainingMaxProneTime -= fixedDeltaTime;
+                remainingMinProneTime -= fixedDeltaTime;
+                characterRigidbody.isKinematic = false;
+                characterRigidbody.velocity += gravity * fixedDeltaTime;
 
                 CheckGrounded();
 
-                this.feetFollowObj.transform.parent = transform;
-                this.feetFollowObj.transform.localPosition = Vector3.zero;
-                this.feetFollowObj.transform.localRotation = Quaternion.identity;
-                this.distanceToGround = Mathf.Infinity;
+                feetFollowObj.transform.parent = transform;
+                feetFollowObj.transform.localPosition = Vector3.zero;
+                feetFollowObj.transform.localRotation = Quaternion.identity;
+                distanceToGround = Mathf.Infinity;
 
                 // Exclude the floor's velocity from the linear speed calculation for checking prone
                 float movingSpeedCalculation = Mathf.Max(
@@ -581,11 +596,11 @@ namespace nickmaltbie.OpenKCC.Character
             }
             else
             {
-                this.transform.rotation = Quaternion.identity;
-                this.characterRigidbody.isKinematic = true;
-                this.characterRigidbody.velocity = Vector3.zero;
-                this.characterRigidbody.angularVelocity = Vector3.zero;
-                this.startGrounded = StandingOnGround;
+                transform.rotation = Quaternion.identity;
+                characterRigidbody.isKinematic = true;
+                characterRigidbody.velocity = Vector3.zero;
+                characterRigidbody.angularVelocity = Vector3.zero;
+                startGrounded = StandingOnGround;
 
                 // If player is not allowed to move, stop player movement
                 if (PlayerInputManager.playerMovementState == PlayerInputState.Deny)
@@ -608,12 +623,12 @@ namespace nickmaltbie.OpenKCC.Character
                 if (!Falling)
                 {
                     velocity = Vector3.zero;
-                    this.elapsedFalling = 0.0f;
+                    elapsedFalling = 0.0f;
                 }
                 else if (Falling)
                 {
                     velocity += gravity * fixedDeltaTime;
-                    this.elapsedFalling += fixedDeltaTime;
+                    elapsedFalling += fixedDeltaTime;
                 }
 
                 // Compute player jump if they are attempting to jump
@@ -678,7 +693,6 @@ namespace nickmaltbie.OpenKCC.Character
                     .ForEach(detectStand => detectStand.StepOff());
 
                 // Save state of player
-                previousFalling = Falling;
                 previousGrounded = startGrounded;
                 previousJumped = jumped;
                 previousGroundVelocity = GetGroundVelocity();
@@ -694,7 +708,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns></returns>
         public IEnumerable<RaycastHit> GetHits(Vector3 direction, float distance)
         {
-            (var top, var bottom, var radius, _) = GetParams();
+            (Vector3 top, Vector3 bottom, float radius, _) = GetParams();
             return Physics.CapsuleCastAll(top, bottom, radius, direction, distance, ~0, QueryTriggerInteraction.Ignore)
                 .Where(hit => hit.collider.transform != transform);
         }
@@ -709,7 +723,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns>True if an object is hit within distance, false otherwise.</returns>
         public bool CastSelf(Vector3 direction, float distance, out RaycastHit hit)
         {
-            RaycastHit closest = new RaycastHit() { distance = Mathf.Infinity };
+            var closest = new RaycastHit() { distance = Mathf.Infinity };
             bool hitSomething = false;
             foreach (RaycastHit objHit in GetHits(direction, distance))
             {
@@ -719,6 +733,7 @@ namespace nickmaltbie.OpenKCC.Character
                     {
                         closest = objHit;
                     }
+
                     hitSomething = true;
                 }
             }
@@ -764,7 +779,7 @@ namespace nickmaltbie.OpenKCC.Character
                     (StandingOnGround ? surfaceNormal : Up) *
                     jumpAngleWeightFactor + Up * (1 - jumpAngleWeightFactor)
                     ).normalized;
-                velocity = GetGroundVelocity() + this.jumpVelocity * jumpDirection;
+                velocity = GetGroundVelocity() + jumpVelocity * jumpDirection;
                 elapsedSinceJump = 0.0f;
                 return true;
             }
@@ -836,7 +851,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void SnapPlayerDown(Vector3 dir, float dist)
         {
-            bool didHit = CastSelf(dir, dist, out var hit);
+            bool didHit = CastSelf(dir, dist, out RaycastHit hit);
 
             if (didHit && hit.distance > Epsilon)
             {
@@ -864,7 +879,7 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 PushOutOverlapping(float maxDistance)
         {
             Vector3 pushed = Vector3.zero;
-            foreach (Collider overlap in this.GetOverlapping())
+            foreach (Collider overlap in GetOverlapping())
             {
                 Physics.ComputePenetration(
                     capsuleCollider, transform.position, transform.rotation,
@@ -876,12 +891,13 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.position += push;
                 pushed += push;
             }
+
             return pushed;
         }
 
         public IEnumerable<Collider> GetOverlapping()
         {
-            (var top, var bottom, var radius, var height) = GetParams();
+            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams();
             return Physics.OverlapCapsule(top, bottom, radius, ~0, QueryTriggerInteraction.Ignore).Where(c => c.transform != transform);
         }
 
@@ -890,15 +906,15 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void CheckGrounded()
         {
-            bool didHit = CastSelf(Down, groundCheckDistance, out var hit);
-            (var top, var bottom, var radius, var height) = GetParams();
+            bool didHit = CastSelf(Down, groundCheckDistance, out RaycastHit hit);
+            (_, _, _, _) = GetParams();
 
-            this.angle = Vector3.Angle(hit.normal, Up);
-            this.distanceToGround = hit.distance;
-            this.onGround = didHit;
-            this.surfaceNormal = hit.normal;
-            this.groundHitPosition = hit.distance > 0 ? hit.point : transform.position;
-            this.floor = hit.collider != null ? hit.collider.gameObject : null;
+            angle = Vector3.Angle(hit.normal, Up);
+            distanceToGround = hit.distance;
+            onGround = didHit;
+            surfaceNormal = hit.normal;
+            groundHitPosition = hit.distance > 0 ? hit.point : transform.position;
+            floor = hit.collider != null ? hit.collider.gameObject : null;
         }
 
         /// <summary>
@@ -921,7 +937,7 @@ namespace nickmaltbie.OpenKCC.Character
             transform.position += snapUp;
 
             Vector3 directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
-            bool didSnapHit = this.CastSelf(directionAfterSnap.normalized, Mathf.Max(stepUpDepth, momentum.magnitude), out RaycastHit snapHit);
+            bool didSnapHit = CastSelf(directionAfterSnap.normalized, Mathf.Max(stepUpDepth, momentum.magnitude), out RaycastHit snapHit);
 
             // If they can move without instantly hitting something, then snap them up
             if ((!Falling || elapsedFalling <= snapBufferTime) && snapHit.distance > Epsilon && (!didSnapHit || snapHit.distance > stepUpDepth))
@@ -957,7 +973,7 @@ namespace nickmaltbie.OpenKCC.Character
                 // Do a cast of the collider to see if an object is hit during this
                 // movement bounce
                 float distance = momentum.magnitude;
-                if (!this.CastSelf(momentum.normalized, distance, out RaycastHit hit))
+                if (!CastSelf(momentum.normalized, distance, out RaycastHit hit))
                 {
                     // If there is no hit, move to desired position
                     transform.position += momentum;

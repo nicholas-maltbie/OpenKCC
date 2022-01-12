@@ -1,5 +1,25 @@
-using nickmaltbie.OpenKCC.Utils;
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 using System.Collections.Generic;
+
+using nickmaltbie.OpenKCC.Utils;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -134,7 +154,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Source camera position in real world space, this is where the head of 
         /// the player would be, where the camera zooms out from
         /// </summary>
-        public Vector3 CameraSource => this.baseCameraOffset + transform.position;
+        public Vector3 CameraSource => baseCameraOffset + transform.position;
 
         /// <summary>
         /// Add an object to the ignore list when raycasting camera position
@@ -150,9 +170,9 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void Start()
         {
-            this.baseCameraOffset = this.cameraTransform.localPosition;
-            this.currentDistance = Mathf.Clamp(currentDistance, minCameraDistance, maxCameraDistance);
-            this.ignoreObjects.Add(gameObject);
+            baseCameraOffset = cameraTransform.localPosition;
+            currentDistance = Mathf.Clamp(currentDistance, minCameraDistance, maxCameraDistance);
+            ignoreObjects.Add(gameObject);
         }
 
         public bool RaycastFromCameraBase(float maxDistance, LayerMask layerMask, QueryTriggerInteraction queryTriggerInteraction, out RaycastHit hit)
@@ -174,8 +194,8 @@ namespace nickmaltbie.OpenKCC.Character
         {
             Vector2 look = context.ReadValue<Vector2>();
             look *= PlayerInputManager.mouseSensitivity;
-            this.yawChange = look.x;
-            this.pitchChange = look.y;
+            yawChange = look.x;
+            pitchChange = look.y;
         }
 
         /// <summary>
@@ -184,7 +204,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <param name="context"></param>
         public void OnZoom(InputAction.CallbackContext context)
         {
-            this.zoomAxis = context.ReadValue<Vector2>().y;
+            zoomAxis = context.ReadValue<Vector2>().y;
         }
 
         private float pitch;
@@ -223,7 +243,7 @@ namespace nickmaltbie.OpenKCC.Character
             frameRotation = yawChange;
             // Change camera zoom by desired level
             // Bound the current distance between minimum and maximum
-            this.currentDistance = Mathf.Clamp(this.currentDistance + zoomChange, this.minCameraDistance, this.maxCameraDistance);
+            currentDistance = Mathf.Clamp(currentDistance + zoomChange, minCameraDistance, maxCameraDistance);
 
             // Set the player's rotation to be that of the camera's yaw
             // transform.rotation = Quaternion.Euler(0, yaw, 0);
@@ -232,20 +252,20 @@ namespace nickmaltbie.OpenKCC.Character
 
             // Set the local position of the camera to be the current rotation projected
             //   backwards by the current distance of the camera from the player
-            Vector3 cameraDirection = -cameraTransform.forward * this.currentDistance;
+            Vector3 cameraDirection = -cameraTransform.forward * currentDistance;
             Vector3 cameraSource = CameraSource;
 
             // Draw a line from our camera source in the camera direction. If the line hits anything that isn't us
             // Limit the distance by how far away that object is
             // If we hit something
             if (PhysicsUtils.SphereCastFirstHitIgnore(ignoreObjects, cameraSource, 0.01f, cameraDirection, cameraDirection.magnitude,
-                this.cameraRaycastMask, QueryTriggerInteraction.Ignore, out RaycastHit hit))
+                cameraRaycastMask, QueryTriggerInteraction.Ignore, out RaycastHit hit))
             {
                 // limit the movement by that hit
                 cameraDirection = cameraDirection.normalized * hit.distance;
             }
 
-            this.CameraDistance = cameraDirection.magnitude;
+            CameraDistance = cameraDirection.magnitude;
             cameraTransform.position = cameraSource + cameraDirection;
 
             bool hittingSelf = PhysicsUtils.SphereCastAllow(gameObject, cameraSource + cameraDirection, 0.01f, -cameraDirection.normalized,
@@ -287,14 +307,14 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void OnEnable()
         {
-            this.zoomAction.action.performed += this.OnZoom;
-            this.lookAction.action.performed += this.OnLook;
+            zoomAction.action.performed += OnZoom;
+            lookAction.action.performed += OnLook;
         }
 
         public void OnDisable()
         {
-            this.zoomAction.action.performed -= this.OnZoom;
-            this.lookAction.action.performed -= this.OnLook;
+            zoomAction.action.performed -= OnZoom;
+            lookAction.action.performed -= OnLook;
         }
     }
 }
