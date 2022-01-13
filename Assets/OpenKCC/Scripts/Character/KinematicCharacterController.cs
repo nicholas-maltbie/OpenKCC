@@ -945,6 +945,7 @@ namespace nickmaltbie.OpenKCC.Character
                     snappedUp = true;
                 }
             }
+
             return snappedUp;
         }
 
