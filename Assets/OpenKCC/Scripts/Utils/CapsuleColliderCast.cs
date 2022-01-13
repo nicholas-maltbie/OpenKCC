@@ -42,19 +42,46 @@ namespace nickmaltbie.OpenKCC.Utils
             }
         }
 
+
         /// <summary>
-        /// Gets transformed parameters describing this capsule collider
+        /// Gets transformed parameters describing this capsule collider for the current position and rotation
         /// </summary>
+        /// <returns>The top, bottom, radius, and height of the capsule collider</returns>
         public (Vector3, Vector3, float, float) GetParams()
         {
-            Vector3 center = transform.TransformPoint(capsuleCollider.center);
+            return GetParams(transform.position, transform.rotation);
+        }
+
+        /// <summary>
+        /// Gets transformed parameters describing this capsule collider for a given position and rotation
+        /// </summary>
+        /// <param name="position">Position of the object.</param>
+        /// <param name="rotation">Rotation of the object.</param>
+        /// <returns>The top, bottom, radius, and height of the capsule collider</returns>
+        public (Vector3, Vector3, float, float) GetParams(Vector3 position, Quaternion rotation)
+        {
+            Vector3 center = rotation * capsuleCollider.center + position;
             float radius = capsuleCollider.radius;
             float height = capsuleCollider.height;
 
-            Vector3 bottom = center + transform.TransformDirection(Vector3.down) * (height / 2 - radius);
-            Vector3 top = center + transform.TransformDirection(Vector3.up) * (height / 2 - radius);
+            Vector3 bottom = center + rotation * Vector3.down * (height / 2 - radius);
+            Vector3 top = center + rotation * Vector3.up * (height / 2 - radius);
 
             return (top, bottom, radius, height);
+        }
+
+        /// <summary>
+        /// Gets the overlapping colliders for a given position and rotation of the capsule collider
+        /// </summary>
+        /// <param name="position">Position of the object.</param>
+        /// <param name="rotation">Rotation of the object.</param>
+        /// <returns>Enumeration of all overlapping objects.</returns>
+        public IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation)
+        {
+            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation);
+            return Physics
+                .OverlapCapsule(top, bottom, radius, ~0, QueryTriggerInteraction.Ignore)
+                .Where(c => c.transform != transform);
         }
 
         /// <inheritdoc/>

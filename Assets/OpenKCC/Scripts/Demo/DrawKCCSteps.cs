@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
+using System.Linq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
@@ -25,10 +26,10 @@ using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 namespace nickmaltbie.OpenKCC.Demo
 {
     /// <summary>
-    /// Draw the bounces using the gizmos in unity. 
+    /// Draw the step based Character Movement.
     /// </summary>
     [RequireComponent(typeof(KinematicCharacterController))]
-    public class DrawKCCBounces : MonoBehaviour
+    public class DrawKCCSteps : MonoBehaviour
     {
         /// <summary>
         /// Kinematic character controller reference.
@@ -38,7 +39,7 @@ namespace nickmaltbie.OpenKCC.Demo
         /// <summary>
         /// Collider cast for checking movement and collision of the character controller.
         /// </summary>
-        private IColliderCast colliderCast;
+        private CapsuleColliderCast colliderCast;
 
         /// <summary>
         /// Should a collider at the position of the character be drawn?
@@ -67,6 +68,13 @@ namespace nickmaltbie.OpenKCC.Demo
         [SerializeField]
         [Tooltip("How far of a movement should be drawn.")]
         public float movementDistance = 5.0f;
+
+        /// <summary>
+        /// Number of steps in the step based movement.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Number of steps to highlight in step based movement.")]
+        public int steps = 4;
 
         /// <summary>
         /// Alpha value for drawing the character collider fill.
@@ -109,10 +117,17 @@ namespace nickmaltbie.OpenKCC.Demo
         [Tooltip("Color of overlapping objects for the character collider gizmo.")]
         public Color overlapColor = Color.red;
 
+        /// <summary>
+        /// Color of steps not used.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Color of steps not used.")]
+        public Color ghostColor = Color.white;
+
         public void Start()
         {
             kcc = GetComponent<KinematicCharacterController>();
-            colliderCast = GetComponent<IColliderCast>();
+            colliderCast = GetComponent<CapsuleColliderCast>();
         }
 
         public void OnDrawGizmos()
@@ -124,7 +139,7 @@ namespace nickmaltbie.OpenKCC.Demo
 
             if (colliderCast == null)
             {
-                colliderCast = GetComponent<IColliderCast>();
+                colliderCast = GetComponent<CapsuleColliderCast>();
             }
 
             /*Vector3 movement = kcc.GetProjectedMovement().normalized * movementDistance;
@@ -141,80 +156,52 @@ namespace nickmaltbie.OpenKCC.Demo
 
             Vector3 movement = kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance;
 
-            // Get the bounces the player's movement would make
-            var bounces = new List<KCCBounce>(
-                KCCUtils.GetBounces(
-                    kcc.MaxBounces,
-                    kcc.PushDecay,
-                    kcc.VerticalSnapUp,
-                    kcc.StepUpDepth,
-                    kcc.AnglePower,
-                    kcc.AttemptingJump,
-                    kcc.CanSnapUp,
-                    kcc.transform.position,
-                    movement,
-                    kcc.Up,
-                    colliderCast,
-                    null));
+            // Get Check each step forward
+            Vector3 stepOffset = movement / steps;
+            
+            int step = drawInitialCollider ? 0 : 1;
+            bool overlap = false;
 
-            int bounce = 0;
-            _ = transform.position;
-            ;
-
-            foreach (KCCBounce bounceData in bounces)
+            while (step <= steps)
             {
+                Color orderColor = bounceColors[step % bounceColors.Length];
 
-                Color orderColor = bounceColors[bounce % bounceColors.Length];
-
-                if (bounceData.action == MovementAction.Move || bounceData.action == MovementAction.Bounce)
+                // Get the position of character after they would move this step
+                Vector3 target = transform.position + stepOffset * step + Epsilon * kcc.Up;
+                
+                if (overlap)
                 {
-                    if (bounce == 0 && !drawInitialCollider)
+                    if (drawOverlapColliders)
                     {
-                        // do nothing
+                        colliderCast.DrawMeshGizmo(
+                            new Color(ghostColor.r, ghostColor.g, ghostColor.b, outlineAlpha),
+                            new Color(ghostColor.r, ghostColor.g, ghostColor.b, fillAlpha),
+                            target,
+                            transform.rotation);
                     }
-                    else
+                }
+                else
+                {
+                    overlap = colliderCast.GetOverlapping(target, transform.rotation).Any();
+
+                    if (!overlap)
                     {
                         colliderCast.DrawMeshGizmo(
                             new Color(orderColor.r, orderColor.g, orderColor.b, outlineAlpha),
                             new Color(orderColor.r, orderColor.g, orderColor.b, fillAlpha),
-                            bounceData.initialPosition,
+                            target,
                             transform.rotation);
                     }
-                }
-
-                // Draw the initial capsule
-                if (bounceData.action == MovementAction.Move)
-                {
-                    Gizmos.color = orderColor;
-                    Gizmos.DrawLine(bounceData.initialPosition, bounceData.finalPosition);
-                }
-                else if (bounceData.action == MovementAction.Bounce)
-                {
-                    Gizmos.color = orderColor;
-                    Gizmos.DrawLine(bounceData.initialPosition, bounceData.finalPosition);
-
-                    if (drawOverlapColliders)
+                    else if (overlap && drawOverlapColliders)
                     {
                         colliderCast.DrawMeshGizmo(
                             new Color(overlapColor.r, overlapColor.g, overlapColor.b, outlineAlpha),
                             new Color(overlapColor.r, overlapColor.g, overlapColor.b, fillAlpha),
-                            bounceData.initialPosition + bounceData.initialMomentum,
+                            target,
                             transform.rotation);
-                        Gizmos.color = overlapColor;
-                        Gizmos.DrawLine(bounceData.finalPosition, bounceData.initialPosition + bounceData.initialMomentum);
                     }
                 }
-                else if (bounceData.action == MovementAction.Stop)
-                {
-                    colliderCast.DrawMeshGizmo(
-                        new Color(orderColor.r, orderColor.g, orderColor.b, outlineAlpha),
-                        new Color(orderColor.r, orderColor.g, orderColor.b, fillAlpha),
-                        bounceData.finalPosition,
-                        transform.rotation);
-                }
-
-                // If the type is a move, draw a capsule from start to end
-                bounce++;
+                step++;
             }
         }
     }
