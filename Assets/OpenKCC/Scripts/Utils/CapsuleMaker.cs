@@ -46,11 +46,11 @@ namespace nickmaltbie.OpenKCC.Utils
         /// Draws a wire capsule on the screen, helpful function found here on the unity stack exchange:
         /// https://answers.unity.com/questions/56063/draw-capsule-gizmo.html?childToView=1476302&_ga=2.232481631.1721647171.1641801380-2133336876.1641105790#answer-1476302
         /// </summary>
-        /// <param name="_pos"></param>
-        /// <param name="_rot"></param>
-        /// <param name="_radius"></param>
-        /// <param name="_height"></param>
-        /// <param name="_color"></param>
+        /// <param name="_pos">Position to draw wire capsule (center of capsule)</param>
+        /// <param name="_rot">Rotation to draw wire capsule</param>
+        /// <param name="_radius">Radius of wire capsule</param>
+        /// <param name="_height">Height of wire capsule</param>
+        /// <param name="_color">Color of wire capsule</param>
         public static void DrawWireCapsule(
             Vector3 _pos,
             Quaternion _rot,
@@ -93,6 +93,16 @@ namespace nickmaltbie.OpenKCC.Utils
             Uniform = 2
         }
 
+        /// <summary>
+        /// Create a capsule mesh based on some configuration.
+        /// </summary>
+        /// <param name="longitudes"></param>
+        /// <param name="latitudes"></param>
+        /// <param name="rings"></param>
+        /// <param name="depth"></param>
+        /// <param name="radius"></param>
+        /// <param name="profile"></param>
+        /// <returns></returns>
         public static Mesh CapsuleData(
             int longitudes = 32,
             int latitudes = 16,
@@ -133,7 +143,7 @@ namespace nickmaltbie.OpenKCC.Utils
             float toTexVertical = 1.0f / halfLats;
 
             // Calculate positions for texture coordinates vertical.
-            float vtAspectRatio = 1.0f;
+            float vtAspectRatio;
             switch (profile)
             {
                 case UvProfile.Aspect:

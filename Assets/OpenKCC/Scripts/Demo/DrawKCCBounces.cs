@@ -150,9 +150,10 @@ namespace nickmaltbie.OpenKCC.Demo
                     kcc.StepUpDepth,
                     kcc.AnglePower,
                     kcc.AttemptingJump,
-                    kcc.CanSnapUp,
+                    true,
                     kcc.transform.position,
                     movement,
+                    kcc.transform.rotation,
                     kcc.Up,
                     colliderCast,
                     null));

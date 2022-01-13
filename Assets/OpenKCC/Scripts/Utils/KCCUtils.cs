@@ -102,6 +102,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 up,
             Vector3 momentum,
             IColliderCast colliderCast,
+            Quaternion rotation,
             ref Vector3 position)
         {
             // If we were to snap the player up and they moved forward, would they hit something?
@@ -110,6 +111,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
             bool didSnapHit = colliderCast
                 .CastSelf(
+                    position, rotation,
                     directionAfterSnap.normalized,
                     Mathf.Max(stepUpDepth, momentum.magnitude),
                     out RaycastHit snapHit);
@@ -140,6 +142,7 @@ namespace nickmaltbie.OpenKCC.Utils
             bool canSnapUp,
             Vector3 position,
             Vector3 movement,
+            Quaternion rotation,
             Vector3 up,
             IColliderCast colliderCast,
             CharacterPush push)
@@ -160,7 +163,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 // Do a cast of the collider to see if an object is hit during this
                 // movement bounce
                 float distance = momentum.magnitude;
-                if (!colliderCast.CastSelf(momentum.normalized, distance, out RaycastHit hit))
+                if (!colliderCast.CastSelf(position, rotation, momentum.normalized, distance, out RaycastHit hit))
                 {
                     // If there is no hit, move to desired position
                     position += momentum;
@@ -196,7 +199,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 // Set the fraction of remaining movement (minus some small value)
                 position += momentum * (fraction);
                 // Push slightly along normal to stop from getting caught in walls
-                position += hit.normal * Epsilon;
+                position += hit.normal * Epsilon * 2;
                 // Decrease remaining momentum by fraction of movement remaining
                 momentum *= (1 - fraction);
 
@@ -205,7 +208,12 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 // Snap character vertically up if they hit something
                 //  close enough to their feet
-                float distanceToFeet = hit.point.y - (position - colliderCast.GetBounds().extents).y;
+                Vector3 footDelta = hit.point - colliderCast.GetBottom(position, rotation);
+                float distanceToFeet = Vector3.Project(footDelta, up).magnitude;
+
+                UnityEngine.Debug.DrawLine(hit.point, colliderCast.GetBottom(position, rotation), Color.red);
+
+                UnityEngine.Debug.Log($"snapUp:{canSnapUp}, hit.dist:{hit.distance > 0}, !attemptingJump:{!attemptingJump}, distToFeet:{distanceToFeet} < verticalSnapUp:{verticalSnapUp}, distToFeet:{distanceToFeet}");
                 if (canSnapUp &&
                     hit.distance > 0 &&
                     !attemptingJump &&
@@ -222,6 +230,7 @@ namespace nickmaltbie.OpenKCC.Utils
                         up,
                         momentum,
                         colliderCast,
+                        rotation,
                         ref position);
 
                     if (!snappedUp)
@@ -234,6 +243,7 @@ namespace nickmaltbie.OpenKCC.Utils
                             up,
                             momentum,
                             colliderCast,
+                            rotation,
                             ref position);
                     }
 
@@ -247,6 +257,8 @@ namespace nickmaltbie.OpenKCC.Utils
                             remainingMomentum = Vector3.zero,
                             action = MovementAction.SnapUp,
                         };
+
+                        UnityEngine.Debug.Log("Snapping up steps");
                     }
                 }
 

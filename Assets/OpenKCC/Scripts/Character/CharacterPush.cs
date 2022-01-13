@@ -33,6 +33,10 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public float pushPower = 2.0f;
 
+        /// <summary>
+        /// Push an object using a IControllerColliderHit data.
+        /// </summary>
+        /// <param name="hit">Data about how the character controller hit the object.</param>
         public void PushObject(IControllerColliderHit hit)
         {
             // Check if the thing we hit can be pushed

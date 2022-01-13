@@ -531,11 +531,17 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public bool Frozen { get; set; }
 
+        /// <summary>
+        /// Cleanup attached foot object when this is destroyed.
+        /// </summary>
         public void OnDestroy()
         {
             GameObject.Destroy(feetFollowObj);
         }
 
+        /// <summary>
+        /// Setup KCC components on start.
+        /// </summary>
         public void Start()
         {
             cameraController = GetComponent<CameraController>();
@@ -546,6 +552,9 @@ namespace nickmaltbie.OpenKCC.Character
             feetFollowObj.transform.SetParent(transform);
         }
 
+        /// <summary>
+        /// When enabled, ensure actions are configured properly.
+        /// </summary>
         public void OnEnable()
         {
             jumpAction.action.performed += OnJump;
@@ -553,6 +562,9 @@ namespace nickmaltbie.OpenKCC.Character
             sprintAction.action.performed += OnSprint;
         }
 
+        /// <summary>
+        /// On disable, detach any connected actions.
+        /// </summary>
         public void OnDisable()
         {
             jumpAction.action.performed -= OnJump;
@@ -560,6 +572,9 @@ namespace nickmaltbie.OpenKCC.Character
             sprintAction.action.performed -= OnSprint;
         }
 
+        /// <summary>
+        /// Fixed update to move the player based on player input.
+        /// </summary>
         public void FixedUpdate()
         {
             if (Frozen)
@@ -682,7 +697,7 @@ namespace nickmaltbie.OpenKCC.Character
                 footOffset = transform.position - groundHitPosition;
 
                 var currentStanding = capsuleColliderCast
-                    .GetHits(Down, standingDistance)
+                    .GetHits(transform.position,transform.rotation, Down, standingDistance)
                     .Select(hit => hit.collider.gameObject).ToList();
 
                 // Detect if the floor the player is standing on has changed
@@ -707,7 +722,7 @@ namespace nickmaltbie.OpenKCC.Character
                 previousJumped = jumped;
                 previousGroundVelocity = GetGroundVelocity();
                 previousStanding = capsuleColliderCast
-                    .GetHits(Down, groundedDistance)
+                    .GetHits(transform.position, transform.rotation, Down, groundedDistance)
                     .Select(hit => hit.collider.gameObject).ToList();
             }
         }
@@ -735,11 +750,22 @@ namespace nickmaltbie.OpenKCC.Character
             return groundVelocity;
         }
 
+        /// <summary>
+        /// Get a vector of the projected movement onto the plane the player is standing on.
+        /// </summary>
+        /// <returns>Vector of player movement based on input velocity rotated by player view and projected onto the
+        /// ground.</returns>
         public Vector3 GetProjectedMovement()
         {
             return GetProjectedMovement(InputMovement);
         }
 
+        /// <summary>
+        /// The the player's projected movement onto the ground based on some input movement vector.
+        /// </summary>
+        /// <param name="inputMovement">Input movement of the player.</param>
+        /// <returns>Vector of player movement based on input velocity rotated by player view and projected onto the
+        /// ground.</returns>
         public Vector3 GetProjectedMovement(Vector3 inputMovement)
         {
             Vector3 movement = RotatedMovement(inputMovement) * (isSprinting ? sprintSpeed : walkingSpeed);
@@ -845,7 +871,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void SnapPlayerDown(Vector3 dir, float dist)
         {
-            bool didHit = capsuleColliderCast.CastSelf(dir, dist, out RaycastHit hit);
+            bool didHit = capsuleColliderCast.CastSelf(
+                transform.position,
+                transform.rotation,
+                dir,
+                dist,
+                out RaycastHit hit);
 
             if (didHit && hit.distance > KCCUtils.Epsilon)
             {
@@ -862,7 +893,10 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 PushOutOverlapping()
         {
             float fixedDeltaTime = Time.fixedDeltaTime;
-            return capsuleColliderCast.PushOutOverlapping(maxPushSpeed * fixedDeltaTime);
+            return capsuleColliderCast.PushOutOverlapping(
+                transform.position,
+                transform.rotation,
+                maxPushSpeed * fixedDeltaTime);
         }
 
         /// <summary>
@@ -870,7 +904,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void CheckGrounded()
         {
-            bool didHit = capsuleColliderCast.CastSelf(Down, groundCheckDistance, out RaycastHit hit);
+            bool didHit = capsuleColliderCast.CastSelf(
+                transform.position,
+                transform.rotation,
+                Down,
+                groundCheckDistance,
+                out RaycastHit hit);
 
             angle = Vector3.Angle(hit.normal, Up);
             distanceToGround = hit.distance;
@@ -880,6 +919,10 @@ namespace nickmaltbie.OpenKCC.Character
             floor = hit.collider != null ? hit.collider.gameObject : null;
         }
 
+        /// <summary>
+        /// Move the player based on some vector of desired movement.
+        /// </summary>
+        /// <param name="movement">Movement in world space in which the player model should be moved.</param>
         public void MovePlayer(Vector3 movement)
         {
             bool snappedUp = false;
@@ -894,6 +937,7 @@ namespace nickmaltbie.OpenKCC.Character
                 CanSnapUp,
                 transform.position,
                 movement,
+                transform.rotation,
                 Up,
                 capsuleColliderCast,
                 GetComponent<CharacterPush>()))
