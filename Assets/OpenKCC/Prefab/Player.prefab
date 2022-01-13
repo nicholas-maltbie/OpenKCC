@@ -169,7 +169,7 @@ MonoBehaviour:
   stepUpDepth: 0.1
   verticalSnapUp: 0.3
   snapBufferTime: 0.05
-  earlyStopProneThreshold: 0.2
+  earlyStopProneThreshold: 0.4
   thresholdAngularVelocity: 15
   thresholdVelocity: 0.1
 --- !u!114 &1443923188
@@ -350,6 +350,7 @@ MonoBehaviour:
   - {r: 0.13707033, g: 0.011213934, b: 0.7924528, a: 1}
   - {r: 0.11585414, g: 0.015129937, b: 0.6415094, a: 1}
   - {r: 0.07888488, g: 0, b: 0.49056602, a: 1}
+  maxBounces: 5
   overlapColor: {r: 1, g: 0.99130255, b: 0.0990566, a: 1}
 --- !u!114 &1497970301217932205
 MonoBehaviour:

@@ -681,9 +681,11 @@ namespace nickmaltbie.OpenKCC.Character
                 // These are broken into two steps so the player's world velocity (usually due to falling)
                 //    does not interfere with their ability to walk around according to inputs
                 // Move the player according to their movement
-                MovePlayer(GetProjectedMovement() * fixedDeltaTime);
+                bool snapUpMove = MovePlayer(GetProjectedMovement() * fixedDeltaTime);
                 // Move the player according to their world velocity
-                MovePlayer(velocity * fixedDeltaTime);
+                MovePlayer(velocity * fixedDeltaTime, stopSnapUp:true);
+
+                snapUpPrevious = snapUpMove;
 
                 // if the player was standing on the ground at the start of the frame and is not 
                 //    trying to jump right now, snap them down to the ground
@@ -851,7 +853,12 @@ namespace nickmaltbie.OpenKCC.Character
             // GetMovementWeight(Vector3 point, Vector3 playerVelocity, float deltaTime)
 
             transform.position += (verticalSnapDown * 0.5f) * surfaceNormal;
-            SnapPlayerDown(-surfaceNormal, verticalSnapDown);
+            transform.position = KCCUtils.SnapPlayerDown(
+                transform.position,
+                transform.rotation,
+                -surfaceNormal,
+                verticalSnapDown,
+                capsuleColliderCast);
 
             CheckGrounded();
 
@@ -863,25 +870,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void SnapPlayerDown()
         {
-            SnapPlayerDown(Down, verticalSnapDown);
-        }
-
-        /// <summary>
-        /// Snap the player down onto the ground
-        /// </summary>
-        public void SnapPlayerDown(Vector3 dir, float dist)
-        {
-            bool didHit = capsuleColliderCast.CastSelf(
+            transform.position = KCCUtils.SnapPlayerDown(
                 transform.position,
                 transform.rotation,
-                dir,
-                dist,
-                out RaycastHit hit);
-
-            if (didHit && hit.distance > KCCUtils.Epsilon)
-            {
-                transform.position += dir * (hit.distance - KCCUtils.Epsilon * 2);
-            }
+                Down,
+                verticalSnapDown,
+                capsuleColliderCast);
         }
 
         /// <summary>
@@ -923,10 +917,10 @@ namespace nickmaltbie.OpenKCC.Character
         /// Move the player based on some vector of desired movement.
         /// </summary>
         /// <param name="movement">Movement in world space in which the player model should be moved.</param>
-        public void MovePlayer(Vector3 movement)
+        /// <param name="stopSnapUp">Should snapping up be forcibly stopped.</param>
+        public bool MovePlayer(Vector3 movement, bool stopSnapUp = false)
         {
             bool snappedUp = false;
-
             foreach (KCCBounce bounce in KCCUtils.GetBounces(
                 maxBounces,
                 pushDecay,
@@ -934,7 +928,7 @@ namespace nickmaltbie.OpenKCC.Character
                 stepUpDepth,
                 anglePower,
                 attemptingJump,
-                CanSnapUp,
+                stopSnapUp ? false : CanSnapUp,
                 transform.position,
                 movement,
                 transform.rotation,
@@ -951,8 +945,7 @@ namespace nickmaltbie.OpenKCC.Character
                     snappedUp = true;
                 }
             }
-
-            snapUpPrevious = snappedUp;
+            return snappedUp;
         }
 
         /// <summary>

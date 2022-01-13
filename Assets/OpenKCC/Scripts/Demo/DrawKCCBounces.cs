@@ -103,6 +103,13 @@ namespace nickmaltbie.OpenKCC.Demo
         };
 
         /// <summary>
+        /// Maximum bounces when calculating movement.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Maximum bounces when calculating movement.")]
+        public int maxBounces = 5;
+
+        /// <summary>
         /// Color of overlapping objects for the character collider gizmo.
         /// </summary>
         [SerializeField]
@@ -144,7 +151,7 @@ namespace nickmaltbie.OpenKCC.Demo
             // Get the bounces the player's movement would make
             var bounces = new List<KCCBounce>(
                 KCCUtils.GetBounces(
-                    kcc.MaxBounces,
+                    maxBounces,
                     kcc.PushDecay,
                     kcc.VerticalSnapUp,
                     kcc.StepUpDepth,
@@ -160,12 +167,10 @@ namespace nickmaltbie.OpenKCC.Demo
 
             int bounce = 0;
             _ = transform.position;
-            ;
 
             foreach (KCCBounce bounceData in bounces)
             {
-
-                Color orderColor = bounceColors[bounce % bounceColors.Length];
+                Color orderColor = bounceColors[bounce > 0 ? 0 : bounce % bounceColors.Length];
 
                 if (bounceData.action == MovementAction.Move || bounceData.action == MovementAction.Bounce)
                 {

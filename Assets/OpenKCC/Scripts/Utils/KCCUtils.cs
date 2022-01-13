@@ -81,6 +81,36 @@ namespace nickmaltbie.OpenKCC.Utils
         public const float Epsilon = 0.001f;
 
         /// <summary>
+        /// Snap the player down onto the ground
+        /// </summary>
+        /// <param name="position">Position of the kcc</param>
+        /// <param name="rotation">Rotation of the kcc.</param>
+        /// <param name="dir">Direction to snap the kcc down.</param>
+        /// <param name="dist">Maximum distance the kcc can snap.</param>
+        /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
+        /// <returns></returns>
+        public static Vector3 SnapPlayerDown(
+            Vector3 position,
+            Quaternion rotation,
+            Vector3 dir,
+            float dist,
+            IColliderCast colliderCast)
+        {
+            bool didHit = colliderCast.CastSelf(
+                position,
+                rotation,
+                dir,
+                dist,
+                out RaycastHit hit);
+
+            if (didHit && hit.distance > 0)
+            {
+                return position + dir * (hit.distance - KCCUtils.Epsilon * 2);
+            }
+            return position;
+        }
+
+        /// <summary>
         /// /// Attempt to snap the player up some distance. This will check if there
         /// is available space on the ledge above the point that the player collided with.
         /// If there is space, the player will be teleported up some distance. If
@@ -93,6 +123,8 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="up">Direction of Up relative to the player</param>
         /// <param name="colliderCast">Collider cast associated with the player</param>
         /// <param name="momentum">reference to moving position of the player</param>
+        /// <param name="rotation">Rotation of the player.</param>
+        /// <param name="position">Position of the player.</param>
         /// <returns>True if the player had space on the ledge and was able to move, false if
         /// there was not enough room the player is moved back to their original position</returns>
         public static bool AttemptSnapUp(
@@ -103,33 +135,25 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 momentum,
             IColliderCast colliderCast,
             Quaternion rotation,
-            ref Vector3 position)
+            Vector3 position)
         {
             // If we were to snap the player up and they moved forward, would they hit something?
-            Vector3 currentPosition = position;
-            _ = distanceToSnap * up;
-            Vector3 directionAfterSnap = Vector3.ProjectOnPlane(Vector3.Project(momentum, -hit.normal), Vector3.up).normalized * momentum.magnitude;
+            Vector3 snapPos = position + distanceToSnap * up;
             bool didSnapHit = colliderCast
                 .CastSelf(
-                    position, rotation,
-                    directionAfterSnap.normalized,
-                    Mathf.Max(stepUpDepth, momentum.magnitude),
+                    snapPos,
+                    rotation,
+                    momentum.normalized,
+                    stepUpDepth + Epsilon,
                     out RaycastHit snapHit);
 
             // If they can move without instantly hitting something, then snap them up
-            if (snapHit.distance > KCCUtils.Epsilon && (!didSnapHit || snapHit.distance > stepUpDepth))
+            if (snapHit.distance > Epsilon && (!didSnapHit || snapHit.distance > stepUpDepth))
             {
-                // Project rest of movement onto plane perpendicular to gravity
-                position = currentPosition;
-                position += distanceToSnap * Vector3.up;
                 return true;
             }
-            else
-            {
-                // Otherwise move the player back down
-                position = currentPosition;
-                return false;
-            }
+            // Otherwise move the player back down
+            return false;
         }
 
         public static IEnumerable<KCCBounce> GetBounces(
@@ -145,7 +169,8 @@ namespace nickmaltbie.OpenKCC.Utils
             Quaternion rotation,
             Vector3 up,
             IColliderCast colliderCast,
-            CharacterPush push)
+            CharacterPush push,
+            float minStepAngle = 90)
         {
             // Save current momentum
             Vector3 momentum = movement;
@@ -153,6 +178,8 @@ namespace nickmaltbie.OpenKCC.Utils
             // current number of bounces
             int bounces = 0;
 
+            bool didSnapUp = false;
+            
             // Continue computing while there is momentum and bounces remaining
             while (momentum.magnitude > Epsilon && bounces <= maxBounces)
             {
@@ -181,6 +208,12 @@ namespace nickmaltbie.OpenKCC.Utils
                     break;
                 }
 
+                // If we are overlapping, just exit
+                if (hit.distance == 0)
+                {
+                    break;
+                }
+
                 // Apply some force to the object hit if it is moveable, Apply force on entity hit
                 if (push != null &&
                     hit.collider.attachedRigidbody != null &&
@@ -195,6 +228,11 @@ namespace nickmaltbie.OpenKCC.Utils
                     momentum *= pushDecay;
                 }
 
+                // Snap character vertically up if they hit something
+                //  close enough to their feet
+                float distanceToFeet = hit.point.y -
+                    colliderCast.GetBottom(position, rotation).y;
+
                 float fraction = hit.distance / distance;
                 // Set the fraction of remaining movement (minus some small value)
                 position += momentum * (fraction);
@@ -206,15 +244,16 @@ namespace nickmaltbie.OpenKCC.Utils
                 // Plane to project rest of movement onto
                 Vector3 planeNormal = hit.normal;
 
-                // Snap character vertically up if they hit something
-                //  close enough to their feet
-                Vector3 footDelta = hit.point - colliderCast.GetBottom(position, rotation);
-                float distanceToFeet = Vector3.Project(footDelta, up).magnitude;
+                bool snappedUp = false;
 
-                UnityEngine.Debug.DrawLine(hit.point, colliderCast.GetBottom(position, rotation), Color.red);
+                Vector3 bottom = colliderCast.GetBottom(position, rotation);
+                bool hitStep = Physics.Raycast(new Ray(bottom, momentum.normalized), out RaycastHit stepHit, (hit.point - bottom).magnitude);
 
-                UnityEngine.Debug.Log($"snapUp:{canSnapUp}, hit.dist:{hit.distance > 0}, !attemptingJump:{!attemptingJump}, distToFeet:{distanceToFeet} < verticalSnapUp:{verticalSnapUp}, distToFeet:{distanceToFeet}");
-                if (canSnapUp &&
+                float stepAngle = Vector3.Angle(stepHit.normal, up);
+
+                if (hitStep &&
+                    stepAngle == minStepAngle &&
+                    canSnapUp &&
                     hit.distance > 0 &&
                     !attemptingJump &&
                     distanceToFeet < verticalSnapUp &&
@@ -222,33 +261,25 @@ namespace nickmaltbie.OpenKCC.Utils
                 {
                     // Sometimes snapping up the exact distance leads to odd behaviour around steps and walls.
                     // It's good to check the maximum and minimum snap distances and take whichever one works.
-                    // Attempt to snap up the maximum vertical distance
-                    bool snappedUp = AttemptSnapUp(
-                        verticalSnapUp,
-                        stepUpDepth,
-                        hit,
-                        up,
-                        momentum,
-                        colliderCast,
-                        rotation,
-                        ref position);
+                    // snap them up the minimum vertical distance
+                    if (snappedUp = AttemptSnapUp(distanceToFeet + Epsilon * 2, stepUpDepth, hit, up, momentum, colliderCast, rotation, position))
+                    {
+                        position += (distanceToFeet + Epsilon * 2) * up;
+                    }
 
                     if (!snappedUp)
                     {
-                        // If that movement doesn't work, snap them up the minimum vertical distance
-                        snappedUp = AttemptSnapUp(
-                            distanceToFeet + Epsilon * 2,
-                            stepUpDepth,
-                            hit,
-                            up,
-                            momentum,
-                            colliderCast,
-                            rotation,
-                            ref position);
+                        // If that movement doesn't work, Attempt to snap up the maximum vertical distance
+                        if (snappedUp = AttemptSnapUp(verticalSnapUp, stepUpDepth, hit, up, momentum, colliderCast, rotation, position))
+                        {
+                            position += (distanceToFeet + Epsilon * 2) * up;
+                        }
                     }
 
                     if (snappedUp)
                     {
+                        didSnapUp = true;
+                        // UnityEngine.Debug.Log($"snappedUp:{snappedUp}, canSnapUp:{canSnapUp}, hit.dist:{hit.distance > 0}, !attemptingJump:{!attemptingJump}, distToFeet:{distanceToFeet} < verticalSnapUp:{verticalSnapUp}, distToFeet:{distanceToFeet}"); 
                         yield return new KCCBounce
                         {
                             initialPosition = initialPosition,
@@ -257,26 +288,28 @@ namespace nickmaltbie.OpenKCC.Utils
                             remainingMomentum = Vector3.zero,
                             action = MovementAction.SnapUp,
                         };
-
-                        UnityEngine.Debug.Log("Snapping up steps");
                     }
                 }
 
-                // Only apply angular change if hitting something
-                // Get angle between surface normal and remaining movement
-                float angleBetween = Vector3.Angle(hit.normal, momentum) - 90.0f;
+                // If we did snap up, don't decay momentum
+                if (!snappedUp)
+                {
+                    // If we didn't snap up:
+                    // Only apply angular change if hitting something
+                    // Get angle between surface normal and remaining movement
+                    float angleBetween = Vector3.Angle(hit.normal, momentum) - 90.0f;
 
-                // Normalize angle between to be between 0 and 1
-                // 0 means no angle, 1 means 90 degree angle
-                angleBetween = Mathf.Min(MaxAngleShoveRadians, Mathf.Abs(angleBetween));
-                float normalizedAngle = angleBetween / MaxAngleShoveRadians;
+                    // Normalize angle between to be between 0 and 1
+                    // 0 means no angle, 1 means 90 degree angle
+                    angleBetween = Mathf.Min(MaxAngleShoveRadians, Mathf.Abs(angleBetween));
+                    float normalizedAngle = angleBetween / MaxAngleShoveRadians;
 
-                // Reduce the momentum by the remaining movement that ocurred
-                momentum *= Mathf.Pow(1 - normalizedAngle, anglePower) * 0.9f + 0.1f;
-
+                    // Reduce the momentum by the remaining movement that ocurred
+                    momentum *= Mathf.Pow(1 - normalizedAngle, anglePower) * 0.9f + 0.1f;
+                }
                 // Rotate the remaining remaining movement to be projected along the plane 
                 // of the surface hit (emulate pushing against the object)
-                Vector3 projectedMomentum = Vector3.ProjectOnPlane(
+                Vector3 projectedMomentum = projectedMomentum = snappedUp ? momentum : Vector3.ProjectOnPlane(
                     momentum,
                     planeNormal).normalized * momentum.magnitude;
 
@@ -302,6 +335,11 @@ namespace nickmaltbie.OpenKCC.Utils
                     action = MovementAction.Bounce,
                 };
             }
+            if (didSnapUp)
+            {
+                position = SnapPlayerDown(position, rotation, -up, verticalSnapUp, colliderCast);
+            }
+
             // We're done, player was moved as part of loop
 
             yield return new KCCBounce
