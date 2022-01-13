@@ -131,7 +131,6 @@ namespace nickmaltbie.OpenKCC.Utils
         public static bool AttemptSnapUp(
             float distanceToSnap,
             float stepUpDepth,
-            RaycastHit hit,
             Vector3 up,
             Vector3 momentum,
             IColliderCast colliderCast,
@@ -171,8 +170,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Quaternion rotation,
             Vector3 up,
             IColliderCast colliderCast,
-            CharacterPush push,
-            float minStepAngle = 90)
+            CharacterPush push)
         {
             // Save current momentum
             Vector3 momentum = movement;
@@ -269,7 +267,6 @@ namespace nickmaltbie.OpenKCC.Utils
                     snappedUp = AttemptSnapUp(
                         distanceToFeet + Epsilon * 2,
                         stepUpDepth,
-                        hit,
                         up,
                         momentum,
                         colliderCast,
@@ -281,7 +278,6 @@ namespace nickmaltbie.OpenKCC.Utils
                         // If that movement doesn't work, Attempt to snap up the maximum vertical distance
                         snappedUp = AttemptSnapUp(verticalSnapUp,
                             stepUpDepth,
-                            hit,
                             up,
                             momentum,
                             colliderCast,
