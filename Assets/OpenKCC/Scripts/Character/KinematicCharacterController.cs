@@ -683,7 +683,7 @@ namespace nickmaltbie.OpenKCC.Character
                 // Move the player according to their movement
                 bool snapUpMove = MovePlayer(GetProjectedMovement() * fixedDeltaTime);
                 // Move the player according to their world velocity
-                MovePlayer(velocity * fixedDeltaTime, stopSnapUp:true);
+                MovePlayer(velocity * fixedDeltaTime, stopSnapUp: true);
 
                 snapUpPrevious = snapUpMove;
 
@@ -699,7 +699,7 @@ namespace nickmaltbie.OpenKCC.Character
                 footOffset = transform.position - groundHitPosition;
 
                 var currentStanding = capsuleColliderCast
-                    .GetHits(transform.position,transform.rotation, Down, standingDistance)
+                    .GetHits(transform.position, transform.rotation, Down, standingDistance)
                     .Select(hit => hit.collider.gameObject).ToList();
 
                 // Detect if the floor the player is standing on has changed

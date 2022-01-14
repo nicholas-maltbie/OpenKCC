@@ -179,7 +179,7 @@ namespace nickmaltbie.OpenKCC.Utils
             int bounces = 0;
 
             bool didSnapUp = false;
-            
+
             // Continue computing while there is momentum and bounces remaining
             while (momentum.magnitude > Epsilon && bounces <= maxBounces)
             {

@@ -157,7 +157,7 @@ namespace nickmaltbie.OpenKCC.Demo
 
             // Get Check each step forward
             Vector3 stepOffset = movement / steps;
-            
+
             int step = drawInitialCollider ? 0 : 1;
             bool overlap = false;
 
@@ -167,7 +167,7 @@ namespace nickmaltbie.OpenKCC.Demo
 
                 // Get the position of character after they would move this step
                 Vector3 target = transform.position + stepOffset * step + Epsilon * kcc.Up;
-                
+
                 if (overlap)
                 {
                     if (drawOverlapColliders)
