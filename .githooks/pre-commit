@@ -44,6 +44,7 @@ else
     echo "Formatting files..."
     dotnet tool restore # This handles cache. If there's no restore needed it will not download anything.
     dotnet format --fix-style warn --verbosity minimal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "Assets/NetCodeGenerated" --check
+    dotnet format --fix-whitespace --verbosity minimal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "Assets/NetCodeGenerated" --check
     # Restage files
     echo "Restaging files: $INCLUDE_STRING"
     echo ${INCLUDE_STRING} | xargs -t -l git add

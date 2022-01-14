@@ -22,20 +22,35 @@ using UnityEngine;
 
 public class ExportPackage : MonoBehaviour
 {
+    /// <summary>
+    /// Path of assets directory for export.
+    /// </summary>
     public static readonly string[] AssetPaths = {
         Path.Combine(ScriptBatch.AssetDirectory, "OpenKCC"),
     };
 
+    /// <summary>
+    /// Path of scripts directory for export.
+    /// </summary>
     public static readonly string[] ScriptsAssetPaths = {
         Path.Combine(ScriptBatch.AssetDirectory, "OpenKCC", "Scripts"),
     };
 
+    /// <summary>
+    /// Export path for package.
+    /// </summary>
     public static string PackagePath => Path.Combine(
         ScriptBatch.BuildDirectory, $"OpenKCC-Examples-{ScriptBatch.VersionNumber}.unitypackage");
 
+    /// <summary>
+    /// Export path for scripts package.
+    /// </summary>
     public static string ScriptPackagePath => Path.Combine(
         ScriptBatch.BuildDirectory, $"OpenKCC-{ScriptBatch.VersionNumber}.unitypackage");
 
+    /// <summary>
+    /// Aggregate function to export all package versions.
+    /// </summary>
     [MenuItem("Build/Package/Export All Packages")]
     public static void ExportAllPackages()
     {
@@ -43,6 +58,9 @@ public class ExportPackage : MonoBehaviour
         ExportScriptsAssetPackage();
     }
 
+    /// <summary>
+    /// Function to export package with examples.
+    /// </summary>
     [MenuItem("Build/Package/Export Example Package")]
     public static void ExportExampleAssetPackage()
     {
@@ -54,6 +72,9 @@ public class ExportPackage : MonoBehaviour
                 ExportPackageOptions.IncludeDependencies);
     }
 
+    /// <summary>
+    /// Function to export package with scripts.
+    /// </summary>
     [MenuItem("Build/Package/Export Scripts Package")]
     public static void ExportScriptsAssetPackage()
     {

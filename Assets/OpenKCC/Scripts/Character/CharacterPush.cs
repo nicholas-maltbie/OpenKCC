@@ -33,6 +33,10 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public float pushPower = 2.0f;
 
+        /// <summary>
+        /// Push an object using a IControllerColliderHit data.
+        /// </summary>
+        /// <param name="hit">Data about how the character controller hit the object.</param>
         public void PushObject(IControllerColliderHit hit)
         {
             // Check if the thing we hit can be pushed
@@ -46,7 +50,6 @@ namespace nickmaltbie.OpenKCC.Character
                 return;
             }
 
-            _ = Vector3.zero;
             // If to the side, use the controller velocity
             // Project movement vector onto plane defined by gravity normal (horizontal plane)
             Vector3 force = Vector3.ProjectOnPlane(hit.moveDirection, Vector3.down) * pushPower;
