@@ -147,6 +147,8 @@ namespace nickmaltbie.OpenKCC.Utils
                     stepUpDepth + Epsilon,
                     out RaycastHit snapHit);
 
+            // UnityEngine.Debug.Log($"AttemptingSnapUp snapHit.distance:{snapHit.distance} > {Epsilon} && (!didSnapHit:{!didSnapHit} || snapHit.distance{snapHit.distance} > stepUpDepth:{stepUpDepth})");
+
             // If they can move without instantly hitting something, then snap them up
             if (snapHit.distance > Epsilon && (!didSnapHit || snapHit.distance > stepUpDepth))
             {
@@ -230,8 +232,10 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 // Snap character vertically up if they hit something
                 //  close enough to their feet
-                float distanceToFeet = hit.point.y -
-                    colliderCast.GetBottom(position, rotation).y;
+                Vector3 bottom = colliderCast.GetBottom(position, rotation);
+                Vector3 footVector = Vector3.Project(hit.point, up) - Vector3.Project(bottom, up);
+                bool isAbove = Vector3.Dot(footVector, up) > 0;
+                float distanceToFeet = footVector.magnitude * (isAbove ? 1 : -1);
 
                 float fraction = hit.distance / distance;
                 // Set the fraction of remaining movement (minus some small value)
@@ -246,12 +250,13 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 bool snappedUp = false;
 
-                Vector3 bottom = colliderCast.GetBottom(position, rotation);
                 bool hitStep = Physics.Raycast(
-                    new Ray(bottom, momentum.normalized),
+                    new Ray(hit.point - up * Epsilon + hit.normal * Epsilon, momentum.normalized),
                     out RaycastHit stepHit,
-                    (hit.point - bottom).magnitude);
+                    momentum.magnitude);
                 bool perpendicularStep = Vector3.Dot(stepHit.normal, up) <= Epsilon;
+
+                // UnityEngine.Debug.Log($"snappedUp:{snappedUp}, hitStep:{hitStep}, perpendicularStep:{perpendicularStep}, canSnapUp:{canSnapUp}, hit.dist:{hit.distance > 0}, !attemptingJump:{!attemptingJump}, distToFeet:{distanceToFeet} < verticalSnapUp:{verticalSnapUp}, distToFeet:{distanceToFeet}"); 
 
                 if (hitStep &&
                     perpendicularStep &&
@@ -288,7 +293,6 @@ namespace nickmaltbie.OpenKCC.Utils
                     if (snappedUp)
                     {
                         didSnapUp = true;
-                        // UnityEngine.Debug.Log($"snappedUp:{snappedUp}, canSnapUp:{canSnapUp}, hit.dist:{hit.distance > 0}, !attemptingJump:{!attemptingJump}, distToFeet:{distanceToFeet} < verticalSnapUp:{verticalSnapUp}, distToFeet:{distanceToFeet}"); 
                         yield return new KCCBounce
                         {
                             initialPosition = initialPosition,
