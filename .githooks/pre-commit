@@ -35,6 +35,8 @@ trap 'echo "\"${last_command}\" command filed with exit code $?."' ERR
 INCLUDE_STRING=`git diff --name-only --cached --diff-filter=d | egrep '\.cs$|\.CS$' || true`
 echo "Include string: $INCLUDE_STRING"
 
+EXCLUDE_STRING="Assets/NetCodeGenerated"
+
 # If the include string is empty, we're done. This happens e.g. if the commit only consists of deleted files.
 if [[ -z "$INCLUDE_STRING" ]]
 then
@@ -43,8 +45,8 @@ else
     # Edit your project files here
     echo "Formatting files..."
     dotnet tool restore # This handles cache. If there's no restore needed it will not download anything.
-    dotnet format --fix-style warn --verbosity minimal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "Assets/NetCodeGenerated" --check
-    dotnet format --fix-whitespace --verbosity minimal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "Assets/NetCodeGenerated" --check
+    dotnet format --fix-style warn --verbosity normal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "$EXCLUDE_STRING" --check
+    dotnet format --fix-whitespace --verbosity normal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "$EXCLUDE_STRING" --check
     # Restage files
     echo "Restaging files: $INCLUDE_STRING"
     echo ${INCLUDE_STRING} | xargs -t -l git add
