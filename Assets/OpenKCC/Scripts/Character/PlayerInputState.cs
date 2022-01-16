@@ -30,7 +30,7 @@ namespace nickmaltbie.OpenKCC.Character
     /// <summary>
     /// Manager for player input information as a static class
     /// </summary>
-    public static class PlayerInputManager
+    public static class PlayerInputUtils
     {
         /// <summary>
         /// Current state of the player movement action

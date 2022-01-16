@@ -322,7 +322,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 }
                 // Rotate the remaining remaining movement to be projected along the plane 
                 // of the surface hit (emulate pushing against the object)
-                Vector3 projectedMomentum = _ = snappedUp ? momentum : Vector3.ProjectOnPlane(
+                Vector3 projectedMomentum = snappedUp ? momentum : Vector3.ProjectOnPlane(
                     momentum,
                     planeNormal).normalized * momentum.magnitude;
 

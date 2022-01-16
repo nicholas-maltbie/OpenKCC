@@ -193,7 +193,7 @@ namespace nickmaltbie.OpenKCC.Character
         public void OnLook(InputAction.CallbackContext context)
         {
             Vector2 look = context.ReadValue<Vector2>();
-            look *= PlayerInputManager.mouseSensitivity;
+            look *= PlayerInputUtils.mouseSensitivity;
             yawChange = look.x;
             pitchChange = look.y;
         }
@@ -231,7 +231,7 @@ namespace nickmaltbie.OpenKCC.Character
             // bound pitch between -180 and 180
             Pitch = (Pitch % 360 + 180) % 360 - 180;
             // Only allow rotation if player is allowed to move
-            if (PlayerInputManager.playerMovementState == PlayerInputState.Allow)
+            if (PlayerInputUtils.playerMovementState == PlayerInputState.Allow)
             {
                 yawChange = rotationRate * deltaTime * yawChange;
                 Yaw += yawChange;

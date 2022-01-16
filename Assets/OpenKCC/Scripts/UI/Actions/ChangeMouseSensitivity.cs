@@ -48,18 +48,18 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// <returns>The float position of a slider based on the mouse sensitivity</returns>
         public static float GetSliderValue(float sensitivity)
         {
-            if (sensitivity < PlayerInputManager.minimumMouseSensitivity)
+            if (sensitivity < PlayerInputUtils.minimumMouseSensitivity)
             {
                 return 0.0f;
             }
 
-            if (sensitivity > PlayerInputManager.maximumMouseSensitivity)
+            if (sensitivity > PlayerInputUtils.maximumMouseSensitivity)
             {
                 return 1.0f;
             }
 
-            return Mathf.Pow((PlayerInputManager.mouseSensitivity - PlayerInputManager.minimumMouseSensitivity) /
-                (PlayerInputManager.maximumMouseSensitivity - PlayerInputManager.minimumMouseSensitivity), powerValue);
+            return Mathf.Pow((PlayerInputUtils.mouseSensitivity - PlayerInputUtils.minimumMouseSensitivity) /
+                (PlayerInputUtils.maximumMouseSensitivity - PlayerInputUtils.minimumMouseSensitivity), powerValue);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         public static float GetMouseSensitivity(float sliderPosition)
         {
             return Mathf.Pow(sliderPosition, 1 / powerValue) *
-                (PlayerInputManager.maximumMouseSensitivity - PlayerInputManager.minimumMouseSensitivity) + PlayerInputManager.minimumMouseSensitivity;
+                (PlayerInputUtils.maximumMouseSensitivity - PlayerInputUtils.minimumMouseSensitivity) + PlayerInputUtils.minimumMouseSensitivity;
         }
 
         /// <summary>
@@ -78,26 +78,26 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         /// </summary>
         public void Awake()
         {
-            PlayerInputManager.mouseSensitivity = PlayerPrefs.GetFloat(
-                mouseSensitivityPlayerPref, PlayerInputManager.DefaultMouseSensitivity);
-            slider.SetValueWithoutNotify(GetSliderValue(PlayerInputManager.mouseSensitivity));
+            PlayerInputUtils.mouseSensitivity = PlayerPrefs.GetFloat(
+                mouseSensitivityPlayerPref, PlayerInputUtils.DefaultMouseSensitivity);
+            slider.SetValueWithoutNotify(GetSliderValue(PlayerInputUtils.mouseSensitivity));
             // Update saved and current value on player input
             slider.onValueChanged.AddListener(value =>
             {
-                PlayerInputManager.mouseSensitivity = GetMouseSensitivity(value);
-                PlayerPrefs.SetFloat(mouseSensitivityPlayerPref, PlayerInputManager.mouseSensitivity);
+                PlayerInputUtils.mouseSensitivity = GetMouseSensitivity(value);
+                PlayerPrefs.SetFloat(mouseSensitivityPlayerPref, PlayerInputUtils.mouseSensitivity);
             });
         }
 
         public void ResetBinding()
         {
             PlayerPrefs.DeleteKey(mouseSensitivityPlayerPref);
-            PlayerInputManager.mouseSensitivity = PlayerInputManager.DefaultMouseSensitivity;
+            PlayerInputUtils.mouseSensitivity = PlayerInputUtils.DefaultMouseSensitivity;
         }
 
         public void UpdateDisplay()
         {
-            slider.SetValueWithoutNotify(GetSliderValue(PlayerInputManager.mouseSensitivity));
+            slider.SetValueWithoutNotify(GetSliderValue(PlayerInputUtils.mouseSensitivity));
         }
     }
 }
