@@ -31,7 +31,14 @@ namespace nickmaltbie.OpenKCC.Demo
     [RequireComponent(typeof(CapsuleCollider))]
     public class SimplifiedKCC : MonoBehaviour
     {
+        /// <summary>
+        /// Minimum pitch for camera movement.
+        /// </summary>
         public const float minPitch = -90;
+
+        /// <summary>
+        /// Maximum pitch for camera movement.
+        /// </summary>
         public const float maxPitch = 90;
 
         /// <summary>
