@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -37,20 +37,34 @@ namespace nickmaltbie.OpenKCC.Demo
         /// <summary>
         /// Action realted to moving the camera, should be a two component vector.
         /// </summary>
+        [Tooltip("Action with two axis to rotate player camera around.")]
         public InputActionReference lookAround;
 
         /// <summary>
         /// Action realted to moving the player, should be a two component vector.
         /// </summary>
+        [Tooltip("Action with two axis used to move the player around.")]
         public InputActionReference movePlayer;
 
         /// <summary>
         /// How fast the player can rotate in degrees per second.
         /// </summary>
+        [Tooltip("Rotation speed when moving the camera.")]
+        [SerializeField]
         public float rotateSpeed = 90f;
 
+        /// <summary>
+        /// Maximum number of bounces when moving the player.
+        /// </summary>
+        [Tooltip("Maximum number of bounces when moving the player.")]
+        [SerializeField]
         public int maxBounces = 5;
 
+        /// <summary>
+        /// Player movement speed.
+        /// </summary>
+        [Tooltip("Move speed of the player character.")]
+        [SerializeField]
         public float moveSpeed = 5.0f;
 
         /// <summary>
@@ -64,34 +78,70 @@ namespace nickmaltbie.OpenKCC.Demo
         [SerializeField]
         public float anglePower = 0.5f;
 
+        /// <summary>
+        /// Distance at which the player is considered grounded.
+        /// </summary>
+        [Tooltip("Distance from ground at which the player will stop falling.")]
+        [SerializeField]
+        public float groundDist = 0.01f;
+
+        /// <summary>
+        /// Transform holding camera position.
+        /// </summary>
+        [Tooltip("Transform holding camera position.")]
+        [SerializeField]
         public Transform cameraTransform;
 
+        /// <summary>
+        /// Speed at which the player falls.
+        /// </summary>
+        [Tooltip("Speed at which the player falls.")]
+        [SerializeField]
+        public Vector3 gravity = new Vector3(0, -20, 0);
+
+        /// <summary>
+        /// Max angle at which the player can walk.
+        /// </summary>
+        [Tooltip("Max angle at which the player can walk.")]
+        [SerializeField]
+        public float maxWalkingAngle = 60f;
+
+        /// <summary>
+        /// Velocity at which player is moving.
+        /// </summary>
+        private Vector3 velocity;
+
+        /// <summary>
+        /// Current angle at which the player is looking.
+        /// </summary>
         private Vector2 cameraAngle;
 
+        /// <summary>
+        /// Configuration for capsule collider to compute player collision.
+        /// </summary>
         private CapsuleCollider capsuleCollider;
 
         public void Start()
         {
-            this.capsuleCollider = GetComponent<CapsuleCollider>();
+            capsuleCollider = GetComponent<CapsuleCollider>();
 
-            var rigidbody = GetComponent<Rigidbody>();
+            Rigidbody rigidbody = GetComponent<Rigidbody>();
             rigidbody.isKinematic = true;
         }
-
 
         public void Update()
         {
             // Read input values from player
             Vector2 cameraMove = lookAround.action.ReadValue<Vector2>();
             Vector2 playerMove = movePlayer.action.ReadValue<Vector2>();
-            
+
             // If player is not allowed to move, stop player input
             if (PlayerInputUtils.playerMovementState == PlayerInputState.Deny)
             {
                 playerMove = Vector2.zero;
                 cameraMove = Vector2.zero;
             }
-            
+
             // Camera move on x (horizontal movement) controls the yaw (look left or look right)
             // Camera move on y (vertical movement) controls the pitch (look up or look down)
             cameraAngle.x += -cameraMove.y * rotateSpeed * Time.deltaTime;
@@ -105,20 +155,61 @@ namespace nickmaltbie.OpenKCC.Demo
             // Only rotate camera pitch
             cameraTransform.rotation = Quaternion.Euler(cameraAngle.x, cameraAngle.y, 0);
 
+            // Check if the player is falling
+            bool falling = !CheckGrounded(out RaycastHit groundHit);
+
+            // If falling, increase falling speed, otherwise stop falling.
+            if (falling)
+            {
+                velocity += Physics.gravity * Time.deltaTime;
+            }
+            else
+            {
+                velocity = Vector3.zero;
+            }
+
             // Read player input movement
-            Vector3 inputVector = new Vector3(playerMove.x, 0, playerMove.y);
+            var inputVector = new Vector3(playerMove.x, 0, playerMove.y);
 
             // Rotate movement by current viewing angle
-            Quaternion viewYaw = Quaternion.Euler(0, cameraAngle.y, 0);
+            var viewYaw = Quaternion.Euler(0, cameraAngle.y, 0);
             Vector3 rotatedVector = viewYaw * inputVector;
+            Vector3 normalizedInput = rotatedVector.normalized * Mathf.Min(rotatedVector.magnitude, 1.0f);
 
             // Scale movement by speed and time
-            Vector3 movement = rotatedVector.normalized * moveSpeed * Time.deltaTime;
+            Vector3 movement = normalizedInput * moveSpeed * Time.deltaTime;
+
+            // If the player is standing on the ground, project their movement onto that plane
+            // This allows for walking down slopes smoothly.
+            if (!falling)
+            {
+                movement = Vector3.ProjectOnPlane(movement, groundHit.normal);
+            }
 
             // Attempt to move the player based on player movement
             transform.position = MovePlayer(movement);
+
+            // Move player based on falling speed
+            transform.position = MovePlayer(velocity * Time.deltaTime);
         }
 
+        /// <summary>
+        /// Check if the player is standing on the ground.
+        /// </summary>
+        /// <param name="groundHit">Hit event for standing on the ground.</param>
+        /// <returns></returns>
+        private bool CheckGrounded(out RaycastHit groundHit)
+        {
+            bool onGround = CastSelf(transform.position, transform.rotation, Vector3.down, groundDist, out groundHit);
+            float angle = Vector3.Angle(groundHit.normal, Vector3.up);
+            return onGround && angle < maxWalkingAngle;
+        }
+
+        /// <summary>
+        /// Move the player with a bounce and slide motion.
+        /// </summary>
+        /// <param name="movement">Movement of the player.</param>
+        /// <returns>Final position of player after moving and bouncing.</returns>
         public Vector3 MovePlayer(Vector3 movement)
         {
             Vector3 position = transform.position;
@@ -194,6 +285,16 @@ namespace nickmaltbie.OpenKCC.Demo
             return position;
         }
 
+        /// <summary>
+        /// Cast self in a given direction and get the first object hit.
+        /// </summary>
+        /// <param name="position">Position of the object when it is being raycast.</param>
+        /// <param name="rotation">Rotation of the objecting when it is being raycast.</param>
+        /// <param name="direction">Direction of the raycast.</param>
+        /// <param name="distance">Maximum distance of raycast.</param>
+        /// <param name="hit">First object hit and related information, will have a distance of Mathf.Infinity if none
+        /// is found.</param>
+        /// <returns>True if an object is hit within distance, false otherwise.</returns>
         public bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit)
         {
             // Get Parameters associated with the KCC
@@ -206,15 +307,20 @@ namespace nickmaltbie.OpenKCC.Demo
             Vector3 top = center + rot * Vector3.up * (height / 2 - radius);
 
             // Check what objects this collider will hit when cast with this configuration excluding itself
-            var hits = Physics.CapsuleCastAll(top, bottom, radius, dir, dist, ~0, QueryTriggerInteraction.Ignore)
+            IEnumerable<RaycastHit> hits = Physics.CapsuleCastAll(
+                top, bottom, radius, dir, dist, ~0, QueryTriggerInteraction.Ignore)
                 .Where(hit => hit.collider.transform != transform);
-            
-            // Get the first hit object out of the object collides with
-            hit = hits.FirstOrDefault();
+            bool didHit = hits.Count() > 0;
+
+            // Find the closest objects hit
+            float closestDist = didHit ? Enumerable.Min(hits.Select(hit => hit.distance)) : 0;
+            IEnumerable<RaycastHit> closestHit = hits.Where(hit => hit.distance == closestDist);
+
+            // Get the first hit object out of the things the player collides with
+            hit = closestHit.FirstOrDefault();
 
             // Return if any objects were hit
-            return hits.Count() > 0;
+            return didHit;
         }
-
     }
 }
