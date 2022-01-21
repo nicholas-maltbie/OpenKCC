@@ -640,7 +640,7 @@ namespace nickmaltbie.OpenKCC.Character
                 startGrounded = StandingOnGround;
 
                 // If player is not allowed to move, stop player movement
-                if (PlayerInputManager.playerMovementState == PlayerInputState.Deny)
+                if (PlayerInputUtils.playerMovementState == PlayerInputState.Deny)
                 {
                     inputMovement = Vector3.zero;
                 }

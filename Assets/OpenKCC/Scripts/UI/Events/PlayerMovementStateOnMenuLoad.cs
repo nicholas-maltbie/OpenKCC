@@ -34,7 +34,7 @@ namespace nickmaltbie.OpenKCC.UI.Events
 
         public void OnScreenLoaded()
         {
-            PlayerInputManager.playerMovementState = playerInputState;
+            PlayerInputUtils.playerMovementState = playerInputState;
         }
 
         public void OnScreenUnloaded()
