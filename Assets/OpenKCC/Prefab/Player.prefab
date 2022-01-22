@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 609951634059087576}
   - component: {fileID: 1849976359}
   - component: {fileID: 1497970301217932205}
+  - component: {fileID: 1928389240043740980}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -379,6 +380,24 @@ MonoBehaviour:
   - {r: 0.07888488, g: 0, b: 0.49056602, a: 1}
   overlapColor: {r: 1, g: 0.99215686, b: 0.09803922, a: 1}
   ghostColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &1928389240043740980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928389238801210305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc83e96bf8f7d554b84c678e78556a9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundCheckDistance: 1
+  groundedDistance: 0.01
+  groundedColor: {r: 0.12415449, g: 0.40017873, b: 0.8490566, a: 1}
+  floatingColor: {r: 1, g: 0.8469602, b: 0, a: 1}
+  fillAlpha: 0.5
+  outlineAlpha: 1
 --- !u!1001 &1928389239579011581
 PrefabInstance:
   m_ObjectHideFlags: 0
