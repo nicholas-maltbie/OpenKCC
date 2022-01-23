@@ -85,6 +85,13 @@ namespace nickmaltbie.OpenKCC.Demo
         public float outlineAlpha = 1.0f;
 
         /// <summary>
+        /// Should the movement vector be projected onto the ground before moving?
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Should the movement vector be projected onto the ground before moving")]
+        public bool useProjectedMovement = true;
+
+        /// <summary>
         /// Colors for various iterations of drawing, will loop back to start if this runs out.
         /// </summary>
         [SerializeField]
@@ -134,19 +141,9 @@ namespace nickmaltbie.OpenKCC.Demo
                 colliderCast = GetComponent<IColliderCast>();
             }
 
-            /*Vector3 movement = kcc.GetProjectedMovement().normalized * movementDistance;
-
-            if (movement.magnitude == 0)
-            {
-                if (!drawWhenStill)
-                {
-                    return;
-                }
-
-                movement = kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance;
-            }*/
-
-            Vector3 movement = kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance;
+            Vector3 movement = useProjectedMovement ?
+                kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance
+                : kcc.RotatedMovement(Vector3.forward).normalized * movementDistance;
 
             // Get the bounces the player's movement would make
             var bounces = new List<KCCBounce>(
