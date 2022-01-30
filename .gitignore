@@ -92,3 +92,11 @@ CodeCoverage
 
 # Ignore package settings
 /ProjectSettings/Packages
+
+# Documentation
+Documentation/api/
+Documentation/index.*
+Documentation/Demo/
+Documentation/obj/
+_site/
+Assets/**/obj*
