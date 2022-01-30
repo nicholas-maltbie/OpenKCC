@@ -1,7 +1,10 @@
-# Open KCC
+# OpenKCC
 
 This project is a sample of the Open Kinematic Character Controller. A Kinematic Character Controller (KCC) provides a
-way to control a character avatar as a kinematic object that will interact with the environment.
+way to control a character avatar as a kinematic object that will interact with the environment. 
+
+OpenKCC is an open source project hosted at
+[https://github.com/nicholas-maltbie/OpenKCC](https://github.com/nicholas-maltbie/OpenKCC)
 
 This is an open source project licensed under a [MIT License](LICENSE.txt). Feel free to use a build of the project for
 your own work. If you see an error in the project or have any suggestions, write an issue or make a pull request, I'll
@@ -15,6 +18,23 @@ and is automatically deployed with each update to the codebase.
 
 This library was developed as part of the Falling Parkour Project here -
 [https://github.com/nicholas-maltbie/FallingParkour](https://github.com/nicholas-maltbie/FallingParkour)
+
+# Documentation
+
+Documentation on the project and scripting API is found at
+[https://nickmaltbie.com/OpenKCC/docs/](https://nickmaltbie.com/OpenKCC/docs/) for the latest version of the codebase.
+
+To view the documentation from a local build of the project install [DocFX](https://dotnet.github.io/docfx/), use the
+following command from the root of the repo.
+```
+docfx Documentation/docfx.json --serve
+```
+
+The documentation for the project is stored in the folder `/Documentation` and can be modified and changed to update
+with the project.
+
+_This documentation project is inspired by the project by Norman Erwan's
+[DocFxForUnity](https://github.com/NormandErwan/DocFxForUnity)_
 
 # Learning
 

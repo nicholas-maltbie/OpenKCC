@@ -40,7 +40,7 @@ jobs:
           commit_message: "Updated semver via automated action."
           push_options: --force
 
-  buildAndDeploy:
+  buildAndDeployApp:
     name: Build and Deploy for ${{ matrix.targetPlatform }} on version ${{ matrix.unityVersion }}
     needs: updateSemver
     runs-on: Ubuntu-20.04
@@ -88,10 +88,52 @@ jobs:
 
       # Deploy build to gh-pages branch
       - name: Deploy
-        uses: s0/git-publish-subdir-action@develop
-        env:
-          REPO: self
-          BRANCH: gh-pages
-          FOLDER: ./Builds/OpenKCC-WebGL
-          SQUASH_HISTORY: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          force_orphan: true
+          publish_dir: Builds/OpenKCC-WebGL
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Build the documentation
+  buildAndDeployDocs:
+    runs-on: windows-latest # Required by DocFX
+    needs: buildAndDeployApp
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        # with:
+        #   submodules: true
+
+      - name: Cache git lfs
+        uses: actions/cache@v2
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1.2
+          # use previous cache if current one is not found
+          restore-keys: |
+            ${{ runner.os }}-lfs-
+      - name: Pull lfs data, if not cached
+        run: git lfs pull
+
+      - name: Install DocFX
+        run: choco install -y docfx
+
+      - name: Use README.md as index.md
+        run: cp README.md Documentation/index.md
+
+      - name: Build
+        run: docfx Documentation/docfx.json
+
+      - name: Copy LICENSE.txt to website
+        run: cp LICENSE.txt _site/LICENSE.txt
+
+      - name: Copy Demo assets to website
+        run: cp -Recurse Demo _site/Demo
+
+      # Checkout to the previously created gh-pages branch
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_dir:  _site
+          destination_dir: docs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
