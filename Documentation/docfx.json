@@ -64,7 +64,7 @@
             }
         ],
         "sitemap": {
-            "baseUrl": "https://nickmaltbie.com/TileMaps/docs",
+            "baseUrl": "https://nickmaltbie.com/OpenKCC/docs",
             "changefreq": "weekly",
             "fileOptions": {
                 "api/*": {
