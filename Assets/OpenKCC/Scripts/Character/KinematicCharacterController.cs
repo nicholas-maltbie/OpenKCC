@@ -115,44 +115,6 @@ namespace nickmaltbie.OpenKCC.Character
         private float sprintSpeed = 10.0f;
 
         /// <summary>
-        /// Velocity of player jump in units per second
-        /// </summary>
-        [Tooltip("Vertical velocity of player jump")]
-        [SerializeField]
-        private float jumpVelocity = 5.0f;
-
-        /// <summary>
-        /// Maximum angle at which the player can jump (in degrees)
-        /// </summary>
-        [Tooltip("Maximum angle at which the player can jump (in degrees)")]
-        [SerializeField]
-        [Range(0, 90)]
-        private float maxJumpAngle = 85f;
-
-        /// <summary>
-        /// Weight to which the player's jump is weighted towards the direction
-        /// of the surface they are standing on.
-        /// </summary>
-        [Tooltip("Weight to which the player's jump is weighted towards the angle of their surface")]
-        [SerializeField]
-        [Range(0, 1)]
-        private float jumpAngleWeightFactor = 0.2f;
-
-        /// <summary>
-        /// Minimum time in seconds between player jumps
-        /// </summary>
-        [Tooltip("Minimum time in seconds between player jumps")]
-        [SerializeField]
-        private float jumpCooldown = 0.5f;
-
-        /// <summary>
-        /// Time in seconds that a player can jump after their feet leave the ground
-        /// </summary>
-        [Tooltip("Time in seconds that a player can jump after their feet leave the ground")]
-        [SerializeField]
-        private float coyoteTime = 0.25f;
-
-        /// <summary>
         /// Maximum number of time player can bounce of walls/floors/objects during an update
         /// </summary>
         [Tooltip("Maximum number of bounces when a player is moving")]
@@ -220,6 +182,53 @@ namespace nickmaltbie.OpenKCC.Character
         [SerializeField]
         private float snapBufferTime = 0.05f;
 
+        [Header("Player Jump Settings")]
+
+        /// <summary>
+        /// Velocity of player jump in units per second
+        /// </summary>
+        [Tooltip("Vertical velocity of player jump")]
+        [SerializeField]
+        private float jumpVelocity = 5.0f;
+
+        /// <summary>
+        /// Maximum angle at which the player can jump (in degrees)
+        /// </summary>
+        [Tooltip("Maximum angle at which the player can jump (in degrees)")]
+        [SerializeField]
+        [Range(0, 90)]
+        private float maxJumpAngle = 85f;
+
+        /// <summary>
+        /// Weight to which the player's jump is weighted towards the direction
+        /// of the surface they are standing on.
+        /// </summary>
+        [Tooltip("Weight to which the player's jump is weighted towards the angle of their surface")]
+        [SerializeField]
+        [Range(0, 1)]
+        private float jumpAngleWeightFactor = 0.0f;
+
+        /// <summary>
+        /// Minimum time in seconds between player jumps
+        /// </summary>
+        [Tooltip("Minimum time in seconds between player jumps")]
+        [SerializeField]
+        private float jumpCooldown = 0.5f;
+
+        /// <summary>
+        /// Time in seconds that a player can jump after their feet leave the ground
+        /// </summary>
+        [Tooltip("Time in seconds that a player can jump after their feet leave the ground")]
+        [SerializeField]
+        private float coyoteTime = 0.25f;
+
+        /// <summary>
+        /// Time in seconds that an input can be buffered for jumping.
+        /// </summary>
+        [Tooltip("Time in seconds that an input can be buffered for jumping")]
+        [SerializeField]
+        private float jumpBufferTime = 0.05f;
+
         [Header("Player Prone Settings")]
 
         /// <summary>
@@ -249,9 +258,14 @@ namespace nickmaltbie.OpenKCC.Character
         private Vector3 inputMovement;
 
         /// <summary>
-        /// Is the player attempting to jump.
+        /// Is the player pressing the jump button.
         /// </summary>
-        private bool attemptingJump;
+        private bool pressedJump;
+
+        /// <summary>
+        /// Time since the player started the jump action.
+        /// </summary>
+        private float jumpBufferRemaining;
 
         /// <summary>
         /// Is the player sprinting.
@@ -259,7 +273,7 @@ namespace nickmaltbie.OpenKCC.Character
         private bool isSprinting;
 
         /// <summary>
-        /// How long has the player been falling.
+        /// /// How long has the player been falling.
         /// </summary>
         private float elapsedFalling;
 
@@ -409,7 +423,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Can the player jump right now.
         /// </summary>
         public bool CanJump => elapsedFalling >= 0 && (!FallingAngle(maxJumpAngle) || elapsedFalling <= coyoteTime) &&
-            attemptingJump && elapsedSinceJump >= jumpCooldown;
+            AttemptingJump && elapsedSinceJump >= jumpCooldown;
 
         /// <summary>
         /// Can a player snap down this frame, a player is only allowed to snap down
@@ -422,9 +436,10 @@ namespace nickmaltbie.OpenKCC.Character
         public bool CanSnapDown => (StandingOnGround || elapsedFalling <= snapBufferTime) && (elapsedSinceJump >= snapBufferTime);
 
         /// <summary>
-        /// Is the player attempting to jump this frame.
+        /// Is the player attempting to jump this frame. True if they pressed jump or if the jump buffer time remaining
+        /// is greater than zero.
         /// </summary>
-        public bool AttemptingJump => attemptingJump;
+        public bool AttemptingJump => pressedJump || jumpBufferRemaining > 0;
 
         /// <summary>
         /// Get the current player velocity.
@@ -727,6 +742,12 @@ namespace nickmaltbie.OpenKCC.Character
                     .GetHits(transform.position, transform.rotation, Down, groundedDistance)
                     .Select(hit => hit.collider.gameObject).ToList();
             }
+
+            // Decrement the time since the player last jumped (if it's greater than zero)
+            if (jumpBufferRemaining > 0)
+            {
+                jumpBufferRemaining = Mathf.Max(0, jumpBufferRemaining - fixedDeltaTime);
+            }
         }
 
         /// <summary>
@@ -802,7 +823,11 @@ namespace nickmaltbie.OpenKCC.Character
                     jumpAngleWeightFactor + Up * (1 - jumpAngleWeightFactor)
                     ).normalized;
                 velocity = GetGroundVelocity() + jumpVelocity * jumpDirection;
+
+                // If the player successfully jumped, reset elapsed since jump and jump buffer
                 elapsedSinceJump = 0.0f;
+                jumpBufferRemaining = 0;
+
                 return true;
             }
             else
@@ -927,7 +952,7 @@ namespace nickmaltbie.OpenKCC.Character
                 verticalSnapUp,
                 stepUpDepth,
                 anglePower,
-                attemptingJump,
+                AttemptingJump,
                 stopSnapUp ? false : CanSnapUp,
                 transform.position,
                 movement,
@@ -994,7 +1019,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void OnJump(InputAction.CallbackContext context)
         {
-            attemptingJump = context.ReadValueAsButton();
+            pressedJump = context.ReadValueAsButton();
+            // If the player released the button, reset the remaining buffer time.
+            if (!pressedJump)
+            {
+                jumpBufferRemaining = jumpBufferTime;
+            }
         }
 
         /// <summary>

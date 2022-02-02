@@ -157,11 +157,6 @@ MonoBehaviour:
   gravity: {x: 0, y: -18, z: 0}
   walkingSpeed: 7.5
   sprintSpeed: 10
-  jumpVelocity: 6.5
-  maxJumpAngle: 75
-  jumpAngleWeightFactor: 0
-  jumpCooldown: 0.5
-  coyoteTime: 0.25
   maxBounces: 5
   pushDecay: 0.25
   anglePower: 1
@@ -170,6 +165,12 @@ MonoBehaviour:
   stepUpDepth: 0.1
   verticalSnapUp: 0.3
   snapBufferTime: 0.05
+  jumpVelocity: 6.5
+  maxJumpAngle: 75
+  jumpAngleWeightFactor: 0
+  jumpCooldown: 0.5
+  coyoteTime: 0.25
+  jumpBufferTime: 0.05
   earlyStopProneThreshold: 0.4
   thresholdAngularVelocity: 15
   thresholdVelocity: 0.1
@@ -345,6 +346,7 @@ MonoBehaviour:
   movementDistance: 5
   fillAlpha: 0.5
   outlineAlpha: 1
+  useProjectedMovement: 1
   bounceColors:
   - {r: 0, g: 0.21883087, b: 0.8584906, a: 1}
   - {r: 0.006830946, g: 0.0037379938, b: 0.7924528, a: 1}
