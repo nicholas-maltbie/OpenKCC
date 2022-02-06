@@ -197,6 +197,11 @@ namespace nickmaltbie.OpenKCC.Demo
         private float elapsedFalling = 0f;
 
         /// <summary>
+        /// Has the player jumped while sliding?
+        /// </summary>
+        private bool jumpedWhileSliding = false;
+
+        /// <summary>
         /// Velocity at which player is moving.
         /// </summary>
         private Vector3 velocity;
@@ -266,6 +271,7 @@ namespace nickmaltbie.OpenKCC.Demo
             {
                 velocity = Vector3.zero;
                 elapsedFalling = 0;
+                jumpedWhileSliding = false;
             }
 
             // If the player is attemtping to jump and can jump allow for player jump
@@ -277,10 +283,11 @@ namespace nickmaltbie.OpenKCC.Demo
             bool attemptingJump = jumpInputElapsed <= jumpBufferTime;
 
             // Player can jump if they are (1) on the ground, (2) within the ground jump angle,
-            //  (3) and has not jumped within the jump cooldown time period.
+            //  (3) has not jumped within the jump cooldown time period, and (4) has only jumped once while sliding
             bool canJump = (onGround || elapsedFalling <= coyoteTime) &&
                 groundAngle <= maxJumpAngle &&
-                timeSinceLastJump >= jumpCooldown;
+                timeSinceLastJump >= jumpCooldown &&
+                (!falling || !jumpedWhileSliding);
 
             // Have player jump if they can jump and are attempting to jump
             if (canJump && attemptingJump)
@@ -288,6 +295,9 @@ namespace nickmaltbie.OpenKCC.Demo
                 velocity = Vector3.Lerp(Vector3.up, groundHit.normal, jumpAngleWeightFactor) * jumpVelocity;
                 timeSinceLastJump = 0.0f;
                 jumpInputElapsed = Mathf.Infinity;
+
+                // Mark if the player is jumping while they are sliding
+                jumpedWhileSliding = true;
             }
             else
             {
