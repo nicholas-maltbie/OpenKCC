@@ -276,7 +276,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// /// How long has the player been falling.
         /// </summary>
         private float elapsedFalling;
-        
+
         /// <summary>
         /// Has the player jumped while sliding?
         /// </summary>
@@ -428,7 +428,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Can the player jump right now.
         /// </summary>
         public bool CanJump => elapsedFalling >= 0 && (!FallingAngle(maxJumpAngle) || elapsedFalling <= coyoteTime) &&
-            AttemptingJump && elapsedSinceJump >= jumpCooldown && (!Falling || !notSlidingSinceJump);
+            AttemptingJump && elapsedSinceJump >= jumpCooldown && (!Falling || notSlidingSinceJump);
 
         /// <summary>
         /// Can a player snap down this frame, a player is only allowed to snap down
