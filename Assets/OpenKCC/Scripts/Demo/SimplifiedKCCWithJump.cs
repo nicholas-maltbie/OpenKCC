@@ -199,7 +199,7 @@ namespace nickmaltbie.OpenKCC.Demo
         /// <summary>
         /// Has the player jumped while sliding?
         /// </summary>
-        private bool jumpedWhileSliding = false;
+        private bool notSlidingSinceJump = true;
 
         /// <summary>
         /// Velocity at which player is moving.
@@ -271,7 +271,7 @@ namespace nickmaltbie.OpenKCC.Demo
             {
                 velocity = Vector3.zero;
                 elapsedFalling = 0;
-                jumpedWhileSliding = false;
+                notSlidingSinceJump = true;
             }
 
             // If the player is attemtping to jump and can jump allow for player jump
@@ -287,7 +287,7 @@ namespace nickmaltbie.OpenKCC.Demo
             bool canJump = (onGround || elapsedFalling <= coyoteTime) &&
                 groundAngle <= maxJumpAngle &&
                 timeSinceLastJump >= jumpCooldown &&
-                (!falling || !jumpedWhileSliding);
+                (!falling || notSlidingSinceJump);
 
             // Have player jump if they can jump and are attempting to jump
             if (canJump && attemptingJump)
@@ -297,7 +297,7 @@ namespace nickmaltbie.OpenKCC.Demo
                 jumpInputElapsed = Mathf.Infinity;
 
                 // Mark if the player is jumping while they are sliding
-                jumpedWhileSliding = true;
+                notSlidingSinceJump = false;
             }
             else
             {
