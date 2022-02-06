@@ -45,7 +45,7 @@ As these videos are created they will be listed here:
 * [Designing Character Controllers Intro](https://youtu.be/Hv4CQMCxSWE)
 * [Physics Behind Games and Character Interactions](https://youtu.be/rzD-Lm8pOX0)
 * [Projection Based Movement of KCC](https://youtu.be/s-99Z_W8bcQ)
-* \[Planned\] KCC Jumping and Snapping to Surfaces 
+* [How the KCC Manages Jumping](https://youtu.be/CGsDdBZa5EM)
 * \[Planned\] Character Controller Case Study and Requirements Engineering
 * \[Planned\] Camera controller and Dither Shader
 
