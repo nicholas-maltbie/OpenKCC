@@ -278,6 +278,11 @@ namespace nickmaltbie.OpenKCC.Character
         private float elapsedFalling;
 
         /// <summary>
+        /// Has the player jumped while sliding?
+        /// </summary>
+        private bool notSlidingSinceJump = true;
+
+        /// <summary>
         /// Current player velocity
         /// </summary>
         private Vector3 velocity;
@@ -423,7 +428,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Can the player jump right now.
         /// </summary>
         public bool CanJump => elapsedFalling >= 0 && (!FallingAngle(maxJumpAngle) || elapsedFalling <= coyoteTime) &&
-            AttemptingJump && elapsedSinceJump >= jumpCooldown;
+            AttemptingJump && elapsedSinceJump >= jumpCooldown && (!Falling || notSlidingSinceJump);
 
         /// <summary>
         /// Can a player snap down this frame, a player is only allowed to snap down
@@ -676,6 +681,7 @@ namespace nickmaltbie.OpenKCC.Character
                 {
                     velocity = Vector3.zero;
                     elapsedFalling = 0.0f;
+                    notSlidingSinceJump = true;
                 }
                 else if (Falling)
                 {
@@ -827,6 +833,7 @@ namespace nickmaltbie.OpenKCC.Character
                 // If the player successfully jumped, reset elapsed since jump and jump buffer
                 elapsedSinceJump = 0.0f;
                 jumpBufferRemaining = 0;
+                notSlidingSinceJump = false;
 
                 return true;
             }
