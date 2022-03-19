@@ -45,8 +45,8 @@ else
     # Edit your project files here
     echo "Formatting files..."
     dotnet tool restore # This handles cache. If there's no restore needed it will not download anything.
-    dotnet format --fix-style warn --verbosity normal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "$EXCLUDE_STRING" --check
-    dotnet format --fix-whitespace --verbosity normal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "$EXCLUDE_STRING" --check
+    dotnet format --severity warn --verbosity normal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "$EXCLUDE_STRING" --check
+    dotnet format whitespace --verbosity normal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "$EXCLUDE_STRING" --check
     # Restage files
     echo "Restaging files: $INCLUDE_STRING"
     echo ${INCLUDE_STRING} | xargs -t -l git add

@@ -25,7 +25,10 @@ using UnityEngine.InputSystem;
 
 namespace nickmaltbie.OpenKCC.Character
 {
-    public class CameraController : MonoBehaviour
+    /// <summary>
+    /// Basic hybrid first and third person camera controller.
+    /// </summary>
+    public class CameraController : MonoBehaviour, ICameraControls
     {
         [Header("Input Actions")]
 
@@ -170,17 +173,34 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void Start()
         {
-            baseCameraOffset = cameraTransform.localPosition;
-            currentDistance = Mathf.Clamp(currentDistance, minCameraDistance, maxCameraDistance);
-            ignoreObjects.Add(gameObject);
+            this.baseCameraOffset = cameraTransform.localPosition;
+            this.currentDistance = Mathf.Clamp(currentDistance, minCameraDistance, maxCameraDistance);
+            this.ignoreObjects.Add(gameObject);
         }
 
+        /// <summary>
+        /// Raycast a line from the camera's base.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance to draw ray.</param>
+        /// <param name="layerMask">Layer mask for raycast</param>
+        /// <param name="queryTriggerInteraction">Query trigger interaction for raycast</param>
+        /// <param name="hit">Object the raycast hits, if any.</param>
+        /// <returns>True if an object is hit, false otherwise.</returns>
         public bool RaycastFromCameraBase(float maxDistance, LayerMask layerMask, QueryTriggerInteraction queryTriggerInteraction, out RaycastHit hit)
         {
             return PhysicsUtils.RaycastFirstHitIgnore(ignoreObjects, CameraSource, cameraTransform.forward, maxDistance,
                 layerMask, queryTriggerInteraction, out hit);
         }
 
+        /// <summary>
+        /// Draw a spherecase from the camera's base.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance to draw sphere.</param>
+        /// <param sphereRadius="sphereRadius">Radius of sphere when drawing</param>
+        /// <param name="layerMask">Layer mask for spherecase</param>
+        /// <param name="queryTriggerInteraction">Query trigger interaction for spherecase</param>
+        /// <param name="hit">Object the spherecase hits, if any.</param>
+        /// <returns>True if an object is hit, false otherwise.</returns>
         public bool SpherecastFromCameraBase(float maxDistance, LayerMask layerMask, float sphereRadius, QueryTriggerInteraction queryTriggerInteraction, out RaycastHit hit)
         {
             return PhysicsUtils.SphereCastFirstHitIgnore(ignoreObjects, CameraSource, sphereRadius, cameraTransform.forward, maxDistance,
@@ -207,16 +227,24 @@ namespace nickmaltbie.OpenKCC.Character
             zoomAxis = context.ReadValue<Vector2>().y;
         }
 
+        /// <summary>
+        /// Current desired pitch of the camera.
+        /// </summary>
         private float pitch;
 
+        /// <summary>
+        /// Current desired yaw of the camera.
+        /// </summary>
         private float yaw;
 
+        /// <inheritdoc/>
         public float Pitch
         {
             get => pitch;
             private set => pitch = value;
         }
 
+        /// <inheritdoc/>
         public float Yaw
         {
             get => yaw;
@@ -271,7 +299,6 @@ namespace nickmaltbie.OpenKCC.Character
             bool hittingSelf = PhysicsUtils.SphereCastAllow(gameObject, cameraSource + cameraDirection, 0.01f, -cameraDirection.normalized,
                 cameraDirection.magnitude, ~0, QueryTriggerInteraction.Ignore, out RaycastHit selfHit);
 
-            // float actualDistance = Mathf.Cos(Mathf.Deg2Rad * pitch) * cameraDirection.magnitude;
             float actualDistance = hittingSelf ? selfHit.distance : cameraDirection.magnitude;
 
             if (thirdPersonCharacterBase != null)
