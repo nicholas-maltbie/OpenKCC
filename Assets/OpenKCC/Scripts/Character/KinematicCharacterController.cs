@@ -563,12 +563,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void Start()
         {
-            this.cameraControls = GetComponent<ICameraControls>();
-            this.characterRigidbody = GetComponent<Rigidbody>();
-            this.capsuleColliderCast = GetComponent<CapsuleColliderCast>();
-            this.feetFollowObj = new GameObject();
-            this.feetFollowObj.name = "feetFollowObj";
-            this.feetFollowObj.transform.SetParent(transform);
+            cameraControls = GetComponent<ICameraControls>();
+            characterRigidbody = GetComponent<Rigidbody>();
+            capsuleColliderCast = GetComponent<CapsuleColliderCast>();
+            feetFollowObj = new GameObject();
+            feetFollowObj.name = "feetFollowObj";
+            feetFollowObj.transform.SetParent(transform);
         }
 
         /// <summary>

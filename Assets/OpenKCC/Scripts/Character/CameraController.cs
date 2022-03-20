@@ -173,9 +173,9 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void Start()
         {
-            this.baseCameraOffset = cameraTransform.localPosition;
-            this.currentDistance = Mathf.Clamp(currentDistance, minCameraDistance, maxCameraDistance);
-            this.ignoreObjects.Add(gameObject);
+            baseCameraOffset = cameraTransform.localPosition;
+            currentDistance = Mathf.Clamp(currentDistance, minCameraDistance, maxCameraDistance);
+            ignoreObjects.Add(gameObject);
         }
 
         /// <summary>
