@@ -442,6 +442,7 @@ MonoBehaviour:
   raycastColor: {r: 0, g: 0, b: 1, a: 1}
   overlapColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   sphereRadius: 0.05
+  drawFrustrum: 0
 --- !u!1001 &1928389239579011581
 PrefabInstance:
   m_ObjectHideFlags: 0

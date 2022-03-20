@@ -85,6 +85,20 @@ namespace nickmaltbie.OpenKCC.Demo
         [Tooltip("Radius of sphere to show camera position.")]
         private float sphereRadius = 0.05f;
 
+        /// <summary>
+        /// Draw frustrum to show camera view.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Draw frustrum to show camera view.")]
+        private bool drawFrustrum = true;
+
+        /// <summary>
+        /// Draw raycast back from camera to player checking hitting collider.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Draw raycast back from camera to player checking hitting collider.")]
+        private bool drawBackRaycast = false;
+
         public void Start()
         {
             cameraController = GetComponent<CameraController>();
@@ -110,27 +124,31 @@ namespace nickmaltbie.OpenKCC.Demo
                 Gizmos.DrawLine(transform.position, cameraSource);
             }
 
+            var rotation = Quaternion.Euler(cameraController.Pitch, cameraController.Yaw, 0);
+            _ = cameraController.currentDistance;
+
+            Vector3 cameraDirection = rotation * Vector3.back * cameraController.currentDistance;
+
+            // Draw a line from our camera source in the camera direction. If the line hits anything that isn't us
+            // Limit the distance by how far away that object is
+            // If we hit something
+            if (PhysicsUtils.SphereCastFirstHitIgnore(selfCollider, cameraSource, 0.01f, cameraDirection, cameraDirection.magnitude,
+                ~0, QueryTriggerInteraction.Ignore, out RaycastHit hit))
+            {
+                // limit the movement by that hit
+                cameraDirection = cameraDirection.normalized * hit.distance;
+            }
+
+            bool hittingSelf = PhysicsUtils.SphereCastAllow(gameObject, cameraSource + cameraDirection, 0.01f, -cameraDirection.normalized,
+                cameraDirection.magnitude, ~0, QueryTriggerInteraction.Ignore, out RaycastHit selfHit);
+            _ = hittingSelf ? selfHit.distance : cameraDirection.magnitude;
+
+            Vector3 cameraPos = cameraSource + cameraDirection;
+
             if (drawCameraRaycast)
             {
-                var rotation = Quaternion.Euler(cameraController.Pitch, cameraController.Yaw, 0);
-                _ = cameraController.currentDistance;
-
-                Vector3 cameraDirection = rotation * Vector3.back * cameraController.currentDistance;
-
-                // Draw a line from our camera source in the camera direction. If the line hits anything that isn't us
-                // Limit the distance by how far away that object is
-                // If we hit something
-                if (PhysicsUtils.SphereCastFirstHitIgnore(selfCollider, cameraSource, 0.01f, cameraDirection, cameraDirection.magnitude,
-                    ~0, QueryTriggerInteraction.Ignore, out RaycastHit hit))
-                {
-                    // limit the movement by that hit
-                    cameraDirection = cameraDirection.normalized * hit.distance;
-                }
-
-                Vector3 cameraPos = cameraSource + cameraDirection;
                 Gizmos.color = raycastColor;
                 Gizmos.DrawRay(cameraSource, cameraDirection);
-                Gizmos.DrawSphere(cameraPos, sphereRadius);
 
                 if (showRaycastOverlap)
                 {
@@ -138,6 +156,38 @@ namespace nickmaltbie.OpenKCC.Demo
                     Vector3 overlap = (rotation * Vector3.back * cameraController.currentDistance) - cameraDirection;
                     Gizmos.DrawRay(cameraPos, overlap);
                 }
+            }
+
+            if (drawBackRaycast)
+            {
+                Vector3 hitPoint = selfHit.point;
+                if (hitPoint == Vector3.zero)
+                {
+                    hitPoint = cameraPos;
+                }
+
+                if (hittingSelf)
+                {
+                    Gizmos.color = raycastColor;
+                    Gizmos.DrawLine(cameraPos, hitPoint);
+                }
+
+                if (showRaycastOverlap)
+                {
+                    Vector3 startPoint = hitPoint;
+                    Gizmos.color = overlapColor;
+                    Gizmos.DrawLine(startPoint, cameraSource);
+                }
+            }
+
+            if (drawBackRaycast || drawCameraRaycast)
+            {
+                Gizmos.DrawSphere(cameraPos, sphereRadius);
+            }
+
+            if (drawFrustrum)
+            {
+                Gizmos.DrawFrustum(Camera.main.transform.position, Camera.main.fieldOfView, Camera.main.farClipPlane, Camera.main.nearClipPlane, Camera.main.aspect);
             }
         }
     }
