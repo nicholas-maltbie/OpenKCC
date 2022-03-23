@@ -34,7 +34,6 @@ namespace nickmaltbie.OpenKCC.Character
     /// </summary>
     [RequireComponent(typeof(CapsuleColliderCast))]
     [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(CameraController))]
     public class KinematicCharacterController : MonoBehaviour
     {
         [Header("Input Controls")]
@@ -350,7 +349,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Camera controller for controlling player view.
         /// </summary>
-        private CameraController cameraController;
+        private ICameraControls cameraControls;
 
         /// <summary>
         /// Was the player grounded the start of previous frame.
@@ -381,8 +380,8 @@ namespace nickmaltbie.OpenKCC.Character
         /// Rotation of the plane the player is viewing
         /// </summary>
         private Quaternion HorizPlaneView =>
-            cameraController != null ?
-                Quaternion.Euler(0, cameraController.Yaw, 0) : Quaternion.Euler(0, transform.eulerAngles.y, 0);
+            cameraControls != null ?
+                Quaternion.Euler(0, cameraControls.Yaw, 0) : Quaternion.Euler(0, transform.eulerAngles.y, 0);
 
         /// <summary>
         /// Previous objects that the player is standing on.
@@ -564,7 +563,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void Start()
         {
-            cameraController = GetComponent<CameraController>();
+            cameraControls = GetComponent<ICameraControls>();
             characterRigidbody = GetComponent<Rigidbody>();
             capsuleColliderCast = GetComponent<CapsuleColliderCast>();
             feetFollowObj = new GameObject();

@@ -42,12 +42,13 @@ I will be making a video series discussing how the Open KCC works and going into
 work, describing game design in general, and details about the unity engine and virtual environments.
 
 As these videos are created they will be listed here:
+
 * [Designing Character Controllers Intro](https://youtu.be/Hv4CQMCxSWE)
 * [Physics Behind Games and Character Interactions](https://youtu.be/rzD-Lm8pOX0)
 * [Projection Based Movement of KCC](https://youtu.be/s-99Z_W8bcQ)
 * [How the KCC Manages Jumping](https://youtu.be/CGsDdBZa5EM)
+* [Camera controller and Dither Shader](https://youtu.be/Zw6qvOOHGC4)
 * \[Planned\] Character Controller Case Study and Requirements Engineering
-* \[Planned\] Camera controller and Dither Shader
 
 # Features
 

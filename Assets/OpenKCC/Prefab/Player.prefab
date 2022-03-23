@@ -52,6 +52,7 @@ GameObject:
   - component: {fileID: 1497970301217932205}
   - component: {fileID: 1928389240043740980}
   - component: {fileID: 907866501}
+  - component: {fileID: 1912826408}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -422,6 +423,26 @@ MonoBehaviour:
   thresholdAngle: 60
   pointRadius: 0.01
   useGroundPosition: 0
+--- !u!114 &1912826408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928389238801210305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7a246478bc699441a17bf2dfdc04a0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawOffset: 0
+  offsetColor: {r: 0, g: 1, b: 1, a: 1}
+  drawCameraRaycast: 1
+  showRaycastOverlap: 1
+  raycastColor: {r: 0, g: 0, b: 1, a: 1}
+  overlapColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  sphereRadius: 0.05
+  drawFrustrum: 0
 --- !u!1001 &1928389239579011581
 PrefabInstance:
   m_ObjectHideFlags: 0
