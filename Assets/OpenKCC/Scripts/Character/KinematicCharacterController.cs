@@ -576,9 +576,18 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void OnEnable()
         {
-            jumpAction.action.performed += OnJump;
-            moveAction.action.performed += OnMove;
-            sprintAction.action.performed += OnSprint;
+            if (jumpAction != null)
+            {
+                jumpAction.action.performed += OnJump;
+            }
+            if (moveAction != null)
+            {
+                moveAction.action.performed += OnMove;
+            }
+            if (sprintAction != null)
+            {
+                sprintAction.action.performed += OnSprint;
+            }
         }
 
         /// <summary>
@@ -586,9 +595,18 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void OnDisable()
         {
-            jumpAction.action.performed -= OnJump;
-            moveAction.action.performed -= OnMove;
-            sprintAction.action.performed -= OnSprint;
+            if (jumpAction != null)
+            {
+                jumpAction.action.performed -= OnJump;
+            }
+            if (moveAction != null)
+            {
+                moveAction.action.performed -= OnMove;
+            }
+            if (sprintAction != null)
+            {
+                sprintAction.action.performed -= OnSprint;
+            }
         }
 
         /// <summary>
