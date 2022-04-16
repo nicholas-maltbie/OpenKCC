@@ -50,6 +50,11 @@ jobs:
           artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results
+          customParameters: |
+            -enableCodeCoverage
+            -debugCodeOptimization
+            -burst-disable-compilation 
+            -coverageResultsPath ${{ matrix.testMode }}-artifacts
 
       # - name: Upload Results
       #   uses: actions/upload-artifact@v1
