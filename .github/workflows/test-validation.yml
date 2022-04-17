@@ -58,9 +58,9 @@ jobs:
             -coverageResultsPath ${{ matrix.testMode }}-artifacts
             -coverageOptions "generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*"
             -nographics
-      
-      Unity.exe -projectPath <path-to-project> -batchmode -debugCodeOptimization -enableCodeCoverage -coverageResultsPath <path-to-coverage-results>
--coverageOptions generateHtmlReport;generateBadgeReport -quit
+
+      - name: Combine Results
+        run: /opt/unity/Editor/Unity -projectPath ${{ matrix.projectPath }} -batchmode -debugCodeOptimization -enableCodeCoverage -coverageResultsPath ${{ matrix.testMode }}-artifacts -coverageOptions generateHtmlReport;generateBadgeReport -quit
 
       # - name: Upload Results
       #   uses: actions/upload-artifact@v1
