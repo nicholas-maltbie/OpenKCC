@@ -1,4 +1,4 @@
-name: Build Verification
+name: Test Validation
 
 on:
   pull_request:
@@ -55,6 +55,8 @@ jobs:
             -debugCodeOptimization
             -burst-disable-compilation 
             -coverageResultsPath ${{ matrix.testMode }}-artifacts
+            -coverageOptions "generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*"
+            -nographics
 
       # - name: Upload Results
       #   uses: actions/upload-artifact@v1

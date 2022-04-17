@@ -580,10 +580,12 @@ namespace nickmaltbie.OpenKCC.Character
             {
                 jumpAction.action.performed += OnJump;
             }
+
             if (moveAction != null)
             {
                 moveAction.action.performed += OnMove;
             }
+
             if (sprintAction != null)
             {
                 sprintAction.action.performed += OnSprint;
@@ -599,10 +601,12 @@ namespace nickmaltbie.OpenKCC.Character
             {
                 jumpAction.action.performed -= OnJump;
             }
+
             if (moveAction != null)
             {
                 moveAction.action.performed -= OnMove;
             }
+
             if (sprintAction != null)
             {
                 sprintAction.action.performed -= OnSprint;
