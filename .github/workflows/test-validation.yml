@@ -44,6 +44,7 @@ jobs:
         run: git lfs pull
 
       - uses: game-ci/unity-test-runner@v2
+        id: tests
         with:
           projectPath: ${{ matrix.projectPath }}
           testMode: ${{ matrix.testMode }}
