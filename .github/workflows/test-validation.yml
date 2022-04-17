@@ -1,0 +1,108 @@
+name: Test Validation
+
+on:
+  pull_request:
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
+
+jobs:
+  buildForSomePlatforms:
+    name: Test in ${{ matrix.testMode }}
+    runs-on: Ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        unityVersion:
+          - 2021.1.19f1
+        testMode:
+          - All
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Cache Library Folder
+        uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ matrix.buildMethod }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
+          restore-keys: |
+            Library-${{ matrix.buildMethod }}-
+
+      - name: Cache git lfs
+        uses: actions/cache@v2
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1.2
+          # use previous cache if current one is not found
+          restore-keys: |
+            ${{ runner.os }}-lfs-
+
+      - name: Pull lfs data, if not cached
+        run: git lfs pull
+
+      - uses: game-ci/unity-test-runner@v2
+        id: tests
+        with:
+          projectPath: ${{ matrix.projectPath }}
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: ${{ matrix.testMode }}-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ${{ matrix.testMode }} Test Results
+          customParameters: |
+            -enableCodeCoverage
+            -debugCodeOptimization
+            -burst-disable-compilation 
+            -coverageResultsPath ${{ matrix.testMode }}-artifacts
+            -coverageOptions generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*
+            -nographics
+
+      # - name: Upload Results
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: Test results for ${{ matrix.testMode }}
+      #     path: ${{ steps.tests.outputs.artifactsPath }}
+      
+      # - name: Find Coverage
+      #   id: coverage
+      #   run: |
+      #     echo ::set-output name=COVERAGE_FILE::$(find ${{ steps.tests.outputs.artifactsPath }} -name "Summary.xml")
+      #     find ${{ steps.tests.outputs.artifactsPath }} -name "*.xml"
+      #     ls -lah .
+      #     ls -lah ${{ steps.tests.outputs.artifactsPath }}
+      
+      # - name: Line Coverage
+      #   id: LineCoverage
+      #   uses: QwerMike/xpath-action@v1
+      #   with:
+      #     filename: "${{ steps.coverage.outputs.COVERAGE_FILE }}"
+      #     expression: '//CoverageReport/Summary/Linecoverage/text()'
+      
+      # # - name: Branch Coverage
+      # #   id: branchCoverage
+      # #   uses: QwerMike/xpath-action@v1
+      # #   with:
+      # #     filename: "${{ env.COVERAGE_FILE }}"
+      # #     expression: '//CoverageSession/Summary/@branchCoverage'
+      
+      # - name: Parse Coverage
+      #   id: ParseCoverage
+      #   run: |
+      #     echo ::set-output name=LINE_COVERAGE::$(cut -d "=" -f2- <<< ${{ steps.LineCoverage.outputs.result }})
+      
+      # - name: Add PR Comment
+      #   uses: mshick/add-pr-comment@v1
+      #   with:
+      #     message: |
+      #       Test Coverage Results for ${{ matrix.testMode }}:
+      #       Line Coverage: ${{ steps.ParseCoverage.outputs.LINE_COVERAGE }}%
+      #       Link to run results: [https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+      #     allow-repeats: false # This is the default
+
+      # # - name: Assert Coverage
+      # #   run: |
+      # #     python3 -c "assert ${{ steps.ParseCoverage.outputs.LINE_COVERAGE }} >= 100, 'Line Coverage must be 100%, is only ${{ env.LINE_COVERAGE }}%'"
