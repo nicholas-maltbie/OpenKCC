@@ -69,8 +69,10 @@ jobs:
         id: coverage
         run: |
           echo ::set-output name=COVERAGE_FILE::$(find ${{ steps.tests.outputs.artifactsPath }} -name "Summary.xml")
+          find ${{ steps.tests.outputs.artifactsPath }} *.xml
           ls -lah .
           ls -lah ${{ steps.tests.outputs.artifactsPath }}
+          ls -lah ${{ steps.tests.outputs.artifactsPath }}/Report
       
       - name: Line Coverage
         id: LineCoverage
