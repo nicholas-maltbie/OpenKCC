@@ -57,7 +57,7 @@ jobs:
             -debugCodeOptimization
             -burst-disable-compilation 
             -coverageResultsPath ${{ matrix.testMode }}-artifacts
-            -coverageOptions "generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*"
+            -coverageOptions generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*
             -nographics
 
       # - name: Upload Results
@@ -73,7 +73,6 @@ jobs:
           find ${{ steps.tests.outputs.artifactsPath }} -name "*.xml"
           ls -lah .
           ls -lah ${{ steps.tests.outputs.artifactsPath }}
-          ls -lah ${{ steps.tests.outputs.artifactsPath }}/Report
       
       - name: Line Coverage
         id: LineCoverage
