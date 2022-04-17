@@ -66,44 +66,44 @@ jobs:
       #     name: Test results for ${{ matrix.testMode }}
       #     path: ${{ steps.tests.outputs.artifactsPath }}
       
-      - name: Find Coverage
-        id: coverage
-        run: |
-          echo ::set-output name=COVERAGE_FILE::$(find ${{ steps.tests.outputs.artifactsPath }} -name "Summary.xml")
-          find ${{ steps.tests.outputs.artifactsPath }} -name "*.xml"
-          ls -lah .
-          ls -lah ${{ steps.tests.outputs.artifactsPath }}
+      # - name: Find Coverage
+      #   id: coverage
+      #   run: |
+      #     echo ::set-output name=COVERAGE_FILE::$(find ${{ steps.tests.outputs.artifactsPath }} -name "Summary.xml")
+      #     find ${{ steps.tests.outputs.artifactsPath }} -name "*.xml"
+      #     ls -lah .
+      #     ls -lah ${{ steps.tests.outputs.artifactsPath }}
       
-      - name: Line Coverage
-        id: LineCoverage
-        uses: QwerMike/xpath-action@v1
-        with:
-          filename: "${{ steps.coverage.outputs.COVERAGE_FILE }}"
-          expression: '//CoverageReport/Summary/Linecoverage/text()'
-      
-      # - name: Branch Coverage
-      #   id: branchCoverage
+      # - name: Line Coverage
+      #   id: LineCoverage
       #   uses: QwerMike/xpath-action@v1
       #   with:
-      #     filename: "${{ env.COVERAGE_FILE }}"
-      #     expression: '//CoverageSession/Summary/@branchCoverage'
+      #     filename: "${{ steps.coverage.outputs.COVERAGE_FILE }}"
+      #     expression: '//CoverageReport/Summary/Linecoverage/text()'
       
-      - name: Parse Coverage
-        id: ParseCoverage
-        run: |
-          echo ::set-output name=LINE_COVERAGE::$(cut -d "=" -f2- <<< ${{ steps.LineCoverage.outputs.result }})
+      # # - name: Branch Coverage
+      # #   id: branchCoverage
+      # #   uses: QwerMike/xpath-action@v1
+      # #   with:
+      # #     filename: "${{ env.COVERAGE_FILE }}"
+      # #     expression: '//CoverageSession/Summary/@branchCoverage'
       
-      - name: Add PR Comment
-        uses: mshick/add-pr-comment@v1
-        with:
-          message: |
-            Test Coverage Results for ${{ matrix.testMode }}:
-            Line Coverage: ${{ steps.ParseCoverage.outputs.LINE_COVERAGE }}%
-            Link to run results: [https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
-          allow-repeats: false # This is the default
-
-      # - name: Assert Coverage
+      # - name: Parse Coverage
+      #   id: ParseCoverage
       #   run: |
-      #     python3 -c "assert ${{ steps.ParseCoverage.outputs.LINE_COVERAGE }} >= 100, 'Line Coverage must be 100%, is only ${{ env.LINE_COVERAGE }}%'"
+      #     echo ::set-output name=LINE_COVERAGE::$(cut -d "=" -f2- <<< ${{ steps.LineCoverage.outputs.result }})
+      
+      # - name: Add PR Comment
+      #   uses: mshick/add-pr-comment@v1
+      #   with:
+      #     message: |
+      #       Test Coverage Results for ${{ matrix.testMode }}:
+      #       Line Coverage: ${{ steps.ParseCoverage.outputs.LINE_COVERAGE }}%
+      #       Link to run results: [https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+      #     allow-repeats: false # This is the default
+
+      # # - name: Assert Coverage
+      # #   run: |
+      # #     python3 -c "assert ${{ steps.ParseCoverage.outputs.LINE_COVERAGE }} >= 100, 'Line Coverage must be 100%, is only ${{ env.LINE_COVERAGE }}%'"
