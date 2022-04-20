@@ -21,6 +21,8 @@ jobs:
       # You must ALWAYS checkout your repo so that actions in the workflow can use it.
       - name: Checkout 
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT }}
 
       - name: Find ProjectSettings.asset & increment its bundleVersion number
         uses: AlexHolderDeveloper/UnityAutomatedSemver@v1.02
