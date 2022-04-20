@@ -2,6 +2,9 @@ name: Test Validation
 
 on:
   pull_request:
+  push:
+    branches:
+      - main
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
