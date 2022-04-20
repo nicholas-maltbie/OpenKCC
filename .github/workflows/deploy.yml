@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Find ProjectSettings.asset & increment its bundleVersion number
-        uses: AlexHolderDeveloper/UnityAutomatedSemver@v1.0.1
+        uses: AlexHolderDeveloper/UnityAutomatedSemver@v1.0.2
         id: semver-update
         with:
           semver-update-type: 'patch' # version number: "major.minor.patch"
@@ -38,6 +38,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Updated semver via automated action."
+          commit_options: '--no-verify --signoff'
           push_options: --force
 
   buildAndDeployApp:
