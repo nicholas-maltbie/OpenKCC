@@ -2,15 +2,12 @@ name: Test Validation
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
 
 jobs:
-  buildForSomePlatforms:
+  runTests:
     name: Test in ${{ matrix.testMode }}
     runs-on: Ubuntu-20.04
     strategy:
