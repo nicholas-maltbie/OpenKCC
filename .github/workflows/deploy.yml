@@ -41,7 +41,6 @@ jobs:
         with:
           commit_message: "Updated semver via automated action."
           commit_options: '--no-verify --signoff'
-          push_options: --force
 
   buildAndDeployApp:
     name: Build and Deploy for ${{ matrix.targetPlatform }} on version ${{ matrix.unityVersion }}
