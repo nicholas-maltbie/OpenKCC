@@ -43,7 +43,7 @@ jobs:
       - name: Pull lfs data, if not cached
         run: git lfs pull
 
-      - uses: game-ci/unity-test-runner@v2
+      - uses: game-ci/unity-test-runner@v2.0.2
         id: tests
         with:
           projectPath: ${{ matrix.projectPath }}
@@ -58,12 +58,16 @@ jobs:
             -coverageResultsPath ${{ matrix.testMode }}-artifacts
             -coverageOptions generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*
             -nographics
+      
+      - name: Move Coverage Results
+        run: mv ${{ steps.tests.outputs.coveragePath }} ${{ steps.tests.outputs.artifactsPath }}/CodeCoverage
 
-      # - name: Upload Results
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: Test results for ${{ matrix.testMode }}
-      #     path: ${{ steps.tests.outputs.artifactsPath }}
+      - name: Upload Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test & Coverage Results for ${{ matrix.testMode }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
+          retention-days: 7
       
       # - name: Find Coverage
       #   id: coverage
