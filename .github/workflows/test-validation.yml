@@ -65,7 +65,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Test results (all)
-          path: ${{ steps.allTests.outputs.artifactsPath }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
           retention-days: 14
 
       # Upload coverage
@@ -73,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Coverage results (all)
-          path: ${{ steps.allTests.outputs.coveragePath }}
+          path: ${{ steps.tests.outputs.coveragePath }}
           retention-days: 14
 
       - name: Upload Results
