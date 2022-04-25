@@ -47,27 +47,41 @@ jobs:
         id: tests
         with:
           projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
           testMode: ${{ matrix.testMode }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results
-          coverageOptions: "generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*"
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*'
           customParameters: "-burst-disable-compilation -nographics"
 
       - name: Copy Coverage Results
         run: |
-          ls -lah ${{ steps.tests.outputs.coveragePath }}
-          ls -lah ${{ steps.tests.outputs.artifactsPath }}
-          ls -lah .
-          sudo chmod -R 777 ${{ steps.tests.outputs.artifactsPath }}
-          ls -lah ${{ steps.tests.outputs.artifactsPath }}
-          sudo mv ${{ steps.tests.outputs.coveragePath }} ${{ steps.tests.outputs.artifactsPath }}/CodeCoverage
-          ls -lah ${{ steps.tests.outputs.artifactsPath }}
+          mkdir -p allResults
+          sudo cp ${{ steps.tests.outputs.coveragePath }} allResults/CodeCoverage
+          sudo cp ${{ steps.tests.outputs.artifacts }} allResults/artifacts
+
+
+      # Upload artifacts
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test results (all)
+          path: ${{ steps.allTests.outputs.artifactsPath }}
+          retention-days: 14
+
+      # Upload coverage
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Coverage results (all)
+          path: ${{ steps.allTests.outputs.coveragePath }}
+          retention-days: 14
 
       - name: Upload Results
         uses: actions/upload-artifact@v3
         with:
           name: Test & Coverage Results for ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.artifactsPath }}
+          path: allResults
           retention-days: 7
       
       # - name: Find Coverage
