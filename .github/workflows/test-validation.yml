@@ -57,9 +57,16 @@ jobs:
             -debugCodeOptimization
             -burst-disable-compilation
             -nographics
-      
+
       - name: Copy Coverage Results
-        run: cp ${{ steps.tests.outputs.coveragePath }} ${{ steps.tests.outputs.artifactsPath }}/CodeCoverage
+        run: |
+          ls -lah ${{ steps.tests.outputs.coveragePath }}
+          ls -lah ${{ steps.tests.outputs.artifactsPath }}
+          ls -lah .
+          chmod -R 777 ${{ steps.tests.outputs.artifactsPath }}
+          ls -lah ${{ steps.tests.outputs.artifactsPath }}
+          mkdir -p ${{ steps.tests.outputs.artifactsPath }}/CodeCoverage
+          cp -r ${{ steps.tests.outputs.coveragePath }} ${{ steps.tests.outputs.artifactsPath }}/CodeCoverage
 
       - name: Upload Results
         uses: actions/upload-artifact@v3
