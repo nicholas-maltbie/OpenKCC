@@ -51,12 +51,11 @@ jobs:
           artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results
+          coverageOptions: "generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*"
           customParameters: |
             -enableCodeCoverage
             -debugCodeOptimization
-            -burst-disable-compilation 
-            -coverageResultsPath ${{ matrix.testMode }}-artifacts
-            -coverageOptions generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*
+            -burst-disable-compilation
             -nographics
       
       - name: Move Coverage Results
