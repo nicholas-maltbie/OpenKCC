@@ -58,7 +58,7 @@ jobs:
         run: |
           mkdir -p allResults
           sudo cp -r ${{ steps.tests.outputs.coveragePath }} allResults/CodeCoverage
-          sudo cp -r ${{ steps.tests.outputs.artifacts }} allResults/artifacts
+          sudo cp -r ${{ steps.tests.outputs.artifactsPath }} allResults/artifacts
 
       # Upload artifacts
       - name: Upload test results
