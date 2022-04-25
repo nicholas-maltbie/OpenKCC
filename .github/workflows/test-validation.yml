@@ -58,8 +58,8 @@ jobs:
             -burst-disable-compilation
             -nographics
       
-      - name: Move Coverage Results
-        run: mv ${{ steps.tests.outputs.coveragePath }} ${{ steps.tests.outputs.artifactsPath }}/CodeCoverage
+      - name: Copy Coverage Results
+        run: cp ${{ steps.tests.outputs.coveragePath }} ${{ steps.tests.outputs.artifactsPath }}/CodeCoverage
 
       - name: Upload Results
         uses: actions/upload-artifact@v3
