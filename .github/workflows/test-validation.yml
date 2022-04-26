@@ -51,7 +51,7 @@ jobs:
           testMode: ${{ matrix.testMode }}
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*'
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+OpenKCC'
           customParameters: "-burst-disable-compilation -nographics"
 
       - name: Copy Coverage Results
@@ -59,22 +59,6 @@ jobs:
           mkdir -p allResults
           sudo cp -r ${{ steps.tests.outputs.coveragePath }} allResults/CodeCoverage
           sudo cp -r ${{ steps.tests.outputs.artifactsPath }} allResults/artifacts
-
-      # Upload artifacts
-      - name: Upload test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: Test results (all)
-          path: ${{ steps.allTests.outputs.artifactsPath }}
-          retention-days: 14
-
-      # Upload coverage
-      - name: Upload coverage results
-        uses: actions/upload-artifact@v3
-        with:
-          name: Coverage results (all)
-          path: ${{ steps.allTests.outputs.coveragePath }}
-          retention-days: 14
 
       - name: Upload Results
         uses: actions/upload-artifact@v3
