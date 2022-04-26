@@ -10,6 +10,8 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 /[Rr]ecordings/
+/[Cc]ode[Cc]overage/
+/[Tt]est[Rr]esults/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -77,9 +79,6 @@ crashlytics-build.properties
 
 # Temporary asset list for building
 .lfs-assets-id
-
-# Ignore Code Coverage Results
-CodeCoverage
 
 # Scene dependency cache for unity
 /[Aa]ssets/SceneDependencyCache

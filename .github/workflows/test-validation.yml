@@ -43,27 +43,29 @@ jobs:
       - name: Pull lfs data, if not cached
         run: git lfs pull
 
-      - uses: game-ci/unity-test-runner@v2
+      - uses: game-ci/unity-test-runner@v2.0.2
         id: tests
         with:
           projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
           testMode: ${{ matrix.testMode }}
-          artifactsPath: ${{ matrix.testMode }}-artifacts
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: ${{ matrix.testMode }} Test Results
-          customParameters: |
-            -enableCodeCoverage
-            -debugCodeOptimization
-            -burst-disable-compilation 
-            -coverageResultsPath ${{ matrix.testMode }}-artifacts
-            -coverageOptions generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*
-            -nographics
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+OpenKCC'
+          customParameters: "-burst-disable-compilation -nographics"
 
-      # - name: Upload Results
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: Test results for ${{ matrix.testMode }}
-      #     path: ${{ steps.tests.outputs.artifactsPath }}
+      - name: Copy Coverage Results
+        run: |
+          mkdir -p allResults
+          sudo cp -r ${{ steps.tests.outputs.coveragePath }} allResults/CodeCoverage
+          sudo cp -r ${{ steps.tests.outputs.artifactsPath }} allResults/artifacts
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test & Coverage Results for ${{ matrix.testMode }}
+          path: allResults
+          retention-days: 7
       
       # - name: Find Coverage
       #   id: coverage
