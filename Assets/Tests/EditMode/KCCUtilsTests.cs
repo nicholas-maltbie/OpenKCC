@@ -16,15 +16,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections;
-using NUnit.Framework;
-using UnityEngine.TestTools;
-using Moq;
-using nickmaltbie.OpenKCC.Utils;
 using System.Collections.Generic;
-using nickmaltbie.OpenKCC.Character;
-using UnityEngine;
 using System.Linq;
+using Moq;
+using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.Utils;
+using NUnit.Framework;
+using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode
 {
@@ -62,7 +60,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Vector3 movement = Vector3.forward;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            RaycastHit hit = new RaycastHit
+            var hit = new RaycastHit
             {
                 point = Vector3.zero,
                 distance = KCCUtils.Epsilon,
@@ -71,7 +69,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out hit)).Returns(true);
 
             // Simulate bounces
-            List<KCCBounce> bounces = this.GetBounces(initialPosition, movement, anglePower: 0.0f, usePush: false).ToList();
+            var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f, usePush: false).ToList();
 
             // Should hit max bounces
             Assert.IsTrue(bounces.Count == 7, $"Expected to find {7} bounce but instead found {bounces.Count}");
@@ -90,7 +88,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Vector3 movement = Vector3.forward;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            RaycastHit hit = new RaycastHit
+            var hit = new RaycastHit
             {
                 point = Vector3.zero,
                 distance = 0,
@@ -99,13 +97,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out hit)).Returns(true);
 
             // Simulate bounces
-            List<KCCBounce> bounces = this.GetBounces(initialPosition, movement, anglePower: 0.0f, usePush: false).ToList();
+            var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f, usePush: false).ToList();
 
             // Should just return just one element with action stop
             Assert.IsTrue(bounces.Count == 1, $"Expected to find {1} bounce but instead found {bounces.Count}");
-            
+
             // Validate bounce properties
-            ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Stop, finalPosition:initialPosition, remainingMomentum:Vector3.zero);
+            ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Stop, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
         }
 
         /// <summary>
@@ -115,15 +113,15 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         public void KCCNoMovement()
         {
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            RaycastHit hit = new RaycastHit();
+            var hit = new RaycastHit();
             colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out hit)).Returns(false);
 
             // Simulate bounces
-            List<KCCBounce> bounces = this.GetBounces(Vector3.zero, Vector3.zero).ToList();
-            
+            var bounces = GetBounces(Vector3.zero, Vector3.zero).ToList();
+
             // Should just return just one element with action stop
             Assert.IsTrue(bounces.Count == 1, $"Expected to find {1} bounce but instead found {bounces.Count}");
-            
+
             // Validate bounce properties
             ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Stop, Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero);
         }
@@ -139,11 +137,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Vector3 expectedFinalPosition = initialPosition + movement;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            RaycastHit hit = new RaycastHit();
+            var hit = new RaycastHit();
             colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out hit)).Returns(false);
 
             // Simulate bounces
-            List<KCCBounce> bounces = this.GetBounces(initialPosition, movement).ToList();
+            var bounces = GetBounces(initialPosition, movement).ToList();
 
             // Validate bounce properties
             Assert.IsTrue(bounces.Count == 2, $"Expected to find {2} bounce but instead found {bounces.Count}");
@@ -210,8 +208,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         {
             rotation ??= Quaternion.Euler(Vector3.zero);
             up ??= Vector3.up;
-            colliderCast ??= this.colliderCastMock.Object;
-            push ??= usePush ? this.characterPushMock.Object : null;
+            colliderCast ??= colliderCastMock.Object;
+            push ??= usePush ? characterPushMock.Object : null;
 
             return KCCUtils.GetBounces(
                 maxBounces,
