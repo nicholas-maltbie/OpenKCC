@@ -19,23 +19,25 @@
 using System.Collections;
 using NUnit.Framework;
 using UnityEngine.TestTools;
+using Moq;
 
-public class BasicUnitTest
+namespace nickmaltbie.OpenKCC.Tests.EditMode
 {
-    // A Test behaves as an ordinary method
-    [Test]
-    public void BasicUnitTestSimplePasses()
+    [TestFixture]
+    public class KCCUtilsTests
     {
-        // Use the Assert class to test conditions
-    }
+        public Mock<IColliderCast> colliderCastMock;
 
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
-    [UnityTest]
-    public IEnumerator BasicUnitTestWithEnumeratorPasses()
-    {
-        // Use the Assert class to test conditions.
-        // Use yield to skip a frame.
-        yield return null;
+        [SetUp]
+        public void SetUp()
+        {
+            colliderCastMock = new Mock<IColliderCast>();
+        }
+
+        [Test]
+        public void KCCBouncesTest()
+        {
+            
+        }
     }
 }
