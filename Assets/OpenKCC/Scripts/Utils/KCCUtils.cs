@@ -52,6 +52,18 @@ namespace nickmaltbie.OpenKCC.Utils
         /// Action that ocurred during this bounce.
         /// </summary>
         public KCCUtils.MovementAction action;
+
+        public override string ToString()
+        {
+            return string.Join(
+                ", ",
+                $"{nameof(initialPosition)}:{initialPosition.ToString("F3")}",
+                $"{nameof(finalPosition)}:{finalPosition.ToString("F3")}",
+                $"{nameof(initialMomentum)}:{initialMomentum.ToString("F3")}",
+                $"{nameof(remainingMomentum)}:{remainingMomentum.ToString("F3")}",
+                $"{nameof(action)}:{action.ToString()}"
+            );
+        }
     }
 
     /// <summary>
@@ -172,7 +184,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Quaternion rotation,
             Vector3 up,
             IColliderCast colliderCast,
-            CharacterPush push)
+            ICharacterPush push)
         {
             // Save current momentum
             Vector3 momentum = movement;
@@ -255,8 +267,6 @@ namespace nickmaltbie.OpenKCC.Utils
                     out RaycastHit stepHit,
                     momentum.magnitude);
                 bool perpendicularStep = Vector3.Dot(stepHit.normal, up) <= Epsilon;
-
-                // UnityEngine.Debug.Log($"snappedUp:{snappedUp}, hitStep:{hitStep}, perpendicularStep:{perpendicularStep}, canSnapUp:{canSnapUp}, hit.dist:{hit.distance > 0}, !attemptingJump:{!attemptingJump}, distToFeet:{distanceToFeet} < verticalSnapUp:{verticalSnapUp}, distToFeet:{distanceToFeet}"); 
 
                 if (hitStep &&
                     perpendicularStep &&
