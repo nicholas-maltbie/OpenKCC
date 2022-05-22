@@ -52,8 +52,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// <summary>
         /// Test maximum bounces by having the object hit something multiple times.
         /// </summary>
-        [Test]
-        public void KCCMaxBouncesTest()
+        [Test, Sequential]
+        public void KCCMaxBouncesTest([Values(0, 1, 5, 10)] int maxBounces)
         {
             // Have the object hit some collider and not move at all
             Vector3 initialPosition = Vector3.zero;
@@ -69,12 +69,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out hit)).Returns(true);
 
             // Simulate bounces
-            var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f, usePush: false).ToList();
+            var bounces = GetBounces(initialPosition, movement, maxBounces: maxBounces, anglePower: 0.0f, usePush: false).ToList();
 
             // Should hit max bounces
-            Assert.IsTrue(bounces.Count == 7, $"Expected to find {7} bounce but instead found {bounces.Count}");
-            Enumerable.Range(0, 6).ToList().ForEach(idx => ValidateKCCBounce(bounces[idx], KCCUtils.MovementAction.Bounce));
-            ValidateKCCBounce(bounces[6], KCCUtils.MovementAction.Stop);
+            Assert.IsTrue(bounces.Count == maxBounces + 2, $"Expected to find {maxBounces + 2} bounce but instead found {bounces.Count}");
+            Enumerable.Range(0, maxBounces + 1).ToList().ForEach(idx => ValidateKCCBounce(bounces[idx], KCCUtils.MovementAction.Bounce));
+            ValidateKCCBounce(bounces[maxBounces + 1], KCCUtils.MovementAction.Stop);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f, usePush: false).ToList();
 
             // Should just return just one element with action stop
-            Assert.IsTrue(bounces.Count == 1, $"Expected to find {1} bounce but instead found {bounces.Count}");
+            NUnit.Framework.Assert.IsTrue(bounces.Count == 1, $"Expected to find {1} bounce but instead found {bounces.Count}");
 
             // Validate bounce properties
             ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Stop, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
@@ -126,14 +126,25 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Stop, Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero);
         }
 
+        public static IEnumerable<Vector3> MovementGenerator()
+        {
+            return new[]
+            {
+                Vector3.forward,
+                Vector3.right,
+                Vector3.left,
+                Vector3.back
+            };
+        }
+
         /// <summary>
         /// Test kcc hit nothing.
         /// </summary>
         [Test]
-        public void KCCMoveUnblocked()
+        [TestCaseSource(nameof(MovementGenerator))]
+        public void KCCMoveUnblocked(Vector3 movement)
         {
             Vector3 initialPosition = Vector3.zero;
-            Vector3 movement = Vector3.forward;
             Vector3 expectedFinalPosition = initialPosition + movement;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
