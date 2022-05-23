@@ -60,7 +60,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Vector3 movement = Vector3.forward;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            SetupColliderCast(true, SetupRaycastHitMock(distance:KCCUtils.Epsilon));
+            SetupColliderCast(true, SetupRaycastHitMock(distance: KCCUtils.Epsilon));
 
             // Simulate bounces
             var bounces = GetBounces(initialPosition, movement, maxBounces: maxBounces, anglePower: 0.0f).ToList();
@@ -82,7 +82,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Vector3 movement = Vector3.forward;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            SetupColliderCast(true, SetupRaycastHitMock(distance:0));
+            SetupColliderCast(true, SetupRaycastHitMock(distance: 0));
 
             // Simulate bounces
             var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f).ToList();

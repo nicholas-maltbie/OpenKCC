@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils
@@ -41,36 +40,36 @@ namespace nickmaltbie.OpenKCC.Utils
         }
 
         /// <inheritdoc/>
-        public Collider collider => this.hit.collider;
+        public Collider collider => hit.collider;
 
         /// <inheritdoc/>
-        public Vector3 point { get => this.hit.point; set => this.hit.point = value; }
+        public Vector3 point { get => hit.point; set => hit.point = value; }
 
         /// <inheritdoc/>
-        public Vector3 normal { get => this.hit.normal; set => this.hit.normal = value; }
+        public Vector3 normal { get => hit.normal; set => hit.normal = value; }
 
         /// <inheritdoc/>
-        public Vector3 barycentricCoordinate { get => this.hit.barycentricCoordinate; set => this.hit.barycentricCoordinate = value; }
+        public Vector3 barycentricCoordinate { get => hit.barycentricCoordinate; set => hit.barycentricCoordinate = value; }
 
         /// <inheritdoc/>
-        public float distance { get => this.hit.distance; set => this.hit.distance = value; }
+        public float distance { get => hit.distance; set => hit.distance = value; }
 
         /// <inheritdoc/>
-        public int triangleIndex => this.hit.triangleIndex;
+        public int triangleIndex => hit.triangleIndex;
 
         /// <inheritdoc/>
-        public Vector2 textureCoord => this.hit.textureCoord;
+        public Vector2 textureCoord => hit.textureCoord;
 
         /// <inheritdoc/>
-        public Vector2 textureCoord2 => this.hit.textureCoord2;
+        public Vector2 textureCoord2 => hit.textureCoord2;
 
         /// <inheritdoc/>
-        public Transform transform => this.hit.transform;
+        public Transform transform => hit.transform;
 
         /// <inheritdoc/>
-        public Rigidbody rigidbody => this.hit.rigidbody;
+        public Rigidbody rigidbody => hit.rigidbody;
 
         /// <inheritdoc/>
-        public ArticulationBody articulationBody => this.hit.articulationBody;
+        public ArticulationBody articulationBody => hit.articulationBody;
     }
 }
