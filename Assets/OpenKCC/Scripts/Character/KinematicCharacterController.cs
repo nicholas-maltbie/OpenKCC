@@ -551,7 +551,7 @@ namespace nickmaltbie.OpenKCC.Character
         public bool Frozen { get; set; }
 
         /// <inheritdoc/>
-        public IColliderCast ColliderCast => this.capsuleColliderCast;
+        public IColliderCast ColliderCast => capsuleColliderCast;
 
         /// <inheritdoc/>
         public ICharacterPush Push => GetComponent<CharacterPush>();

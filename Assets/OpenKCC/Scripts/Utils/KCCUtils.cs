@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Environment.Pushable;
 using UnityEngine;
 
@@ -76,6 +75,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// </summary>
         public enum MovementAction
         {
+            Invalid,
             Move,
             Bounce,
             SnapUp,
@@ -261,6 +261,116 @@ namespace nickmaltbie.OpenKCC.Utils
             }
         }
 
+        public static KCCBounce SingleKCCBounce(
+            Vector3 position,
+            Vector3 remainingMomentum,
+            Vector3 movement,
+            Quaternion rotation,
+            IKCCConfig config)
+        {
+            Vector3 initialPosition = position;
+            Vector3 initialMomentum = remainingMomentum;
+
+            // Do a cast of the collider to see if an object is hit during this
+            // movement bounce
+            float distance = remainingMomentum.magnitude;
+            if (!config.ColliderCast.CastSelf(position, rotation, remainingMomentum.normalized, distance, out IRaycastHit hit))
+            {
+                // If there is no hit, move to desired position
+                return new KCCBounce
+                {
+                    initialPosition = initialPosition,
+                    finalPosition = remainingMomentum + initialPosition,
+                    initialMomentum = initialMomentum,
+                    remainingMomentum = Vector3.zero,
+                    action = MovementAction.Move,
+                };
+            }
+
+            // If we are overlapping, just exit
+            if (hit.distance == 0)
+            {
+                return new KCCBounce
+                {
+                    initialPosition = initialPosition,
+                    finalPosition = initialPosition,
+                    initialMomentum = initialMomentum,
+                    remainingMomentum = Vector3.zero,
+                    action = MovementAction.Invalid,
+                };
+            }
+
+            // Apply some force to the object hit if it is moveable, Apply force on entity hit
+            if (config.Push != null &&
+                config.Push.CanPushObjects() &&
+                hit.collider.attachedRigidbody != null &&
+                !hit.collider.attachedRigidbody.isKinematic &&
+                hit.collider.gameObject.GetComponent<IPushable>() != null)
+            {
+                config.Push.PushObject(new KinematicCharacterControllerHit(
+                    hit.collider, hit.collider.attachedRigidbody, hit.collider.gameObject,
+                    hit.collider.transform, hit.point, hit.normal, remainingMomentum.normalized, movement.magnitude
+                ));
+                // If pushing something, reduce remaining force significantly
+                remainingMomentum *= config.PushDecay;
+            }
+
+            float fraction = hit.distance / distance;
+            // Set the fraction of remaining movement (minus some small value)
+            position += remainingMomentum * (fraction);
+            // Push slightly along normal to stop from getting caught in walls
+            position += hit.normal * Epsilon * 2;
+            // Decrease remaining momentum by fraction of movement remaining
+            remainingMomentum *= (1 - fraction);
+
+            // Plane to project rest of movement onto
+            Vector3 planeNormal = hit.normal;
+
+            bool snappedUp =
+                config.CanSnapUp &&
+                AttemptSnapUp(hit, remainingMomentum, ref position, rotation, config);
+
+            if (snappedUp)
+            {
+                return new KCCBounce
+                {
+                    initialPosition = initialPosition,
+                    finalPosition = position,
+                    initialMomentum = initialMomentum,
+                    remainingMomentum = Vector3.zero,
+                    action = MovementAction.SnapUp,
+                };
+            }
+            // If we did snap up, don't decay momentum
+            else
+            {
+                // If we didn't snap up:
+                // Only apply angular change if hitting something
+                // Get angle between surface normal and remaining movement
+                float angleBetween = Vector3.Angle(hit.normal, remainingMomentum) - 90.0f;
+
+                // Normalize angle between to be between 0 and 1
+                // 0 means no angle, 1 means 90 degree angle
+                angleBetween = Mathf.Min(MaxAngleShoveRadians, Mathf.Abs(angleBetween));
+                float normalizedAngle = angleBetween / MaxAngleShoveRadians;
+
+                // Reduce the momentum by the remaining movement that ocurred
+                remainingMomentum *= Mathf.Pow(1 - normalizedAngle, config.AnglePower) * 0.9f + 0.1f;
+            }
+            // Rotate the remaining remaining movement to be projected along the plane 
+            // of the surface hit (emulate pushing against the object)
+            remainingMomentum = GetProjectedMomentumSave(snappedUp, remainingMomentum, planeNormal, config.Up);
+
+            return new KCCBounce
+            {
+                initialPosition = initialPosition,
+                finalPosition = position,
+                initialMomentum = initialMomentum,
+                remainingMomentum = remainingMomentum,
+                action = MovementAction.Bounce,
+            };
+        }
+
         /// <summary>
         /// Get the bounces for a KCC Utils movement action with a set default behaviour.
         /// </summary>
@@ -286,109 +396,20 @@ namespace nickmaltbie.OpenKCC.Utils
             // Continue computing while there is momentum and bounces remaining
             while (momentum.magnitude > Epsilon && bounces <= config.MaxBounces)
             {
-                // Position of character at start of bounce
-                Vector3 initialPosition = position;
-                Vector3 initialMomentum = momentum;
+                KCCBounce bounce = SingleKCCBounce(position, momentum, movement, rotation, config);
 
-                // Do a cast of the collider to see if an object is hit during this
-                // movement bounce
-                float distance = momentum.magnitude;
-                if (!config.ColliderCast.CastSelf(position, rotation, momentum.normalized, distance, out IRaycastHit hit))
-                {
-                    // If there is no hit, move to desired position
-                    position += momentum;
-
-                    yield return new KCCBounce
-                    {
-                        initialPosition = initialPosition,
-                        finalPosition = position,
-                        initialMomentum = initialMomentum,
-                        remainingMomentum = Vector3.zero,
-                        action = MovementAction.Move,
-                    };
-
-                    // Exit as we are done bouncing
-                    break;
-                }
-
-                // If we are overlapping, just exit
-                if (hit.distance == 0)
+                if (bounce.action == MovementAction.Invalid)
                 {
                     break;
                 }
 
-                // Apply some force to the object hit if it is moveable, Apply force on entity hit
-                if (config.Push != null &&
-                    config.Push.CanPushObjects() &&
-                    hit.collider.attachedRigidbody != null &&
-                    !hit.collider.attachedRigidbody.isKinematic &&
-                    hit.collider.gameObject.GetComponent<IPushable>() != null)
-                {
-                    config.Push.PushObject(new KinematicCharacterControllerHit(
-                        hit.collider, hit.collider.attachedRigidbody, hit.collider.gameObject,
-                        hit.collider.transform, hit.point, hit.normal, momentum.normalized, movement.magnitude
-                    ));
-                    // If pushing something, reduce remaining force significantly
-                    momentum *= config.PushDecay;
-                }
+                yield return bounce;
 
-                float fraction = hit.distance / distance;
-                // Set the fraction of remaining movement (minus some small value)
-                position += momentum * (fraction);
-                // Push slightly along normal to stop from getting caught in walls
-                position += hit.normal * Epsilon * 2;
-                // Decrease remaining momentum by fraction of movement remaining
-                momentum *= (1 - fraction);
-
-                // Plane to project rest of movement onto
-                Vector3 planeNormal = hit.normal;
-
-                bool snappedUp =
-                    config.CanSnapUp &&
-                    AttemptSnapUp(hit, momentum, ref position, rotation, config);
-
-                if (snappedUp)
-                {
-                    didSnapUp = true;
-                    yield return new KCCBounce
-                    {
-                        initialPosition = initialPosition,
-                        finalPosition = position,
-                        initialMomentum = initialMomentum,
-                        remainingMomentum = Vector3.zero,
-                        action = MovementAction.SnapUp,
-                    };
-                }
-                // If we did snap up, don't decay momentum
-                else
-                {
-                    // If we didn't snap up:
-                    // Only apply angular change if hitting something
-                    // Get angle between surface normal and remaining movement
-                    float angleBetween = Vector3.Angle(hit.normal, momentum) - 90.0f;
-
-                    // Normalize angle between to be between 0 and 1
-                    // 0 means no angle, 1 means 90 degree angle
-                    angleBetween = Mathf.Min(MaxAngleShoveRadians, Mathf.Abs(angleBetween));
-                    float normalizedAngle = angleBetween / MaxAngleShoveRadians;
-
-                    // Reduce the momentum by the remaining movement that ocurred
-                    momentum *= Mathf.Pow(1 - normalizedAngle, config.AnglePower) * 0.9f + 0.1f;
-                }
-                // Rotate the remaining remaining movement to be projected along the plane 
-                // of the surface hit (emulate pushing against the object)
-                momentum = GetProjectedMomentumSave(snappedUp, momentum, planeNormal, config.Up);
+                momentum = bounce.remainingMomentum;
+                position = bounce.finalPosition;
 
                 // Track number of times the character has bounced
                 bounces++;
-                yield return new KCCBounce
-                {
-                    initialPosition = initialPosition,
-                    finalPosition = position,
-                    initialMomentum = initialMomentum,
-                    remainingMomentum = Vector3.zero,
-                    action = MovementAction.Bounce,
-                };
             }
 
             if (didSnapUp)
