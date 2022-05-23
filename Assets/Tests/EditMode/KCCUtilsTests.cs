@@ -63,7 +63,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             SetupColliderCast(true, SetupRaycastHitMock(distance:KCCUtils.Epsilon));
 
             // Simulate bounces
-            var bounces = GetBounces(initialPosition, movement, maxBounces: maxBounces, anglePower: 0.0f, usePush: false).ToList();
+            var bounces = GetBounces(initialPosition, movement, maxBounces: maxBounces, anglePower: 0.0f).ToList();
 
             // Should hit max bounces
             Assert.IsTrue(bounces.Count == maxBounces + 2, $"Expected to find {maxBounces + 2} bounce but instead found {bounces.Count}");
@@ -85,7 +85,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             SetupColliderCast(true, SetupRaycastHitMock(distance:0));
 
             // Simulate bounces
-            var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f, usePush: false).ToList();
+            var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f).ToList();
 
             // Should just return just one element with action stop
             NUnit.Framework.Assert.IsTrue(bounces.Count == 1, $"Expected to find {1} bounce but instead found {bounces.Count}");
@@ -151,12 +151,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// <summary>
         /// Validate a KCC bounce for a specified set of properties.
         /// </summary>
-        /// <param name="bounce"></param>
-        /// <param name="movementAction"></param>
-        /// <param name="finalPosition"></param>
-        /// <param name="initialPosition"></param>
-        /// <param name="remainingMomentum"></param>
-        /// <param name="initialMomentum"></param>
+        /// <param name="bounce">Bounce to validate.</param>
+        /// <param name="movementAction">Expected movement action, or null if not required to check.</param>
+        /// <param name="finalPosition">Expected final position, or null if not required to check.</param>
+        /// <param name="initialPosition">Expected initial position, or null if not required to check.</param>
+        /// <param name="remainingMomentum">Expected remaining momentum, or null if not required to check.</param>
+        /// <param name="initialMomentum"><Expected initial momentum, or null if not required to check./param>
         public void ValidateKCCBounce(
             KCCBounce bounce,
             KCCUtils.MovementAction? movementAction = null,
@@ -185,10 +185,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// <summary>
         /// Setup a raycast hit mock.
         /// </summary>
-        /// <param name="collider"></param>
-        /// <param name="point"></param>
-        /// <param name="distance"></param>
-        /// <returns></returns>
+        /// <param name="collider">Collider to return from the mock.</param>
+        /// <param name="point">Point of collision for the mock.</param>
+        /// <param name="distance">Distance from source from the mock.</param>
+        /// <param name="normal">Normal vector for the collision from the mock..</param>
+        /// <returns>Mock raycast hit object with the specified properties.</returns>
         public IRaycastHit SetupRaycastHitMock(Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f)
         {
             var raycastHitMock = new Mock<IRaycastHit>();
@@ -204,20 +205,19 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// <summary>
         /// Get the bounces for a KCC Utils movement action with a set default behaviour.
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="movement"></param>
-        /// <param name="rotation"></param>
-        /// <param name="maxBounces"></param>
-        /// <param name="pushDecay"></param>
-        /// <param name="verticalSnapUp"></param>
-        /// <param name="stepUpDepth"></param>
-        /// <param name="anglePower"></param>
-        /// <param name="attemptingJump"></param>
-        /// <param name="canSnapUp"></param>
-        /// <param name="up"></param>
-        /// <param name="colliderCast"></param>
-        /// <param name="push"></param>
-        /// <returns></returns>
+        /// <param name="position">Position to start player movement from.</param>
+        /// <param name="movement">Movement to move the player.</param>
+        /// <param name="rotation">Rotation of the player during movement.</param>
+        /// <param name="maxBounces">Maximum bounces when moving the player.</param>
+        /// <param name="pushDecay">Push decay factor for player movement.</param>
+        /// <param name="verticalSnapUp">Vertical snap up distance the player can snap up.</param>
+        /// <param name="stepUpDepth">Minimum depth required for a stair when moving onto a step.</param>
+        /// <param name="anglePower">Angle power for decaying momentum when bouncing off a surface.</param>
+        /// <param name="canSnapUp">Can the player snap up steps.</param>
+        /// <param name="up">Up direction relative to the player.</param>
+        /// <param name="colliderCast">Collider cast for checking what the player is colliding with.</param>
+        /// <param name="push">Character push for checking fi the character should push objects.</param>
+        /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
         private IEnumerable<KCCBounce> GetBounces(
             Vector3 position,
             Vector3 movement,
@@ -227,17 +227,15 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             float verticalSnapUp = 0.0f,
             float stepUpDepth = 0.0f,
             float anglePower = 0.9f,
-            bool attemptingJump = false,
             bool canSnapUp = false,
             Vector3? up = null,
             IColliderCast colliderCast = null,
-            ICharacterPush push = null,
-            bool usePush = true)
+            ICharacterPush push = null)
         {
             rotation ??= Quaternion.Euler(Vector3.zero);
             up ??= Vector3.up;
             colliderCast ??= colliderCastMock.Object;
-            push ??= usePush ? characterPushMock.Object : null;
+            push ??= characterPushMock.Object;
 
             return KCCUtils.GetBounces(
                 maxBounces,
@@ -245,7 +243,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
                 verticalSnapUp,
                 stepUpDepth,
                 anglePower,
-                attemptingJump,
                 canSnapUp,
                 position,
                 movement,

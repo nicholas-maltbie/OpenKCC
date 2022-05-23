@@ -33,6 +33,11 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public float pushPower = 2.0f;
 
+        /// <summary>
+        /// Can this character push objects, always true;
+        /// </summary>
+        public bool CanPushObjects() => true;
+
         /// <inheritdoc/>
         public void PushObject(IControllerColliderHit hit)
         {

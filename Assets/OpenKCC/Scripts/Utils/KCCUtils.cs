@@ -269,13 +269,28 @@ namespace nickmaltbie.OpenKCC.Utils
             }
         }
 
+        /// <summary>
+        /// Get the bounces for a KCC Utils movement action with a set default behaviour.
+        /// </summary>
+        /// <param name="maxBounces">Maximum bounces when moving the player.</param>
+        /// <param name="pushDecay">Push decay factor for player movement.</param>
+        /// <param name="verticalSnapUp">Vertical snap up distance the player can snap up.</param>
+        /// <param name="stepUpDepth">Minimum depth required for a stair when moving onto a step.</param>
+        /// <param name="anglePower">Angle power for decaying momentum when bouncing off a surface.</param>
+        /// <param name="canSnapUp">Can the player snap up steps.</param>
+        /// <param name="position">Position to start player movement from.</param>
+        /// <param name="movement">Movement to move the player.</param>
+        /// <param name="rotation">Rotation of the player during movement.</param>
+        /// <param name="up">Up direction relative to the player.</param>
+        /// <param name="colliderCast">Collider cast for checking what the player is colliding with.</param>
+        /// <param name="push">Character push for checking fi the character should push objects.</param>
+        /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
         public static IEnumerable<KCCBounce> GetBounces(
             int maxBounces,
             float pushDecay,
             float verticalSnapUp,
             float stepUpDepth,
             float anglePower,
-            bool attemptingJump,
             bool canSnapUp,
             Vector3 position,
             Vector3 movement,
@@ -328,6 +343,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 // Apply some force to the object hit if it is moveable, Apply force on entity hit
                 if (push != null &&
+                    push.CanPushObjects() &&
                     hit.collider.attachedRigidbody != null &&
                     !hit.collider.attachedRigidbody.isKinematic &&
                     hit.collider.gameObject.GetComponent<IPushable>() != null)
@@ -353,7 +369,6 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 bool snappedUp =
                     canSnapUp &&
-                    !attemptingJump &&
                     AttemptSnapUp(colliderCast, hit, up, momentum, ref position, rotation, verticalSnapUp, stepUpDepth);
 
                 if (snappedUp)

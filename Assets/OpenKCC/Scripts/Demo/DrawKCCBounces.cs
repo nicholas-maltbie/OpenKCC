@@ -153,7 +153,6 @@ namespace nickmaltbie.OpenKCC.Demo
                     kcc.VerticalSnapUp,
                     kcc.StepUpDepth,
                     kcc.AnglePower,
-                    kcc.AttemptingJump,
                     true,
                     kcc.transform.position,
                     movement,

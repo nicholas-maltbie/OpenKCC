@@ -30,5 +30,11 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         /// <param name="hit">Data about how the character controller hit the object.</param>
         void PushObject(IControllerColliderHit hit);
+
+        /// <summary>
+        /// Can this character push objects.
+        /// </summary>
+        /// <returns>Can this chanter push objects.</returns>
+        bool CanPushObjects();
     }
 }
