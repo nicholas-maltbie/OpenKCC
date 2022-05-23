@@ -238,18 +238,21 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             push ??= characterPushMock.Object;
 
             return KCCUtils.GetBounces(
-                maxBounces,
-                pushDecay,
-                verticalSnapUp,
-                stepUpDepth,
-                anglePower,
-                canSnapUp,
                 position,
                 movement,
                 rotation.Value,
-                up.Value,
-                colliderCast,
-                push
+                new KCCConfig
+                {
+                    maxBounces = maxBounces,
+                    pushDecay = pushDecay,
+                    verticalSnapUp = verticalSnapUp,
+                    stepUpDepth = stepUpDepth,
+                    anglePower = anglePower,
+                    canSnapUp = canSnapUp,
+                    up = up.Value,
+                    colliderCast = colliderCast,
+                    push = push
+                }
             );
         }
     }

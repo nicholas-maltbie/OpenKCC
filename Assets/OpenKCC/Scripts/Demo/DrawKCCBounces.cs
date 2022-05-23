@@ -148,18 +148,21 @@ namespace nickmaltbie.OpenKCC.Demo
             // Get the bounces the player's movement would make
             var bounces = new List<KCCBounce>(
                 KCCUtils.GetBounces(
-                    maxBounces,
-                    kcc.PushDecay,
-                    kcc.VerticalSnapUp,
-                    kcc.StepUpDepth,
-                    kcc.AnglePower,
-                    true,
                     kcc.transform.position,
                     movement,
                     kcc.transform.rotation,
-                    kcc.Up,
-                    colliderCast,
-                    null));
+                    new KCCConfig
+                    {
+                        maxBounces = maxBounces,
+                        pushDecay = kcc.PushDecay,
+                        verticalSnapUp = kcc.VerticalSnapUp,
+                        stepUpDepth = kcc.StepUpDepth,
+                        anglePower = kcc.AnglePower,
+                        canSnapUp = true,
+                        up = kcc.Up,
+                        colliderCast = colliderCast,
+                        push = null
+                    }));
 
             int bounce = 0;
             _ = transform.position;
