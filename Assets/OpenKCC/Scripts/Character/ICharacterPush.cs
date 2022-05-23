@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Utils;
+using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character
 {
@@ -34,7 +35,8 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Can this character push objects.
         /// </summary>
+        /// <param name="hitObject">Object hit by the character.</param>
         /// <returns>Can this chanter push objects.</returns>
-        bool CanPushObjects();
+        bool CanPushObject(Collider hitObject);
     }
 }
