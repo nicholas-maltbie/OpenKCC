@@ -17,14 +17,12 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-
 using TMPro;
-
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-namespace nickmaltbie.OpenKCC.UI.Text
+namespace nickmaltbie.TileMaps.UI.Text
 {
     /// <summary>
     /// This class handles basic link color behavior, supports also underline (static only)
@@ -39,6 +37,8 @@ namespace nickmaltbie.OpenKCC.UI.Text
     public class TMProUGUIHyperlinks : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         [SerializeField]
+        private Color32 hoveredColor = new Color32(0x00, 0x59, 0xFF, 0xFF);
+        [SerializeField]
         private Color32 pressedColor = new Color32(0x00, 0x00, 0xB7, 0xFF);
         [SerializeField]
         private Color32 usedColor = new Color32(0xFF, 0x00, 0xFF, 0xFF);
@@ -52,6 +52,11 @@ namespace nickmaltbie.OpenKCC.UI.Text
         private Dictionary<int, bool> usedLinks = new Dictionary<int, bool>();
         private int hoveredLinkIndex = -1;
         private int pressedLinkIndex = -1;
+
+        public void Awake()
+        {
+            textMeshPro = GetComponent<TextMeshProUGUI>();
+        }
 
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -108,12 +113,58 @@ namespace nickmaltbie.OpenKCC.UI.Text
             pressedLinkIndex = -1;
         }
 
-        private int GetLinkIndex()
+        public void LateUpdate()
+        {
+            int linkIndex = GetLinkIndex();
+            if (linkIndex != -1) // Was pointer intersecting a link?
+            {
+                if (linkIndex != hoveredLinkIndex) // We started hovering above link (hover can be set from OnPointerDown!)
+                {
+                    if (hoveredLinkIndex != -1)
+                    {
+                        ResetLinkColor(hoveredLinkIndex, startColors); // If we hovered above other link before
+                    }
+
+                    hoveredLinkIndex = linkIndex;
+                    if (usedLinks.TryGetValue(linkIndex, out bool isUsed) && isUsed) // Has the link been already used?
+                    {
+                        // If we have pressed on link, wandered away and came back, set the pressed color
+                        if (pressedLinkIndex == linkIndex)
+                        {
+                            startColors = SetLinkColor(hoveredLinkIndex, usedPressedColor);
+                        }
+                        else
+                        {
+                            startColors = SetLinkColor(hoveredLinkIndex, usedHoveredColor);
+                        }
+                    }
+                    else
+                    {
+                        // If we have pressed on link, wandered away and came back, set the pressed color
+                        if (pressedLinkIndex == linkIndex)
+                        {
+                            startColors = SetLinkColor(hoveredLinkIndex, pressedColor);
+                        }
+                        else
+                        {
+                            startColors = SetLinkColor(hoveredLinkIndex, hoveredColor);
+                        }
+                    }
+                }
+            }
+            else if (hoveredLinkIndex != -1) // If we hovered above other link before
+            {
+                ResetLinkColor(hoveredLinkIndex, startColors);
+                hoveredLinkIndex = -1;
+            }
+        }
+
+        public int GetLinkIndex()
         {
             return TMP_TextUtilities.FindIntersectingLink(textMeshPro, Mouse.current.position.ReadValue(), null);
         }
 
-        private List<Color32[]> SetLinkColor(int linkIndex, Color32 color)
+        public List<Color32[]> SetLinkColor(int linkIndex, Color32 color)
         {
             TMP_LinkInfo linkInfo = textMeshPro.textInfo.linkInfo[linkIndex];
 
@@ -152,37 +203,37 @@ namespace nickmaltbie.OpenKCC.UI.Text
             return oldVertexColors;
         }
 
-        // private void ResetLinkColor(int linkIndex, List<Color32[]> startColors)
-        // {
-        //     var linkInfo = textMeshPro.textInfo.linkInfo[linkIndex];
-        //     var underlineIndex = -1;
-        //     for (var i = 0; i < linkInfo.linkTextLength; i++)
-        //     {
-        //         var characterIndex = linkInfo.linkTextfirstCharacterIndex + i;
-        //         var charInfo = textMeshPro.textInfo.characterInfo[characterIndex];
-        //         var meshIndex = charInfo.materialReferenceIndex;
-        //         var vertexIndex = charInfo.vertexIndex;
+        public void ResetLinkColor(int linkIndex, List<Color32[]> startColors)
+        {
+            TMP_LinkInfo linkInfo = textMeshPro.textInfo.linkInfo[linkIndex];
+            int underlineIndex = -1;
+            for (int i = 0; i < linkInfo.linkTextLength; i++)
+            {
+                int characterIndex = linkInfo.linkTextfirstCharacterIndex + i;
+                TMP_CharacterInfo charInfo = textMeshPro.textInfo.characterInfo[characterIndex];
+                int meshIndex = charInfo.materialReferenceIndex;
+                int vertexIndex = charInfo.vertexIndex;
 
-        //         var vertexColors = textMeshPro.textInfo.meshInfo[meshIndex].colors32;
-        //         if (charInfo.isVisible)
-        //         {
-        //             vertexColors[vertexIndex + 0] = startColors[i][0];
-        //             vertexColors[vertexIndex + 1] = startColors[i][1];
-        //             vertexColors[vertexIndex + 2] = startColors[i][2];
-        //             vertexColors[vertexIndex + 3] = startColors[i][3];
-        //         }
+                Color32[] vertexColors = textMeshPro.textInfo.meshInfo[meshIndex].colors32;
+                if (charInfo.isVisible)
+                {
+                    vertexColors[vertexIndex + 0] = startColors[i][0];
+                    vertexColors[vertexIndex + 1] = startColors[i][1];
+                    vertexColors[vertexIndex + 2] = startColors[i][2];
+                    vertexColors[vertexIndex + 3] = startColors[i][3];
+                }
 
-        //         if (charInfo.isVisible && charInfo.underlineVertexIndex > 0 && charInfo.underlineVertexIndex != underlineIndex && charInfo.underlineVertexIndex < vertexColors.Length)
-        //         {
-        //             underlineIndex = charInfo.underlineVertexIndex;
-        //             for (var j = 0; j < 12; j++)
-        //             {
-        //                 vertexColors[underlineIndex + j] = startColors[i][0];
-        //             }
-        //         }
-        //     }
+                if (charInfo.isVisible && charInfo.underlineVertexIndex > 0 && charInfo.underlineVertexIndex != underlineIndex && charInfo.underlineVertexIndex < vertexColors.Length)
+                {
+                    underlineIndex = charInfo.underlineVertexIndex;
+                    for (int j = 0; j < 12; j++)
+                    {
+                        vertexColors[underlineIndex + j] = startColors[i][0];
+                    }
+                }
+            }
 
-        //     textMeshPro.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
-        // }
+            textMeshPro.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
+        }
     }
 }
