@@ -171,6 +171,104 @@ namespace nickmaltbie.OpenKCC.Utils
             return false;
         }
 
+        /// <summary>
+        /// Attempt to snap up at current height or maximum height of the player's snap up height.
+        /// </summary>
+        /// <param name="colliderCast">Collider cast associated with the player.</param>
+        /// <param name="hit">Hit event where player collided with the step.</param>
+        /// <param name="up">Up direction for the player.</param>
+        /// <param name="momentum">Player's remaining movement.</param>
+        /// <param name="position">Player's current position, modify if the player moves while walking up the step.</param>
+        /// <param name="rotation">Player's current rotation.</param>
+        /// <param name="verticalSnapUp">Maximum distance player can snap up.</param>
+        /// <param name="stepUpDepth">Minimum depth required to have the player step forward.</param>
+        /// <returns>True if the player snapped up, false otherwise.</returns>
+        public static bool AttemptSnapUp(
+            IColliderCast colliderCast,
+            IRaycastHit hit,
+            Vector3 up,
+            Vector3 momentum,
+            ref Vector3 position,
+            Quaternion rotation,
+            float verticalSnapUp,
+            float stepUpDepth)
+        {
+            // Snap character vertically up if they hit something
+            //  close enough to their feet
+            Vector3 bottom = colliderCast.GetBottom(position, rotation);
+            Vector3 footVector = Vector3.Project(hit.point, up) - Vector3.Project(bottom, up);
+            bool isAbove = Vector3.Dot(footVector, up) > 0;
+            float distanceToFeet = footVector.magnitude * (isAbove ? 1 : -1);
+
+            bool hitStep = colliderCast.CheckVerticalStepAhead(
+                hit.point - up * Epsilon + hit.normal * Epsilon,
+                momentum.normalized,
+                momentum.magnitude,
+                out IRaycastHit stepHit);
+            bool perpendicularStep = hitStep && Vector3.Dot(stepHit.normal, up) <= Epsilon;
+
+            bool snappedUp = false;
+
+            if (hitStep &&
+                perpendicularStep &&
+                hit.distance > 0 &&
+                distanceToFeet < verticalSnapUp &&
+                distanceToFeet > 0)
+            {
+                // Sometimes snapping up the exact distance leads to odd behaviour around steps and walls.
+                // It's good to check the maximum and minimum snap distances and take whichever one works.
+                // snap them up the minimum vertical distance
+                snappedUp = AttemptSnapUp(
+                    distanceToFeet + Epsilon * 2,
+                    stepUpDepth,
+                    up,
+                    momentum,
+                    colliderCast,
+                    rotation,
+                    ref position);
+
+                if (!snappedUp)
+                {
+                    // If that movement doesn't work, Attempt to snap up the maximum vertical distance
+                    snappedUp = AttemptSnapUp(verticalSnapUp,
+                        stepUpDepth,
+                        up,
+                        momentum,
+                        colliderCast,
+                        rotation,
+                        ref position);
+                }
+            }
+
+            return snappedUp;
+        }
+
+        /// <summary>
+        /// Get player's projected movement along a surface.
+        /// </summary>
+        /// <param name="snappedUp">Did the player snap up the current movement.</param>
+        /// <param name="momentum">Remaining player momentum.</param>
+        /// <param name="planeNormal">Plane normal that the player is bouncing off of.</param>
+        /// <param name="up">Upwards direction relative to player.</param>
+        /// <returns>Remaining momentum of the player.</returns>
+        public static Vector3 GetProjectedMomentumSave(bool snappedUp, Vector3 momentum, Vector3 planeNormal, Vector3 up)
+        {
+            Vector3 projectedMomentum = snappedUp ? momentum : Vector3.ProjectOnPlane(
+                momentum,
+                planeNormal).normalized * momentum.magnitude;
+
+            // If projected momentum is less than original momentum (so if the projection broke due to float
+            // operations), then change this to just project along the vertical.
+            if (projectedMomentum.magnitude + Epsilon < momentum.magnitude)
+            {
+                return Vector3.ProjectOnPlane(momentum, up).normalized * momentum.magnitude;
+            }
+            else
+            {
+                return projectedMomentum;
+            }
+        }
+
         public static IEnumerable<KCCBounce> GetBounces(
             int maxBounces,
             float pushDecay,
@@ -242,13 +340,6 @@ namespace nickmaltbie.OpenKCC.Utils
                     momentum *= pushDecay;
                 }
 
-                // Snap character vertically up if they hit something
-                //  close enough to their feet
-                Vector3 bottom = colliderCast.GetBottom(position, rotation);
-                Vector3 footVector = Vector3.Project(hit.point, up) - Vector3.Project(bottom, up);
-                bool isAbove = Vector3.Dot(footVector, up) > 0;
-                float distanceToFeet = footVector.magnitude * (isAbove ? 1 : -1);
-
                 float fraction = hit.distance / distance;
                 // Set the fraction of remaining movement (minus some small value)
                 position += momentum * (fraction);
@@ -260,59 +351,22 @@ namespace nickmaltbie.OpenKCC.Utils
                 // Plane to project rest of movement onto
                 Vector3 planeNormal = hit.normal;
 
-                bool snappedUp = false;
-
-                bool hitStep = colliderCast.CheckVerticalStepAhead(
-                    hit.point - up * Epsilon + hit.normal * Epsilon,
-                    momentum.normalized,
-                    momentum.magnitude,
-                    out IRaycastHit stepHit);
-                bool perpendicularStep = hitStep && Vector3.Dot(stepHit.normal, up) <= Epsilon;
-
-                if (hitStep &&
-                    perpendicularStep &&
+                bool snappedUp =
                     canSnapUp &&
-                    hit.distance > 0 &&
                     !attemptingJump &&
-                    distanceToFeet < verticalSnapUp &&
-                    distanceToFeet > 0)
+                    AttemptSnapUp(colliderCast, hit, up, momentum, ref position, rotation, verticalSnapUp, stepUpDepth);
+
+                if (snappedUp)
                 {
-                    // Sometimes snapping up the exact distance leads to odd behaviour around steps and walls.
-                    // It's good to check the maximum and minimum snap distances and take whichever one works.
-                    // snap them up the minimum vertical distance
-                    snappedUp = AttemptSnapUp(
-                        distanceToFeet + Epsilon * 2,
-                        stepUpDepth,
-                        up,
-                        momentum,
-                        colliderCast,
-                        rotation,
-                        ref position);
-
-                    if (!snappedUp)
+                    didSnapUp = true;
+                    yield return new KCCBounce
                     {
-                        // If that movement doesn't work, Attempt to snap up the maximum vertical distance
-                        snappedUp = AttemptSnapUp(verticalSnapUp,
-                            stepUpDepth,
-                            up,
-                            momentum,
-                            colliderCast,
-                            rotation,
-                            ref position);
-                    }
-
-                    if (snappedUp)
-                    {
-                        didSnapUp = true;
-                        yield return new KCCBounce
-                        {
-                            initialPosition = initialPosition,
-                            finalPosition = position,
-                            initialMomentum = initialMomentum,
-                            remainingMomentum = Vector3.zero,
-                            action = MovementAction.SnapUp,
-                        };
-                    }
+                        initialPosition = initialPosition,
+                        finalPosition = position,
+                        initialMomentum = initialMomentum,
+                        remainingMomentum = Vector3.zero,
+                        action = MovementAction.SnapUp,
+                    };
                 }
 
                 // If we did snap up, don't decay momentum
@@ -333,20 +387,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 }
                 // Rotate the remaining remaining movement to be projected along the plane 
                 // of the surface hit (emulate pushing against the object)
-                Vector3 projectedMomentum = snappedUp ? momentum : Vector3.ProjectOnPlane(
-                    momentum,
-                    planeNormal).normalized * momentum.magnitude;
-
-                // If projected momentum is less than original momentum (so if the projection broke due to float
-                // operations), then change this to just project along the vertical.
-                if (projectedMomentum.magnitude + Epsilon < momentum.magnitude)
-                {
-                    momentum = Vector3.ProjectOnPlane(momentum, up).normalized * momentum.magnitude;
-                }
-                else
-                {
-                    momentum = projectedMomentum;
-                }
+                momentum = GetProjectedMomentumSave(snappedUp, momentum, planeNormal, up);
 
                 // Track number of times the character has bounced
                 bounces++;
