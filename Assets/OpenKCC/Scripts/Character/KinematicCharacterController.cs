@@ -956,7 +956,7 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.rotation,
                 Down,
                 groundCheckDistance,
-                out RaycastHit hit);
+                out IRaycastHit hit);
 
             angle = Vector3.Angle(hit.normal, Up);
             distanceToGround = hit.distance;

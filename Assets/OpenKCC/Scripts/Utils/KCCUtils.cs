@@ -113,7 +113,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 rotation,
                 dir,
                 dist,
-                out RaycastHit hit);
+                out IRaycastHit hit);
 
             if (didHit && hit.distance > 0)
             {
@@ -157,7 +157,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     rotation,
                     momentum.normalized,
                     stepUpDepth + Epsilon,
-                    out RaycastHit snapHit);
+                    out IRaycastHit snapHit);
 
             // UnityEngine.Debug.Log($"AttemptingSnapUp snapHit.distance:{snapHit.distance} > {Epsilon} && (!didSnapHit:{!didSnapHit} || snapHit.distance{snapHit.distance} > stepUpDepth:{stepUpDepth})");
 
@@ -204,7 +204,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 // Do a cast of the collider to see if an object is hit during this
                 // movement bounce
                 float distance = momentum.magnitude;
-                if (!colliderCast.CastSelf(position, rotation, momentum.normalized, distance, out RaycastHit hit))
+                if (!colliderCast.CastSelf(position, rotation, momentum.normalized, distance, out IRaycastHit hit))
                 {
                     // If there is no hit, move to desired position
                     position += momentum;
@@ -262,11 +262,12 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 bool snappedUp = false;
 
-                bool hitStep = Physics.Raycast(
-                    new Ray(hit.point - up * Epsilon + hit.normal * Epsilon, momentum.normalized),
-                    out RaycastHit stepHit,
-                    momentum.magnitude);
-                bool perpendicularStep = Vector3.Dot(stepHit.normal, up) <= Epsilon;
+                bool hitStep = colliderCast.CheckVerticalStepAhead(
+                    hit.point - up * Epsilon + hit.normal * Epsilon,
+                    momentum.normalized,
+                    momentum.magnitude,
+                    out IRaycastHit stepHit);
+                bool perpendicularStep = hitStep && Vector3.Dot(stepHit.normal, up) <= Epsilon;
 
                 if (hitStep &&
                     perpendicularStep &&

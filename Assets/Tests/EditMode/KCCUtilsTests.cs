@@ -60,13 +60,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Vector3 movement = Vector3.forward;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            var hit = new RaycastHit
-            {
-                point = Vector3.zero,
-                distance = KCCUtils.Epsilon,
-                normal = Vector3.zero
-            };
-            colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out hit)).Returns(true);
+            SetupColliderCast(true, SetupRaycastHitMock(distance:KCCUtils.Epsilon));
 
             // Simulate bounces
             var bounces = GetBounces(initialPosition, movement, maxBounces: maxBounces, anglePower: 0.0f, usePush: false).ToList();
@@ -88,13 +82,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Vector3 movement = Vector3.forward;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            var hit = new RaycastHit
-            {
-                point = Vector3.zero,
-                distance = 0,
-                normal = Vector3.zero
-            };
-            colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out hit)).Returns(true);
+            SetupColliderCast(true, SetupRaycastHitMock(distance:0));
 
             // Simulate bounces
             var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f, usePush: false).ToList();
@@ -113,8 +101,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         public void KCCNoMovement()
         {
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            var hit = new RaycastHit();
-            colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out hit)).Returns(false);
+            SetupColliderCast(false, SetupRaycastHitMock());
 
             // Simulate bounces
             var bounces = GetBounces(Vector3.zero, Vector3.zero).ToList();
@@ -130,32 +117,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         {
             return new[]
             {
-                Vector3.forward,
                 Vector3.right,
                 Vector3.left,
                 Vector3.back,
+                Vector3.forward,
                 Vector3.up,
                 Vector3.down,
-                Vector3.forward + Vector3.right,
-                Vector3.forward + Vector3.left,
-                Vector3.back + Vector3.right,
-                Vector3.back + Vector3.left,
-                Vector3.up + Vector3.forward,
-                Vector3.up + Vector3.right,
-                Vector3.up + Vector3.left,
-                Vector3.up + Vector3.back,
-                Vector3.up + Vector3.forward + Vector3.right,
-                Vector3.up + Vector3.forward + Vector3.left,
-                Vector3.up + Vector3.back + Vector3.right,
-                Vector3.up + Vector3.back + Vector3.left,
-                Vector3.down + Vector3.forward,
-                Vector3.down + Vector3.right,
-                Vector3.down + Vector3.left,
-                Vector3.down + Vector3.back,
-                Vector3.down + Vector3.forward + Vector3.right,
-                Vector3.down + Vector3.forward + Vector3.left,
-                Vector3.down + Vector3.back + Vector3.right,
-                Vector3.down + Vector3.back + Vector3.left,
             };
         }
 
@@ -170,8 +137,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Vector3 expectedFinalPosition = initialPosition + movement;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            var hit = new RaycastHit();
-            colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out hit)).Returns(false);
+            SetupColliderCast(false, new Mock<IRaycastHit>().Object);
 
             // Simulate bounces
             var bounces = GetBounces(initialPosition, movement).ToList();
@@ -204,6 +170,35 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Assert.IsTrue(initialPosition == null || bounce.initialPosition == initialPosition, $"Expected {nameof(bounce.initialPosition)} to be {initialPosition} but instead found {bounce.initialPosition}");
             Assert.IsTrue(remainingMomentum == null || bounce.remainingMomentum == remainingMomentum, $"Expected {nameof(bounce.remainingMomentum)} to be {remainingMomentum} but instead found {bounce.remainingMomentum}");
             Assert.IsTrue(initialMomentum == null || bounce.initialMomentum == initialMomentum, $"Expected {nameof(bounce.initialMomentum)} to be {initialMomentum} but instead found {bounce.initialMomentum}");
+        }
+
+        /// <summary>
+        /// Setup the collider cast.
+        /// </summary>
+        /// <param name="didHit">Has this collided with anything.</param>
+        /// <param name="raycastHit">Raycast hit object to return.</param>
+        public void SetupColliderCast(bool didHit, IRaycastHit raycastHit)
+        {
+            colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out raycastHit)).Returns(didHit);
+        }
+
+        /// <summary>
+        /// Setup a raycast hit mock.
+        /// </summary>
+        /// <param name="collider"></param>
+        /// <param name="point"></param>
+        /// <param name="distance"></param>
+        /// <returns></returns>
+        public IRaycastHit SetupRaycastHitMock(Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f)
+        {
+            var raycastHitMock = new Mock<IRaycastHit>();
+
+            raycastHitMock.Setup(hit => hit.collider).Returns(collider);
+            raycastHitMock.Setup(hit => hit.point).Returns(point);
+            raycastHitMock.Setup(hit => hit.distance).Returns(distance);
+            raycastHitMock.Setup(hit => hit.normal).Returns(normal);
+
+            return raycastHitMock.Object;
         }
 
         /// <summary>

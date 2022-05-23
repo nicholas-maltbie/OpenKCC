@@ -127,7 +127,7 @@ namespace nickmaltbie.OpenKCC.Demo
                 transform.rotation,
                 Vector3.down,
                 groundCheckDistance,
-                out RaycastHit hit);
+                out IRaycastHit hit);
 
             if (hitGround)
             {
