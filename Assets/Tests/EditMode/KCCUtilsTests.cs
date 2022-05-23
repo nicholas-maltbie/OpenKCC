@@ -136,7 +136,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         [Test]
         public void Validate_KCCSecondSnapUpAction()
         {
-            SetupColliderCast(new []
+            SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting a step slightly above foot position
                 (true, SetupRaycastHitMock(distance: KCCUtils.Epsilon, point: Vector3.up * 0.05f)),
@@ -147,7 +147,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             });
 
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
-            var wallCollision = SetupRaycastHitMock(normal : Vector3.back, distance: float.Epsilon);
+            IRaycastHit wallCollision = SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
             colliderCastMock.Setup(mock => mock.CheckVerticalStepAhead(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out wallCollision)).Returns(true);
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
@@ -166,7 +166,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         [Test]
         public void Validate_KCCSnapUpAction()
         {
-            SetupColliderCast(new []
+            SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting a step slightly above foot position
                 (true, SetupRaycastHitMock(distance: KCCUtils.Epsilon, point: Vector3.up * 0.05f)),
@@ -175,7 +175,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             });
 
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
-            var wallCollision = SetupRaycastHitMock(normal : Vector3.back, distance: float.Epsilon);
+            IRaycastHit wallCollision = SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
             colliderCastMock.Setup(mock => mock.CheckVerticalStepAhead(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out wallCollision)).Returns(true);
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
@@ -219,7 +219,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         {
             SetupColliderCast(true, SetupRaycastHitMock(null, Vector3.zero, Vector3.up, 0.01f));
 
-            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, this.colliderCastMock.Object);
+            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, colliderCastMock.Object);
 
             Assert.IsTrue(displacement.magnitude > 0.0f, $"Expected displacement to have a magnitude grater than zero but instead found {displacement.ToString("F3")}");
         }
@@ -242,15 +242,15 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         public void Validate_KCCPush()
         {
             // Have first hit hit a pushable object
-            SetupColliderCast(new []
+            SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting a a pushable object
                 (true, SetupRaycastHitMock(collider: null, distance: KCCUtils.Epsilon)),
                 // Next hit should not collide with anything as we are above the step
                 (false, SetupRaycastHitMock()),
             });
-            this.characterPushMock.Setup(mock => mock.CanPushObject(It.IsAny<Collider>())).Returns(true);
-            this.characterPushMock.Setup(mock => mock.PushObject(It.IsAny<IControllerColliderHit>())).Callback(() => {});
+            characterPushMock.Setup(mock => mock.CanPushObject(It.IsAny<Collider>())).Returns(true);
+            characterPushMock.Setup(mock => mock.PushObject(It.IsAny<IControllerColliderHit>())).Callback(() => { });
 
             // Simulate bounces
             var bounces = GetBounces(Vector3.zero, Vector3.forward).ToList();
@@ -295,18 +295,20 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// <param name="hitData">Enumerable set of didHit and raycastHit in the order they should be returned.</param>
         public void SetupColliderCast(IEnumerable<(bool, IRaycastHit)> hitData)
         {
-            var hitEnumerator = hitData.GetEnumerator();
+            IEnumerator<(bool, IRaycastHit)> hitEnumerator = hitData.GetEnumerator();
             hitEnumerator.MoveNext();
 
             (bool, IRaycastHit) nextHit = hitEnumerator.Current;
             colliderCastMock.Setup(
                 mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out nextHit.Item2))
-                .Returns(() => {
-                    var ret = nextHit.Item1;
+                .Returns(() =>
+                {
+                    bool ret = nextHit.Item1;
                     if (hitEnumerator.MoveNext())
                     {
                         nextHit = hitEnumerator.Current;
                     }
+
                     return ret;
                 });
         }

@@ -36,7 +36,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public bool CanPushObject(Collider hit)
         {
-            return  hit.attachedRigidbody != null &&
+            return hit.attachedRigidbody != null &&
                 !hit.attachedRigidbody.isKinematic &&
                 hit.gameObject.GetComponent<IPushable>() != null;
         }
