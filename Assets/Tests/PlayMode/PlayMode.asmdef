@@ -4,7 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "OpenKCC"
+        "OpenKCC",
+        "TestCommon"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
