@@ -106,8 +106,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
 
             // Should just return just one element with action stop
             NUnit.Framework.Assert.IsTrue(bounces.Count == 1, $"Expected to find {1} bounce but instead found {bounces.Count}");
-
-            // Validate bounce properties
             ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Stop, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
         }
 
@@ -156,8 +154,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
 
             // Validate bounce properties
             Assert.IsTrue(bounces.Count >= 2, $"Expected to find at least {2} bounce but instead found {bounces.Count}");
-
             ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.SnapUp);
+
+            // Assert that some forward momentum remained after hitting the step
+            Assert.IsTrue(
+                bounces[0].remainingMomentum.magnitude > KCCUtils.Epsilon,
+                $"Expected remaining momentum to be grater than zero, but instead found {bounces[0].remainingMomentum.magnitude}.");
         }
 
         /// <summary>
@@ -183,10 +185,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             var bounces = GetBounces(Vector3.zero, Vector3.forward).ToList();
 
             // Validate bounce properties
-            Assert.IsTrue(bounces.Count == 2, $"Expected to find {2} bounce but instead found {bounces.Count}");
-
+            Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounce but instead found {bounces.Count}");
             ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.SnapUp);
-            ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop);
+            ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Move);
+            ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
         }
 
         /// <summary>
@@ -231,7 +233,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         [TestCaseSource(nameof(MovementGenerator))]
         public void Verify_KCCInvalidProjectedMomentum(Vector3 move)
         {
-            Vector3 projected = KCCUtils.GetProjectedMomentumSafe(false, move, Vector3.forward, Vector3.up);
+            Vector3 projected = KCCUtils.GetProjectedMomentumSafe(move, Vector3.forward, Vector3.up);
             Assert.IsTrue((move.magnitude - projected.magnitude) <= 0.001f, $"Expected projected vector to have magnitude of {move.magnitude} but instead found {projected.magnitude}");
         }
 
@@ -256,10 +258,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             var bounces = GetBounces(Vector3.zero, Vector3.forward).ToList();
 
             // Validate bounce properties
-            Debug.Log(string.Join("\n", bounces));
-
             Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounce but instead found {bounces.Count}");
-
             ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
             ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Move);
             ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
@@ -282,6 +281,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Vector3? remainingMomentum = null,
             Vector3? initialMomentum = null)
         {
+            Debug.Log($"Evaluating bounce {bounce} for properties finalPosition:{finalPosition}, initialPosition:{initialPosition}, remainingMomentum:{remainingMomentum}, initialMomentum:{initialMomentum}");
+
             Assert.IsTrue(movementAction == null || bounce.action == movementAction, $"Expected {nameof(bounce.action)} to be {movementAction} but instead found {bounce.action}");
             Assert.IsTrue(finalPosition == null || bounce.finalPosition == finalPosition, $"Expected {nameof(bounce.finalPosition)} to be {finalPosition} but instead found {bounce.finalPosition}");
             Assert.IsTrue(initialPosition == null || bounce.initialPosition == initialPosition, $"Expected {nameof(bounce.initialPosition)} to be {initialPosition} but instead found {bounce.initialPosition}");

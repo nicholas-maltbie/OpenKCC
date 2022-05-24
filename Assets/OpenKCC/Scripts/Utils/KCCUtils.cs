@@ -232,16 +232,13 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <summary>
         /// Get player's projected movement along a surface.
         /// </summary>
-        /// <param name="snappedUp">Did the player snap up the current movement.</param>
         /// <param name="momentum">Remaining player momentum.</param>
         /// <param name="planeNormal">Plane normal that the player is bouncing off of.</param>
         /// <param name="up">Upwards direction relative to player.</param>
         /// <returns>Remaining momentum of the player.</returns>
-        public static Vector3 GetProjectedMomentumSafe(bool snappedUp, Vector3 momentum, Vector3 planeNormal, Vector3 up)
+        public static Vector3 GetProjectedMomentumSafe(Vector3 momentum, Vector3 planeNormal, Vector3 up)
         {
-            Vector3 projectedMomentum = snappedUp ? momentum : Vector3.ProjectOnPlane(
-                momentum,
-                planeNormal).normalized * momentum.magnitude;
+            Vector3 projectedMomentum = Vector3.ProjectOnPlane(momentum, planeNormal).normalized * momentum.magnitude;
 
             // If projected momentum is less than original momentum (so if the projection broke due to float
             // operations), then change this to just project along the vertical.
@@ -326,16 +323,14 @@ namespace nickmaltbie.OpenKCC.Utils
             // Plane to project rest of movement onto
             Vector3 planeNormal = hit.normal;
 
-            bool snappedUp = config.CanSnapUp && AttemptSnapUp(hit, remainingMomentum, ref position, rotation, config);
-
-            if (snappedUp)
+            if (config.CanSnapUp && AttemptSnapUp(hit, remainingMomentum, ref position, rotation, config))
             {
                 return new KCCBounce
                 {
                     initialPosition = initialPosition,
                     finalPosition = position,
                     initialMomentum = initialMomentum,
-                    remainingMomentum = Vector3.zero,
+                    remainingMomentum = remainingMomentum,
                     action = MovementAction.SnapUp,
                 };
             }
@@ -353,7 +348,7 @@ namespace nickmaltbie.OpenKCC.Utils
             remainingMomentum *= Mathf.Pow(1 - normalizedAngle, config.AnglePower) * 0.9f + 0.1f;
             // Rotate the remaining remaining movement to be projected along the plane 
             // of the surface hit (emulate pushing against the object)
-            remainingMomentum = GetProjectedMomentumSafe(snappedUp, remainingMomentum, planeNormal, config.Up);
+            remainingMomentum = GetProjectedMomentumSafe(remainingMomentum, planeNormal, config.Up);
 
             return new KCCBounce
             {
