@@ -5,7 +5,10 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "OpenKCC",
-        "TestCommon"
+        "TestCommon",
+        "Unity.ProBuilder",
+        "Unity.ProBuilder.Editor",
+        "Unity.ProBuilder.Poly2Tri"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
