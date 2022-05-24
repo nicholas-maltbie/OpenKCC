@@ -34,7 +34,7 @@ namespace nickmaltbie.OpenKCC.Character
     /// </summary>
     [RequireComponent(typeof(CapsuleColliderCast))]
     [RequireComponent(typeof(Rigidbody))]
-    public class KinematicCharacterController : MonoBehaviour
+    public class KinematicCharacterController : MonoBehaviour, IKCCConfig
     {
         [Header("Input Controls")]
 
@@ -458,7 +458,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Can the player snap up this update?
         /// </summary>
-        public bool CanSnapUp => snapUpPrevious || (!Falling || elapsedFalling <= snapBufferTime);
+        public bool CanSnapUp => !AttemptingJump && (snapUpPrevious || !Falling || elapsedFalling <= snapBufferTime);
 
         /// <summary>
         /// Direction of down relative to gravity with a unit length of 1
@@ -549,6 +549,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// not update in any way.
         /// </summary>
         public bool Frozen { get; set; }
+
+        /// <inheritdoc/>
+        public IColliderCast ColliderCast => capsuleColliderCast;
+
+        /// <inheritdoc/>
+        public ICharacterPush Push => GetComponent<CharacterPush>();
 
         /// <summary>
         /// Cleanup attached foot object when this is destroyed.
@@ -725,7 +731,7 @@ namespace nickmaltbie.OpenKCC.Character
                 // Move the player according to their movement
                 bool snapUpMove = MovePlayer(GetProjectedMovement() * fixedDeltaTime);
                 // Move the player according to their world velocity
-                MovePlayer(velocity * fixedDeltaTime, stopSnapUp: true);
+                MovePlayer(velocity * fixedDeltaTime);
 
                 snapUpPrevious = snapUpMove;
 
@@ -956,7 +962,7 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.rotation,
                 Down,
                 groundCheckDistance,
-                out RaycastHit hit);
+                out IRaycastHit hit);
 
             angle = Vector3.Angle(hit.normal, Up);
             distanceToGround = hit.distance;
@@ -971,23 +977,14 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         /// <param name="movement">Movement in world space in which the player model should be moved.</param>
         /// <param name="stopSnapUp">Should snapping up be forcibly stopped.</param>
-        public bool MovePlayer(Vector3 movement, bool stopSnapUp = false)
+        public bool MovePlayer(Vector3 movement)
         {
             bool snappedUp = false;
             foreach (KCCBounce bounce in KCCUtils.GetBounces(
-                maxBounces,
-                pushDecay,
-                verticalSnapUp,
-                stepUpDepth,
-                anglePower,
-                AttemptingJump,
-                stopSnapUp ? false : CanSnapUp,
                 transform.position,
                 movement,
                 transform.rotation,
-                Up,
-                capsuleColliderCast,
-                GetComponent<CharacterPush>()))
+                this))
             {
                 if (bounce.action == MovementAction.Stop)
                 {

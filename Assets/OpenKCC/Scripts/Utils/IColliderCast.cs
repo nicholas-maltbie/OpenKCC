@@ -59,10 +59,10 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="rotation">Rotation of the objecting when it is being raycast.</param>
         /// <param name="direction">Direction of the raycast.</param>
         /// <param name="distance">Maximum distance of raycast.</param>
-        /// <param name="hit">First object hit and related information, will have a distance of Mathf.Infinity if none
+        /// <param name="hit">First object hit and related information, will have a distance of Infinity if none
         /// is found.</param>
         /// <returns>True if an object is hit within distance, false otherwise.</returns>
-        bool CastSelf(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out RaycastHit hit);
+        bool CastSelf(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit);
 
         /// <summary>
         /// Get the vector to push this object out of overlapping objects with a max distance.
@@ -81,5 +81,15 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="position">Position to draw the mesh in.</param>
         /// <param name="rotation">Rotation to draw the mesh in.</param>
         void DrawMeshGizmo(Color outlineColor, Color fillColor, Vector3 position, Quaternion rotation);
+
+        /// <summary>
+        /// Check if there is a vertical step ahead of the character at a given location.
+        /// </summary>
+        /// <param name="source">Source point to check from.</param>
+        /// <param name="direction">Direction to search for step.</param>
+        /// <param name="distance">Distance to search for step ahead of player.</param>
+        /// <param name="stepHit">Information bout step hit ahead.</param>
+        /// <returns>Step hit information ahead of player.</returns>
+        bool CheckVerticalStepAhead(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit);
     }
 }

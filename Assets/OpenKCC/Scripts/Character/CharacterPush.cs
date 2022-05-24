@@ -26,17 +26,22 @@ namespace nickmaltbie.OpenKCC.Character
     /// <summary>
     /// Have a character controller push any dynamic rigidbody it hits
     /// </summary>
-    public class CharacterPush : MonoBehaviour
+    public class CharacterPush : MonoBehaviour, ICharacterPush
     {
         /// <summary>
         /// Power of the player push
         /// </summary>
         public float pushPower = 2.0f;
 
-        /// <summary>
-        /// Push an object using a IControllerColliderHit data.
-        /// </summary>
-        /// <param name="hit">Data about how the character controller hit the object.</param>
+        /// <inheritdoc/>
+        public bool CanPushObject(Collider hit)
+        {
+            return hit.attachedRigidbody != null &&
+                !hit.attachedRigidbody.isKinematic &&
+                hit.gameObject.GetComponent<IPushable>() != null;
+        }
+
+        /// <inheritdoc/>
         public void PushObject(IControllerColliderHit hit)
         {
             // Check if the thing we hit can be pushed

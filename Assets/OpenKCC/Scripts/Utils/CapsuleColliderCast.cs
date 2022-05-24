@@ -100,7 +100,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Quaternion rotation,
             Vector3 direction,
             float distance,
-            out RaycastHit hit)
+            out IRaycastHit hit)
         {
             var closest = new RaycastHit() { distance = Mathf.Infinity };
             bool hitSomething = false;
@@ -117,7 +117,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 }
             }
 
-            hit = closest;
+            hit = new RaycastHitWrapper(closest);
             return hitSomething;
         }
 
@@ -162,6 +162,14 @@ namespace nickmaltbie.OpenKCC.Utils
         {
             (_, Vector3 bottom, float radius, _) = GetParams(position, rotation);
             return bottom + radius * (rotation * Vector3.down);
+        }
+
+        /// <inheritdoc/>
+        public bool CheckVerticalStepAhead(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit)
+        {
+            bool didHit = Physics.Raycast(new Ray(source, direction), out RaycastHit hit, distance);
+            stepHit = new RaycastHitWrapper(hit);
+            return didHit;
         }
     }
 }

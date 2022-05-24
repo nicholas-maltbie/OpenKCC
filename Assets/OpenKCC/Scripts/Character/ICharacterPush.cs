@@ -16,26 +16,27 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections;
-using NUnit.Framework;
-using UnityEngine.TestTools;
+using nickmaltbie.OpenKCC.Utils;
+using UnityEngine;
 
-public class BasicUnitTest
+namespace nickmaltbie.OpenKCC.Character
 {
-    // A Test behaves as an ordinary method
-    [Test]
-    public void BasicUnitTestSimplePasses()
+    /// <summary>
+    /// Have a character controller push any dynamic rigidbody it hits
+    /// </summary>
+    public interface ICharacterPush
     {
-        // Use the Assert class to test conditions
-    }
+        /// <summary>
+        /// Push an object using a IControllerColliderHit data.
+        /// </summary>
+        /// <param name="hit">Data about how the character controller hit the object.</param>
+        void PushObject(IControllerColliderHit hit);
 
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
-    [UnityTest]
-    public IEnumerator BasicUnitTestWithEnumeratorPasses()
-    {
-        // Use the Assert class to test conditions.
-        // Use yield to skip a frame.
-        yield return null;
+        /// <summary>
+        /// Can this character push objects.
+        /// </summary>
+        /// <param name="hitObject">Object hit by the character.</param>
+        /// <returns>Can this chanter push objects.</returns>
+        bool CanPushObject(Collider hitObject);
     }
 }
