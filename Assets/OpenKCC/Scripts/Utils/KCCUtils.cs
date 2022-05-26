@@ -213,7 +213,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 // It's good to check the maximum and minimum snap distances and take whichever one works.
                 // snap them up the minimum vertical distance
                 snappedUp = AttemptSnapUp(
-                    distanceToFeet + Epsilon * 2,
+                    distanceToFeet + Epsilon,
                     momentum,
                     rotation,
                     ref position,
@@ -325,9 +325,6 @@ namespace nickmaltbie.OpenKCC.Utils
             // Decrease remaining momentum by fraction of movement remaining
             remainingMomentum *= (1 - fraction);
 
-            // Plane to project rest of movement onto
-            Vector3 planeNormal = hit.normal;
-
             if (config.CanSnapUp && AttemptSnapUp(hit, remainingMomentum, ref position, rotation, config))
             {
                 return new KCCBounce
@@ -353,7 +350,7 @@ namespace nickmaltbie.OpenKCC.Utils
             remainingMomentum *= Mathf.Pow(1 - normalizedAngle, config.AnglePower) * 0.9f + 0.1f;
             // Rotate the remaining remaining movement to be projected along the plane 
             // of the surface hit (emulate pushing against the object)
-            remainingMomentum = GetProjectedMomentumSafe(remainingMomentum, planeNormal, config.Up);
+            remainingMomentum = GetProjectedMomentumSafe(remainingMomentum, hit.normal, config.Up);
 
             return new KCCBounce
             {
@@ -394,6 +391,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
                 if (bounce.action == MovementAction.Invalid)
                 {
+                    yield return bounce;
                     break;
                 }
                 else if (bounce.action == MovementAction.SnapUp)
@@ -412,7 +410,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didSnapUp)
             {
-                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp, config.ColliderCast);
+                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp + KCCUtils.Epsilon * 2, config.ColliderCast);
             }
 
             // We're done, player was moved as part of loop

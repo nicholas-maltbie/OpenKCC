@@ -42,9 +42,13 @@ namespace nickmaltbie.OpenKCC.TestCommon
             Vector3? finalPosition = null,
             Vector3? initialPosition = null,
             Vector3? remainingMomentum = null,
-            Vector3? initialMomentum = null)
+            Vector3? initialMomentum = null,
+            bool log = true)
         {
-            Debug.Log($"Evaluating bounce {bounce} for properties finalPosition:{finalPosition}, initialPosition:{initialPosition}, remainingMomentum:{remainingMomentum}, initialMomentum:{initialMomentum}");
+            if (log)
+            {
+                Debug.Log($"Evaluating bounce {bounce} for properties finalPosition:{finalPosition}, initialPosition:{initialPosition}, remainingMomentum:{remainingMomentum}, initialMomentum:{initialMomentum}");
+            }
 
             Assert.IsTrue(movementAction == null || bounce.action == movementAction, $"Expected {nameof(bounce.action)} to be {movementAction} but instead found {bounce.action}");
             Assert.IsTrue(finalPosition == null || bounce.finalPosition == finalPosition, $"Expected {nameof(bounce.finalPosition)} to be {finalPosition} but instead found {bounce.finalPosition}");
