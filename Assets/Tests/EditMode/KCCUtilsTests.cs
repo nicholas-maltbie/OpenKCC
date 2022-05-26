@@ -73,7 +73,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// <summary>
         /// Test maximum bounces by having the object hit something multiple times.
         /// </summary>
-        [Test, Sequential]
+        [Test]
         public void Validate_KCCMaxBouncesTest([Values(0, 1, 5, 10)] int maxBounces)
         {
             // Have the object hit some collider and not move at all

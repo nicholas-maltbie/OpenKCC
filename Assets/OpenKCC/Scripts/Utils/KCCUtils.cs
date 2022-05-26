@@ -51,6 +51,11 @@ namespace nickmaltbie.OpenKCC.Utils
         /// </summary>
         public KCCUtils.MovementAction action;
 
+        /// <summary>
+        /// Get the movement of a vector (from initial position to final position).
+        /// </summary>
+        public Vector3 Movement => finalPosition - initialPosition;
+
         public override string ToString()
         {
             return string.Join(

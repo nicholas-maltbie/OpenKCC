@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
 using UnityEngine;
@@ -26,7 +25,7 @@ namespace nickmaltbie.OpenKCC.TestCommon
     /// <summary>
     /// Utility functions for KCC Validation
     /// </summary>
-    public class KCCValidation
+    public static class KCCValidation
     {
         /// <summary>
         /// Validate a KCC bounce for a specified set of properties.

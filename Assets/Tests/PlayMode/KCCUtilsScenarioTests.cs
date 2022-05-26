@@ -25,6 +25,7 @@ using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using static nickmaltbie.OpenKCC.TestCommon.TestUtils;
 
 namespace nickmaltbie.OpenKCC.Tests.PlayMode
 {
@@ -65,10 +66,13 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             this.playerColliderCast = character.AddComponent<CapsuleColliderCast>();
             this.characterPush = character.AddComponent<CharacterPush>();
 
-            var capsuleMesh = CapsuleMaker.CapsuleData(depth: 2.0f);
+            var capsuleMesh = CapsuleMaker.CapsuleData(depth: 1.0f);
+            capsuleMesh.vertices = capsuleMesh.vertices.Select(vert => vert + Vector3.up).ToArray();
             var meshFilter = character.AddComponent<MeshFilter>();
             meshFilter.mesh = capsuleMesh;
-            character.AddComponent<MeshRenderer>();
+
+            var mr = character.AddComponent<MeshRenderer>();
+            mr.material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         }
 
         /// <summary>
@@ -126,8 +130,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             // Get the bounces from moving forward.
             List<KCCBounce> bounces = GetBounces(movement).ToList();
 
-            Debug.Log(string.Join("\n", bounces));
-
             // Assert that there are two bounces, one from moving forward and one from stepping down.
             Assert.IsTrue(bounces.Count == 2, $"Expected to find 2 bounces, but instead found {bounces.Count}");
 
@@ -139,28 +141,56 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         /// <summary>
         /// Basic test of player walking into an object.
         /// </summary>
-        [Test]
-        public void TestWalkIntoObject()
+        [UnityTest]
+        public IEnumerator TestWalkIntoWall([NUnit.Framework.Range(5, 20, 5)] float distance)
         {
+            // Setup object to walk into
+            GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            wall.transform.position = Vector3.forward * (distance - 2) + Vector3.up * 0.5f;
+            RegisterGameObject(wall);
+            yield return new WaitForFixedUpdate();
 
+            // Have character walk into wall
+            List<KCCBounce> bounces = GetBounces(Vector3.forward * distance).ToList();
+
+            // Validate bounce actions
+            Assert.IsTrue(bounces.Count >= 2, $"Expected to find at least {2} bounces, but instead found {bounces.Count}");
+            var lastBounce = bounces[bounces.Count - 1];
+
+            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
+            KCCValidation.ValidateKCCBounce(lastBounce, KCCUtils.MovementAction.Stop);
+
+            Debug.Log($"initialPosition: {bounces[0].initialPosition}, finalPosition: {bounces[0].finalPosition}, movement: {bounces[0].Movement}");
+
+            TestUtils.AssertInBounds(bounces[0].Movement, Vector3.forward * (distance - 3), KCCUtils.Epsilon * 5);
+            TestUtils.AssertInBounds(lastBounce.finalPosition, bounces[0].finalPosition, KCCUtils.Epsilon * 5);
         }
 
         /// <summary>
-        /// Basic test of player bouncing and sliding off objects.
+        /// Basic test of player sliding off wall.
         /// </summary>
-        [Test]
-        public void TestBounceOffObject()
+        [UnityTest]
+        public IEnumerator TestSlideOffWall([NUnit.Framework.Range(15, 60, 15)] float yaw, [NUnit.Framework.Range(15, 60, 15)] float pitch)
         {
+            // Setup object to walk into
+            GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            wall.transform.position = Vector3.forward * 3 + Vector3.up * 0.5f;
+            wall.transform.rotation = Quaternion.Euler(pitch, yaw, 0);
+            RegisterGameObject(wall);
+            yield return new WaitForFixedUpdate();
 
-        }
+            // Have character walk into wall
+            Vector3 movement = Vector3.forward * 5;
+            List<KCCBounce> bounces = GetBounces(movement).ToList();
 
-        /// <summary>
-        /// Basic test of player walking into wall.
-        /// </summary>
-        [Test]
-        public void TestWalkIntoWall()
-        {
+            // Validate bounce actions
+            Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounces, but instead found {bounces.Count}");
+            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
+            KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Move);
+            KCCValidation.ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
 
+            TestUtils.AssertInBounds(bounces[0].Movement, Vector3.forward * 2, 1.0f);
+            TestUtils.AssertInBounds(bounces[1].Movement.magnitude, 0.5f, movement.magnitude - bounces[0].Movement.magnitude, bound:BoundRange.GraterThan);
         }
     }
 }
