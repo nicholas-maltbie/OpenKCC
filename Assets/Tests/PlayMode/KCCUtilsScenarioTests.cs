@@ -27,7 +27,6 @@ using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.ProBuilder;
-using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.TestTools;
 using static nickmaltbie.OpenKCC.TestCommon.TestUtils;
 
@@ -66,8 +65,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             anglePower = 1,
             canSnapUp = true,
             up = Vector3.up,
-            colliderCast = this.playerColliderCast,
-            push = this.characterPush,
+            colliderCast = playerColliderCast,
+            push = characterPush,
         };
 
         /// <summary>
@@ -76,23 +75,23 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         [SetUp]
         public void SetUp()
         {
-            GameObject character = this.CreateGameObject();
-            this.playerPosition = character.transform;
+            GameObject character = CreateGameObject();
+            playerPosition = character.transform;
 
             CapsuleCollider collider = character.AddComponent<CapsuleCollider>();
             collider.center = new Vector3(0, 1, 0);
             collider.radius = 0.5f;
             collider.height = 2.0f;
 
-            this.playerColliderCast = character.AddComponent<CapsuleColliderCast>();
-            this.characterPush = character.AddComponent<CharacterPush>();
+            playerColliderCast = character.AddComponent<CapsuleColliderCast>();
+            characterPush = character.AddComponent<CharacterPush>();
 
-            var capsuleMesh = CapsuleMaker.CapsuleData(depth: 1.0f);
+            Mesh capsuleMesh = CapsuleMaker.CapsuleData(depth: 1.0f);
             capsuleMesh.vertices = capsuleMesh.vertices.Select(vert => vert + Vector3.up).ToArray();
-            var meshFilter = character.AddComponent<MeshFilter>();
+            MeshFilter meshFilter = character.AddComponent<MeshFilter>();
             meshFilter.mesh = capsuleMesh;
 
-            var mr = character.AddComponent<MeshRenderer>();
+            MeshRenderer mr = character.AddComponent<MeshRenderer>();
             mr.material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         }
 
@@ -105,11 +104,11 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         public IEnumerable<KCCBounce> GetBounces(Vector3 movement, IKCCConfig kccConfig = null)
         {
             kccConfig ??= CreateKCCConfig();
-            
+
             return KCCUtils.GetBounces(
-                this.playerPosition.position,
+                playerPosition.position,
                 movement,
-                this.playerPosition.rotation,
+                playerPosition.rotation,
                 kccConfig);
         }
 
@@ -138,7 +137,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         public void TestWalkForward(Vector3 movement)
         {
             // Get the bounces from moving forward.
-            List<KCCBounce> bounces = GetBounces(movement).ToList();
+            var bounces = GetBounces(movement).ToList();
 
             // Assert that there are two bounces, one from moving forward and one from stepping down.
             Assert.IsTrue(bounces.Count == 2, $"Expected to find 2 bounces, but instead found {bounces.Count}");
@@ -155,11 +154,12 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         public IEnumerator TestPushBox([Values(3, 5)] float distance, [Values(true, false)] bool isKinematic)
         {
             // Setup object to walk into
-            GameObject pushable = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var pushable = GameObject.CreatePrimitive(PrimitiveType.Cube);
             pushable.transform.position = Vector3.forward * (distance - 2) + Vector3.up * 0.5f;
-            var pushableComponent = pushable.AddComponent<Pushable>();
-            var rigidbody = pushable.GetComponent<Rigidbody>();
+            _ = pushable.AddComponent<Pushable>();
+            Rigidbody rigidbody = pushable.GetComponent<Rigidbody>();
             rigidbody.isKinematic = isKinematic;
+            rigidbody.useGravity = false;
 
             RegisterGameObject(pushable);
 
@@ -173,17 +173,17 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         public IEnumerator TestWalkIntoWall([NUnit.Framework.Range(5, 20, 5)] float distance)
         {
             // Setup object to walk into
-            GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
             wall.transform.position = Vector3.forward * (distance - 2) + Vector3.up * 0.5f;
             RegisterGameObject(wall);
             yield return new WaitForFixedUpdate();
 
             // Have character walk into wall
-            List<KCCBounce> bounces = GetBounces(Vector3.forward * distance).ToList();
+            var bounces = GetBounces(Vector3.forward * distance).ToList();
 
             // Validate bounce actions
             Assert.IsTrue(bounces.Count >= 2, $"Expected to find at least {2} bounces, but instead found {bounces.Count}");
-            var lastBounce = bounces[bounces.Count - 1];
+            KCCBounce lastBounce = bounces[bounces.Count - 1];
 
             KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
             KCCValidation.ValidateKCCBounce(lastBounce, KCCUtils.MovementAction.Stop);
@@ -202,7 +202,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         public IEnumerator PushOutOverlapping()
         {
             // Setup object to overlap with
-            GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
             RegisterGameObject(wall);
 
             // Setup random number generator
@@ -221,8 +221,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
                 // have player attempt to move, they should overlap with object and exit early
                 var bounces = GetBounces(Vector3.forward).ToList();
                 Assert.IsTrue(bounces.Count == 2, $"Expected to find 2 bounces, but instead found {bounces.Count}");
-                KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Invalid, initialPosition:playerPosition.position, finalPosition:playerPosition.position, remainingMomentum:Vector3.zero, initialMomentum:Vector3.forward, log:false);
-                KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop, initialPosition:playerPosition.position, finalPosition:playerPosition.position, remainingMomentum:Vector3.zero, log:false);
+                KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Invalid, initialPosition: playerPosition.position, finalPosition: playerPosition.position, remainingMomentum: Vector3.zero, initialMomentum: Vector3.forward, log: false);
+                KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop, initialPosition: playerPosition.position, finalPosition: playerPosition.position, remainingMomentum: Vector3.zero, log: false);
             }
         }
 
@@ -232,20 +232,20 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             [Values(2)] float width,
             [NUnit.Framework.Range(5, 10, 5)] int numSteps,
             [NUnit.Framework.Range(0.15f, 0.55f, 0.2f)] float stepDepth,
-            [Values(new float[]{0.125f, 0.325f, 0.1f})] float[] snapHeightRange,
-            [Values(new float[]{0.25f, 0.75f, 0.25f})] float[]  snapDepthRange)
+            [Values(new float[] { 0.125f, 0.325f, 0.1f })] float[] snapHeightRange,
+            [Values(new float[] { 0.25f, 0.75f, 0.25f })] float[] snapDepthRange)
         {
             // Create stair object for player to walk into
             // Position stairs 1 units ahead of the player and centered
-            Vector3 size = new Vector3(width, stepHeight * numSteps, stepDepth * numSteps);
-            var stairBuilder = ShapeGenerator.GenerateStair(PivotLocation.FirstCorner, size, numSteps, false);
+            var size = new Vector3(width, stepHeight * numSteps, stepDepth * numSteps);
+            ProBuilderMesh stairBuilder = ShapeGenerator.GenerateStair(PivotLocation.FirstCorner, size, numSteps, false);
             stairBuilder.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
             stairBuilder.transform.position = Vector3.forward + Vector3.left * width / 2;
             stairBuilder.gameObject.AddComponent<MeshCollider>();
             RegisterGameObject(stairBuilder.gameObject);
 
             // Put a small platform after the stairs
-            var platform = ShapeGenerator.GeneratePlane(PivotLocation.FirstCorner, 5, width, 1, 1, Axis.Up);
+            ProBuilderMesh platform = ShapeGenerator.GeneratePlane(PivotLocation.FirstCorner, 5, width, 1, 1, Axis.Up);
             platform.transform.position = stairBuilder.transform.position + new Vector3(0, size.y, size.z);
             platform.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
             platform.gameObject.AddComponent<MeshCollider>();
@@ -254,7 +254,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             yield return new WaitForFixedUpdate();
 
             // Run a test for each permutation of snap height and snap depth
-            List<(float, float)> permutations = new List<(float, float)>();
+            var permutations = new List<(float, float)>();
             for (float snapHeight = snapHeightRange[0]; snapHeight <= snapHeightRange[1]; snapHeight += snapHeightRange[2])
             {
                 for (float snapDepth = snapDepthRange[0]; snapDepth <= snapDepthRange[1]; snapDepth += snapDepthRange[2])
@@ -278,7 +278,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
 
                 // Check if the player can climb steps, step height should be <= snap up stair step depth should be >= snap depth
                 // Edge case, player can walk up steps if player can take multiple steps in one snap
-                int maxStepsAtOnce = (int) Mathf.Floor(snapHeight / stepHeight);
+                int maxStepsAtOnce = (int)Mathf.Floor(snapHeight / stepHeight);
                 float maxStepsDepth = maxStepsAtOnce * stepDepth;
                 bool canClimb = stepHeight <= config.verticalSnapUp && (stepDepth >= config.stepUpDepth || maxStepsDepth >= config.stepUpDepth);
 
@@ -301,7 +301,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
 
                     // Validate bounce actions
                     Assert.IsTrue(bounces.Count >= 2, $"Expected to find at least {2} bounces, but instead found {bounces.Count}");
-                    var lastBounce = bounces[bounces.Count - 1];
+                    KCCBounce lastBounce = bounces[bounces.Count - 1];
 
                     // Assert that no bounces were snap up
                     bounces.ForEach(bounce => Assert.IsTrue(bounce.action != KCCUtils.MovementAction.SnapUp, $"Found unexpected {KCCUtils.MovementAction.SnapUp} while player should not able to walk up stairs"));
@@ -326,10 +326,10 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
                     // First bounces should all be a "StepUp" action
                     // Last bounce should be a "Stop" action
                     // Some steps may take more than one bounce to scale so will let that happen
-                    var stepUpBounces = Enumerable.Range(0, bounces.Count - 2).Select(index => bounces[index]);
+                    IEnumerable<KCCBounce> stepUpBounces = Enumerable.Range(0, bounces.Count - 2).Select(index => bounces[index]);
 
                     // Validate the sets of bounces
-                    foreach (var stepUp in stepUpBounces)
+                    foreach (KCCBounce stepUp in stepUpBounces)
                     {
                         // Movement should also be forward and step up action
                         Assert.IsTrue(
@@ -345,8 +345,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
                     // If we have finished climbing the steps, validate move and stop bounces
                     if (climbedSteps())
                     {
-                        var moveBounce = bounces[bounces.Count - 2];
-                        var stopBounce = bounces[bounces.Count - 1];
+                        KCCBounce moveBounce = bounces[bounces.Count - 2];
+                        KCCBounce stopBounce = bounces[bounces.Count - 1];
                         // Last steps should be stop
                         // Last step should have climbed to top of staircase
                         KCCValidation.ValidateKCCBounce(moveBounce, KCCUtils.MovementAction.Move);
@@ -357,7 +357,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
                         Assert.IsTrue(climbedSteps());
                         Assert.IsTrue(snapUpCount > 0, $"Expected player to snap up but did not find any snap up events.");
                     }
-                } 
+                }
             }
         }
 
@@ -368,7 +368,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         public IEnumerator TestSlideOffWall([NUnit.Framework.Range(15, 60, 15)] float yaw, [NUnit.Framework.Range(15, 60, 15)] float pitch)
         {
             // Setup object to walk into
-            GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
             wall.transform.position = Vector3.forward * 3 + Vector3.up * 0.5f;
             wall.transform.rotation = Quaternion.Euler(pitch, yaw, 0);
             RegisterGameObject(wall);
@@ -376,7 +376,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
 
             // Have character walk into wall
             Vector3 movement = Vector3.forward * 5;
-            List<KCCBounce> bounces = GetBounces(movement).ToList();
+            var bounces = GetBounces(movement).ToList();
 
             // Validate bounce actions
             Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounces, but instead found {bounces.Count}");
@@ -385,7 +385,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             KCCValidation.ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
 
             TestUtils.AssertInBounds(bounces[0].Movement, Vector3.forward * 2, 1.0f);
-            TestUtils.AssertInBounds(bounces[1].Movement.magnitude, 0.5f, movement.magnitude - bounces[0].Movement.magnitude, bound:BoundRange.GraterThan);
+            TestUtils.AssertInBounds(bounces[1].Movement.magnitude, 0.5f, movement.magnitude - bounces[0].Movement.magnitude, bound: BoundRange.GraterThan);
         }
     }
 }
