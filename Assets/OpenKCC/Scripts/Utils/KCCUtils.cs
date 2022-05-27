@@ -251,10 +251,7 @@ namespace nickmaltbie.OpenKCC.Utils
             {
                 return Vector3.ProjectOnPlane(momentum, up).normalized * momentum.magnitude;
             }
-            else
-            {
-                return projectedMomentum;
-            }
+            return projectedMomentum;
         }
 
         /// <summary>

@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.Environment.Pushable;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
@@ -148,6 +149,24 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         }
 
         /// <summary>
+        /// Basic test of player walking forward.
+        /// </summary>
+        [UnityTest]
+        public IEnumerator TestPushBox([Values(3, 5)] float distance, [Values(true, false)] bool isKinematic)
+        {
+            // Setup object to walk into
+            GameObject pushable = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            pushable.transform.position = Vector3.forward * (distance - 2) + Vector3.up * 0.5f;
+            var pushableComponent = pushable.AddComponent<Pushable>();
+            var rigidbody = pushable.GetComponent<Rigidbody>();
+            rigidbody.isKinematic = isKinematic;
+
+            RegisterGameObject(pushable);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        /// <summary>
         /// Basic test of player walking into an object.
         /// </summary>
         [UnityTest]
@@ -255,6 +274,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
 
                 // Reset player position
                 playerPosition.position = Vector3.zero;
+                yield return null;
 
                 // Check if the player can climb steps, step height should be <= snap up stair step depth should be >= snap depth
                 // Edge case, player can walk up steps if player can take multiple steps in one snap
@@ -279,8 +299,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
                     playerPosition.transform.position = bounces[bounces.Count - 1].finalPosition;
                     yield return null;
 
-                    Debug.Log(string.Join("\n", bounces));
-
                     // Validate bounce actions
                     Assert.IsTrue(bounces.Count >= 2, $"Expected to find at least {2} bounces, but instead found {bounces.Count}");
                     var lastBounce = bounces[bounces.Count - 1];
@@ -301,8 +319,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
                     // Move player to final position
                     playerPosition.transform.position = bounces[bounces.Count - 1].finalPosition;
                     yield return null;
-
-                    Debug.Log(string.Join("\n", bounces));
 
                     // Expected to find at least three bounces
                     Assert.IsTrue(bounces.Count >= 2, $"Expected to find at least three bounces, but instead found {bounces.Count}");
