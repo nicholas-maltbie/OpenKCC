@@ -151,15 +151,28 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         /// Basic test of player walking forward.
         /// </summary>
         [UnityTest]
-        public IEnumerator TestPushBox([Values(3, 5)] float distance, [Values(true, false)] bool isKinematic)
+        public IEnumerator TestPushBox([Values(3, 5)] float distance, [Values(true, false)] bool isKinematic, [Values(true, false)] bool isPushable, [Values(true, false)] bool addRigidbody)
         {
             // Setup object to walk into
             var pushable = GameObject.CreatePrimitive(PrimitiveType.Cube);
             pushable.transform.position = Vector3.forward * distance + Vector3.up * 0.5f;
-            _ = pushable.AddComponent<Pushable>();
+
+            if (isPushable)
+            {
+                _ = pushable.AddComponent<Pushable>();
+            }
+
+            if (addRigidbody)
+            {
+                _ = pushable.AddComponent<Rigidbody>();
+            }
+
             Rigidbody rigidbody = pushable.GetComponent<Rigidbody>();
-            rigidbody.isKinematic = isKinematic;
-            rigidbody.useGravity = false;
+            if (rigidbody != null)
+            {
+                rigidbody.isKinematic = isKinematic;
+                rigidbody.useGravity = false;
+            }
 
             RegisterGameObject(pushable);
             yield return new WaitForFixedUpdate();
@@ -175,16 +188,15 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
             KCCValidation.ValidateKCCBounce(lastBounce, KCCUtils.MovementAction.Stop);
 
-            yield return new WaitForFixedUpdate();
-
             // Assert that the box has some force added to it if it's dynamic
-            if (!isKinematic)
+            bool canPush = !isKinematic && rigidbody != null && pushable.GetComponent<Pushable>() != null;
+            if (canPush && rigidbody != null)
             {
-                Assert.IsTrue(rigidbody.velocity.magnitude >= KCCUtils.Epsilon, $"Expected box to have some added force");
+                Assert.IsTrue(rigidbody.velocity.magnitude >= 0, $"Expected box to have some added force");
             }
-            else
+            else if (rigidbody != null)
             {
-                Assert.IsTrue(rigidbody.velocity.magnitude <= KCCUtils.Epsilon, $"Expected box to not have any added force");
+                Assert.IsTrue(rigidbody.velocity.magnitude == 0, $"Expected box to not have any added force");
             }
         }
 
