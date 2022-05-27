@@ -155,15 +155,37 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         {
             // Setup object to walk into
             var pushable = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            pushable.transform.position = Vector3.forward * (distance - 2) + Vector3.up * 0.5f;
+            pushable.transform.position = Vector3.forward * distance + Vector3.up * 0.5f;
             _ = pushable.AddComponent<Pushable>();
             Rigidbody rigidbody = pushable.GetComponent<Rigidbody>();
             rigidbody.isKinematic = isKinematic;
             rigidbody.useGravity = false;
 
             RegisterGameObject(pushable);
+            yield return new WaitForFixedUpdate();
+
+            // Have character walk forward into object
+            var bounces = GetBounces(Vector3.forward * (distance + 2)).ToList();
+
+            // Validate bounce actions
+            // Assert that character will bounce, then stop
+            Assert.IsTrue(bounces.Count >= 2, $"Expected to find at least {2} bounces, but instead found {bounces.Count}");
+            KCCBounce lastBounce = bounces[bounces.Count - 1];
+
+            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
+            KCCValidation.ValidateKCCBounce(lastBounce, KCCUtils.MovementAction.Stop);
 
             yield return new WaitForFixedUpdate();
+
+            // Assert that the box has some force added to it if it's dynamic
+            if (!isKinematic)
+            {
+                Assert.IsTrue(rigidbody.velocity.magnitude >= KCCUtils.Epsilon, $"Expected box to have some added force");
+            }
+            else
+            {
+                Assert.IsTrue(rigidbody.velocity.magnitude <= KCCUtils.Epsilon, $"Expected box to not have any added force");
+            }
         }
 
         /// <summary>
@@ -274,7 +296,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
 
                 // Reset player position
                 playerPosition.position = Vector3.zero;
-                yield return null;
 
                 // Check if the player can climb steps, step height should be <= snap up stair step depth should be >= snap depth
                 // Edge case, player can walk up steps if player can take multiple steps in one snap
@@ -297,7 +318,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
                 {
                     var bounces = GetBounces(movement, config).ToList();
                     playerPosition.transform.position = bounces[bounces.Count - 1].finalPosition;
-                    yield return null;
 
                     // Validate bounce actions
                     Assert.IsTrue(bounces.Count >= 2, $"Expected to find at least {2} bounces, but instead found {bounces.Count}");
@@ -318,7 +338,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
 
                     // Move player to final position
                     playerPosition.transform.position = bounces[bounces.Count - 1].finalPosition;
-                    yield return null;
 
                     // Expected to find at least three bounces
                     Assert.IsTrue(bounces.Count >= 2, $"Expected to find at least three bounces, but instead found {bounces.Count}");
