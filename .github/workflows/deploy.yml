@@ -99,59 +99,6 @@ jobs:
           publish_dir: Builds/OpenKCC-WebGL
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  runTests:
-    name: Test in ${{ matrix.testMode }}
-    needs: updateSemver
-    runs-on: Ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        unityVersion:
-          - 2021.1.19f1
-        testMode:
-          - all
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Cache Library Folder
-        uses: actions/cache@v2
-        with:
-          path: Library
-          key: Library-${{ matrix.buildMethod }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
-          restore-keys: |
-            Library-${{ matrix.buildMethod }}-
-
-      - name: Cache git lfs
-        uses: actions/cache@v2
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1.2
-          # use previous cache if current one is not found
-          restore-keys: |
-            ${{ runner.os }}-lfs-
-
-      - name: Pull lfs data, if not cached
-        run: git lfs pull
-
-      - uses: game-ci/unity-test-runner@v2
-        id: tests
-        with:
-          projectPath: ${{ matrix.projectPath }}
-          testMode: ${{ matrix.testMode }}
-          artifactsPath: ${{ matrix.testMode }}-artifacts
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          checkName: ${{ matrix.testMode }} Test Results
-          customParameters: |
-            -enableCodeCoverage
-            -debugCodeOptimization
-            -burst-disable-compilation 
-            -coverageResultsPath ${{ matrix.testMode }}-artifacts
-            -coverageOptions generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC.*
-            -nographics
-
   # Build the documentation
   buildAndDeployDocs:
     runs-on: windows-latest # Required by DocFX
