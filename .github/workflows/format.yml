@@ -12,7 +12,7 @@ jobs:
       matrix:
         unityVersion:
           - 2021.1.19f1
-        buildMethod:
+        targetPlatform:
           - WebGL
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -24,9 +24,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: Library
-          key: Library-${{ buildMethod }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
+          key: Library-${{ targetPlatform }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
           restore-keys: |
-            Library-${{ buildMethod }}-
+            Library-${{ targetPlatform }}-
 
       - name: Pull lfs data, if not cached
         run: git lfs pull
