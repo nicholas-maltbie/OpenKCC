@@ -3,6 +3,9 @@ name: Code and Docs Lint
 # Controls when the action will run. Triggers the workflow on push or pull request
 on: [pull_request] # This will run on every pull request. 
 
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   code-format:
@@ -99,6 +102,9 @@ jobs:
 
       - name: Install DocFX
         run: choco install -y docfx
+
+      - name: Setup site folder
+        run: mkdir _site
 
       - name: Use README.md as index.md
         run: cp README.md Documentation/index.md
