@@ -24,9 +24,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: Library
-          key: Library-${{ targetPlatform }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
+          key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
           restore-keys: |
-            Library-${{ targetPlatform }}-
+            Library-${{ matrix.targetPlatform }}-
 
       - name: Pull lfs data, if not cached
         run: git lfs pull

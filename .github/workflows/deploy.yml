@@ -55,7 +55,7 @@ jobs:
         unityVersion:
           - 2021.1.19f1
         targetPlatform:
-          - WebGL # WebGL.
+          - WebGL
 
     steps:
       - uses: actions/checkout@v2
