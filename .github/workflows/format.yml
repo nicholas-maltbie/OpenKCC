@@ -109,12 +109,6 @@ jobs:
       - name: Build Website
         run: cp README.md Documentation/index.md
 
-      - name: Copy LICENSE.txt to website
-        run: cp LICENSE.txt _site/LICENSE.txt
-
-      - name: Copy Demo assets to website
-        run: cp -Recurse Demo _site/Demo
-
       - name: Generate Metadata for DocFx
         run: docfx metadata .\Documentation\docfx.json --warningsAsErrors --repositoryRoot . --logLevel verbose
 
