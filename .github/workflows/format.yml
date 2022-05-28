@@ -50,23 +50,14 @@ jobs:
         with:
           dotnet-version: "6.0.x"
 
-      - name: Format C# Code
-        uses: wearerequired/lint-action@v2
-        with:
-          dotnet_format: true
-          dotnet_format_args: "style workspace.sln --severity warn --verbosity detailed --exclude Library"
-          dotnet_format_auto_fix: false
-          continue_on_error: false
-          commit: false
+      # Restore dotnet tools. This handles cache implicitly.
+      - run: dotnet tool restore
 
-      - name: C# Format Whitespace
-        uses: wearerequired/lint-action@v2
-        with:
-          dotnet_format: true
-          dotnet_format_args: "whitespace workspace.sln whitespace --verbosity detailed --exclude Library"
-          dotnet_format_auto_fix: false
-          continue_on_error: false
-          commit: false
+      - name: Format C# Code
+        run: dotnet format --severity warn --verbosity detailed workspace.sln --exclude --exclude Library --verify-no-changes
+
+      - name: Format C# Whitespace
+        run: dotnet format whitespace workspace.sln whitespace --verbosity detailed --exclude Library --verify-no-changes
 
   lint-markdown:
     name: Lint markdown files
