@@ -103,10 +103,7 @@ jobs:
       - name: Install DocFX
         run: choco install -y docfx
 
-      - name: Build
-        run: docfx build Documentation/docfx.json --warningsAsErrors
-
-      - name: Use README.md as index.md
+      - name: Build Website
         run: cp README.md Documentation/index.md
 
       - name: Copy LICENSE.txt to website
@@ -114,3 +111,9 @@ jobs:
 
       - name: Copy Demo assets to website
         run: cp -Recurse Demo _site/Demo
+
+      - name: Generate Metadata for DocFx
+        run: docfx metadata .\Documentation\docfx.json --warningsAsErrors --repositoryRoot . --logLevel verbose
+
+      - name: Build Website for DocFx
+        run: docfx build .\Documentation\docfx.json --warningsAsErrors --repositoryRoot . --logLevel verbose

@@ -27,13 +27,13 @@
             {
                 "files": [
                     "toc.yml",
-                    "index.md",
-                    "LICENSE.txt"
+                    "index.md"
                 ]
             },
             {
                 "src": "api",
                 "files": [
+                    "toc.yml",
                     "*.yml"
                 ],
                 "dest": "api"
@@ -59,8 +59,14 @@
             {
                 "src": "..",
                 "files": [
-                    "Documentation/resources/**/*",
-                    "Demo/**/*"
+                    "Demo/**/*",
+                    "LICENSE.txt"
+                ]
+            },
+            {
+                "src": ".",
+                "files": [
+                    "resources/**/*"
                 ]
             }
         ],

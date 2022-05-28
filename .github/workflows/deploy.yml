@@ -176,17 +176,20 @@ jobs:
       - name: Install DocFX
         run: choco install -y docfx
 
-      - name: Use README.md as index.md
+      - name: Build Website
         run: cp README.md Documentation/index.md
-
-      - name: Build
-        run: docfx Documentation/docfx.json
 
       - name: Copy LICENSE.txt to website
         run: cp LICENSE.txt _site/LICENSE.txt
 
       - name: Copy Demo assets to website
         run: cp -Recurse Demo _site/Demo
+
+      - name: Generate Metadata for DocFx
+        run: docfx metadata .\Documentation\docfx.json --warningsAsErrors --repositoryRoot . --logLevel verbose
+
+      - name: Build Website for DocFx
+        run: docfx build .\Documentation\docfx.json --warningsAsErrors --repositoryRoot . --logLevel verbose
 
       # Checkout to the previously created gh-pages branch
       - name: Deploy
