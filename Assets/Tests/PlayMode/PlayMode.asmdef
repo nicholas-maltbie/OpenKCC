@@ -4,7 +4,11 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "OpenKCC"
+        "OpenKCC",
+        "TestCommon",
+        "Unity.ProBuilder",
+        "Unity.ProBuilder.Editor",
+        "Unity.ProBuilder.Poly2Tri"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

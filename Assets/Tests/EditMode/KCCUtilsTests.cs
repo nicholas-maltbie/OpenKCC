@@ -20,12 +20,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode
 {
+    /// <summary>
+    /// Basic tests for KCCUtils in edit mode.
+    /// </summary>
     [TestFixture]
     public class KCCUtilsTests
     {
@@ -38,6 +42,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// Mock for controlling character pushes used for testing.
         /// </summary>
         public Mock<ICharacterPush> characterPushMock;
+
+        /// <summary>
+        /// Setup test with basic collider cast mock.
+        /// </summary>
+        [SetUp]
+        public void SetUp()
+        {
+            colliderCastMock = new Mock<IColliderCast>();
+            characterPushMock = new Mock<ICharacterPush>();
+        }
 
         /// <summary>
         /// Generate basic set of movements.
@@ -57,19 +71,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         }
 
         /// <summary>
-        /// Setup test with basic collider cast mock.
-        /// </summary>
-        [SetUp]
-        public void SetUp()
-        {
-            colliderCastMock = new Mock<IColliderCast>();
-            characterPushMock = new Mock<ICharacterPush>();
-        }
-
-        /// <summary>
         /// Test maximum bounces by having the object hit something multiple times.
         /// </summary>
-        [Test, Sequential]
+        [Test]
         public void Validate_KCCMaxBouncesTest([Values(0, 1, 5, 10)] int maxBounces)
         {
             // Have the object hit some collider and not move at all
@@ -84,8 +88,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
 
             // Should hit max bounces
             Assert.IsTrue(bounces.Count == maxBounces + 2, $"Expected to find {maxBounces + 2} bounce but instead found {bounces.Count}");
-            Enumerable.Range(0, maxBounces + 1).ToList().ForEach(idx => ValidateKCCBounce(bounces[idx], KCCUtils.MovementAction.Bounce));
-            ValidateKCCBounce(bounces[maxBounces + 1], KCCUtils.MovementAction.Stop);
+            Enumerable.Range(0, maxBounces + 1).ToList().ForEach(idx => KCCValidation.ValidateKCCBounce(bounces[idx], KCCUtils.MovementAction.Bounce));
+            KCCValidation.ValidateKCCBounce(bounces[maxBounces + 1], KCCUtils.MovementAction.Stop);
         }
 
         /// <summary>
@@ -105,10 +109,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f).ToList();
 
             // Should just return just one element with action stop
-            NUnit.Framework.Assert.IsTrue(bounces.Count == 1, $"Expected to find {1} bounce but instead found {bounces.Count}");
-
-            // Validate bounce properties
-            ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Stop, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
+            NUnit.Framework.Assert.IsTrue(bounces.Count == 2, $"Expected to find {2} bounce but instead found {bounces.Count}");
+            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Invalid, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
+            KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
         }
 
         /// <summary>
@@ -127,7 +130,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Assert.IsTrue(bounces.Count == 1, $"Expected to find {1} bounce but instead found {bounces.Count}");
 
             // Validate bounce properties
-            ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Stop, Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero);
+            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Stop, Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero);
         }
 
         /// <summary>
@@ -156,8 +159,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
 
             // Validate bounce properties
             Assert.IsTrue(bounces.Count >= 2, $"Expected to find at least {2} bounce but instead found {bounces.Count}");
+            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.SnapUp);
 
-            ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.SnapUp);
+            // Assert that some forward momentum remained after hitting the step
+            Assert.IsTrue(
+                bounces[0].remainingMomentum.magnitude > KCCUtils.Epsilon,
+                $"Expected remaining momentum to be grater than zero, but instead found {bounces[0].remainingMomentum.magnitude}.");
         }
 
         /// <summary>
@@ -183,10 +190,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             var bounces = GetBounces(Vector3.zero, Vector3.forward).ToList();
 
             // Validate bounce properties
-            Assert.IsTrue(bounces.Count == 2, $"Expected to find {2} bounce but instead found {bounces.Count}");
-
-            ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.SnapUp);
-            ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop);
+            Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounce but instead found {bounces.Count}");
+            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.SnapUp);
+            KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Move);
+            KCCValidation.ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
         }
 
         /// <summary>
@@ -207,8 +214,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
 
             // Validate bounce properties
             Assert.IsTrue(bounces.Count == 2, $"Expected to find {2} bounce but instead found {bounces.Count}");
-            ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Move, expectedFinalPosition, initialPosition, Vector3.zero, movement);
-            ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop, expectedFinalPosition, expectedFinalPosition, Vector3.zero, Vector3.zero);
+            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Move, expectedFinalPosition, initialPosition, Vector3.zero, movement);
+            KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop, expectedFinalPosition, expectedFinalPosition, Vector3.zero, Vector3.zero);
         }
 
         /// <summary>
@@ -231,7 +238,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         [TestCaseSource(nameof(MovementGenerator))]
         public void Verify_KCCInvalidProjectedMomentum(Vector3 move)
         {
-            Vector3 projected = KCCUtils.GetProjectedMomentumSafe(false, move, Vector3.forward, Vector3.up);
+            Vector3 projected = KCCUtils.GetProjectedMomentumSafe(move, Vector3.forward, Vector3.up);
             Assert.IsTrue((move.magnitude - projected.magnitude) <= 0.001f, $"Expected projected vector to have magnitude of {move.magnitude} but instead found {projected.magnitude}");
         }
 
@@ -256,10 +263,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             var bounces = GetBounces(Vector3.zero, Vector3.forward).ToList();
 
             // Validate bounce properties
-            Debug.Log(string.Join("\n", bounces));
-
             Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounce but instead found {bounces.Count}");
-
             ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
             ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Move);
             ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
@@ -282,6 +286,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Vector3? remainingMomentum = null,
             Vector3? initialMomentum = null)
         {
+            Debug.Log($"Evaluating bounce {bounce} for properties finalPosition:{finalPosition}, initialPosition:{initialPosition}, remainingMomentum:{remainingMomentum}, initialMomentum:{initialMomentum}");
+
             Assert.IsTrue(movementAction == null || bounce.action == movementAction, $"Expected {nameof(bounce.action)} to be {movementAction} but instead found {bounce.action}");
             Assert.IsTrue(finalPosition == null || bounce.finalPosition == finalPosition, $"Expected {nameof(bounce.finalPosition)} to be {finalPosition} but instead found {bounce.finalPosition}");
             Assert.IsTrue(initialPosition == null || bounce.initialPosition == initialPosition, $"Expected {nameof(bounce.initialPosition)} to be {initialPosition} but instead found {bounce.initialPosition}");
