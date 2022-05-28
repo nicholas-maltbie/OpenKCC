@@ -96,6 +96,7 @@ crashlytics-build.properties
 Documentation/api/
 Documentation/index.*
 Documentation/Demo/
+Documentation/LICENSE.txt
 Documentation/obj/
 _site/
 Assets/**/obj*

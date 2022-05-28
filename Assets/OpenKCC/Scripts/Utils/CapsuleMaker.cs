@@ -44,7 +44,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
         /// <summary>
         /// Draws a wire capsule on the screen, helpful function found here on the unity stack exchange:
-        /// https://answers.unity.com/questions/56063/draw-capsule-gizmo.html?childToView=1476302&_ga=2.232481631.1721647171.1641801380-2133336876.1641105790#answer-1476302
+        /// https://answers.unity.com/questions/56063/draw-capsule-gizmo.html
         /// </summary>
         /// <param name="_pos">Position to draw wire capsule (center of capsule)</param>
         /// <param name="_rot">Rotation to draw wire capsule</param>

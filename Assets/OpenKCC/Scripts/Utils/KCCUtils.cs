@@ -129,14 +129,11 @@ namespace nickmaltbie.OpenKCC.Utils
         /// there is not enough space on the ledge above, then this will move the player back to where
         /// they were before the attempt was made.
         /// </summary>
-        /// <param name="distanceToSnap">Distance that the player is teleported up</param>
-        /// <param name="hit">Wall/step that the player ran into</param>
-        /// <param name="momentum">The remaining momentum of the player</param>
-        /// <param name="up">Direction of Up relative to the player</param>
-        /// <param name="colliderCast">Collider cast associated with the player</param>
-        /// <param name="momentum">reference to moving position of the player</param>
+        /// <param name="distanceToSnap">Distance that the player is teleported up.</param>
+        /// <param name="momentum">The remaining momentum of the player.</param>
         /// <param name="rotation">Rotation of the player.</param>
         /// <param name="position">Position of the player.</param>
+        /// <param name="config">Config for controlling player movement.</param>
         /// <returns>True if the player had space on the ledge and was able to move, false if
         /// there was not enough room the player is moved back to their original position</returns>
         public static bool AttemptSnapUp(

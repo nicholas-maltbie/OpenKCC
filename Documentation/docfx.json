@@ -19,21 +19,21 @@
     ],
     "build": {
         "globalMetadata": {
-            "_appTitle": "Tile Maps Documentation",
-            "_appFooter": "Tile Maps Documentation",
+            "_appTitle": "OpenKCC Documentation",
+            "_appFooter": "OpenKCC Documentation",
             "_enableSearch": true
         },
         "content": [
             {
                 "files": [
                     "toc.yml",
-                    "index.md",
-                    "LICENSE.txt"
+                    "index.md"
                 ]
             },
             {
                 "src": "api",
                 "files": [
+                    "toc.yml",
                     "*.yml"
                 ],
                 "dest": "api"
@@ -57,9 +57,16 @@
         ],
         "resource": [
             {
+                "src": ".",
                 "files": [
-                    "resources/**/*",
-                    "../Demo/**/*"
+                    "Demo/**/*",
+                    "LICENSE.txt"
+                ]
+            },
+            {
+                "src": ".",
+                "files": [
+                    "resources/**/*"
                 ]
             }
         ],
