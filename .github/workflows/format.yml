@@ -103,8 +103,8 @@ jobs:
       - name: Install DocFX
         run: choco install -y docfx
 
-      - name: Setup site folder
-        run: mkdir _site
+      - name: Build
+        run: docfx build Documentation/docfx.json --warningsAsErrors
 
       - name: Use README.md as index.md
         run: cp README.md Documentation/index.md
@@ -114,6 +114,3 @@ jobs:
 
       - name: Copy Demo assets to website
         run: cp -Recurse Demo _site/Demo
-
-      - name: Build
-        run: docfx build Documentation/docfx.json --warningsAsErrors
