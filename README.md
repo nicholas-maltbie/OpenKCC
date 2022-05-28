@@ -35,7 +35,7 @@ To view the documentation from a local build of the project install
 following command from the root of the repo.
 
 ```bash
-docfx Documentation/docfx.json --serve
+Documentation/build.sh
 ```
 
 The documentation for the project is stored in the folder `/Documentation`

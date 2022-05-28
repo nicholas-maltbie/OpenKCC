@@ -177,13 +177,7 @@ jobs:
         run: choco install -y docfx
 
       - name: Build Website
-        run: cp README.md Documentation/index.md
-
-      - name: Generate Metadata for DocFx
-        run: docfx metadata .\Documentation\docfx.json --warningsAsErrors --repositoryRoot . --logLevel verbose
-
-      - name: Build Website for DocFx
-        run: docfx build .\Documentation\docfx.json --warningsAsErrors --repositoryRoot . --logLevel verbose
+        run: .\Documentation\build.sh
 
       # Checkout to the previously created gh-pages branch
       - name: Deploy
