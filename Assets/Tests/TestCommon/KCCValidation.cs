@@ -35,7 +35,8 @@ namespace nickmaltbie.OpenKCC.TestCommon
         /// <param name="finalPosition">Expected final position, or null if not required to check.</param>
         /// <param name="initialPosition">Expected initial position, or null if not required to check.</param>
         /// <param name="remainingMomentum">Expected remaining momentum, or null if not required to check.</param>
-        /// <param name="initialMomentum"><Expected initial momentum, or null if not required to check./param>
+        /// <param name="initialMomentum">Expected initial momentum, or null if not required to check.</param>
+        /// <param name="log">Should the comparison be logged.</param>
         public static void ValidateKCCBounce(
             KCCBounce bounce,
             KCCUtils.MovementAction? movementAction = null,
