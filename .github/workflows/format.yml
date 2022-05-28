@@ -54,10 +54,10 @@ jobs:
       - run: dotnet tool restore
 
       - name: Format C# Code
-        run: dotnet format --severity warn --verbosity detailed workspace.sln --exclude --exclude Library --verify-no-changes
+        run: dotnet format workspace.sln --severity warn --verbosity detailed --exclude --exclude Library --verify-no-changes
 
       - name: Format C# Whitespace
-        run: dotnet format whitespace workspace.sln whitespace --verbosity detailed --exclude Library --verify-no-changes
+        run: dotnet format whitespace workspace.sln --verbosity detailed --exclude Library --verify-no-changes
 
   lint-markdown:
     name: Lint markdown files
