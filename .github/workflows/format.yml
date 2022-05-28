@@ -6,6 +6,7 @@ on: [pull_request] # This will run on every pull request.
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   code-format:
+    name: Dotnet code validation
     runs-on: Ubuntu-20.04
     strategy:
       fail-fast: false
@@ -17,6 +18,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Create LFS file list
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
 
@@ -62,7 +66,7 @@ jobs:
           commit: false
 
   lint-markdown:
-    name: Lint markdown files in repo
+    name: Lint markdown files
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
@@ -75,12 +79,11 @@ jobs:
 
   # Build the documentation
   docfx-check:
+    name: DocFx documentation validation
     runs-on: windows-latest # Required by DocFX
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        # with:
-        #   submodules: true
 
       - name: Cache git lfs
         uses: actions/cache@v2
@@ -100,11 +103,11 @@ jobs:
       - name: Use README.md as index.md
         run: cp README.md Documentation/index.md
 
-      - name: Build
-        run: docfx build Documentation/docfx.json --warningsAsErrors
-
       - name: Copy LICENSE.txt to website
         run: cp LICENSE.txt _site/LICENSE.txt
 
       - name: Copy Demo assets to website
         run: cp -Recurse Demo _site/Demo
+
+      - name: Build
+        run: docfx build Documentation/docfx.json --warningsAsErrors

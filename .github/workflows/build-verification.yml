@@ -48,4 +48,4 @@ jobs:
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-          buildMethod: ScriptBatch.TestBuild_${{ matrix.buildMethod }}
+          buildMethod: ScriptBatch.TestBuild_${{ matrix.targetPlatform }}
