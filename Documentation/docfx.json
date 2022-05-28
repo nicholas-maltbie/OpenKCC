@@ -19,8 +19,8 @@
     ],
     "build": {
         "globalMetadata": {
-            "_appTitle": "Tile Maps Documentation",
-            "_appFooter": "Tile Maps Documentation",
+            "_appTitle": "OpenKCC Documentation",
+            "_appFooter": "OpenKCC Documentation",
             "_enableSearch": true
         },
         "content": [

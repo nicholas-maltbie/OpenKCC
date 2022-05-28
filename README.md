@@ -1,7 +1,7 @@
 # OpenKCC
 
 This project is a sample of the Open Kinematic Character Controller. A Kinematic Character Controller (KCC) provides a
-way to control a character avatar as a kinematic object that will interact with the environment. 
+way to control a character avatar as a kinematic object that will interact with the environment.
 
 OpenKCC is an open source project hosted at
 [https://github.com/nicholas-maltbie/OpenKCC](https://github.com/nicholas-maltbie/OpenKCC)
@@ -26,6 +26,7 @@ Documentation on the project and scripting API is found at
 
 To view the documentation from a local build of the project install [DocFX](https://dotnet.github.io/docfx/), use the
 following command from the root of the repo.
+
 ```
 docfx Documentation/docfx.json --serve
 ```
@@ -53,6 +54,7 @@ As these videos are created they will be listed here:
 # Features
 
 Movement in a 3D space including
+
 * Physics based movement off dynamic surfaces
 * Configurable jump and speed
 * Multiplayer support
@@ -75,6 +77,7 @@ Some of these features are still  in the previous
 ## Future Improvements
 
 Future improvements that are in development
+
 * Slippery floors
 * First person character model
 * Ladders and vertical movement
@@ -106,6 +109,7 @@ sudo apt-get install git-lfs
 ```
 
 Once git lfs is installed, from in the repo, run the following command to pull objects for development.
+
 ```
 git lfs pull
 ```
@@ -113,7 +117,7 @@ git lfs pull
 ## Githooks Setup
 
 When working with the project, make sure to setup the `.githooks` if you want to edit the code in the project. In order to
-do this, use the following command to reconfigure the `core.hooksPath` for your repository 
+do this, use the following command to reconfigure the `core.hooksPath` for your repository
 
 ```
 git config --local core.hooksPath .githooks
