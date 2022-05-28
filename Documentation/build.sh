@@ -4,5 +4,5 @@ BASEDIR=$(dirname "$0")
 cp $BASEDIR/../README.md $BASEDIR/index.md
 
 # Generate website with docfx
-docfx metadata $BASEDIR/docfx.json --warningsAsErrors --logLevel verbose
+docfx metadata $BASEDIR/docfx.json --warningsAsErrors --logLevel verbose --force
 docfx build $BASEDIR/docfx.json --warningsAsErrors --logLevel verbose

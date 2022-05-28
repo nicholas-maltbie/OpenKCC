@@ -45,9 +45,6 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           buildMethod: Packages.Rider.Editor.RiderScriptEditor.SyncSolution
 
-      - name: List files in repo
-        run: ls .
-
       - name: Set up .NET
         uses: actions/setup-dotnet@v1
         with:
@@ -110,7 +107,7 @@ jobs:
         run: cp README.md Documentation/index.md
 
       - name: Generate Metadata for DocFx
-        run: docfx metadata .\Documentation\docfx.json --warningsAsErrors --repositoryRoot . --logLevel verbose
+        run: docfx metadata .\Documentation\docfx.json --warningsAsErrors --repositoryRoot . --logLevel verbose --force
 
       - name: Build Website for DocFx
         run: docfx build .\Documentation\docfx.json --warningsAsErrors --repositoryRoot . --logLevel verbose
