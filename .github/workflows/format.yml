@@ -57,8 +57,8 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           dotnet_format: true
-          dotnet_args: "style OpenKCC.sln --severity warn --verbosity detailed --exclude Library"
-          dotnet_auto_fix: false
+          dotnet_format_args: "style workspace.sln --severity warn --verbosity detailed --exclude Library"
+          dotnet_format_auto_fix: false
           continue_on_error: false
           commit: false
 
@@ -66,8 +66,8 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           dotnet_format: true
-          dotnet_args: "whitespace OpenKCC.sln whitespace --verbosity detailed --exclude Library"
-          dotnet_auto_fix: false
+          dotnet_format_args: "whitespace workspace.sln whitespace --verbosity detailed --exclude Library"
+          dotnet_format_auto_fix: false
           continue_on_error: false
           commit: false
 
