@@ -50,11 +50,11 @@ jobs:
         with:
           dotnet-version: "6.0.x"
 
-      - name: C# Format Code
+      - name: Format C# Code
         uses: wearerequired/lint-action@v2
         with:
           dotnet_format: true
-          dotnet_args: "--severity warn --verbosity detailed --exclude Library"
+          dotnet_args: "OpenKCC.sln --severity warn --verbosity detailed --exclude Library"
           dotnet_auto_fix: false
           continue_on_error: false
           commit: false
@@ -63,7 +63,7 @@ jobs:
         uses: wearerequired/lint-action@v2
         with:
           dotnet_format: true
-          dotnet_args: "whitespace --verbosity detailed --exclude Library"
+          dotnet_args: "OpenKCC.sln whitespace --verbosity detailed --exclude Library"
           dotnet_auto_fix: false
           continue_on_error: false
           commit: false
