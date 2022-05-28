@@ -177,7 +177,7 @@ jobs:
         run: choco install -y docfx
 
       - name: Build Website
-        run: .\Documentation\build.sh
+        run: .\Documentation\build.cmd
 
       # Checkout to the previously created gh-pages branch
       - name: Deploy

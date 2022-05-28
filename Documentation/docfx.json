@@ -57,7 +57,7 @@
         ],
         "resource": [
             {
-                "src": "..",
+                "src": ".",
                 "files": [
                     "Demo/**/*",
                     "LICENSE.txt"
