@@ -76,7 +76,6 @@ jobs:
   # Build the documentation
   docfx-check:
     runs-on: windows-latest # Required by DocFX
-    needs: buildAndDeployApp
     steps:
       - name: Checkout
         uses: actions/checkout@v2
