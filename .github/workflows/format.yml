@@ -31,6 +31,15 @@ jobs:
       - name: Create LFS file list
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
 
+      - name: Cache git lfs
+        uses: actions/cache@v2
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1.2
+          # use previous cache if current one is not found
+          restore-keys: |
+            ${{ runner.os }}-lfs-
+
       - name: Cache Library Folder
         uses: actions/cache@v2
         with:
@@ -82,6 +91,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
 
       - name: Cache git lfs
         uses: actions/cache@v2
