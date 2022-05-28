@@ -1,30 +1,111 @@
-name: dotnet-format
+name: Code and Docs Lint
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 on: [pull_request] # This will run on every pull request. 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "check-format"
-  check-format:
-    # The type of runner that the job will run on
+  code-format:
     runs-on: Ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        unityVersion:
+          - 2021.1.19f1
+        buildMethod:
+          - WebGL
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Setup .NET Core
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Cache Library Folder
+        uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ buildMethod }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
+          restore-keys: |
+            Library-${{ buildMethod }}-
+
+      - name: Pull lfs data, if not cached
+        run: git lfs pull
+
+      - name: Ensure .sln file is generated
+        uses: game-ci/unity-builder@v2.0-alpha-13
+        with:
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
+          buildMethod: Packages.Rider.Editor.RiderScriptEditor.SyncSolution
+
+      - name: Set up .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.301
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      # Lists only the committed files in order to evaluate only those.
-      - id: changed_files
-        uses: futuratrepadeira/changed-files@v3.2.1
+          dotnet-version: "6.0.x"
+
+      - name: C# Format Code
+        uses: wearerequired/lint-action@v2
         with:
-          repo-token: ${{ github.token }}
-          pattern: '^.*\.(cs|CS)$'
-      - run: dotnet tool restore # Restore dotnet tools. This handles cache implicitly.
-      - name: Format Csharp files
-        if: steps.changed_files.outputs.files_created != '' || steps.changed_files.outputs.files_updated != ''
-        run: dotnet format --verbosity detailed . --folder --include ${{ steps.changed_files.outputs.files_created }} ${{ steps.changed_files.outputs.files_updated }} --exclude Library --check # Call format but just do a check to see if everything is in order.
+          dotnet_format: true
+          dotnet_args: "--severity warn --verbosity detailed --exclude Library"
+          dotnet_auto_fix: false
+          continue_on_error: false
+          commit: false
+
+      - name: C# Format Whitespace
+        uses: wearerequired/lint-action@v2
+        with:
+          dotnet_format: true
+          dotnet_args: "whitespace --verbosity detailed --exclude Library"
+          dotnet_auto_fix: false
+          continue_on_error: false
+          commit: false
+
+  lint-markdown:
+    name: Lint markdown files in repo
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Lint Markdown Files
+      uses: avto-dev/markdown-lint@v1
+      with:
+        args: '.'
+
+  # Build the documentation
+  docfx-check:
+    runs-on: windows-latest # Required by DocFX
+    needs: buildAndDeployApp
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        # with:
+        #   submodules: true
+
+      - name: Cache git lfs
+        uses: actions/cache@v2
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1.2
+          # use previous cache if current one is not found
+          restore-keys: |
+            ${{ runner.os }}-lfs-
+
+      - name: Pull lfs data, if not cached
+        run: git lfs pull
+
+      - name: Install DocFX
+        run: choco install -y docfx
+
+      - name: Use README.md as index.md
+        run: cp README.md Documentation/index.md
+
+      - name: Build
+        run: docfx build Documentation/docfx.json --warningsAsErrors
+
+      - name: Copy LICENSE.txt to website
+        run: cp LICENSE.txt _site/LICENSE.txt
+
+      - name: Copy Demo assets to website
+        run: cp -Recurse Demo _site/Demo

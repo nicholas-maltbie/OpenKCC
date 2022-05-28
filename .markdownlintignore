@@ -1,0 +1,11 @@
+.githooks
+.config
+Packages
+Assets/NuGet
+Assets/Packages
+CodeCoverage
+Builds
+Logs
+Library
+
+Assets/WebGLTemplates/Better2020-LICENSE.md

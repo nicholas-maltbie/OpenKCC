@@ -30,11 +30,7 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
 trap 'echo "\"${last_command}\" command filed with exit code $?."' ERR
 
-# Build edit string, by replacing newlines with semicolons.
-# --diff-filter=d only filters files that are not deleted, which means we won't have trouble adding them afterwards
-INCLUDE_STRING=`git diff --name-only --cached --diff-filter=d | egrep '\.cs$|\.CS$' || true`
-echo "Include string: $INCLUDE_STRING"
-
+# Exclude some files from format validation
 EXCLUDE_STRING="Assets/NetCodeGenerated"
 
 # If the include string is empty, we're done. This happens e.g. if the commit only consists of deleted files.
@@ -45,11 +41,8 @@ else
     # Edit your project files here
     echo "Formatting files..."
     dotnet tool restore # This handles cache. If there's no restore needed it will not download anything.
-    dotnet format --severity warn --verbosity normal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "$EXCLUDE_STRING" --verify-no-changes
-    dotnet format whitespace --verbosity normal OpenKCC.sln --include "$INCLUDE_STRING" --exclude "$EXCLUDE_STRING" --verify-no-changes
-    # Restage files
-    echo "Restaging files: $INCLUDE_STRING"
-    echo ${INCLUDE_STRING} | xargs -t -l git add
+    dotnet format --severity warn --verbosity normal OpenKCC.sln --exclude "$EXCLUDE_STRING" --verify-no-changes
+    dotnet format whitespace --verbosity normal OpenKCC.sln --exclude "$EXCLUDE_STRING" --verify-no-changes
 fi
 
 echo "pre-commit hook finished"

@@ -57,9 +57,10 @@
         ],
         "resource": [
             {
+                "src": "..",
                 "files": [
-                    "resources/**/*",
-                    "../Demo/**/*"
+                    "Documentation/resources/**/*",
+                    "Demo/**/*"
                 ]
             }
         ],
