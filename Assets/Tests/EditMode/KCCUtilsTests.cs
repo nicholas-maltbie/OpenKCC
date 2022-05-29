@@ -257,20 +257,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             {
                 // First hit should be simulating hitting an object and sliding to the left
                 (true, SetupRaycastHitMock(
-                    distance: distance / 10,
-                    normal: (Vector3.back + Vector3.left).normalized)),
-                // Next hit should simulate hitting another wall
-                (true, SetupRaycastHitMock(
-                    distance: distance / 10,
-                    normal: (Vector3.back).normalized)),
+                    distance: distance / 5,
+                    normal: (Vector3.back * 2 + Vector3.left).normalized)),
                 // Next hit should simulate hitting another wall and sliding back
                 (true, SetupRaycastHitMock(
-                    distance: distance / 10,
-                    normal: (Vector3.back + Vector3.right).normalized)),
+                    distance: distance / 5,
+                    normal: (Vector3.back * 2 + Vector3.right).normalized)),
             });
 
             // Simulate bounces
-            var bounces = GetBounces(Vector3.zero, Vector3.forward * distance, anglePower: 0, canSnapUp: false).ToList();
+            var bounces = GetBounces(Vector3.zero, Vector3.forward * distance, anglePower: 1, canSnapUp: false).ToList();
 
             Debug.Log(string.Join("\n", bounces));
 
