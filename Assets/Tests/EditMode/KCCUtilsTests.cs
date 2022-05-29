@@ -172,12 +172,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// Validate the snap up behavior of the KCC Bounce method
         /// </summary>
         [Test]
-        public void Validate_KCCSnapUpAction()
+        public void Validate_KCCSnapUpAction([NUnit.Framework.Range(0.1f, 2f, 0.1f)] float snapUpDistance)
         {
             SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting a step slightly above foot position
-                (true, SetupRaycastHitMock(distance: KCCUtils.Epsilon, point: Vector3.up * 0.05f, normal: Vector3.back)),
+                (true, SetupRaycastHitMock(distance: 0.1f, point: Vector3.up * snapUpDistance / 2, normal: Vector3.back)),
                 // Next hit should not collide with anything as we are above the step
                 (false, SetupRaycastHitMock()),
             });
@@ -188,7 +188,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
             // Simulate bounces
-            var bounces = GetBounces(Vector3.zero, Vector3.forward).ToList();
+            var bounces = GetBounces(Vector3.zero, Vector3.forward, verticalSnapUp: snapUpDistance).ToList();
 
             // Validate bounce properties
             Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounce but instead found {bounces.Count}");

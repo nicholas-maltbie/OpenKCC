@@ -159,7 +159,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     out IRaycastHit snapHit);
 
             // If they can move without instantly hitting something, then snap them up
-            if (snapHit.distance >= Epsilon && (!didSnapHit || snapHit.distance > config.StepUpDepth))
+            if (!didSnapHit || (snapHit.distance >= Epsilon && snapHit.distance > config.StepUpDepth))
             {
                 position = snapPos;
                 return true;
