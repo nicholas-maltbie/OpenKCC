@@ -318,7 +318,7 @@ namespace nickmaltbie.OpenKCC.Utils
             float fraction = hit.distance / distance;
             // Set the fraction of remaining movement (minus some small value)
             Vector3 deltaBounce = remainingMomentum * fraction;
-            deltaBounce = deltaBounce.normalized * Mathf.Max(0, deltaBounce.magnitude - Epsilon * 2);
+            deltaBounce = deltaBounce.normalized * Mathf.Max(0, deltaBounce.magnitude - Epsilon);
             position += deltaBounce;
             // Decrease remaining momentum by fraction of movement remaining
             remainingMomentum *= (1 - Mathf.Max(0, deltaBounce.magnitude / distance));

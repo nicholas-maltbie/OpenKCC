@@ -263,8 +263,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             // Then they will slide into the second wall, and stop.
             var bounces = GetBounces(Vector3.forward * wallLength).ToList();
 
-            Debug.Log(string.Join("\n", bounces));
-
             Assert.IsTrue(bounces.Count >= 2, $"Was expecting to find at least {2} bounces but instead found {bounces.Count}");
 
             foreach (var bounce in bounces.AsEnumerable().Reverse().Skip(1))
@@ -276,15 +274,24 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             }
             KCCValidation.ValidateKCCBounce(bounces[bounces.Count - 1], KCCUtils.MovementAction.Stop);
 
+            Vector3 deltaMove = bounces[bounces.Count - 1].finalPosition - playerPosition.position;
             playerPosition.position = bounces[bounces.Count - 1].finalPosition;
 
+            // Consider player complete when they have less than 0.01 forward movement
+            //  And they are 90% of the way forward
             int moves = 0;
+            Func<bool> complete = () => moves > 1000 ||
+                (deltaMove.z <= 0.01f &&
+                 bounces[bounces.Count - 1].finalPosition.z - wallLength <= wallLength / 10);
+
 
             // The player should continue to move forward and either bounce
             //  or stop but never move backwards and start "jittering"
-            while (bounces.Count > 1 && moves < 1000)
+            while (bounces.Count > 1 && !complete())
             {
                 bounces = GetBounces(Vector3.forward * wallLength).ToList();
+                deltaMove = bounces[bounces.Count - 1].finalPosition - playerPosition.position;
+                playerPosition.position = bounces[bounces.Count - 1].finalPosition;
 
                 // Assert all actions are bounces and that those bounces are forward
                 // Except the last one.
