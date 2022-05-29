@@ -317,9 +317,11 @@ namespace nickmaltbie.OpenKCC.Utils
 
             float fraction = hit.distance / distance;
             // Set the fraction of remaining movement (minus some small value)
-            position += remainingMomentum * Mathf.Max(0, fraction - Epsilon);
+            Vector3 deltaBounce = remainingMomentum * fraction;
+            deltaBounce = deltaBounce.normalized * Mathf.Max(0, deltaBounce.magnitude - Epsilon * 2);
+            position += deltaBounce;
             // Decrease remaining momentum by fraction of movement remaining
-            remainingMomentum *= (1 - Mathf.Max(0, fraction - Epsilon));
+            remainingMomentum *= (1 - Mathf.Max(0, deltaBounce.magnitude / distance));
 
             if (config.CanSnapUp && AttemptSnapUp(hit, remainingMomentum, ref position, rotation, config))
             {
@@ -394,7 +396,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 {
                     didSnapUp = true;
                 }
-                else if (Vector3.Dot(bounce.Movement, movement) <= 0)
+                else if (Vector3.Dot(bounce.Movement, movement) < 0)
                 {
                     break;
                 }
