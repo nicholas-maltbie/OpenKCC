@@ -177,7 +177,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting a step slightly above foot position
-                (true, SetupRaycastHitMock(distance: KCCUtils.Epsilon, point: Vector3.up * 0.05f)),
+                (true, SetupRaycastHitMock(distance: KCCUtils.Epsilon, point: Vector3.up * 0.05f, normal: Vector3.back)),
                 // Next hit should not collide with anything as we are above the step
                 (false, SetupRaycastHitMock()),
             });
@@ -235,12 +235,57 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// <summary>
         /// Verify that invalid projected momentum will retain its original magnitude
         /// </summary>
+        /// <param name="move">Input player movement for invalid movement value.</param>
         [Test]
         [TestCaseSource(nameof(MovementGenerator))]
         public void Verify_KCCInvalidProjectedMomentum(Vector3 move)
         {
             Vector3 projected = KCCUtils.GetProjectedMomentumSafe(move, Vector3.forward, Vector3.up);
             Assert.IsTrue((move.magnitude - projected.magnitude) <= 0.001f, $"Expected projected vector to have magnitude of {move.magnitude} but instead found {projected.magnitude}");
+        }
+
+        /// <summary>
+        /// Validate player won't bounce backwards when they hit a wall
+        /// and could slide backwards of original direction.
+        /// </summary>
+        /// <param name="distance">Distance the player should move forward.</param>
+        [Test]
+        public void Verify_KCCNoJitterBackwards([Values(5, 10)] float distance)
+        {
+            // Have first hit hit a pushable object
+            SetupColliderCast(new[]
+            {
+                // First hit should be simulating hitting an object and sliding to the left
+                (true, SetupRaycastHitMock(
+                    distance: distance / 10,
+                    normal: (Vector3.back + Vector3.left).normalized)),
+                // Next hit should simulate hitting another wall
+                (true, SetupRaycastHitMock(
+                    distance: distance / 10,
+                    normal: (Vector3.back).normalized)),
+                // Next hit should simulate hitting another wall and sliding back
+                (true, SetupRaycastHitMock(
+                    distance: distance / 10,
+                    normal: (Vector3.back + Vector3.right).normalized)),
+            });
+
+            // Simulate bounces
+            var bounces = GetBounces(Vector3.zero, Vector3.forward * distance, anglePower: 0, canSnapUp: false).ToList();
+
+            Debug.Log(string.Join("\n", bounces));
+
+            // Validate bounce properties, should bounce once then stop before
+            // moving backwards.
+            Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounce but instead found {bounces.Count}");
+            ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
+            ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Bounce);
+            ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
+            foreach (var bounce in bounces.AsEnumerable().Reverse().Skip(1))
+            {
+                Assert.IsTrue(
+                    Vector3.Dot(bounce.Movement, Vector3.forward) >= 0,
+                    $"Expected player to move forward but instead found movement {bounce.Movement.ToString("F3")}");
+            }
         }
 
         /// <summary>
@@ -299,6 +344,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Assert.IsTrue(initialMomentum == null || bounce.initialMomentum == initialMomentum, $"Expected {nameof(bounce.initialMomentum)} to be {initialMomentum} but instead found {bounce.initialMomentum}");
         }
 
+        delegate void RaycastHitCallback(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit);
+        delegate void RaycastHitReturns(out IRaycastHit hit);
+
         /// <summary>
         /// Setup the collider cast for a given set of hits in a specific order.
         /// </summary>
@@ -306,21 +354,19 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         public void SetupColliderCast(IEnumerable<(bool, IRaycastHit)> hitData)
         {
             IEnumerator<(bool, IRaycastHit)> hitEnumerator = hitData.GetEnumerator();
-            hitEnumerator.MoveNext();
-
-            (bool, IRaycastHit) nextHit = hitEnumerator.Current;
+            (bool, IRaycastHit) nextHit = (false, null);
             colliderCastMock.Setup(
-                mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out nextHit.Item2))
-                .Returns(() =>
+                mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny))
+                .Callback(new RaycastHitCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
                 {
-                    bool ret = nextHit.Item1;
+                    hit = nextHit.Item2;
                     if (hitEnumerator.MoveNext())
                     {
                         nextHit = hitEnumerator.Current;
+                        hit = nextHit.Item2;
                     }
-
-                    return ret;
-                });
+                }))
+                .Returns(() => nextHit.Item1);
         }
 
         /// <summary>
