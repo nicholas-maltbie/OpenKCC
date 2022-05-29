@@ -317,11 +317,9 @@ namespace nickmaltbie.OpenKCC.Utils
 
             float fraction = hit.distance / distance;
             // Set the fraction of remaining movement (minus some small value)
-            position += remainingMomentum * (fraction);
-            // Push slightly along normal to stop from getting caught in walls
-            position += hit.normal * Epsilon * 2;
+            position += remainingMomentum * Mathf.Max(0, fraction - Epsilon);
             // Decrease remaining momentum by fraction of movement remaining
-            remainingMomentum *= (1 - fraction);
+            remainingMomentum *= (1 - Mathf.Max(0, fraction - Epsilon));
 
             if (config.CanSnapUp && AttemptSnapUp(hit, remainingMomentum, ref position, rotation, config))
             {
@@ -396,6 +394,10 @@ namespace nickmaltbie.OpenKCC.Utils
                 {
                     didSnapUp = true;
                 }
+                else if (Vector3.Dot(bounce.Movement, movement) <= 0)
+                {
+                    break;
+                }
 
                 yield return bounce;
 
@@ -412,7 +414,6 @@ namespace nickmaltbie.OpenKCC.Utils
             }
 
             // We're done, player was moved as part of loop
-
             yield return new KCCBounce
             {
                 initialPosition = position,
