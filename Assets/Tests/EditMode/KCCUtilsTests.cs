@@ -280,7 +280,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
             ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Bounce);
             ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
-            foreach (var bounce in bounces.AsEnumerable().Reverse().Skip(1))
+            foreach (KCCBounce bounce in bounces.AsEnumerable().Reverse().Skip(1))
             {
                 Assert.IsTrue(
                     Vector3.Dot(bounce.Movement, Vector3.forward) >= 0,
@@ -344,8 +344,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Assert.IsTrue(initialMomentum == null || bounce.initialMomentum == initialMomentum, $"Expected {nameof(bounce.initialMomentum)} to be {initialMomentum} but instead found {bounce.initialMomentum}");
         }
 
-        delegate void RaycastHitCallback(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit);
-        delegate void RaycastHitReturns(out IRaycastHit hit);
+        private delegate void RaycastHitCallback(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit);
+
+        private delegate void RaycastHitReturns(out IRaycastHit hit);
 
         /// <summary>
         /// Setup the collider cast for a given set of hits in a specific order.

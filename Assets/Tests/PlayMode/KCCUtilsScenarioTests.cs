@@ -236,7 +236,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
         /// <param name="angle">Angle of wall to test player jitter against.</param>
         /// <returns>Enumerator of unity events for the test.</returns>
         [UnityTest]
-        public IEnumerator TestKCCMovementJitterOnAngle([NUnit.Framework.Range(15, 179, 15)] float angle, [Values(10, 20)]float wallLength)
+        public IEnumerator TestKCCMovementJitterOnAngle([NUnit.Framework.Range(15, 179, 15)] float angle, [Values(10, 20)] float wallLength)
         {
             // Setup a wall at the given angle
             ProBuilderMesh angledWall1 = ShapeGenerator.GenerateCube(PivotLocation.FirstCorner, new Vector3(0.1f, 2, wallLength));
@@ -251,8 +251,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             angledWall1.transform.position = new Vector3(-0.1f, 0, wallLength);
             angledWall2.transform.position = new Vector3(-0.1f, 0, wallLength);
 
-            angledWall1.transform.rotation = Quaternion.Euler(0, 180 - angle/2, 0);
-            angledWall2.transform.rotation = Quaternion.Euler(0, 180 + angle/2, 0);
+            angledWall1.transform.rotation = Quaternion.Euler(0, 180 - angle / 2, 0);
+            angledWall2.transform.rotation = Quaternion.Euler(0, 180 + angle / 2, 0);
 
             RegisterGameObject(angledWall1.gameObject);
             RegisterGameObject(angledWall2.gameObject);
@@ -265,13 +265,14 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
 
             Assert.IsTrue(bounces.Count >= 2, $"Was expecting to find at least {2} bounces but instead found {bounces.Count}");
 
-            foreach (var bounce in bounces.AsEnumerable().Reverse().Skip(1))
+            foreach (KCCBounce bounce in bounces.AsEnumerable().Reverse().Skip(1))
             {
                 Assert.IsTrue(
-                    bounce.action == KCCUtils.MovementAction.Bounce || 
+                    bounce.action == KCCUtils.MovementAction.Bounce ||
                     bounce.action == KCCUtils.MovementAction.Move,
                     $"Expected to find action {KCCUtils.MovementAction.Bounce} or {KCCUtils.MovementAction.Move} but instead found {bounce.action}");
             }
+
             KCCValidation.ValidateKCCBounce(bounces[bounces.Count - 1], KCCUtils.MovementAction.Stop);
 
             Vector3 deltaMove = bounces[bounces.Count - 1].finalPosition - playerPosition.position;
@@ -284,7 +285,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
                 (deltaMove.z <= 0.01f &&
                  bounces[bounces.Count - 1].finalPosition.z - wallLength <= wallLength / 10);
 
-
             // The player should continue to move forward and either bounce
             //  or stop but never move backwards and start "jittering"
             while (bounces.Count > 1 && !complete())
@@ -295,13 +295,13 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
 
                 // Assert all actions are bounces and that those bounces are forward
                 // Except the last one.
-                foreach (var bounce in bounces.AsEnumerable().Reverse().Skip(1))
+                foreach (KCCBounce bounce in bounces.AsEnumerable().Reverse().Skip(1))
                 {
                     Assert.IsTrue(
                         Vector3.Dot(bounce.Movement, Vector3.forward) >= 0,
                         $"Player must mover in forward direction but instead moved in direction {bounce.Movement.ToString("F3")}");
                     Assert.IsTrue(
-                        bounce.action == KCCUtils.MovementAction.Bounce || 
+                        bounce.action == KCCUtils.MovementAction.Bounce ||
                         bounce.action == KCCUtils.MovementAction.Move,
                         $"Expected to find action {KCCUtils.MovementAction.Bounce} or {KCCUtils.MovementAction.Move} but instead found {bounce.action}");
                 }
