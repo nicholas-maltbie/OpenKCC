@@ -224,8 +224,94 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
 
             Debug.Log($"initialPosition: {bounces[0].initialPosition}, finalPosition: {bounces[0].finalPosition}, movement: {bounces[0].Movement}");
 
-            TestUtils.AssertInBounds(bounces[0].Movement, Vector3.forward * (distance - 3), KCCUtils.Epsilon * 5);
-            TestUtils.AssertInBounds(lastBounce.finalPosition, bounces[0].finalPosition, KCCUtils.Epsilon * 5);
+            TestUtils.AssertInBounds(bounces[0].Movement, Vector3.forward * (distance - 3), 0.1f);
+            TestUtils.AssertInBounds(lastBounce.finalPosition, bounces[0].finalPosition, 0.1f);
+        }
+
+        /// <summary>
+        /// Evaluate and test for player jitter when moving against an angled wall.
+        /// When the player hits the wall, their consecutive movements should NOT
+        /// make them jitter back and forward due to sliding between the angle.
+        /// </summary>
+        /// <param name="angle">Angle of wall to test player jitter against.</param>
+        /// <returns>Enumerator of unity events for the test.</returns>
+        [UnityTest]
+        public IEnumerator TestKCCMovementJitterOnAngle([NUnit.Framework.Range(15, 179, 15)] float angle, [Values(10, 20)] float wallLength)
+        {
+            // Setup a wall at the given angle
+            ProBuilderMesh angledWall1 = ShapeGenerator.GenerateCube(PivotLocation.FirstCorner, new Vector3(0.1f, 2, wallLength));
+            ProBuilderMesh angledWall2 = ShapeGenerator.GenerateCube(PivotLocation.FirstCorner, new Vector3(0.1f, 2, wallLength));
+
+            angledWall1.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            angledWall2.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+
+            angledWall1.gameObject.AddComponent<MeshCollider>();
+            angledWall2.gameObject.AddComponent<MeshCollider>();
+
+            angledWall1.transform.position = new Vector3(-0.1f, 0, wallLength);
+            angledWall2.transform.position = new Vector3(-0.1f, 0, wallLength);
+
+            angledWall1.transform.rotation = Quaternion.Euler(0, 180 - angle / 2, 0);
+            angledWall2.transform.rotation = Quaternion.Euler(0, 180 + angle / 2, 0);
+
+            RegisterGameObject(angledWall1.gameObject);
+            RegisterGameObject(angledWall2.gameObject);
+
+            yield return new WaitForFixedUpdate();
+
+            // First time player moves, they should move forward and bounce off the first angled wall
+            // Then they will slide into the second wall, and stop.
+            var bounces = GetBounces(Vector3.forward * wallLength).ToList();
+
+            Assert.IsTrue(bounces.Count >= 2, $"Was expecting to find at least {2} bounces but instead found {bounces.Count}");
+
+            foreach (KCCBounce bounce in bounces.AsEnumerable().Reverse().Skip(1))
+            {
+                Assert.IsTrue(
+                    bounce.action == KCCUtils.MovementAction.Bounce ||
+                    bounce.action == KCCUtils.MovementAction.Move,
+                    $"Expected to find action {KCCUtils.MovementAction.Bounce} or {KCCUtils.MovementAction.Move} but instead found {bounce.action}");
+            }
+
+            KCCValidation.ValidateKCCBounce(bounces[bounces.Count - 1], KCCUtils.MovementAction.Stop);
+
+            Vector3 deltaMove = bounces[bounces.Count - 1].finalPosition - playerPosition.position;
+            playerPosition.position = bounces[bounces.Count - 1].finalPosition;
+
+            // Consider player complete when they have less than 0.01 forward movement
+            //  And they are 90% of the way forward
+            int moves = 0;
+            Func<bool> complete = () => moves > 1000 ||
+                (deltaMove.z <= 0.01f &&
+                 bounces[bounces.Count - 1].finalPosition.z - wallLength <= wallLength / 10);
+
+            // The player should continue to move forward and either bounce
+            //  or stop but never move backwards and start "jittering"
+            while (bounces.Count > 1 && !complete())
+            {
+                bounces = GetBounces(Vector3.forward * wallLength).ToList();
+                deltaMove = bounces[bounces.Count - 1].finalPosition - playerPosition.position;
+                playerPosition.position = bounces[bounces.Count - 1].finalPosition;
+
+                // Assert all actions are bounces and that those bounces are forward
+                // Except the last one.
+                foreach (KCCBounce bounce in bounces.AsEnumerable().Reverse().Skip(1))
+                {
+                    Assert.IsTrue(
+                        Vector3.Dot(bounce.Movement, Vector3.forward) >= 0,
+                        $"Player must mover in forward direction but instead moved in direction {bounce.Movement.ToString("F3")}");
+                    Assert.IsTrue(
+                        bounce.action == KCCUtils.MovementAction.Bounce ||
+                        bounce.action == KCCUtils.MovementAction.Move,
+                        $"Expected to find action {KCCUtils.MovementAction.Bounce} or {KCCUtils.MovementAction.Move} but instead found {bounce.action}");
+                }
+
+                moves++;
+            }
+
+            // Assert that the last action was just a stop.
+            Assert.IsTrue(moves <= 1000, "Expected player to reach end of angle before 1000 bounces");
+            KCCValidation.ValidateKCCBounce(bounces[bounces.Count - 1], KCCUtils.MovementAction.Stop);
         }
 
         /// <summary>
@@ -366,7 +452,9 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
                         Assert.IsTrue(
                             stepUp.action == KCCUtils.MovementAction.SnapUp || stepUp.action == KCCUtils.MovementAction.Bounce,
                             $"Expected to find action {KCCUtils.MovementAction.SnapUp} or {KCCUtils.MovementAction.Bounce} but instead found {stepUp.action}");
-                        Assert.IsTrue(Vector3.Dot(stepUp.Movement, Vector3.forward) > 0.0f);
+                        Assert.IsTrue(Vector3.Dot(
+                            stepUp.Movement, Vector3.forward) >= 0.0f,
+                            $"Expected player movement to be forward but instead found {stepUp.Movement.ToString("F3")}");
                         if (stepUp.action == KCCUtils.MovementAction.SnapUp)
                         {
                             snapUpCount++;

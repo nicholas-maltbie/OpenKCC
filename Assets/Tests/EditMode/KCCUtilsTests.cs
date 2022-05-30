@@ -78,15 +78,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         {
             // Have the object hit some collider and not move at all
             Vector3 initialPosition = Vector3.zero;
-            Vector3 movement = Vector3.forward;
+            Vector3 movement = Vector3.forward * 10;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            SetupColliderCast(true, SetupRaycastHitMock(distance: KCCUtils.Epsilon));
+            SetupColliderCast(true, SetupRaycastHitMock(distance: 0.1f, normal: (Vector3.right + Vector3.back).normalized));
 
             // Simulate bounces
             var bounces = GetBounces(initialPosition, movement, maxBounces: maxBounces, anglePower: 0.0f).ToList();
 
             // Should hit max bounces
+            Debug.Log(string.Join("\n", bounces));
             Assert.IsTrue(bounces.Count == maxBounces + 2, $"Expected to find {maxBounces + 2} bounce but instead found {bounces.Count}");
             Enumerable.Range(0, maxBounces + 1).ToList().ForEach(idx => KCCValidation.ValidateKCCBounce(bounces[idx], KCCUtils.MovementAction.Bounce));
             KCCValidation.ValidateKCCBounce(bounces[maxBounces + 1], KCCUtils.MovementAction.Stop);
@@ -171,12 +172,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// Validate the snap up behavior of the KCC Bounce method
         /// </summary>
         [Test]
-        public void Validate_KCCSnapUpAction()
+        public void Validate_KCCSnapUpAction([NUnit.Framework.Range(0.1f, 2f, 0.1f)] float snapUpDistance)
         {
             SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting a step slightly above foot position
-                (true, SetupRaycastHitMock(distance: KCCUtils.Epsilon, point: Vector3.up * 0.05f)),
+                (true, SetupRaycastHitMock(distance: 0.1f, point: Vector3.up * snapUpDistance / 2, normal: Vector3.back)),
                 // Next hit should not collide with anything as we are above the step
                 (false, SetupRaycastHitMock()),
             });
@@ -187,7 +188,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
             // Simulate bounces
-            var bounces = GetBounces(Vector3.zero, Vector3.forward).ToList();
+            var bounces = GetBounces(Vector3.zero, Vector3.forward, verticalSnapUp: snapUpDistance).ToList();
 
             // Validate bounce properties
             Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounce but instead found {bounces.Count}");
@@ -234,12 +235,53 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// <summary>
         /// Verify that invalid projected momentum will retain its original magnitude
         /// </summary>
+        /// <param name="move">Input player movement for invalid movement value.</param>
         [Test]
         [TestCaseSource(nameof(MovementGenerator))]
         public void Verify_KCCInvalidProjectedMomentum(Vector3 move)
         {
             Vector3 projected = KCCUtils.GetProjectedMomentumSafe(move, Vector3.forward, Vector3.up);
             Assert.IsTrue((move.magnitude - projected.magnitude) <= 0.001f, $"Expected projected vector to have magnitude of {move.magnitude} but instead found {projected.magnitude}");
+        }
+
+        /// <summary>
+        /// Validate player won't bounce backwards when they hit a wall
+        /// and could slide backwards of original direction.
+        /// </summary>
+        /// <param name="distance">Distance the player should move forward.</param>
+        [Test]
+        public void Verify_KCCNoJitterBackwards([Values(5, 10)] float distance)
+        {
+            // Have first hit hit a pushable object
+            SetupColliderCast(new[]
+            {
+                // First hit should be simulating hitting an object and sliding to the left
+                (true, SetupRaycastHitMock(
+                    distance: distance / 5,
+                    normal: (Vector3.back * 2 + Vector3.left).normalized)),
+                // Next hit should simulate hitting another wall and sliding back
+                (true, SetupRaycastHitMock(
+                    distance: distance / 5,
+                    normal: (Vector3.back * 2 + Vector3.right).normalized)),
+            });
+
+            // Simulate bounces
+            var bounces = GetBounces(Vector3.zero, Vector3.forward * distance, anglePower: 1, canSnapUp: false).ToList();
+
+            Debug.Log(string.Join("\n", bounces));
+
+            // Validate bounce properties, should bounce once then stop before
+            // moving backwards.
+            Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounce but instead found {bounces.Count}");
+            ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
+            ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Bounce);
+            ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
+            foreach (KCCBounce bounce in bounces.AsEnumerable().Reverse().Skip(1))
+            {
+                Assert.IsTrue(
+                    Vector3.Dot(bounce.Movement, Vector3.forward) >= 0,
+                    $"Expected player to move forward but instead found movement {bounce.Movement.ToString("F3")}");
+            }
         }
 
         /// <summary>
@@ -252,7 +294,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting a a pushable object
-                (true, SetupRaycastHitMock(collider: null, distance: KCCUtils.Epsilon)),
+                (true, SetupRaycastHitMock(
+                    collider: null,
+                    distance: 0.1f,
+                    normal: (Vector3.back + Vector3.left).normalized)),
                 // Next hit should not collide with anything as we are above the step
                 (false, SetupRaycastHitMock()),
             });
@@ -295,6 +340,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
             Assert.IsTrue(initialMomentum == null || bounce.initialMomentum == initialMomentum, $"Expected {nameof(bounce.initialMomentum)} to be {initialMomentum} but instead found {bounce.initialMomentum}");
         }
 
+        private delegate void RaycastHitCallback(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit);
+
+        private delegate void RaycastHitReturns(out IRaycastHit hit);
+
         /// <summary>
         /// Setup the collider cast for a given set of hits in a specific order.
         /// </summary>
@@ -302,21 +351,19 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         public void SetupColliderCast(IEnumerable<(bool, IRaycastHit)> hitData)
         {
             IEnumerator<(bool, IRaycastHit)> hitEnumerator = hitData.GetEnumerator();
-            hitEnumerator.MoveNext();
-
-            (bool, IRaycastHit) nextHit = hitEnumerator.Current;
+            (bool, IRaycastHit) nextHit = (false, null);
             colliderCastMock.Setup(
-                mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out nextHit.Item2))
-                .Returns(() =>
+                mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny))
+                .Callback(new RaycastHitCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
                 {
-                    bool ret = nextHit.Item1;
+                    hit = nextHit.Item2;
                     if (hitEnumerator.MoveNext())
                     {
                         nextHit = hitEnumerator.Current;
+                        hit = nextHit.Item2;
                     }
-
-                    return ret;
-                });
+                }))
+                .Returns(() => nextHit.Item1);
         }
 
         /// <summary>
@@ -335,7 +382,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode
         /// <param name="collider">Collider to return from the mock.</param>
         /// <param name="point">Point of collision for the mock.</param>
         /// <param name="distance">Distance from source from the mock.</param>
-        /// <param name="normal">Normal vector for the collision from the mock..</param>
+        /// <param name="normal">Normal vector for the collision from the mock.</param>
+        /// <param name="fraction">Fraction of movement.</param>
         /// <returns>Mock raycast hit object with the specified properties.</returns>
         public IRaycastHit SetupRaycastHitMock(Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f)
         {

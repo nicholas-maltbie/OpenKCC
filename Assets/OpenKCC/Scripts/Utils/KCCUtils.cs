@@ -159,7 +159,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     out IRaycastHit snapHit);
 
             // If they can move without instantly hitting something, then snap them up
-            if (snapHit.distance >= Epsilon && (!didSnapHit || snapHit.distance > config.StepUpDepth))
+            if (!didSnapHit || (snapHit.distance >= Epsilon && snapHit.distance > config.StepUpDepth))
             {
                 position = snapPos;
                 return true;
@@ -317,11 +317,11 @@ namespace nickmaltbie.OpenKCC.Utils
 
             float fraction = hit.distance / distance;
             // Set the fraction of remaining movement (minus some small value)
-            position += remainingMomentum * (fraction);
-            // Push slightly along normal to stop from getting caught in walls
-            position += hit.normal * Epsilon * 2;
+            Vector3 deltaBounce = remainingMomentum * fraction;
+            deltaBounce = deltaBounce.normalized * Mathf.Max(0, deltaBounce.magnitude - Epsilon);
+            position += deltaBounce;
             // Decrease remaining momentum by fraction of movement remaining
-            remainingMomentum *= (1 - fraction);
+            remainingMomentum *= (1 - Mathf.Max(0, deltaBounce.magnitude / distance));
 
             if (config.CanSnapUp && AttemptSnapUp(hit, remainingMomentum, ref position, rotation, config))
             {
@@ -396,6 +396,10 @@ namespace nickmaltbie.OpenKCC.Utils
                 {
                     didSnapUp = true;
                 }
+                else if (Vector3.Dot(bounce.Movement, movement) < 0)
+                {
+                    break;
+                }
 
                 yield return bounce;
 
@@ -412,7 +416,6 @@ namespace nickmaltbie.OpenKCC.Utils
             }
 
             // We're done, player was moved as part of loop
-
             yield return new KCCBounce
             {
                 initialPosition = position,
