@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test-validation-deployment
     outputs:
-      commit_hash: ${{ steps.commit_and_push.outputs.commit_hash }}
+      commit_hash: ${{ steps.commit_changes.outputs.commit_long_sha }}
 
     steps:
       # You must ALWAYS checkout your repo so that actions in the workflow can use it.
@@ -56,17 +56,25 @@ jobs:
       - name: Get the new semver number
         run: echo "The new semver number for this Unity project is ${{ steps.semver-update.outputs.semver-number }}"
 
-      # Commit & push the updated semver number back into the repo. Yes, you have to fetch & pull in your local workstation after this step is done.
-      - name: commit_and_push
-        name: Push changed files back to repo
-        uses: Amraneze/push-to-protected-branch@latest
+      - name: Commit Changes
+        id: commit_changes
+        uses: EndBug/add-and-commit@v9
         with:
-          repository: ${{ github.repository }}
-          branch_name: ${{ github.ref_name }}
-          github_token: ${{ secrets.PAT }}
-          commit_message: "[skip ci] Updated semver via automated action."
-          commit_options: '--no-verify --signoff'
-          files_to_commit: 'ProjectSettings/ProjectSettings.asset'
+          author_name: "github-actions[bot]"
+          author_email: "github-actions[bot]@users.noreply.github.com"
+          commit: '--no-verify --signoff'
+          message: "[skip ci] Updated semver via automated action."
+          add: 'ProjectSettings/ProjectSettings.asset'
+          push: false
+
+      # Commit & push the updated semver number back into the repo. Yes, you have to fetch & pull in your local workstation after this step is done.
+      - id: commit_and_push
+        name: Push changed files back to repo
+        uses: CasperWA/push-protected@v2.10.0
+        with:
+          token: ${{ secrets.PAT }}
+          branch: main
+          unprotect_reviews: true
 
   build-and-deploy-app:
     name: Build and Deploy for Product
