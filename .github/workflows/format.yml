@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-      - main
+      - 'push-action/**'
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
@@ -18,39 +18,11 @@ jobs:
       fail-fast: false
 
     steps:
-<<<<<<< Updated upstream
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Cache git lfs
-        uses: actions/cache@v2
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-format-v1.2
-          # use previous cache if current one is not found
-          restore-keys: |
-            ${{ runner.os }}-format-lfs-
-
-      - name: Cache Library Folder
-        uses: actions/cache@v2
-        with:
-          path: Library
-          key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Packages/manifest.json') }}-v.1.0
-          restore-keys: |
-            Library-${{ matrix.targetPlatform }}-
-
-      - name: Pull lfs data, if not cached
-        run: git lfs pull
-=======
       - uses: actions/checkout@v2
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
         with:
           target_platform: WebGL
->>>>>>> Stashed changes
 
       - name: Ensure .sln file is generated
         uses: game-ci/unity-builder@v2.0.4
@@ -93,28 +65,8 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-<<<<<<< Updated upstream
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Cache git lfs
-        uses: actions/cache@v2
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-format-v1.2
-          # use previous cache if current one is not found
-          restore-keys: |
-            ${{ runner.os }}-format-lfs-
-
-      - name: Pull lfs data, if not cached
-        run: git lfs pull
-=======
       - uses: actions/checkout@v2
       - uses: ./.github/actions/git-lfs-cache
->>>>>>> Stashed changes
 
       - name: Install DocFX
         run: choco install -y docfx

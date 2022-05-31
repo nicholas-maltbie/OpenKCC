@@ -2,6 +2,9 @@ name: Build Verification
 
 on:
   pull_request:
+  push:
+    branches:
+      - 'push-action/**'
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}

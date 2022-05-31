@@ -45,6 +45,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.PAT }}
+      - uses: ./.github/actions/git-lfs-cache
+      - run: git config --local core.hooksPath .githooks
 
       - name: Find ProjectSettings.asset & increment its bundleVersion number
         uses: AlexHolderDeveloper/UnityAutomatedSemver@v1.02
@@ -63,7 +65,7 @@ jobs:
           author_name: "github-actions[bot]"
           author_email: "github-actions[bot]@users.noreply.github.com"
           commit: '--no-verify --signoff'
-          message: "[skip ci] Updated semver via automated action."
+          message: "Updated semver via automated action."
           add: 'ProjectSettings/ProjectSettings.asset'
           push: false
 
@@ -74,7 +76,9 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           branch: main
-          unprotect_reviews: true
+          unprotect_reviews: false
+          timeout: 30
+          sleep: 30
 
   build-and-deploy-app:
     name: Build and Deploy for Product
