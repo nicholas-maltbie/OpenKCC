@@ -26,27 +26,27 @@ public class ExportPackage : MonoBehaviour
     /// Path of assets directory for export.
     /// </summary>
     public static readonly string[] AssetPaths = {
-        Path.Combine(ScriptBatch.AssetDirectory, "OpenKCC"),
+        Path.Combine(ScriptBatch.AssetDirectory, Constants.ProjectName),
     };
 
     /// <summary>
     /// Path of scripts directory for export.
     /// </summary>
     public static readonly string[] ScriptsAssetPaths = {
-        Path.Combine(ScriptBatch.AssetDirectory, "OpenKCC", "Scripts"),
+        Path.Combine(ScriptBatch.AssetDirectory, Constants.ProjectName, "Scripts"),
     };
 
     /// <summary>
     /// Export path for package.
     /// </summary>
     public static string PackagePath => Path.Combine(
-        ScriptBatch.BuildDirectory, $"OpenKCC-Examples-{ScriptBatch.VersionNumber}.unitypackage");
+        ScriptBatch.BuildDirectory, $"{Application.productName}-Examples-{ScriptBatch.VersionNumber}.unitypackage");
 
     /// <summary>
     /// Export path for scripts package.
     /// </summary>
     public static string ScriptPackagePath => Path.Combine(
-        ScriptBatch.BuildDirectory, $"OpenKCC-{ScriptBatch.VersionNumber}.unitypackage");
+        ScriptBatch.BuildDirectory, $"{Application.productName}-{ScriptBatch.VersionNumber}.unitypackage");
 
     /// <summary>
     /// Aggregate function to export all package versions.
