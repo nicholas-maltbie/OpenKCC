@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
         with:
@@ -51,7 +51,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Lint Markdown Files
       uses: avto-dev/markdown-lint@v1
@@ -65,7 +65,7 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/git-lfs-cache
 
       - name: Install DocFX

@@ -3,47 +3,27 @@ name: Build and Deploy WebGL
 concurrency: production-${{ github.ref }}
 
 on:
-  push:
-    branches:
+  pull_request:
+    branches: 
       - main
+    types: [closed]
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
 
 jobs:
-  test-validation-deployment:
-    name: Validate Tests Before Deployment
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./.github/actions/git-lfs-cache
-      - uses: ./.github/actions/unity-library-cache
-        with:
-          target_platform: WebGL
-
-      - name: Run All Tests for Unity 2021.1.19f1
-        uses: game-ci/unity-test-runner@v2.0.2
-        with:
-          unityVersion: 
-          testMode: All
-          checkName: All Test Results
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+OpenKCC'
-          customParameters: "-burst-disable-compilation -nographics"
-
   update-semver:
     name: Update Semantic Version of Project
     runs-on: ubuntu-latest
-    needs: test-validation-deployment
     outputs:
       commit_hash: ${{ steps.commit_changes.outputs.commit_long_sha }}
 
     steps:
       # You must ALWAYS checkout your repo so that actions in the workflow can use it.
       - name: Checkout 
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
+          ref: main
           token: ${{ secrets.PAT }}
       - uses: ./.github/actions/git-lfs-cache
       - run: git config --local core.hooksPath .githooks
@@ -76,7 +56,7 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           branch: main
-          unprotect_reviews: false
+          unprotect_reviews: true
           timeout: 30
           sleep: 30
 
@@ -87,7 +67,7 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ needs.updateSemver.outputs.commit_hash }}
       - uses: ./.github/actions/git-lfs-cache
@@ -115,7 +95,7 @@ jobs:
     runs-on: windows-latest # Required by DocFX
     needs: build-and-deploy-app
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/git-lfs-cache
 
       - name: Install DocFX
