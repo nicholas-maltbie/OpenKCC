@@ -1,0 +1,16 @@
+name: unity-library-cache
+description: "Unity Library Resources Reusable Workflow"
+inputs:
+  target_platform:
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - name: Cache Library Folder
+      uses: actions/cache@v2
+      with:
+        path: Library
+        key: Library-${{ runner.os }}-${{ inputs.target_platform }}-${{ hashFiles('Packages/manifest.json') }}-v1.0.0
+        restore-keys: |
+          Library-${{ runner.os }}-${{ inputs.target_platform }}-

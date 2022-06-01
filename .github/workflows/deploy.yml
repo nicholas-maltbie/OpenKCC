@@ -3,26 +3,30 @@ name: Build and Deploy WebGL
 concurrency: production-${{ github.ref }}
 
 on:
-  push:
-    branches:
+  pull_request:
+    branches: 
       - main
+    types: [closed]
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
 
 jobs:
-  updateSemver:
-    name: Update semver
+  update-semver:
+    name: Update Semantic Version of Project
     runs-on: ubuntu-latest
     outputs:
-      commit_hash: ${{ steps.commit_and_push.outputs.commit_hash }}
+      commit_hash: ${{ steps.commit_changes.outputs.commit_long_sha }}
 
     steps:
       # You must ALWAYS checkout your repo so that actions in the workflow can use it.
       - name: Checkout 
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
+          ref: main
           token: ${{ secrets.PAT }}
+      - uses: ./.github/actions/git-lfs-cache
+      - run: git config --local core.hooksPath .githooks
 
       - name: Find ProjectSettings.asset & increment its bundleVersion number
         uses: AlexHolderDeveloper/UnityAutomatedSemver@v1.02
@@ -34,61 +38,48 @@ jobs:
       - name: Get the new semver number
         run: echo "The new semver number for this Unity project is ${{ steps.semver-update.outputs.semver-number }}"
 
+      - name: Commit Changes
+        id: commit_changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: "github-actions[bot]"
+          author_email: "github-actions[bot]@users.noreply.github.com"
+          commit: '--no-verify --signoff'
+          message: "Updated semver via automated action."
+          add: 'ProjectSettings/ProjectSettings.asset'
+          push: false
+
       # Commit & push the updated semver number back into the repo. Yes, you have to fetch & pull in your local workstation after this step is done.
       - id: commit_and_push
         name: Push changed files back to repo
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: CasperWA/push-protected@v2.10.0
         with:
-          commit_message: "[skip ci] Updated semver via automated action."
-          commit_options: '--no-verify --signoff'
-          # Optional commit user and author settings
-          commit_user_name: "github-actions[bot]"
-          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          token: ${{ secrets.PAT }}
+          branch: main
+          unprotect_reviews: true
+          timeout: 30
+          sleep: 30
 
-  buildAndDeployApp:
-    name: Build and Deploy for ${{ matrix.targetPlatform }} on version ${{ matrix.unityVersion }}
-    needs: updateSemver
-    runs-on: Ubuntu-20.04
+  build-and-deploy-app:
+    name: Build and Deploy for Product
+    needs: update-semver
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        unityVersion:
-          - 2021.1.19f1
-        targetPlatform:
-          - WebGL
-
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ needs.updateSemver.outputs.commit_hash }}
-
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Cache Library Folder
-        uses: actions/cache@v2
+      - uses: ./.github/actions/git-lfs-cache
+      - uses: ./.github/actions/unity-library-cache
         with:
-          path: Library
-          key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Packages/manifest.json') }}-v.1.1
-          restore-keys: |
-            Library-${{ matrix.targetPlatform }}-
-      - name: Cache git lfs
-        uses: actions/cache@v2
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1.2
-          # use previous cache if current one is not found
-          restore-keys: |
-            ${{ runner.os }}-lfs-
-      - name: Pull lfs data, if not cached
-        run: git lfs pull
+          target_platform: WebGL
 
       # Build the game deployment at build
-      - uses: game-ci/unity-builder@v2.0-alpha-6
+      - uses: game-ci/unity-builder@v2.0.4
         with:
-          projectPath: ${{ matrix.projectPath }}
-          unityVersion: ${{ matrix.unityVersion }}
-          targetPlatform: ${{ matrix.targetPlatform }}
+          unityVersion: 2021.1.19f1
+          targetPlatform: WebGL
           buildMethod: ScriptBatch.OfficialBuild_WebGL
 
       # Deploy build to gh-pages branch
@@ -100,25 +91,12 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   # Build the documentation
-  buildAndDeployDocs:
+  build-and-deploy-docs:
     runs-on: windows-latest # Required by DocFX
-    needs: buildAndDeployApp
+    needs: build-and-deploy-app
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        # with:
-        #   submodules: true
-
-      - name: Cache git lfs
-        uses: actions/cache@v2
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1.2
-          # use previous cache if current one is not found
-          restore-keys: |
-            ${{ runner.os }}-lfs-
-      - name: Pull lfs data, if not cached
-        run: git lfs pull
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/git-lfs-cache
 
       - name: Install DocFX
         run: choco install -y docfx
