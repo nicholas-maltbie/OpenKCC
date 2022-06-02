@@ -35,7 +35,7 @@ To view the documentation from a local build of the project install
 following command from the root of the repo.
 
 ```bash
-Documentation/build.cmd
+Documentation/build.sh
 ```
 
 (Or this for windows)
