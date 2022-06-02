@@ -45,7 +45,7 @@ jobs:
           author_name: "github-actions[bot]"
           author_email: "github-actions[bot]@users.noreply.github.com"
           commit: '--no-verify --signoff'
-          message: "Updated semver via automated action."
+          message: "Updated semver to ${{ steps.semver-update.outputs.semver-number }} for PR #${{ github.event.pull_request.number }}."
           add: 'ProjectSettings/ProjectSettings.asset'
           push: false
 
@@ -69,7 +69,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ needs.updateSemver.outputs.commit_hash }}
+          ref: ${{ needs.update-semver.outputs.commit_hash }}
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
         with:
