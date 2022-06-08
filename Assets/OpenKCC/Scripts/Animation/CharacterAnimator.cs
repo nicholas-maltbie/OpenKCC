@@ -43,7 +43,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <summary>
         /// Dead zone to consider turning action as stopped
         /// </summary>
-        public float turningDeadZone = 0.1f;
+        public float turningDeadZone = 10f;
 
         /// <summary>
         /// Amount of time falling to switch to falling animation
@@ -86,7 +86,7 @@ namespace nickmaltbie.OpenKCC.Animation
 
             animState.move = new Vector2(kcc.InputMovement.x, kcc.InputMovement.z);
             animState.moving = moving;
-            animState.rotation = cameraController.frameRotation > 0 ? 1 : -1;
+            animState.rotation = Mathf.Lerp(animState.rotation, cameraController.frameRotation > 0 ? 1 : -1, 0.5f);
             animState.turning = !moving &&
                 !jumpingOrFalling &&
                 Mathf.Abs(cameraController.frameRotation) > turningDeadZone;

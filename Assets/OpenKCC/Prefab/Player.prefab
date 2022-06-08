@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementDeadZone: 0.01
-  turningDeadZone: 0.1
+  turningDeadZone: 0.35
   fallingThreshold: 0.1
   longFallingThreshold: 1.5
   kcc: {fileID: 1928389238801210311}
@@ -443,6 +443,7 @@ MonoBehaviour:
   overlapColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   sphereRadius: 0.05
   drawFrustrum: 0
+  drawBackRaycast: 0
 --- !u!1001 &1928389239579011581
 PrefabInstance:
   m_ObjectHideFlags: 0
