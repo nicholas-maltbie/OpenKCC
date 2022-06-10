@@ -93,10 +93,12 @@ crashlytics-build.properties
 /ProjectSettings/Packages
 
 # Documentation
+Assets/**/obj*
+_site/
 Documentation/api/
-Documentation/index.*
+Documentation/Changelog/CHANGELOG.md
 Documentation/Demo/
+Documentation/index.*
 Documentation/LICENSE.txt
 Documentation/obj/
-_site/
-Assets/**/obj*
+Packages/**/obj*

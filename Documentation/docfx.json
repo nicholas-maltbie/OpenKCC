@@ -39,6 +39,15 @@
                 "dest": "api"
             },
             {
+                "src": "changelog",
+                "files":
+                [
+                    "toc.yml",
+                    "*.md"
+                ],
+                "dest": "changelog"
+            },
+            {
                 "src": "manual",
                 "files": [
                     "toc.yml",
