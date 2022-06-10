@@ -1,0 +1,23 @@
+{
+    "name": "nickmaltbie.OpenKCC.TestCommon",
+    "rootNamespace": "nickmaltbie.OpenKCC.TestCommon",
+    "references": [
+        "nickmaltbie.OpenKCC",
+        "Unity.InputSystem",
+        "Unity.InputSystem.TestFramework"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
