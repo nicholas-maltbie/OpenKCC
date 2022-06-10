@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2163105625420360588}
   - component: {fileID: 2837208090188026223}
   - component: {fileID: 6177856093197071498}
-  - component: {fileID: 7606512916387337484}
+  - component: {fileID: 6638898893481436561}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -80,7 +80,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Controls:'
---- !u!114 &7606512916387337484
+--- !u!114 &6638898893481436561
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

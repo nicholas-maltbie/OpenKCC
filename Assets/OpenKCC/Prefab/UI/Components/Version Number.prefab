@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 2501209444845283590}
   - component: {fileID: 2012326310735188965}
   - component: {fileID: 7570224167106180608}
-  - component: {fileID: 5307233133333074657}
+  - component: {fileID: 1596126052114860362}
   m_Layer: 5
   m_Name: Version Number
   m_TagString: Untagged
@@ -156,7 +156,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Version - #.#.#
---- !u!114 &5307233133333074657
+--- !u!114 &1596126052114860362
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
