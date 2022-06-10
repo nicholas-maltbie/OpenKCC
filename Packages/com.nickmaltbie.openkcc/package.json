@@ -1,0 +1,26 @@
+{
+  "name": "com.nickmaltbie.openkcc",
+  "displayName": "Open KCC",
+  "version": "0.0.0",
+  "unity": "2021.1",
+  "unityRelease": "19f1",
+  "description": "Open Source Kinematic Character Controller project.",
+  "author": {
+    "name": "Nick Maltbie",
+    "email": "nick.dmalt@gmail.com",
+    "url": "https://nickmaltbie.com"
+  },
+  "documentationUrl": "https://nickmaltbie.com/OpenKCC/docs",
+  "keywords": [
+    "ui",
+    "screen"
+  ],
+  "type": "library",
+  "dependencies": {
+    "com.unity.inputsystem": "1.0.2",
+    "com.unity.textmeshpro": "3.0.6",
+    "com.unity.probuilder": "5.0.4",
+    "com.nickmaltbie.screenmanager": "https://github.com/nicholas-maltbie/ScreenManager.git?path=/Packages/com.nickmaltbie.screenmanager/#v3.0.0"
+  },
+  "testables": ["com.unity.inputsystem"]
+}
