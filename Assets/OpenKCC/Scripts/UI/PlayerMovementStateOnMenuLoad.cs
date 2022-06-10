@@ -16,30 +16,30 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.ScreenManager;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace nickmaltbie.OpenKCC.UI.Actions
+namespace nickmaltbie.OpenKCC.UI.Events
 {
     /// <summary>
-    /// Reset binding of all configurable input actions
+    /// Simple class to set player movement state when menu loads
     /// </summary>
-    public class ResetBindingsButton : MonoBehaviour
+    public class PlayerMovementStateOnMenuLoad : MonoBehaviour, IScreenComponent
     {
-        public Button button;
+        /// <summary>
+        /// Player input state to set when this menu is loaded
+        /// </summary>
+        public PlayerInputState playerInputState = PlayerInputState.Allow;
 
-        public void Start()
+        public void OnScreenLoaded()
         {
-            button.onClick.AddListener(() => ResetBindings());
+            PlayerInputUtils.playerMovementState = playerInputState;
         }
 
-        public void ResetBindings()
+        public void OnScreenUnloaded()
         {
-            foreach (IBindingControl control in GetComponentsInChildren<IBindingControl>())
-            {
-                control.ResetBinding();
-                control.UpdateDisplay();
-            }
+
         }
     }
 }
