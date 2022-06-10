@@ -406,9 +406,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 9024761054527596345}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 985a7f305c4cf9b47ba85e655257eaff, type: 3}
+  m_Script: {fileID: 11500000, guid: 8b1c6be7cad73ca4c86f3fd1422780ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cancelPath: <Keyboard>/escape
   inputAction: {fileID: 0}
   bindingDisplayNameText: {fileID: 8680546396130499253}
   startRebinding: {fileID: 7629547670552710050}

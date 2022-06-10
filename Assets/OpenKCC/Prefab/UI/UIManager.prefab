@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -6247352873759180897}
   - component: {fileID: 1957750425734041810}
   - component: {fileID: 6623657609640478871}
-  - component: {fileID: 576314974741431280}
+  - component: {fileID: -8235221732075971616}
   - component: {fileID: 1889939422}
   m_Layer: 0
   m_Name: UIManager
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_TrackedDeviceOrientationAction: {fileID: -8822090747999447430, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
---- !u!114 &576314974741431280
+--- !u!114 &-8235221732075971616
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -154,7 +154,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 576314974741431287}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75d794b5250a4b5429cf5cc8c0623a7a, type: 3}
+  m_Script: {fileID: 11500000, guid: 8297a121aa1f1d7448c7569dcafe0585, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   screenPrefabs:

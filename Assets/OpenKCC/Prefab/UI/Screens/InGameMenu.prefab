@@ -145,7 +145,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 453105032817049386}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 890ef1d9eb023994b80e00773a98336b, type: 3}
+  m_Script: {fileID: 11500000, guid: e2fb97cf4d8e32d4589ee2bc2ae8623f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &5258158326814739419
@@ -157,7 +157,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 453105032817049386}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f4397cc72cc4f34fb576f2615ecd1fc, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d8e7ff05631dca43a0ca284dcee4209, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hidePlatform: 17
@@ -305,21 +305,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 481657535441082248}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58ea8235c2cc53041b76229f3ef21ec7, type: 3}
+  m_Script: {fileID: 11500000, guid: 228f2d20e856a5e4f9c68f80dbfa5dc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoveredColor:
+    serializedVersion: 2
+    rgba: 4294924544
   pressedColor:
     serializedVersion: 2
     rgba: 4290183168
   usedColor:
     serializedVersion: 2
-    rgba: 4294901901
+    rgba: 4294902015
   usedHoveredColor:
     serializedVersion: 2
-    rgba: 4294794942
+    rgba: 4294795005
   usedPressedColor:
     serializedVersion: 2
-    rgba: 4291756139
+    rgba: 4291756239
 --- !u!1 &906945468653361207
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,7 +457,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3816567771485690116}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75bac7e8f23212441911f4b09b5b630c, type: 3}
+  m_Script: {fileID: 11500000, guid: fcb6a339a992dc14cab240f7b13c0634, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   allowInputChanges: 1
@@ -468,7 +471,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3816567771485690116}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21739b2dd23d46847b42bf0f7019c199, type: 3}
+  m_Script: {fileID: 11500000, guid: 0112333afc49d124abe30e439f39df73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cursorLockMode: 0
@@ -617,7 +620,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3816567771485690116}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a93a4523ef70bf64b8799d5e38201ad9, type: 3}
+  m_Script: {fileID: 11500000, guid: 83f9754c0fefac0489dc239be5b48303, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4874382769312172081
