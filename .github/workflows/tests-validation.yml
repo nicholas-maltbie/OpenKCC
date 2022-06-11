@@ -30,7 +30,7 @@ jobs:
           unityVersion: 2021.1.19f1
           testMode: All
           checkName: All Test Results
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+OpenKCC'
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC'
           customParameters: "-burst-disable-compilation -nographics"
 
       - name: Copy Coverage Results

@@ -1,26 +1,23 @@
 {
-    "name": "PlayMode",
+    "name": "nickmaltbie.OpenKCC.Tests.PlayMode",
     "rootNamespace": "nickmaltbie.OpenKCC.Tests.PlayMode",
     "references": [
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "OpenKCC",
-        "TestCommon",
         "Unity.ProBuilder",
         "Unity.ProBuilder.Editor",
-        "Unity.ProBuilder.Poly2Tri"
+        "Unity.ProBuilder.Poly2Tri",
+        "nickmaltbie.OpenKCC",
+        "nickmaltbie.OpenKCC.TestCommon"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [
-        "nunit.framework.dll"
-    ],
+    "precompiledReferences": [],
     "autoReferenced": false,
-    "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
-    ],
+    "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
 }
