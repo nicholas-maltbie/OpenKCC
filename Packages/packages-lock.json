@@ -8,7 +8,7 @@
         "com.unity.inputsystem": "1.0.2",
         "com.unity.textmeshpro": "3.0.6",
         "com.unity.probuilder": "5.0.4",
-        "com.nickmaltbie.screenmanager": "https://github.com/nicholas-maltbie/ScreenManager.git?path=/Packages/com.nickmaltbie.screenmanager/#v3.0.0"
+        "com.nickmaltbie.screenmanager": "3.0.0"
       }
     },
     "com.nickmaltbie.screenmanager": {
