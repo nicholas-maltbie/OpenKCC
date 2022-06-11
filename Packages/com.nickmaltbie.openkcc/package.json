@@ -12,8 +12,16 @@
   },
   "documentationUrl": "https://nickmaltbie.com/OpenKCC/docs",
   "keywords": [
-    "ui",
-    "screen"
+    "character controller",
+    "kinematic",
+    "physics"
+  ],
+  "samples": [
+    {
+      "displayName": "Example Character",
+      "description": "Contains example of basic kinematic character controller avatar.",
+      "path": "Samples/Example Character"
+    }
   ],
   "dependencies": {
     "com.unity.inputsystem": "1.0.2",
