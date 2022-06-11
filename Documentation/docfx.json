@@ -3,12 +3,9 @@
         {
             "src": [
                 {
-                    "src": "..",
+                    "src": "../Packages/com.nickmaltbie.openkcc",
                     "files": [
-                        "Assets/**/*.cs"
-                    ],
-                    "exclude": [
-                        "Assets/Plugins/**"
+                        "**/*.cs"
                     ]
                 }
             ],
