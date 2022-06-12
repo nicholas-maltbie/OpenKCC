@@ -18,9 +18,9 @@
   ],
   "samples": [
     {
-      "displayName": "Example Character",
+      "displayName": "Example First Person Character",
       "description": "Contains example of basic kinematic character controller avatar.",
-      "path": "Samples/Example Character"
+      "path": "Samples/ExampleFirstPersonKCC"
     }
   ],
   "dependencies": {

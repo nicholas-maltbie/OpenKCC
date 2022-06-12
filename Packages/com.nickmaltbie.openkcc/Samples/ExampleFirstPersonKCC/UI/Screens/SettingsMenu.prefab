@@ -2221,14 +2221,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6637053135914170324}
     m_Modifications:
-    - target: {fileID: 3733915148585717349, guid: 102fe668775b4c6488cb9e652df0167f, type: 3}
+    - target: {fileID: 3733915148585717349, guid: 8e973e6a47ce1ac448b7e2096ccf2968, type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 102fe668775b4c6488cb9e652df0167f, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 8e973e6a47ce1ac448b7e2096ccf2968, type: 3}
 --- !u!224 &5425614196989865953 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3733915148585717349, guid: 102fe668775b4c6488cb9e652df0167f, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3733915148585717349, guid: 8e973e6a47ce1ac448b7e2096ccf2968, type: 3}
   m_PrefabInstance: {fileID: 8690310480985809284}
   m_PrefabAsset: {fileID: 0}
