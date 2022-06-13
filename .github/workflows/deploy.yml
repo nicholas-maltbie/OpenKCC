@@ -23,9 +23,9 @@ jobs:
       # Deploy build to release branch
       - name: Push package
         uses: ad-m/github-push-action@master
-        env:
+        with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/${{ steps.tagName.outputs.tag }}
+          branch: release/latest
           force: true
 
   # build-and-deploy-app:
