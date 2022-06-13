@@ -8,8 +8,7 @@ jobs:
   create-package:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/git-lfs-cache
+      - uses: nschloe/action-cached-lfs-checkout@v1
 
       - name: Setup Package
         run: sh ./setup-package.sh
