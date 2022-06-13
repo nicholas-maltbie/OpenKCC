@@ -3,6 +3,7 @@ name: Create Package
 on:
   push:
     tags:
+  push:
     branches:
       - 'main'
 
