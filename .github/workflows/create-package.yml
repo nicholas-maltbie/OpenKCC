@@ -3,6 +3,8 @@ name: Create Package
 on:
   push:
     tags:
+    branches:
+      - 'main'
 
 jobs:
   create-package:
