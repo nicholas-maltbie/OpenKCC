@@ -11,6 +11,24 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
 
 jobs:
+  create-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/git-lfs-cache
+
+      - name: Setup Package
+        run: sh ./setup-package.sh
+
+      # Deploy build to release branch
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_branch: release/latest
+          force_orphan: true
+          publish_dir: Packages/com.nickmaltbie.openkcc
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
   build-and-deploy-app:
     name: Build and Deploy for Product
     runs-on: ubuntu-latest

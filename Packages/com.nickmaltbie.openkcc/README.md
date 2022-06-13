@@ -18,12 +18,18 @@ I'll happy include any suggestions or ideas into the project.
 
 Install the latest version of the project by importing a project via git
 at this URL:
-`https://github.com/nicholas-maltbie/OpenKCC.git?path=/Packages/com.nickmaltbie.openkcc/`
+`https://github.com/nicholas-maltbie/OpenKCC.git`
 
-If you want to reference a specific tag of the project such as version `v1.0.0`,
-add a `#v1.0.0` to the end of the git URL. An example of importing `v1.0.0`
+If you want to reference a specific tag of the project such as version `v0.1.0`,
+add a `release/#v1.0.0` to the end of the git URL to download the package
+from th auto-generated branch for that release. An example of importing `v0.1.0`
 would look like this:
-`https://github.com/nicholas-maltbie/openkcc.git?path=/Packages/com.nickmaltbie.openkcc/#1.0.0`
+`https://github.com/nicholas-maltbie/openkcc.git#release/v0.1.0`.
+
+To use the latest release, simply reference:
+```
+https://github.com/nicholas-maltbie/openkcc.git#release/latest
+```
 
 For a full list of all tags, check the [OpenKCC Tags](https://github.com/nicholas-maltbie/ScreenManager/tags)
 list on github. I will usually associated a tag with each release of the project.
@@ -51,6 +57,13 @@ You can see a demo of the project running here:
 The project hosted on the website is up to date with the most recent
 version on the `main` branch of this github repo
 and is automatically deployed with each update to the codebase.
+
+## Samples
+
+The samples in the project include:
+* ExampleFirstPersonKCC - Example first person character controller with a basic
+    test scene.
+* SimplifiedDemoKCC - Simplified character controller with basic movement scripts.
 
 ## Documentation
 
