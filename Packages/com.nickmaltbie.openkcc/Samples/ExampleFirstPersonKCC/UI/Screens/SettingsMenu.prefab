@@ -511,7 +511,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5c4fbca849f9e0948ac64f908f980ea2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b326582f224b03a418c287308451b0c6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -842,7 +842,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5c4fbca849f9e0948ac64f908f980ea2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 005b1d5229ce034448ccb83d1f4e4b59, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -989,8 +989,8 @@ MonoBehaviour:
     TabContent: {fileID: 529477257792715988}
   - TabButton: {fileID: 4244590173145652862}
     TabContent: {fileID: 6786517750062782493}
-  TabIconPicked: {fileID: 21300000, guid: 5c4fbca849f9e0948ac64f908f980ea2, type: 3}
-  TabIconDefault: {fileID: 21300000, guid: 88b06e34c42b3f0478c930358aa3260e, type: 3}
+  TabIconPicked: {fileID: 21300000, guid: b326582f224b03a418c287308451b0c6, type: 3}
+  TabIconDefault: {fileID: 21300000, guid: 005b1d5229ce034448ccb83d1f4e4b59, type: 3}
   DefaultTab: {fileID: 5654368399057641875}
 --- !u!225 &5844347895037453221
 CanvasGroup:
@@ -1807,7 +1807,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bec40643ed7c1824abff044c0f603756, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 867f97cf5adea884fb269b28c9778f9d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1929,7 +1929,7 @@ PrefabInstance:
       objectReference: {fileID: 8387962290575963714}
     - target: {fileID: 3507953994769131740, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: m_Size
-      value: 0.94285715
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4115343917428215393, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: menuController
@@ -2041,7 +2041,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7782518715594943783, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8206280652279874878, guid: 41ed1f3ea1c87a642aff34e3ef31d741, type: 3}
       propertyPath: m_Name
