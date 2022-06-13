@@ -23,7 +23,7 @@ jobs:
       # Deploy build to release branch
       - name: Push git subdirectory as branch
         uses: s0/git-publish-subdir-action@v2.5.1
-        with:
+        env:
           REPO: self
           BRANCH: release/latest
           FOLDER: Packages/com.nickmaltbie.openkcc
