@@ -13,7 +13,7 @@ jobs:
       - uses: ./.github/actions/git-lfs-cache
 
       - name: Setup Package
-        run: ./setup-package.sh
+        run: sh ./setup-package.sh
 
       - name: Get tag name
         uses: olegtarasov/get-tag@v2.1.1
