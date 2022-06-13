@@ -8,8 +8,7 @@ jobs:
   create-package:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/git-lfs-cache
+      - uses: nschloe/action-cached-lfs-checkout@v1
 
       - name: Setup Package
         run: sh ./setup-package.sh
@@ -19,10 +18,9 @@ jobs:
         id: tagName
 
       # Deploy build to release branch
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Push package
+        uses: ad-m/github-push-action@master
         with:
-          publish_branch: release/${{ steps.tagName.outputs.tag }}
-          force_orphan: true
-          publish_dir: Packages/com.nickmaltbie.openkcc
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release/${{ steps.tagName.outputs.tag }}
+          force: true
