@@ -52,6 +52,13 @@ The project hosted on the website is up to date with the most recent
 version on the `main` branch of this github repo
 and is automatically deployed with each update to the codebase.
 
+## Samples
+
+The samples in the project include:
+* ExampleFirstPersonKCC - Example first person character controller with a basic
+    test scene.
+* SimplifiedDemoKCC - Simplified character controller with basic movement scripts.
+
 ## Documentation
 
 Documentation on the project and scripting API is found at
