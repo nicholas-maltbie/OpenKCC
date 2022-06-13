@@ -19,10 +19,10 @@ jobs:
         id: tagName
 
       # Deploy build to release branch
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Push git subdirectory as branch
+        uses: s0/git-publish-subdir-action@v2.5.1
         with:
-          publish_branch: release/${{ steps.tagName.outputs.tag }}
-          force_orphan: true
-          publish_dir: Packages/com.nickmaltbie.openkcc
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          REPO: self
+          BRANCH: release/${{ steps.tagName.outputs.tag }}
+          FOLDER: Packages/com.nickmaltbie.openkcc
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

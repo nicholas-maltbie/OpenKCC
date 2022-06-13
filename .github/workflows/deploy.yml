@@ -5,7 +5,7 @@ concurrency: production-${{ github.ref }}
 on:
   push:
     branches:
-      - 'main'
+      # - 'main'
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
@@ -21,59 +21,60 @@ jobs:
         run: sh ./setup-package.sh
 
       # Deploy build to release branch
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Push git subdirectory as branch
+        uses: s0/git-publish-subdir-action@v2.5.1
         with:
-          publish_branch: release/latest
-          force_orphan: true
-          publish_dir: Packages/com.nickmaltbie.openkcc
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          REPO: self
+          BRANCH: release/latest
+          FOLDER: Packages/com.nickmaltbie.openkcc
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SQUASH_HISTORY: true
 
-  build-and-deploy-app:
-    name: Build and Deploy for Product
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/git-lfs-cache
-      - uses: ./.github/actions/unity-library-cache
-        with:
-          target_platform: WebGL
+  # build-and-deploy-app:
+  #   name: Build and Deploy for Product
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: ./.github/actions/git-lfs-cache
+  #     - uses: ./.github/actions/unity-library-cache
+  #       with:
+  #         target_platform: WebGL
 
-      # Build the game deployment at build
-      - uses: game-ci/unity-builder@v2.0.4
-        with:
-          unityVersion: 2021.1.19f1
-          targetPlatform: WebGL
-          buildMethod: ScriptBatch.OfficialBuild_WebGL
+  #     # Build the game deployment at build
+  #     - uses: game-ci/unity-builder@v2.0.4
+  #       with:
+  #         unityVersion: 2021.1.19f1
+  #         targetPlatform: WebGL
+  #         buildMethod: ScriptBatch.OfficialBuild_WebGL
 
-      # Deploy build to gh-pages branch
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          force_orphan: true
-          publish_dir: Builds/OpenKCC-WebGL
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+  #     # Deploy build to gh-pages branch
+  #     - name: Deploy
+  #       uses: peaceiris/actions-gh-pages@v3
+  #       with:
+  #         force_orphan: true
+  #         publish_dir: Builds/OpenKCC-WebGL
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  # Build the documentation
-  build-and-deploy-docs:
-    runs-on: windows-latest # Required by DocFX
-    needs: build-and-deploy-app
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/git-lfs-cache
+  # # Build the documentation
+  # build-and-deploy-docs:
+  #   runs-on: windows-latest # Required by DocFX
+  #   needs: build-and-deploy-app
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: ./.github/actions/git-lfs-cache
 
-      - name: Install DocFX
-        run: choco install -y docfx
+  #     - name: Install DocFX
+  #       run: choco install -y docfx
 
-      - name: Build Website
-        run: .\Documentation\build.cmd
+  #     - name: Build Website
+  #       run: .\Documentation\build.cmd
 
-      # Checkout to the previously created gh-pages branch
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          publish_dir:  _site
-          destination_dir: docs
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+  #     # Checkout to the previously created gh-pages branch
+  #     - name: Deploy
+  #       uses: peaceiris/actions-gh-pages@v3
+  #       with:
+  #         publish_dir:  _site
+  #         destination_dir: docs
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
