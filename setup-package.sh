@@ -3,4 +3,6 @@ mv ./Assets/Samples ./Packages/com.nickmaltbie.openkcc/Samples~
 
 git add ./Packages/com.nickmaltbie.openkcc/Samples~
 
-git commit -m "Moved ./Assets/Samples to ./Packages/com.nickmaltbie.openkcc/Samples~"
+git lfs install
+
+git commit -m "Moved ./Assets/Samples to ./Packages/com.nickmaltbie.openkcc/Samples~" --author="github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
