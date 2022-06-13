@@ -1,7 +1,7 @@
 # Sets up unity package samples
-cp -r ./Assets/Samples ./Packages/com.nickmaltbie.openkcc/Samples~
+mv ./Assets/Samples ./Packages/com.nickmaltbie.openkcc/Samples~
 
-git add ./Packages/com.nickmaltbie.openkcc/Samples~
+git add ./Assets/Samples ./Packages/com.nickmaltbie.openkcc/Samples~
 
 git lfs install
 
