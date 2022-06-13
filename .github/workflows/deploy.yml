@@ -21,13 +21,12 @@ jobs:
         run: sh ./setup-package.sh
 
       # Deploy build to release branch
-      - name: Push git subdirectory as branch
-        uses: s0/git-publish-subdir-action@v2.5.1
+      - name: Push package
+        uses: ad-m/github-push-action@master
         env:
-          REPO: self
-          BRANCH: release/latest
-          FOLDER: Packages/com.nickmaltbie.openkcc
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release/${{ steps.tagName.outputs.tag }}
+          force: true
 
   # build-and-deploy-app:
   #   name: Build and Deploy for Product
