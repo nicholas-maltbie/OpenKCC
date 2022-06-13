@@ -1,8 +1,5 @@
 # Sets up unity package samples
-mv ./Assets/Samples ./Packages/com.nickmaltbie.openkcc/Samples~
-
-# Add new samples to git repo
-git add ./Assets/Samples ./Packages/com.nickmaltbie.openkcc/Samples~
+git mv ./Assets/Samples ./Packages/com.nickmaltbie.openkcc/Samples~
 
 git lfs install
 
