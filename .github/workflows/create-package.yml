@@ -1,3 +1,5 @@
+name: Create Package
+
 on:
   push:
   release:
@@ -11,7 +13,7 @@ jobs:
       - uses: ./.github/actions/git-lfs-cache
 
       - name: Setup Package
-        run: setup-package.sh
+        run: ./setup-package.sh
 
       - name: Get tag name
         uses: olegtarasov/get-tag@v2.1.1
