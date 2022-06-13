@@ -25,5 +25,5 @@ jobs:
         with:
           publish_branch: release/${{ steps.tagName.outputs.tag }}
           force_orphan: true
-          publish_dir: Builds/OpenKCC-WebGL
+          publish_dir: Packages/com.nickmaltbie.openkcc
           github_token: ${{ secrets.GITHUB_TOKEN }}
