@@ -2,6 +2,7 @@ name: Create Package
 
 on:
   push:
+    tags:
   release:
     types: [published]
 
