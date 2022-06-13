@@ -28,7 +28,6 @@ jobs:
           BRANCH: release/latest
           FOLDER: Packages/com.nickmaltbie.openkcc
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SQUASH_HISTORY: true
 
   # build-and-deploy-app:
   #   name: Build and Deploy for Product
