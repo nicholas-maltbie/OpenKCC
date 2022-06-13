@@ -3,9 +3,6 @@ name: Create Package
 on:
   push:
     tags:
-  push:
-    branches:
-      - 'main'
 
 jobs:
   create-package:
@@ -21,19 +18,11 @@ jobs:
         uses: olegtarasov/get-tag@v2.1.1
         id: tagName
 
-      - name: Set env publish_branch
-        run: |
-          if [[ $BRANCH == 'main' && $GITHUB_EVENT_NAME == 'push' ]]; then
-              echo "publish_branch=release/latest" >> "$GITHUB_ENV"
-          else
-              echo "publish_branch=release/${{ steps.tagName.outputs.tag }}" >> "$GITHUB_ENV"
-          fi
-
       # Deploy build to release branch
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          publish_branch: ${{ env.publish_branch }}
+          publish_branch: release/${{ steps.tagName.outputs.tag }}
           force_orphan: true
           publish_dir: Packages/com.nickmaltbie.openkcc
           github_token: ${{ secrets.GITHUB_TOKEN }}
