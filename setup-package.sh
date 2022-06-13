@@ -13,6 +13,3 @@ git commit -m "Moved ./Assets/Samples to ./Packages/com.nickmaltbie.openkcc/Samp
 git subtree split --prefix _keep --branch cleaned-branch
 
 git checkout cleaned-branch
-git mv cleaned-branch/* .
-
-git commit -m "Reset git branch to only include ./Packages/com.nickmaltbie.openkcc"
