@@ -14,7 +14,6 @@ git commit -m "Moved ./Assets/Samples to ./Packages/com.nickmaltbie.openkcc/Samp
 # Cleanup any files not part of the package
 git rm -rf .
 git reset ./Packages/com.nickmaltbie.openkcc
-mv ./Packages/com.nickmaltbie.openkcc .
-git add .
+git mv ./Packages/com.nickmaltbie.openkcc/ .
 
 git commit -m "Moved ./Packages/com.nickmaltbie.openkcc to base dir and removed other assets"
