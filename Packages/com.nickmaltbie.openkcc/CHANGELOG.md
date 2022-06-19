@@ -19,6 +19,7 @@ Major Refactor
 * Emptied all assets from `Assets\OpenKCC` to avoid complexity.
 
 Minor Fixes
+
 * Improved setup package script to fix an error with `git-lfs` files.
 * Updated project dependencies definitions and install instructions.
 
