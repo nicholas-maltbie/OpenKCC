@@ -12,10 +12,10 @@ Major Refactor
 * Setup package build workflow to copy `Assets/Samples` to
     `./Packages/com.nickmaltbie.openkcc/Samples~` and validating github workflow
     to ensure this works as expected.
-* Reorganized assets to have all folders in `Assets` directory
 * Created a common folder for assets shared between mulitple samples
     `./Packages/com.nickmaltbie.openkcc/Common` - will keep small files
     and assets here that are shared (but avoid large models and textures).
+* Emptied all assets from `Assets\OpenKCC` to avoid complexity.
 
 Minor Fixes
 * Improved setup package script to fix an error with `git-lfs` files.
