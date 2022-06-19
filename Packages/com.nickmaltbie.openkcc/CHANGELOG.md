@@ -12,6 +12,10 @@ Major Refactor
     `./Packages/com.nickmaltbie.openkcc/Samples~` and validating github workflow
     to ensure this works as expected.
 
+Minor Fixes
+* Improved setup package script to fix an error with `git-lfs` files.
+* Updated project dependencies definitions and install instructions.
+
 ## [0.0.63] - 2022-06-10
 
 Start of changelog.
