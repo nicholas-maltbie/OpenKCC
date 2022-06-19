@@ -8,18 +8,19 @@
         "com.unity.inputsystem": "1.0.2",
         "com.unity.textmeshpro": "3.0.6",
         "com.unity.probuilder": "5.0.4",
-        "com.nickmaltbie.screenmanager": "3.0.0"
+        "com.unity.render-pipelines.universal": "11.0.0",
+        "com.nickmaltbie.screenmanager": "git+https://github.com/nicholas-maltbie/ScreenManager#release/v3.0.1"
       }
     },
     "com.nickmaltbie.screenmanager": {
-      "version": "https://github.com/nicholas-maltbie/ScreenManager.git?path=/Packages/com.nickmaltbie.screenmanager/#v3.0.0",
+      "version": "git+https://github.com/nicholas-maltbie/ScreenManager#release/v3.0.1",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.inputsystem": "1.0.2",
         "com.unity.textmeshpro": "3.0.6"
       },
-      "hash": "a14f61cf86e5f4dd5887bf0b357e26945032e19c"
+      "hash": "9010bf2991129b92616b9d4d130abbd0eed43801"
     },
     "com.unity.collab-proxy": {
       "version": "1.9.0",
