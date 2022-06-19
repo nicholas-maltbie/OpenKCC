@@ -25,9 +25,12 @@ and is automatically deployed with each update to the codebase.
 
 Make sure to add the required dependcies to your project
 
-* [com.unity.inputsystem](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.3/manual/index.html) - version 1.0 or newer
-* [com.unity.textmeshpro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.0/manual/index.html) - version 3.0 or newer
-* [com.nickmaltbie.screenmanager](https://nickmaltbie.com/ScreenManager/docs/index.html) - version 3.0 or newer
+* [com.unity.inputsystem](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.3/manual/index.html)
+  version 1.0 or newer
+* [com.unity.textmeshpro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.0/manual/index.html)
+  version 3.0 or newer
+* [com.nickmaltbie.screenmanager](https://nickmaltbie.com/ScreenManager/docs/index.html)
+  version 3.0 or newer
 
 In order to use the samples in the project, make sure to also add the following
 projects to your project.
@@ -72,8 +75,10 @@ on [Installing form a Git URL](https://docs.unity3d.com/Manual/upm-ui-giturl.htm
 In order to run the samples from the project, you must import the following
 projects:
 
-* [com.unity.probuilder](https://docs.unity3d.com/Packages/com.unity.probuilder@5.0/manual/index.html) - version 5.0 or newer
-* [com.unity.render-pipelines.universal](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@11.0/manual/index.html) - version 10.0 or newer
+* [com.unity.probuilder](https://docs.unity3d.com/Packages/com.unity.probuilder@5.0/manual/index.html)
+  version 5.0 or newer
+* [com.unity.render-pipelines.universal](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@11.0/manual/index.html)
+  version 10.0 or newer
 
 The samples in the project include:
 
