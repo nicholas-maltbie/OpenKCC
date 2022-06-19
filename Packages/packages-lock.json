@@ -11,7 +11,7 @@
       }
     },
     "com.nickmaltbie.screenmanager": {
-      "version": "git+https://github.com/nicholas-maltbie/ScreenManager.git#release/v3.0.1",
+      "version": "https://github.com/nicholas-maltbie/ScreenManager.git#release/v3.0.1",
       "depth": 0,
       "source": "git",
       "dependencies": {
