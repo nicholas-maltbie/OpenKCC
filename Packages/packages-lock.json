@@ -9,7 +9,7 @@
         "com.unity.textmeshpro": "3.0.6",
         "com.unity.probuilder": "5.0.4",
         "com.unity.render-pipelines.universal": "11.0.0",
-        "com.nickmaltbie.screenmanager": "git+https://github.com/nicholas-maltbie/ScreenManager#release/v3.0.1"
+        "com.nickmaltbie.screenmanager": "3.0.1"
       }
     },
     "com.nickmaltbie.screenmanager": {
