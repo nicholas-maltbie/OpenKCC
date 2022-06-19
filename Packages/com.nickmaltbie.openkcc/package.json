@@ -29,9 +29,8 @@
     }
   ],
   "dependencies": {
-    "com.unity.inputsystem": "1.0.2",
-    "com.unity.textmeshpro": "3.0.6",
-    "com.unity.probuilder": "5.0.4",
+    "com.unity.inputsystem": "1.0.0",
+    "com.unity.textmeshpro": "3.0.0",
     "com.nickmaltbie.screenmanager": "3.0.0"
   },
   "testables": [
