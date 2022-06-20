@@ -23,6 +23,10 @@ Minor Fixes
 * Improved setup package script to fix an error with `git-lfs` files.
 * Updated project dependencies definitions and install instructions.
 
+Documentation
+
+* Added notes on how to install the project via npm js registry
+
 ## [0.0.63] - 2022-06-10
 
 Start of changelog.
