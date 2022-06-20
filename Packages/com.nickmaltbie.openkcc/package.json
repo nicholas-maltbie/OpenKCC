@@ -35,5 +35,6 @@
   },
   "testables": [
     "com.unity.inputsystem"
-  ]
+  ],
+  "license": "MIT"
 }
