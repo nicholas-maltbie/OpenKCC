@@ -13,6 +13,19 @@ jobs:
       - name: Setup Package
         run: sh ./setup-package.sh
 
+      # install Node.js
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          # Specifies the registry, this field is required!
+          registry-url: https://registry.npmjs.org/
+      
+      - name: Publish Package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Get tag name
         uses: olegtarasov/get-tag@v2.1.1
         id: tagName

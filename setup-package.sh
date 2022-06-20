@@ -31,14 +31,21 @@ git checkout -b temp-branch
 user_email=$(git config --global user.email)
 user_name=$(git config --global user.name)
 
-git config --global user.email "github-actions[bot]@users.noreply.github.com"
-git config --global user.name "github-actions[bot]"
+if [ -z "$user_email" ]
+then
+  git config --global user.email "github-actions[bot]@users.noreply.github.com"
+fi
+
+if [ -z "$user_name" ]
+then
+  git config --global user.name "github-actions[bot]"
+fi
+
 git lfs install
 
 # Sets up unity package samples
-git mv ./Assets/Samples "$export_path/Samples~"
-
-git commit -m "Moved ./Assets/Samples to $export_path/Samples~"
+git mv "./Assets/Samples" "$export_path/Samples"
+git commit -m "Moved ./Assets/Samples/ to $export_path/Samples"
 
 # Reset all other changes
 git rm -rf .
@@ -54,6 +61,9 @@ git mv $export_path/* .
 
 git commit -m "Setup files for release"
 
+git mv "Samples" "Samples~"
+git commit -m "Renamed Samples to Samples~"
+
 # Reset some changes
 git checkout . && git clean -xdf .
 
@@ -67,15 +77,6 @@ then
 
   git config core.hooksPath "$previous_githooks"
   # Cleanup any files in the repo we don't care about
-  git checkout . && git clean -xdf . && git checkout "$current_sha" && git checkout "$current_branch"
-fi
-
-if [ ! -z "$user_email" ]
-then
-  git config --global user.email "$user_email"
-fi
-
-if [ ! -z "$user_name" ]
-then
-  git config --global user.name "$user_name"
+  git checkout . && git clean -xdf .
+  git checkout "$current_sha" && git checkout "$current_branch"
 fi
