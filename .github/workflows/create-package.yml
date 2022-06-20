@@ -14,10 +14,10 @@ jobs:
         run: sh ./setup-package.sh
 
       # install Node.js
-      - name: Use Node.js 12
-        uses: actions/setup-node@v1
+      - name: Use Node.js 14
+        uses: actions/setup-node@v3
         with:
-          node-version: 12
+          node-version: 14
           # Specifies the registry, this field is required!
           registry-url: https://registry.npmjs.org/
       
