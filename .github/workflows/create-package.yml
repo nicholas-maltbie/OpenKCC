@@ -8,23 +8,11 @@ jobs:
   create-package:
     runs-on: ubuntu-latest
     steps:
-      - uses: nschloe/action-cached-lfs-checkout@v1
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/git-lfs-cache
 
       - name: Setup Package
         run: sh ./setup-package.sh
-
-      # install Node.js
-      - name: Use Node.js 14
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14
-          # Specifies the registry, this field is required!
-          registry-url: https://registry.npmjs.org/
-      
-      - name: Publish Package
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Get tag name
         uses: olegtarasov/get-tag@v2.1.1
@@ -37,3 +25,24 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: release/${{ steps.tagName.outputs.tag }}
           force: true
+
+  publish-npm-js:
+    runs-on: ubuntu-latest
+    needs: create-package
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: release/${{ steps.tagName.outputs.tag }}
+      - uses: ./.github/actions/git-lfs-cache
+
+      # Publish to 
+      - name: Use Node.js 14
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+          registry-url: https://registry.npmjs.org/
+      
+      - name: Publish Package to NpmJS
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -12,6 +12,7 @@ env:
 
 jobs:
   create-package:
+    name: Create release/latest branch
     runs-on: ubuntu-latest
     steps:
       - uses: nschloe/action-cached-lfs-checkout@v1

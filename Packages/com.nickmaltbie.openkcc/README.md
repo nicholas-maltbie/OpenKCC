@@ -87,10 +87,8 @@ manager will be able to download it from the registry at
 
 ```json
 "dependencies": {
-  // ... other dependencies
   "com.nickmaltbie.openkcc": "0.1.0",
   "com.nickmaltbie.screenmanager": "3.0.0",
-  // ... other dependencies
   "com.unity.inputsystem": "1.0.2",
   "com.unity.textmeshpro": "3.0.6"
 }
