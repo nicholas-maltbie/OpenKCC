@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [0.1.1] - 2022-06-21
+
+Bumping project version to validate autoamted npm release workflow.
+
 ## [0.1.0] - 2022-06-19
 
 Major Refactor
