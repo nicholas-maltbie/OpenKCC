@@ -26,15 +26,6 @@ jobs:
           branch: release/${{ steps.tagName.outputs.tag }}
           force: true
 
-  publish-npm-js:
-    runs-on: ubuntu-latest
-    needs: create-package
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: release/${{ steps.tagName.outputs.tag }}
-      - uses: ./.github/actions/git-lfs-cache
-
       # Publish to 
       - name: Use Node.js 14
         uses: actions/setup-node@v3
