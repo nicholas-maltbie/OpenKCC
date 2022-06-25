@@ -11,14 +11,14 @@
       }
     },
     "com.nickmaltbie.screenmanager": {
-      "version": "git+https://github.com/nicholas-maltbie/ScreenManager.git#release/v3.0.1",
+      "version": "3.0.0",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {
         "com.unity.inputsystem": "1.0.2",
         "com.unity.textmeshpro": "3.0.6"
       },
-      "hash": "ec68f85f1655e5bc7e66120f07e4781504f7287b"
+      "url": "https://registry.npmjs.org"
     },
     "com.unity.collab-proxy": {
       "version": "1.9.0",
