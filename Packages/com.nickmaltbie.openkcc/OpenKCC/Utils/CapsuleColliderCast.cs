@@ -38,13 +38,12 @@ namespace nickmaltbie.OpenKCC.Utils
         /// </summary>
         private CapsuleCollider _capsuleCollider;
 
+        /// <summary>
+        /// Debug mesh associated with capsule collider.
+        /// </summary>
         private Mesh debugCapsuleMesh
         {
-            get
-            {
-                _debugCapsuleMesh = _debugCapsuleMesh == null ? CapsuleMaker.CapsuleData(radius: capsuleCollider.radius, depth: capsuleCollider.height - capsuleCollider.radius * 2) : _debugCapsuleMesh;
-                return _debugCapsuleMesh;
-            }
+            get => _debugCapsuleMesh ??= CapsuleMaker.CapsuleData(radius: capsuleCollider.radius, depth: capsuleCollider.height - capsuleCollider.radius * 2);
         }
 
         /// <summary>
@@ -52,11 +51,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// </summary>
         private CapsuleCollider capsuleCollider
         {
-            get
-            {
-                _capsuleCollider = _capsuleCollider == null ? GetComponent<CapsuleCollider>() : _capsuleCollider;
-                return _capsuleCollider;
-            }
+            get => _capsuleCollider ??= GetComponent<CapsuleCollider>();
         }
 
         /// <summary>
