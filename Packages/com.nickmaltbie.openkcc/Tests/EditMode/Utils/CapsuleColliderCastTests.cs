@@ -10,7 +10,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
     [TestFixture]
     public class CapsuleColliderCastTests : TestBase
     {
-        private CapsuleColliderCastTests colliderCast;
+        private CapsuleColliderCast colliderCast;
 
         [SetUp]
         public void SetUp()
