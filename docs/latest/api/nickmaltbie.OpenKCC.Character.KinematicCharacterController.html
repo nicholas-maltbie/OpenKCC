@@ -1,0 +1,1315 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class KinematicCharacterController
+   | OpenKCC Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class KinematicCharacterController
+   | OpenKCC Documentation ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController">
+  
+  
+  <h1 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController" class="text-break">Class KinematicCharacterController
+  </h1>
+  <div class="markdown level0 summary"><p>Kinematic character controller to move the player character
+as a kinematic object</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level1"><span class="xref">KinematicCharacterController</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="nickmaltbie.OpenKCC.Character.html">nickmaltbie.OpenKCC.Character</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  <h5 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class KinematicCharacterController : MonoBehaviour</code></pre>
+  </div>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_AnglePower_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.AnglePower*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_AnglePower" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.AnglePower">AnglePower</h4>
+  <div class="markdown level1 summary"><p>Decrease in momentum factor due to angle change when walking.
+Should be a positive float value. It&apos;s an exponential applied to 
+values between [0, 1] so values smaller than 1 create a positive
+curve and grater than 1 for a negative curve.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float AnglePower { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_AttemptingJump_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.AttemptingJump*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_AttemptingJump" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.AttemptingJump">AttemptingJump</h4>
+  <div class="markdown level1 summary"><p>Is the player attempting to jump this frame. True if they pressed jump or if the jump buffer time remaining
+is greater than zero.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AttemptingJump { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_CanJump_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.CanJump*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_CanJump" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.CanJump">CanJump</h4>
+  <div class="markdown level1 summary"><p>Can the player jump right now.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CanJump { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_CanSnapDown_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.CanSnapDown*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_CanSnapDown" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.CanSnapDown">CanSnapDown</h4>
+  <div class="markdown level1 summary"><p>Can a player snap down this frame, a player is only allowed to snap down
+if they were standing on the ground this frame or was not falling within a given buffer time.
+Additionally, a player must have not jumped within a small buffer time in order to
+attempt the action of snapping down. This stops the player from teleporting into the ground right
+as they start to jump.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CanSnapDown { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><p>If a player is allowed to snap down</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_CanSnapUp_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.CanSnapUp*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_CanSnapUp" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.CanSnapUp">CanSnapUp</h4>
+  <div class="markdown level1 summary"><p>Can the player snap up this update?</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool CanSnapUp { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_capsuleColliderCast_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.capsuleColliderCast*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_capsuleColliderCast" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.capsuleColliderCast">capsuleColliderCast</h4>
+  <div class="markdown level1 summary"><p>Player collider for checking collisions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CapsuleColliderCast capsuleColliderCast { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">CapsuleColliderCast</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_characterPush_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.characterPush*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_characterPush" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.characterPush">characterPush</h4>
+  <div class="markdown level1 summary"><p>Push action associated with this kcc.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CharacterPush characterPush { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="nickmaltbie.OpenKCC.Character.CharacterPush.html">CharacterPush</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_ColliderCast_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.ColliderCast*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_ColliderCast" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.ColliderCast">ColliderCast</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IColliderCast ColliderCast { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IColliderCast</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Down_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Down*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Down" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Down">Down</h4>
+  <div class="markdown level1 summary"><p>Direction of down relative to gravity with a unit length of 1</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 Down { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Falling_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Falling*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Falling" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Falling">Falling</h4>
+  <div class="markdown level1 summary"><p>Is the player currently falling? this is true if they are either not standing on 
+the ground or if the angle between them and the ground is grater than the player&apos;s
+ability to walk.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Falling { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_FallingTime_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.FallingTime*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_FallingTime" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.FallingTime">FallingTime</h4>
+  <div class="markdown level1 summary"><p>How long has the player been falling.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float FallingTime { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Floor_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Floor*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Floor" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Floor">Floor</h4>
+  <div class="markdown level1 summary"><p>Get the current object this player is standing on.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GameObject Floor { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">GameObject</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Frozen_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Frozen*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Frozen" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Frozen">Frozen</h4>
+  <div class="markdown level1 summary"><p>Is the character collider frozen in place as of now. When frozen, the character collider will
+not update in any way.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Frozen { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_InputMovement_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.InputMovement*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_InputMovement" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.InputMovement">InputMovement</h4>
+  <div class="markdown level1 summary"><p>Intended direction of movement provided by.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 InputMovement { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_IsProne_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.IsProne*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_IsProne" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.IsProne">IsProne</h4>
+  <div class="markdown level1 summary"><p>Is the player currently prone?</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsProne { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_LinearVelocity_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.LinearVelocity*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_LinearVelocity" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.LinearVelocity">LinearVelocity</h4>
+  <div class="markdown level1 summary"><p>linear velocity of the player measured via displacement from the previous movement.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 LinearVelocity { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_MaxBounces_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.MaxBounces*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_MaxBounces" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.MaxBounces">MaxBounces</h4>
+  <div class="markdown level1 summary"><p>Maximum number of time player can bounce of walls/floors/objects during an update</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxBounces { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.int32">Int32</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Push_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Push*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Push" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Push">Push</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ICharacterPush Push { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="nickmaltbie.OpenKCC.Character.ICharacterPush.html">ICharacterPush</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_PushDecay_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.PushDecay*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_PushDecay" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.PushDecay">PushDecay</h4>
+  <div class="markdown level1 summary"><p>Decay value of momentum when hitting another object.
+Should be between [0, 1]</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float PushDecay { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_StandingOnGround_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.StandingOnGround*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_StandingOnGround" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.StandingOnGround">StandingOnGround</h4>
+  <div class="markdown level1 summary"><p>Is the player currently standing on the ground?
+Will be true if the hit the ground and the distance to the ground is less than
+the grounded threshold. NOTE, will be false if the player is overlapping with the
+ground or another object as it is difficult to tell whether they are stuck in a wall
+(and would therefore not be on the ground) versus when they are stuck in the floor.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool StandingOnGround { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_StepUpDepth_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.StepUpDepth*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_StepUpDepth" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.StepUpDepth">StepUpDepth</h4>
+  <div class="markdown level1 summary"><p>Minimum depth of a stair for a user to climb up
+(thinner steps than this value will not let the player climb)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float StepUpDepth { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Up_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Up*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Up" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Up">Up</h4>
+  <div class="markdown level1 summary"><p>Direction of up relative to gravity with a unit length of 1</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 Up { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Velocity_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Velocity*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Velocity" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Velocity">Velocity</h4>
+  <div class="markdown level1 summary"><p>Get the current player velocity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 Velocity { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_VerticalSnapUp_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.VerticalSnapUp*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_VerticalSnapUp" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.VerticalSnapUp">VerticalSnapUp</h4>
+  <div class="markdown level1 summary"><p>Distance that the player can snap up when moving up stairs or vertical steps in terrain</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float VerticalSnapUp { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_CheckGrounded_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.CheckGrounded*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_CheckGrounded" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.CheckGrounded">CheckGrounded()</h4>
+  <div class="markdown level1 summary"><p>Update the current grounded state of this kinematic character controller</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CheckGrounded()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_FallingAngle_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.FallingAngle*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_FallingAngle_System_Single_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.FallingAngle(System.Single)">FallingAngle(Single)</h4>
+  <div class="markdown level1 summary"><p>Check if a player is falling for a given max walk angle.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool FallingAngle(float maxAngle)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">maxAngle</span></td>
+        <td><p>Maximum walk angle for the player.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><p>True if the player is slipping/falling on the slope they are currently standing on.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_FixedUpdate_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.FixedUpdate*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_FixedUpdate" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.FixedUpdate">FixedUpdate()</h4>
+  <div class="markdown level1 summary"><p>Fixed update to move the player based on player input.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void FixedUpdate()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_GetProjectedMovement_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.GetProjectedMovement*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_GetProjectedMovement" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.GetProjectedMovement">GetProjectedMovement()</h4>
+  <div class="markdown level1 summary"><p>Get a vector of the projected movement onto the plane the player is standing on.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 GetProjectedMovement()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><p>Vector of player movement based on input velocity rotated by player view and projected onto the
+ground.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_GetProjectedMovement_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.GetProjectedMovement*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_GetProjectedMovement_Vector3_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.GetProjectedMovement(Vector3)">GetProjectedMovement(Vector3)</h4>
+  <div class="markdown level1 summary"><p>The the player&apos;s projected movement onto the ground based on some input movement vector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 GetProjectedMovement(Vector3 inputMovement)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">inputMovement</span></td>
+        <td><p>Input movement of the player.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><p>Vector of player movement based on input velocity rotated by player view and projected onto the
+ground.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_KnockPlayerProne_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.KnockPlayerProne*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_KnockPlayerProne_System_Single_System_Single_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.KnockPlayerProne(System.Single,System.Single)">KnockPlayerProne(Single, Single)</h4>
+  <div class="markdown level1 summary"><p>Knock a player prone for a given period of time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void KnockPlayerProne(float minProneTime, float maxProneTime)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">minProneTime</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">maxProneTime</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_KnockPlayerProne_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.KnockPlayerProne*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_KnockPlayerProne_System_Single_System_Single_Vector3_Vector3_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.KnockPlayerProne(System.Single,System.Single,Vector3,Vector3)">KnockPlayerProne(Single, Single, Vector3, Vector3)</h4>
+  <div class="markdown level1 summary"><p>Knock the player prone for a given time and with an initial velocity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void KnockPlayerProne(float minProneTime, float maxProneTime, Vector3 linearVelocity, Vector3 angularVelocity)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">minProneTime</span></td>
+        <td><p>Minimum time for player to be prone.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">maxProneTime</span></td>
+        <td><p>Maximum time for player to be prone.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">linearVelocity</span></td>
+        <td><p>Linear velocity of player when knocked prone.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">angularVelocity</span></td>
+        <td><p>Angular velocity of player when knocked prone.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_MovePlayer_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.MovePlayer*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_MovePlayer_Vector3_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.MovePlayer(Vector3)">MovePlayer(Vector3)</h4>
+  <div class="markdown level1 summary"><p>Move the player based on some vector of desired movement.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool MovePlayer(Vector3 movement)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">movement</span></td>
+        <td><p>Movement in world space in which the player model should be moved.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_MoveWithGround_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.MoveWithGround*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_MoveWithGround" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.MoveWithGround">MoveWithGround()</h4>
+  <div class="markdown level1 summary"><p>Move the player with the ground if possible based on the ground&apos;s
+velocity at a given point. </p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void MoveWithGround()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnDestroy_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnDestroy*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnDestroy" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnDestroy">OnDestroy()</h4>
+  <div class="markdown level1 summary"><p>Cleanup attached foot object when this is destroyed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnDestroy()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnDisable_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnDisable*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnDisable" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnDisable">OnDisable()</h4>
+  <div class="markdown level1 summary"><p>On disable, detach any connected actions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnDisable()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnEnable_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnEnable*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnEnable" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnEnable">OnEnable()</h4>
+  <div class="markdown level1 summary"><p>When enabled, ensure actions are configured properly.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnEnable()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnJump_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnJump*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnJump_InputAction_CallbackContext_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnJump(InputAction.CallbackContext)">OnJump(InputAction.CallbackContext)</h4>
+  <div class="markdown level1 summary"><p>Action for when player attempts to jump.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnJump(InputAction.CallbackContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">InputAction.CallbackContext</span></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnMove_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnMove*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnMove_InputAction_CallbackContext_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnMove(InputAction.CallbackContext)">OnMove(InputAction.CallbackContext)</h4>
+  <div class="markdown level1 summary"><p>Action for when player attempts to move.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnMove(InputAction.CallbackContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">InputAction.CallbackContext</span></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnSprint_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnSprint*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_OnSprint_InputAction_CallbackContext_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.OnSprint(InputAction.CallbackContext)">OnSprint(InputAction.CallbackContext)</h4>
+  <div class="markdown level1 summary"><p>Action for when player attempts to sprint.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnSprint(InputAction.CallbackContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">InputAction.CallbackContext</span></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_PlayerJump_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.PlayerJump*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_PlayerJump_System_Single_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.PlayerJump(System.Single)">PlayerJump(Single)</h4>
+  <div class="markdown level1 summary"><p>Give player vertical velocity if they can jump and are attempting to jump.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool PlayerJump(float fixedDeltaTime)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">fixedDeltaTime</span></td>
+        <td><p>Time in an update</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><p>true if the player successfully jumped, false otherwise</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_PushOutOverlapping_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.PushOutOverlapping*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_PushOutOverlapping" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.PushOutOverlapping">PushOutOverlapping()</h4>
+  <div class="markdown level1 summary"><p>Push the player out of any overlapping objects. This will constrain movement to only 
+pushing the player at maxPushSpeed out of overlapping objects as to not violently teleport
+the player when they overlap with another object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 PushOutOverlapping()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><p>Total distance player was pushed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_RotatedMovement_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.RotatedMovement*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_RotatedMovement_Vector3_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.RotatedMovement(Vector3)">RotatedMovement(Vector3)</h4>
+  <div class="markdown level1 summary"><p>Player rotated movement that they intend to move.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 RotatedMovement(Vector3 inputMovement)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">inputMovement</span></td>
+        <td><p>Input movement vector of the player</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_SnapPlayerDown_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.SnapPlayerDown*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_SnapPlayerDown" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.SnapPlayerDown">SnapPlayerDown()</h4>
+  <div class="markdown level1 summary"><p>Snap the player down onto the ground</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SnapPlayerDown()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Start_" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Start*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_KinematicCharacterController_Start" data-uid="nickmaltbie.OpenKCC.Character.KinematicCharacterController.Start">Start()</h4>
+  <div class="markdown level1 summary"><p>Setup KCC components on start.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Start()</code></pre>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            OpenKCC Documentation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

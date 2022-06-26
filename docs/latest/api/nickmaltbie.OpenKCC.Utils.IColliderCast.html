@@ -1,0 +1,535 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Interface IColliderCast
+   | OpenKCC Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Interface IColliderCast
+   | OpenKCC Documentation ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast">
+  
+  
+  <h1 id="nickmaltbie_OpenKCC_Utils_IColliderCast" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast" class="text-break">Interface IColliderCast
+  </h1>
+  <div class="markdown level0 summary"><p>Abstraction to check for collisions and compute when this object would hit other objects.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="nickmaltbie.OpenKCC.Utils.html">nickmaltbie.OpenKCC.Utils</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  <h5 id="nickmaltbie_OpenKCC_Utils_IColliderCast_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IColliderCast</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Utils_IColliderCast_CastSelf_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Utils_IColliderCast_CastSelf_Vector3_Quaternion_Vector3_System_Single_nickmaltbie_OpenKCC_Utils_IRaycastHit__" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf(Vector3,Quaternion,Vector3,System.Single,nickmaltbie.OpenKCC.Utils.IRaycastHit@)">CastSelf(Vector3, Quaternion, Vector3, Single, out IRaycastHit)</h4>
+  <div class="markdown level1 summary"><p>Cast self in a given direction and get the first object hit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool CastSelf(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">position</span></td>
+        <td><p>Position of the object when it is being raycast.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Quaternion</span></td>
+        <td><span class="parametername">rotation</span></td>
+        <td><p>Rotation of the objecting when it is being raycast.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">direction</span></td>
+        <td><p>Direction of the raycast.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">distance</span></td>
+        <td><p>Maximum distance of raycast.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="nickmaltbie.OpenKCC.Utils.IRaycastHit.html">IRaycastHit</a></td>
+        <td><span class="parametername">hit</span></td>
+        <td><p>First object hit and related information, will have a distance of Infinity if none
+is found.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><p>True if an object is hit within distance, false otherwise.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Utils_IColliderCast_CheckVerticalStepAhead_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.CheckVerticalStepAhead*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Utils_IColliderCast_CheckVerticalStepAhead_Vector3_Vector3_System_Single_nickmaltbie_OpenKCC_Utils_IRaycastHit__" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.CheckVerticalStepAhead(Vector3,Vector3,System.Single,nickmaltbie.OpenKCC.Utils.IRaycastHit@)">CheckVerticalStepAhead(Vector3, Vector3, Single, out IRaycastHit)</h4>
+  <div class="markdown level1 summary"><p>Check if there is a vertical step ahead of the character at a given location.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool CheckVerticalStepAhead(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">source</span></td>
+        <td><p>Source point to check from.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">direction</span></td>
+        <td><p>Direction to search for step.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">distance</span></td>
+        <td><p>Distance to search for step ahead of player.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="nickmaltbie.OpenKCC.Utils.IRaycastHit.html">IRaycastHit</a></td>
+        <td><span class="parametername">stepHit</span></td>
+        <td><p>Information bout step hit ahead.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><p>Step hit information ahead of player.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Utils_IColliderCast_DrawMeshGizmo_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.DrawMeshGizmo*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Utils_IColliderCast_DrawMeshGizmo_Color_Color_Vector3_Quaternion_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.DrawMeshGizmo(Color,Color,Vector3,Quaternion)">DrawMeshGizmo(Color, Color, Vector3, Quaternion)</h4>
+  <div class="markdown level1 summary"><p>Draw a given mesh with the gizmos in the world.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void DrawMeshGizmo(Color outlineColor, Color fillColor, Vector3 position, Quaternion rotation)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Color</span></td>
+        <td><span class="parametername">outlineColor</span></td>
+        <td><p>Color to draw outline of the mesh.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Color</span></td>
+        <td><span class="parametername">fillColor</span></td>
+        <td><p>Color to draw the fill of the mesh.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">position</span></td>
+        <td><p>Position to draw the mesh in.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Quaternion</span></td>
+        <td><span class="parametername">rotation</span></td>
+        <td><p>Rotation to draw the mesh in.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Utils_IColliderCast_GetBottom_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.GetBottom*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Utils_IColliderCast_GetBottom_Vector3_Quaternion_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.GetBottom(Vector3,Quaternion)">GetBottom(Vector3, Quaternion)</h4>
+  <div class="markdown level1 summary"><p>Gets the bottom of the bounds of the collider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Vector3 GetBottom(Vector3 position, Quaternion rotation)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">position</span></td>
+        <td><p>Position of the object when it is being checked.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Quaternion</span></td>
+        <td><span class="parametername">rotation</span></td>
+        <td><p>Rotation of the objecting when it is being checked.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><p>Bottom of the bounds of the collider.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Utils_IColliderCast_GetHits_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.GetHits*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Utils_IColliderCast_GetHits_Vector3_Quaternion_Vector3_System_Single_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.GetHits(Vector3,Quaternion,Vector3,System.Single)">GetHits(Vector3, Quaternion, Vector3, Single)</h4>
+  <div class="markdown level1 summary"><p>Cast self and get the objects hit that exclude this object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;RaycastHit&gt; GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">position</span></td>
+        <td><p>Position of the object when it is being raycast.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Quaternion</span></td>
+        <td><span class="parametername">rotation</span></td>
+        <td><p>Rotation of the objecting when it is being raycast.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">direction</span></td>
+        <td><p>Direction to cast self collider.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">distance</span></td>
+        <td><p>Distance to cast self collider.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<span class="xref">RaycastHit</span>&gt;</td>
+        <td><p>List of objects this hits when it is being raycast</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Utils_IColliderCast_GetOverlapping_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.GetOverlapping*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Utils_IColliderCast_GetOverlapping_Vector3_Quaternion_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.GetOverlapping(Vector3,Quaternion)">GetOverlapping(Vector3, Quaternion)</h4>
+  <div class="markdown level1 summary"><p>Gets the list of objects overlapping with this object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerable&lt;Collider&gt; GetOverlapping(Vector3 position, Quaternion rotation)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">position</span></td>
+        <td><p>Position of the object when it is being checked.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Quaternion</span></td>
+        <td><span class="parametername">rotation</span></td>
+        <td><p>Rotation of the objecting when it is being checked.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<span class="xref">Collider</span>&gt;</td>
+        <td><p>The list of overlapping objects with this object.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Utils_IColliderCast_PushOutOverlapping_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.PushOutOverlapping*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Utils_IColliderCast_PushOutOverlapping_Vector3_Quaternion_System_Single_" data-uid="nickmaltbie.OpenKCC.Utils.IColliderCast.PushOutOverlapping(Vector3,Quaternion,System.Single)">PushOutOverlapping(Vector3, Quaternion, Single)</h4>
+  <div class="markdown level1 summary"><p>Get the vector to push this object out of overlapping objects with a max distance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">position</span></td>
+        <td><p>Position of the object when it is being raycast.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Quaternion</span></td>
+        <td><span class="parametername">rotation</span></td>
+        <td><p>Rotation of the objecting when it is being raycast.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">maxDistance</span></td>
+        <td><p>Maximum distance the player can be pushed</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><p>Direction to push the object, distance player was pushed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            OpenKCC Documentation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

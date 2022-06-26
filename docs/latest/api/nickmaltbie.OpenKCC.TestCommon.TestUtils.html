@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class TestUtils
+   | OpenKCC Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class TestUtils
+   | OpenKCC Documentation ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="nickmaltbie.OpenKCC.TestCommon.TestUtils">
+  
+  
+  <h1 id="nickmaltbie_OpenKCC_TestCommon_TestUtils" data-uid="nickmaltbie.OpenKCC.TestCommon.TestUtils" class="text-break">Class TestUtils
+  </h1>
+  <div class="markdown level0 summary"><p>Unity test utilities.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level1"><span class="xref">TestUtils</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="nickmaltbie.OpenKCC.TestCommon.html">nickmaltbie.OpenKCC.TestCommon</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  <h5 id="nickmaltbie_OpenKCC_TestCommon_TestUtils_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class TestUtils</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="nickmaltbie_OpenKCC_TestCommon_TestUtils_AssertInBounds_" data-uid="nickmaltbie.OpenKCC.TestCommon.TestUtils.AssertInBounds*"></a>
+  <h4 id="nickmaltbie_OpenKCC_TestCommon_TestUtils_AssertInBounds_System_Single_System_Single_System_Single_System_String_nickmaltbie_OpenKCC_TestCommon_TestUtils_BoundRange_" data-uid="nickmaltbie.OpenKCC.TestCommon.TestUtils.AssertInBounds(System.Single,System.Single,System.Single,System.String,nickmaltbie.OpenKCC.TestCommon.TestUtils.BoundRange)">AssertInBounds(Single, Single, Single, String, TestUtils.BoundRange)</h4>
+  <div class="markdown level1 summary"><p>Assert that a float value is within a specific bound.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void AssertInBounds(float actual, float expected, float range, string errorMsg = null, TestUtils.BoundRange bound = TestUtils.BoundRange.GraterThanOrLessThan)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">actual</span></td>
+        <td><p>Actual value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">expected</span></td>
+        <td><p>Expected value.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">range</span></td>
+        <td><p>Acceptable range of error.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="parametername">errorMsg</span></td>
+        <td><p>Error message to log if failure, one will be generated if none is provided.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="nickmaltbie.OpenKCC.TestCommon.TestUtils.BoundRange.html">TestUtils.BoundRange</a></td>
+        <td><span class="parametername">bound</span></td>
+        <td><p>Allow the actual value to be lesser, grater, or either.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_TestCommon_TestUtils_AssertInBounds_" data-uid="nickmaltbie.OpenKCC.TestCommon.TestUtils.AssertInBounds*"></a>
+  <h4 id="nickmaltbie_OpenKCC_TestCommon_TestUtils_AssertInBounds_Vector3_Vector3_System_Single_System_String_nickmaltbie_OpenKCC_TestCommon_TestUtils_BoundRange_" data-uid="nickmaltbie.OpenKCC.TestCommon.TestUtils.AssertInBounds(Vector3,Vector3,System.Single,System.String,nickmaltbie.OpenKCC.TestCommon.TestUtils.BoundRange)">AssertInBounds(Vector3, Vector3, Single, String, TestUtils.BoundRange)</h4>
+  <div class="markdown level1 summary"><p>Assert that two vectors are within a specific bound of each other.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void AssertInBounds(Vector3 actual, Vector3 expected, float range, string errorMsg = null, TestUtils.BoundRange bound = TestUtils.BoundRange.GraterThanOrLessThan)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">actual</span></td>
+        <td><p>Actual vector found.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">expected</span></td>
+        <td><p>Expected vector to find.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">range</span></td>
+        <td><p>Range in units of acceptable error.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="parametername">errorMsg</span></td>
+        <td><p>Error message to log if failure, one will be generated if none is provided.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="nickmaltbie.OpenKCC.TestCommon.TestUtils.BoundRange.html">TestUtils.BoundRange</a></td>
+        <td><span class="parametername">bound</span></td>
+        <td><p>Allow the actual vector to be shorter, longer, or either.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            OpenKCC Documentation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,927 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class CameraController
+   | OpenKCC Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class CameraController
+   | OpenKCC Documentation ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="nickmaltbie.OpenKCC.Character.CameraController">
+  
+  
+  <h1 id="nickmaltbie_OpenKCC_Character_CameraController" data-uid="nickmaltbie.OpenKCC.Character.CameraController" class="text-break">Class CameraController
+  </h1>
+  <div class="markdown level0 summary"><p>Basic hybrid first and third person camera controller.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level1"><span class="xref">CameraController</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="nickmaltbie.OpenKCC.Character.ICameraControls.html">ICameraControls</a></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="nickmaltbie.OpenKCC.Character.html">nickmaltbie.OpenKCC.Character</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  <h5 id="nickmaltbie_OpenKCC_Character_CameraController_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class CameraController : MonoBehaviour, ICameraControls</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_baseCameraOffset" data-uid="nickmaltbie.OpenKCC.Character.CameraController.baseCameraOffset">baseCameraOffset</h4>
+  <div class="markdown level1 summary"><p>Camera offset from character center</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 baseCameraOffset</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_cameraRaycastMask" data-uid="nickmaltbie.OpenKCC.Character.CameraController.cameraRaycastMask">cameraRaycastMask</h4>
+  <div class="markdown level1 summary"><p>What can the camera collide with</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LayerMask cameraRaycastMask</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">LayerMask</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_cameraTransform" data-uid="nickmaltbie.OpenKCC.Character.CameraController.cameraTransform">cameraTransform</h4>
+  <div class="markdown level1 summary"><p>Transform holding camera position and rotation data</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Transform cameraTransform</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Transform</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_currentDistance" data-uid="nickmaltbie.OpenKCC.Character.CameraController.currentDistance">currentDistance</h4>
+  <div class="markdown level1 summary"><p>Current distance of the camera from the player position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float currentDistance</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_ditherDistance" data-uid="nickmaltbie.OpenKCC.Character.CameraController.ditherDistance">ditherDistance</h4>
+  <div class="markdown level1 summary"><p>Distance where the player object will dither but still be visible</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float ditherDistance</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_frameRotation" data-uid="nickmaltbie.OpenKCC.Character.CameraController.frameRotation">frameRotation</h4>
+  <div class="markdown level1 summary"><p>How much the character rotated about the vertical axis this frame</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float frameRotation</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_maxCameraDistance" data-uid="nickmaltbie.OpenKCC.Character.CameraController.maxCameraDistance">maxCameraDistance</h4>
+  <div class="markdown level1 summary"><p>Maximum distance (farthest zoom) of player camera</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float maxCameraDistance</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_maxPitch" data-uid="nickmaltbie.OpenKCC.Character.CameraController.maxPitch">maxPitch</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float maxPitch</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_minCameraDistance" data-uid="nickmaltbie.OpenKCC.Character.CameraController.minCameraDistance">minCameraDistance</h4>
+  <div class="markdown level1 summary"><p>Minimum distance (closest zoom) of player camera</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float minCameraDistance</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_minPitch" data-uid="nickmaltbie.OpenKCC.Character.CameraController.minPitch">minPitch</h4>
+  <div class="markdown level1 summary"><p>Minimum pitch for rotating character camera in degrees</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float minPitch</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_rotationRate" data-uid="nickmaltbie.OpenKCC.Character.CameraController.rotationRate">rotationRate</h4>
+  <div class="markdown level1 summary"><p>Rotation rate of camera in degrees per second per one unit of axis movement</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float rotationRate</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_shadowOnlyDistance" data-uid="nickmaltbie.OpenKCC.Character.CameraController.shadowOnlyDistance">shadowOnlyDistance</h4>
+  <div class="markdown level1 summary"><p>Distance in which the third person character will be completely transparent and only cast shadows</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float shadowOnlyDistance</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_thirdPersonCharacterBase" data-uid="nickmaltbie.OpenKCC.Character.CameraController.thirdPersonCharacterBase">thirdPersonCharacterBase</h4>
+  <div class="markdown level1 summary"><p>Base object where all the third person character is stored.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GameObject thirdPersonCharacterBase</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">GameObject</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_transitionTime" data-uid="nickmaltbie.OpenKCC.Character.CameraController.transitionTime">transitionTime</h4>
+  <div class="markdown level1 summary"><p>Time in seconds it takes to transition between opacity states</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float transitionTime</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_zoomSpeed" data-uid="nickmaltbie.OpenKCC.Character.CameraController.zoomSpeed">zoomSpeed</h4>
+  <div class="markdown level1 summary"><p>Zoom distance change in units per second</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float zoomSpeed</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_CameraDistance_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.CameraDistance*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_CameraDistance" data-uid="nickmaltbie.OpenKCC.Character.CameraController.CameraDistance">CameraDistance</h4>
+  <div class="markdown level1 summary"><p>Get the current distance of the camera from the player camera location</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float CameraDistance { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_CameraSource_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.CameraSource*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_CameraSource" data-uid="nickmaltbie.OpenKCC.Character.CameraController.CameraSource">CameraSource</h4>
+  <div class="markdown level1 summary"><p>Source camera position in real world space, this is where the head of 
+the player would be, where the camera zooms out from</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Vector3 CameraSource { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_Pitch_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.Pitch*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_Pitch" data-uid="nickmaltbie.OpenKCC.Character.CameraController.Pitch">Pitch</h4>
+  <div class="markdown level1 summary"><p>Desired pitch of the camera.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Pitch { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_Yaw_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.Yaw*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_Yaw" data-uid="nickmaltbie.OpenKCC.Character.CameraController.Yaw">Yaw</h4>
+  <div class="markdown level1 summary"><p>Desired yaw of the camera.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float Yaw { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_AddIgnoreObject_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.AddIgnoreObject*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_AddIgnoreObject_GameObject_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.AddIgnoreObject(GameObject)">AddIgnoreObject(GameObject)</h4>
+  <div class="markdown level1 summary"><p>Add an object to the ignore list when raycasting camera position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddIgnoreObject(GameObject go)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">GameObject</span></td>
+        <td><span class="parametername">go</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_OnDisable_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.OnDisable*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_OnDisable" data-uid="nickmaltbie.OpenKCC.Character.CameraController.OnDisable">OnDisable()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnDisable()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_OnEnable_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.OnEnable*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_OnEnable" data-uid="nickmaltbie.OpenKCC.Character.CameraController.OnEnable">OnEnable()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnEnable()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_OnLook_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.OnLook*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_OnLook_InputAction_CallbackContext_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.OnLook(InputAction.CallbackContext)">OnLook(InputAction.CallbackContext)</h4>
+  <div class="markdown level1 summary"><p>Look action changes for camera movement</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnLook(InputAction.CallbackContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">InputAction.CallbackContext</span></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_OnZoom_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.OnZoom*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_OnZoom_InputAction_CallbackContext_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.OnZoom(InputAction.CallbackContext)">OnZoom(InputAction.CallbackContext)</h4>
+  <div class="markdown level1 summary"><p>Zoom camera in and out</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void OnZoom(InputAction.CallbackContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">InputAction.CallbackContext</span></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_RaycastFromCameraBase_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.RaycastFromCameraBase*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_RaycastFromCameraBase_System_Single_LayerMask_QueryTriggerInteraction_RaycastHit__" data-uid="nickmaltbie.OpenKCC.Character.CameraController.RaycastFromCameraBase(System.Single,LayerMask,QueryTriggerInteraction,RaycastHit@)">RaycastFromCameraBase(Single, LayerMask, QueryTriggerInteraction, out RaycastHit)</h4>
+  <div class="markdown level1 summary"><p>Raycast a line from the camera&apos;s base.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RaycastFromCameraBase(float maxDistance, LayerMask layerMask, QueryTriggerInteraction queryTriggerInteraction, out RaycastHit hit)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">maxDistance</span></td>
+        <td><p>Maximum distance to draw ray.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">LayerMask</span></td>
+        <td><span class="parametername">layerMask</span></td>
+        <td><p>Layer mask for raycast</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">QueryTriggerInteraction</span></td>
+        <td><span class="parametername">queryTriggerInteraction</span></td>
+        <td><p>Query trigger interaction for raycast</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">RaycastHit</span></td>
+        <td><span class="parametername">hit</span></td>
+        <td><p>Object the raycast hits, if any.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><p>True if an object is hit, false otherwise.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_RemoveIgnoreObject_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.RemoveIgnoreObject*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_RemoveIgnoreObject_GameObject_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.RemoveIgnoreObject(GameObject)">RemoveIgnoreObject(GameObject)</h4>
+  <div class="markdown level1 summary"><p>Remove an object to the ignore list when raycasting camera position</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RemoveIgnoreObject(GameObject go)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">GameObject</span></td>
+        <td><span class="parametername">go</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_SpherecastFromCameraBase_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.SpherecastFromCameraBase*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_SpherecastFromCameraBase_System_Single_LayerMask_System_Single_QueryTriggerInteraction_RaycastHit__" data-uid="nickmaltbie.OpenKCC.Character.CameraController.SpherecastFromCameraBase(System.Single,LayerMask,System.Single,QueryTriggerInteraction,RaycastHit@)">SpherecastFromCameraBase(Single, LayerMask, Single, QueryTriggerInteraction, out RaycastHit)</h4>
+  <div class="markdown level1 summary"><p>Draw a spherecase from the camera&apos;s base.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SpherecastFromCameraBase(float maxDistance, LayerMask layerMask, float sphereRadius, QueryTriggerInteraction queryTriggerInteraction, out RaycastHit hit)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">maxDistance</span></td>
+        <td><p>Maximum distance to draw sphere.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">LayerMask</span></td>
+        <td><span class="parametername">layerMask</span></td>
+        <td><p>Layer mask for spherecase</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">sphereRadius</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">QueryTriggerInteraction</span></td>
+        <td><span class="parametername">queryTriggerInteraction</span></td>
+        <td><p>Query trigger interaction for spherecase</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">RaycastHit</span></td>
+        <td><span class="parametername">hit</span></td>
+        <td><p>Object the spherecase hits, if any.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><p>True if an object is hit, false otherwise.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_Start_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.Start*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_Start" data-uid="nickmaltbie.OpenKCC.Character.CameraController.Start">Start()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Start()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Character_CameraController_Update_" data-uid="nickmaltbie.OpenKCC.Character.CameraController.Update*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Character_CameraController_Update" data-uid="nickmaltbie.OpenKCC.Character.CameraController.Update">Update()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Update()</code></pre>
+  </div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="nickmaltbie.OpenKCC.Character.ICameraControls.html">ICameraControls</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            OpenKCC Documentation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,612 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class KCCUtilsTests
+   | OpenKCC Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class KCCUtilsTests
+   | OpenKCC Documentation ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests">
+  
+  
+  <h1 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests" class="text-break">Class KCCUtilsTests
+  </h1>
+  <div class="markdown level0 summary"><p>Basic tests for KCCUtils in edit mode.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
+    <div class="level1"><span class="xref">KCCUtilsTests</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="nickmaltbie.OpenKCC.Tests.EditMode.html">nickmaltbie.OpenKCC.Tests.EditMode</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  <h5 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class KCCUtilsTests</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_characterPushMock" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.characterPushMock">characterPushMock</h4>
+  <div class="markdown level1 summary"><p>Mock for controlling character pushes used for testing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Mock&lt;ICharacterPush&gt; characterPushMock</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Mock</span>&lt;<a class="xref" href="nickmaltbie.OpenKCC.Character.ICharacterPush.html">ICharacterPush</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_colliderCastMock" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.colliderCastMock">colliderCastMock</h4>
+  <div class="markdown level1 summary"><p>Collider cast mock used for testing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Mock&lt;IColliderCast&gt; colliderCastMock</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Mock</span>&lt;<span class="xref">IColliderCast</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_MovementGenerator_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.MovementGenerator*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_MovementGenerator" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.MovementGenerator">MovementGenerator()</h4>
+  <div class="markdown level1 summary"><p>Generate basic set of movements.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;Vector3&gt; MovementGenerator()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<span class="xref">Vector3</span>&gt;</td>
+        <td><p>Set of 9 possible movements.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_SetUp_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.SetUp*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_SetUp" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.SetUp">SetUp()</h4>
+  <div class="markdown level1 summary"><p>Setup test with basic collider cast mock.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetUp()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_SetupColliderCast_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.SetupColliderCast*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_SetupColliderCast_IEnumerable_System_ValueTuple_System_Boolean_IRaycastHit___" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.SetupColliderCast(IEnumerable{System.ValueTuple{System.Boolean,IRaycastHit}})">SetupColliderCast(IEnumerable&lt;(Boolean, IRaycastHit)&gt;)</h4>
+  <div class="markdown level1 summary"><p>Setup the collider cast for a given set of hits in a specific order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetupColliderCast(IEnumerable&lt;(bool, IRaycastHit)&gt; hitData)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.valuetuple-2">(T1, T2)</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a>, <span class="xref">IRaycastHit</span>&gt;&gt;</td>
+        <td><span class="parametername">hitData</span></td>
+        <td><p>Enumerable set of didHit and raycastHit in the order they should be returned.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_SetupColliderCast_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.SetupColliderCast*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_SetupColliderCast_System_Boolean_IRaycastHit_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.SetupColliderCast(System.Boolean,IRaycastHit)">SetupColliderCast(Boolean, IRaycastHit)</h4>
+  <div class="markdown level1 summary"><p>Setup the collider cast.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetupColliderCast(bool didHit, IRaycastHit raycastHit)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><span class="parametername">didHit</span></td>
+        <td><p>Has this collided with anything.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">IRaycastHit</span></td>
+        <td><span class="parametername">raycastHit</span></td>
+        <td><p>Raycast hit object to return.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_SetupRaycastHitMock_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.SetupRaycastHitMock*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_SetupRaycastHitMock_Collider_Vector3_Vector3_System_Single_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.SetupRaycastHitMock(Collider,Vector3,Vector3,System.Single)">SetupRaycastHitMock(Collider, Vector3, Vector3, Single)</h4>
+  <div class="markdown level1 summary"><p>Setup a raycast hit mock.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IRaycastHit SetupRaycastHitMock(Collider collider = null, Vector3 point = null, Vector3 normal = null, float distance = 0F)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Collider</span></td>
+        <td><span class="parametername">collider</span></td>
+        <td><p>Collider to return from the mock.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">point</span></td>
+        <td><p>Point of collision for the mock.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">normal</span></td>
+        <td><p>Normal vector for the collision from the mock.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">distance</span></td>
+        <td><p>Distance from source from the mock.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IRaycastHit</span></td>
+        <td><p>Mock raycast hit object with the specified properties.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCMaxBouncesTest_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCMaxBouncesTest*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCMaxBouncesTest_System_Int32_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCMaxBouncesTest(System.Int32)">Validate_KCCMaxBouncesTest(Int32)</h4>
+  <div class="markdown level1 summary"><p>Test maximum bounces by having the object hit something multiple times.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Validate_KCCMaxBouncesTest(int maxBounces)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.int32">Int32</a></td>
+        <td><span class="parametername">maxBounces</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCMoveUnblocked_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCMoveUnblocked*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCMoveUnblocked_Vector3_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCMoveUnblocked(Vector3)">Validate_KCCMoveUnblocked(Vector3)</h4>
+  <div class="markdown level1 summary"><p>Test kcc hit nothing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Validate_KCCMoveUnblocked(Vector3 movement)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">movement</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCNoMovement_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCNoMovement*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCNoMovement" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCNoMovement">Validate_KCCNoMovement()</h4>
+  <div class="markdown level1 summary"><p>Test no movement from KCC.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Validate_KCCNoMovement()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCOverlap_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCOverlap*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCOverlap" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCOverlap">Validate_KCCOverlap()</h4>
+  <div class="markdown level1 summary"><p>Test maximum bounces by having the object overlap with another.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Validate_KCCOverlap()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCPush_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCPush*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCPush" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCPush">Validate_KCCPush()</h4>
+  <div class="markdown level1 summary"><p>Test the KCC Pushing a kinematic or no dynamic object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Validate_KCCPush()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCSecondSnapUpAction_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCSecondSnapUpAction*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCSecondSnapUpAction" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCSecondSnapUpAction">Validate_KCCSecondSnapUpAction()</h4>
+  <div class="markdown level1 summary"><p>Validate the snap up behavior of the KCC second method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Validate_KCCSecondSnapUpAction()</code></pre>
+  </div>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCSnapUpAction_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCSnapUpAction*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Validate_KCCSnapUpAction_System_Single_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Validate_KCCSnapUpAction(System.Single)">Validate_KCCSnapUpAction(Single)</h4>
+  <div class="markdown level1 summary"><p>Validate the snap up behavior of the KCC Bounce method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Validate_KCCSnapUpAction(float snapUpDistance)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">snapUpDistance</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_ValidateKCCBounce_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.ValidateKCCBounce*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_ValidateKCCBounce_KCCBounce_System_Nullable_KCCUtils_MovementAction__System_Nullable_Vector3__System_Nullable_Vector3__System_Nullable_Vector3__System_Nullable_Vector3__" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.ValidateKCCBounce(KCCBounce,System.Nullable{KCCUtils.MovementAction},System.Nullable{Vector3},System.Nullable{Vector3},System.Nullable{Vector3},System.Nullable{Vector3})">ValidateKCCBounce(KCCBounce, Nullable&lt;KCCUtils.MovementAction&gt;, Nullable&lt;Vector3&gt;, Nullable&lt;Vector3&gt;, Nullable&lt;Vector3&gt;, Nullable&lt;Vector3&gt;)</h4>
+  <div class="markdown level1 summary"><p>Validate a KCC bounce for a specified set of properties.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ValidateKCCBounce(KCCBounce bounce, KCCUtils.MovementAction? movementAction = null, Vector3? finalPosition = null, Vector3? initialPosition = null, Vector3? remainingMomentum = null, Vector3? initialMomentum = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">KCCBounce</span></td>
+        <td><span class="parametername">bounce</span></td>
+        <td><p>Bounce to validate.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.nullable-1">Nullable</a>&lt;<span class="xref">KCCUtils.MovementAction</span>&gt;</td>
+        <td><span class="parametername">movementAction</span></td>
+        <td><p>Expected movement action, or null if not required to check.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.nullable-1">Nullable</a>&lt;<span class="xref">Vector3</span>&gt;</td>
+        <td><span class="parametername">finalPosition</span></td>
+        <td><p>Expected final position, or null if not required to check.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.nullable-1">Nullable</a>&lt;<span class="xref">Vector3</span>&gt;</td>
+        <td><span class="parametername">initialPosition</span></td>
+        <td><p>Expected initial position, or null if not required to check.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.nullable-1">Nullable</a>&lt;<span class="xref">Vector3</span>&gt;</td>
+        <td><span class="parametername">remainingMomentum</span></td>
+        <td><p>Expected remaining momentum, or null if not required to check.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.nullable-1">Nullable</a>&lt;<span class="xref">Vector3</span>&gt;</td>
+        <td><span class="parametername">initialMomentum</span></td>
+        <td><p>Expected initial momentum, or null if not required to check.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Verify_KCCInvalidProjectedMomentum_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Verify_KCCInvalidProjectedMomentum*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Verify_KCCInvalidProjectedMomentum_Vector3_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Verify_KCCInvalidProjectedMomentum(Vector3)">Verify_KCCInvalidProjectedMomentum(Vector3)</h4>
+  <div class="markdown level1 summary"><p>Verify that invalid projected momentum will retain its original magnitude</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Verify_KCCInvalidProjectedMomentum(Vector3 move)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Vector3</span></td>
+        <td><span class="parametername">move</span></td>
+        <td><p>Input player movement for invalid movement value.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Verify_KCCNoJitterBackwards_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Verify_KCCNoJitterBackwards*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Verify_KCCNoJitterBackwards_System_Single_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Verify_KCCNoJitterBackwards(System.Single)">Verify_KCCNoJitterBackwards(Single)</h4>
+  <div class="markdown level1 summary"><p>Validate player won&apos;t bounce backwards when they hit a wall
+and could slide backwards of original direction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Verify_KCCNoJitterBackwards(float distance)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.single">Single</a></td>
+        <td><span class="parametername">distance</span></td>
+        <td><p>Distance the player should move forward.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Verify_KCCSnapPlayerDown_" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Verify_KCCSnapPlayerDown*"></a>
+  <h4 id="nickmaltbie_OpenKCC_Tests_EditMode_KCCUtilsTests_Verify_KCCSnapPlayerDown" data-uid="nickmaltbie.OpenKCC.Tests.EditMode.KCCUtilsTests.Verify_KCCSnapPlayerDown">Verify_KCCSnapPlayerDown()</h4>
+  <div class="markdown level1 summary"><p>Verify that player will snap down as expected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Verify_KCCSnapPlayerDown()</code></pre>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            OpenKCC Documentation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>
