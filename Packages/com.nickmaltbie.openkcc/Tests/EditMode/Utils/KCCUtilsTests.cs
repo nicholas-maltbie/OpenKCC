@@ -25,7 +25,7 @@ using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Tests.EditMode
+namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 {
     /// <summary>
     /// Basic tests for KCCUtils in edit mode.
