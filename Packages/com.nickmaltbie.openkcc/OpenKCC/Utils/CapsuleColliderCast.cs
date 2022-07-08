@@ -41,18 +41,13 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <summary>
         /// Debug mesh associated with capsule collider.
         /// </summary>
-        private Mesh debugCapsuleMesh
-        {
-            get => _debugCapsuleMesh ??= CapsuleMaker.CapsuleData(radius: capsuleCollider.radius, depth: capsuleCollider.height - capsuleCollider.radius * 2);
-        }
+        private Mesh debugCapsuleMesh => _debugCapsuleMesh ??=
+            CapsuleMaker.CapsuleData(radius: capsuleCollider.radius, depth: capsuleCollider.height - capsuleCollider.radius * 2);
 
         /// <summary>
         /// Capsule Collider associated with this object.
         /// </summary>
-        private CapsuleCollider capsuleCollider
-        {
-            get => _capsuleCollider ??= GetComponent<CapsuleCollider>();
-        }
+        private CapsuleCollider capsuleCollider => _capsuleCollider ??= GetComponent<CapsuleCollider>();
 
         /// <summary>
         /// Gets transformed parameters describing this capsule collider for a given position and rotation
