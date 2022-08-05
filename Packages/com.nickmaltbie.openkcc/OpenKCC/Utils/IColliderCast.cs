@@ -83,13 +83,13 @@ namespace nickmaltbie.OpenKCC.Utils
         void DrawMeshGizmo(Color outlineColor, Color fillColor, Vector3 position, Quaternion rotation);
 
         /// <summary>
-        /// Check if there is a vertical step ahead of the character at a given location.
+        /// Do a raycast in a given direction ignoring this object.
         /// </summary>
         /// <param name="source">Source point to check from.</param>
         /// <param name="direction">Direction to search for step.</param>
         /// <param name="distance">Distance to search for step ahead of player.</param>
         /// <param name="stepHit">Information bout step hit ahead.</param>
-        /// <returns>Step hit information ahead of player.</returns>
-        bool CheckVerticalStepAhead(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit);
+        /// <returns>Is something ahead hit.</returns>
+        bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit);
     }
 }

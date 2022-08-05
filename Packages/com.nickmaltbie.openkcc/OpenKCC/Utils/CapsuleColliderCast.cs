@@ -155,7 +155,7 @@ namespace nickmaltbie.OpenKCC.Utils
         }
 
         /// <inheritdoc/>
-        public bool CheckVerticalStepAhead(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit)
+        public bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit)
         {
             bool didHit = Physics.Raycast(new Ray(source, direction), out RaycastHit hit, distance);
             stepHit = new RaycastHitWrapper(hit);

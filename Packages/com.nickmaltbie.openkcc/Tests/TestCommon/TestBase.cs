@@ -16,6 +16,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
@@ -110,5 +112,43 @@ namespace nickmaltbie.OpenKCC.TestCommon
         {
             gameObjects.Add(go);
         }
+
+        /// <summary>
+        /// Validate that an OnDrawGizmos method is invoked.
+        /// </summary>
+        /// <param name="gizmoAction">Gizmo action to test.</param>
+        /// <param name="go">Optional game object to attach to.</param>
+        /// <param name="maxIter">Maximum iterations to test validation for.</param>
+        /// <returns>Enumerable of iterations until gizmo is validated.</returns>
+        protected IEnumerator ValidateDrawGizmos(Action gizmoAction, GameObject go = null, int maxIter = 10000)
+        {
+            go ??= CreateGameObject();
+            GizmoValidator gv = go.AddComponent<GizmoValidator>();
+            gv.GizmoAction = gizmoAction;
+
+            for (int i = 0; i < maxIter && !gv.Invoked; i++)
+            {
+                yield return null;
+            }
+
+            Assert.IsTrue(gv.Invoked);
+        }
+
+        /// <summary>
+        /// Basic mono behavior for validating gizmo behavior
+        /// </summary>
+        public class GizmoValidator : MonoBehaviour
+        {
+            public bool Invoked { get; set; }
+
+            public Action GizmoAction { get; set; }
+
+            public void OnDrawGizmos()
+            {
+                GizmoAction?.Invoke();
+                Invoked = true;
+            }
+        }
+
     }
 }

@@ -152,7 +152,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
             IRaycastHit wallCollision = SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
-            colliderCastMock.Setup(mock => mock.CheckVerticalStepAhead(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out wallCollision)).Returns(true);
+            colliderCastMock.Setup(mock => mock.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out wallCollision)).Returns(true);
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
             // Simulate bounces
@@ -184,7 +184,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
             IRaycastHit wallCollision = SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
-            colliderCastMock.Setup(mock => mock.CheckVerticalStepAhead(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out wallCollision)).Returns(true);
+            colliderCastMock.Setup(mock => mock.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out wallCollision)).Returns(true);
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
             // Simulate bounces
