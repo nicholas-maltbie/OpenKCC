@@ -127,6 +127,5 @@ namespace nickmaltbie.OpenKCC.TestCommon
                 Invoked = true;
             }
         }
-
     }
 }

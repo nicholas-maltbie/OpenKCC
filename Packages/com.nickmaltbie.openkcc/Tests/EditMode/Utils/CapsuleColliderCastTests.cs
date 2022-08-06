@@ -32,7 +32,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
     public class CapsuleColliderCastTests : TestBase
     {
         private CapsuleColliderCast colliderCast;
-        
+
         private CapsuleCollider collider;
 
         [SetUp]
@@ -52,8 +52,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             (Vector3 top, Vector3 bottom, float radius, float height) =
                 colliderCast.GetParams(Vector3.zero, Quaternion.Euler(Vector3.zero));
 
-            Assert.AreEqual(new Vector3(0, collider.height/2 - collider.radius, 0), top);
-            Assert.AreEqual(new Vector3(0, -collider.height/2 + collider.radius, 0), bottom);
+            Assert.AreEqual(new Vector3(0, collider.height / 2 - collider.radius, 0), top);
+            Assert.AreEqual(new Vector3(0, -collider.height / 2 + collider.radius, 0), bottom);
             Assert.AreEqual(collider.radius, radius);
             Assert.AreEqual(collider.height, height);
         }
