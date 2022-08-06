@@ -19,3 +19,4 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("nickmaltbie.OpenKCC.Editor")]
+[assembly: InternalsVisibleTo("nickmaltbie.OpenKCC.Tests.EditMode")]

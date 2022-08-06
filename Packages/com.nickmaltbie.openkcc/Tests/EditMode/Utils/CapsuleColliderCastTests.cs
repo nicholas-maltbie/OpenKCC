@@ -16,14 +16,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 {
@@ -144,6 +142,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             GameObject target = MakeCube(Vector3.forward * 1);
             Assert.IsTrue(colliderCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, 5, out IRaycastHit hit));
             Assert.IsTrue(hit.rigidbody.gameObject == target);
+        }
+
+        [Test]
+        public void Validate_DebugCapsuleMesh()
+        {
+            Assert.AreEqual(colliderCast.DebugCapsuleMesh, colliderCast.DebugCapsuleMesh);
         }
 
         private GameObject MakeCube(Vector3? position = null)
