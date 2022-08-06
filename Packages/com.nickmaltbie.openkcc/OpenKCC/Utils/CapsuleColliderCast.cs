@@ -49,7 +49,6 @@ namespace nickmaltbie.OpenKCC.Utils
         internal Mesh DebugCapsuleMesh => _debugCapsuleMesh ??=
             CapsuleMaker.CapsuleData(radius: CapsuleCollider.radius, depth: CapsuleCollider.height - CapsuleCollider.radius * 2);
 
-
         /// <summary>
         /// Gets transformed parameters describing this capsule collider for a given position and rotation
         /// </summary>
