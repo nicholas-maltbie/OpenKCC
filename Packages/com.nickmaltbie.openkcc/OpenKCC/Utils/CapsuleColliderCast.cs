@@ -39,15 +39,16 @@ namespace nickmaltbie.OpenKCC.Utils
         private CapsuleCollider _capsuleCollider;
 
         /// <summary>
-        /// Debug mesh associated with capsule collider.
-        /// </summary>
-        private Mesh debugCapsuleMesh => _debugCapsuleMesh ??=
-            CapsuleMaker.CapsuleData(radius: capsuleCollider.radius, depth: capsuleCollider.height - capsuleCollider.radius * 2);
-
-        /// <summary>
         /// Capsule Collider associated with this object.
         /// </summary>
-        private CapsuleCollider capsuleCollider => _capsuleCollider ??= GetComponent<CapsuleCollider>();
+        internal CapsuleCollider CapsuleCollider => _capsuleCollider ??= GetComponent<CapsuleCollider>();
+
+        /// <summary>
+        /// Debug mesh associated with capsule collider.
+        /// </summary>
+        internal Mesh DebugCapsuleMesh => _debugCapsuleMesh ??=
+            CapsuleMaker.CapsuleData(radius: CapsuleCollider.radius, depth: CapsuleCollider.height - CapsuleCollider.radius * 2);
+
 
         /// <summary>
         /// Gets transformed parameters describing this capsule collider for a given position and rotation
@@ -57,9 +58,9 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <returns>The top, bottom, radius, and height of the capsule collider</returns>
         public (Vector3, Vector3, float, float) GetParams(Vector3 position, Quaternion rotation)
         {
-            Vector3 center = rotation * capsuleCollider.center + position;
-            float radius = capsuleCollider.radius;
-            float height = capsuleCollider.height;
+            Vector3 center = rotation * CapsuleCollider.center + position;
+            float radius = CapsuleCollider.radius;
+            float height = CapsuleCollider.height;
 
             Vector3 bottom = center + rotation * Vector3.down * (height / 2 - radius);
             Vector3 top = center + rotation * Vector3.up * (height / 2 - radius);
@@ -118,7 +119,7 @@ namespace nickmaltbie.OpenKCC.Utils
             foreach (Collider overlap in GetOverlapping(position, rotation))
             {
                 Physics.ComputePenetration(
-                    capsuleCollider, transform.position, transform.rotation,
+                    CapsuleCollider, transform.position, transform.rotation,
                     overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
                     out Vector3 direction, out float distance
                 );
@@ -129,22 +130,6 @@ namespace nickmaltbie.OpenKCC.Utils
             }
 
             return pushed;
-        }
-
-        /// <inheritdoc/>
-        public void DrawMeshGizmo(Color outlineColor, Color fillColor, Vector3 position, Quaternion rotation)
-        {
-            Gizmos.color = fillColor;
-            Gizmos.DrawMesh(
-                debugCapsuleMesh,
-                position + capsuleCollider.center,
-                rotation);
-            CapsuleMaker.DrawWireCapsule(
-                position + capsuleCollider.center,
-                rotation,
-                capsuleCollider.radius,
-                capsuleCollider.height,
-                outlineColor);
         }
 
         /// <inheritdoc/>

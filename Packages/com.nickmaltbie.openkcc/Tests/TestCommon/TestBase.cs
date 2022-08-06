@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
@@ -111,27 +110,6 @@ namespace nickmaltbie.OpenKCC.TestCommon
         protected void RegisterGameObject(GameObject go)
         {
             gameObjects.Add(go);
-        }
-
-        /// <summary>
-        /// Validate that an OnDrawGizmos method is invoked.
-        /// </summary>
-        /// <param name="gizmoAction">Gizmo action to test.</param>
-        /// <param name="go">Optional game object to attach to.</param>
-        /// <param name="maxIter">Maximum iterations to test validation for.</param>
-        /// <returns>Enumerable of iterations until gizmo is validated.</returns>
-        protected IEnumerator ValidateDrawGizmos(Action gizmoAction, GameObject go = null, int maxIter = 10000)
-        {
-            go ??= CreateGameObject();
-            GizmoValidator gv = go.AddComponent<GizmoValidator>();
-            gv.GizmoAction = gizmoAction;
-
-            for (int i = 0; i < maxIter && !gv.Invoked; i++)
-            {
-                yield return null;
-            }
-
-            Assert.IsTrue(gv.Invoked);
         }
 
         /// <summary>

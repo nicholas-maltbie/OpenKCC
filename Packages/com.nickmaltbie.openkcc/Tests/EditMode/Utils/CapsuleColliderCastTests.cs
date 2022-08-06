@@ -146,14 +146,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             Assert.IsTrue(hit.rigidbody.gameObject == target);
         }
 
-        [UnityTest]
-        public IEnumerator Validate_DrawMeshGizmo()
-        {
-            return ValidateDrawGizmos(
-                () => colliderCast.DrawMeshGizmo(Color.red, Color.red, Vector3.zero, Quaternion.identity),
-                colliderCast.gameObject);
-        }
-
         private GameObject MakeCube(Vector3? position = null)
         {
             var target = GameObject.CreatePrimitive(PrimitiveType.Cube);

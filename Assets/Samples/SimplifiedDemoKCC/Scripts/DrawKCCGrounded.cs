@@ -16,6 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.OpenKCC.Editor;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;

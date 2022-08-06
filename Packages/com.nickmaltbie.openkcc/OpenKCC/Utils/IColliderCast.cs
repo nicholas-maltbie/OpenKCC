@@ -74,15 +74,6 @@ namespace nickmaltbie.OpenKCC.Utils
         Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance);
 
         /// <summary>
-        /// Draw a given mesh with the gizmos in the world.
-        /// </summary>
-        /// <param name="outlineColor">Color to draw outline of the mesh.</param>
-        /// <param name="fillColor">Color to draw the fill of the mesh.</param>
-        /// <param name="position">Position to draw the mesh in.</param>
-        /// <param name="rotation">Rotation to draw the mesh in.</param>
-        void DrawMeshGizmo(Color outlineColor, Color fillColor, Vector3 position, Quaternion rotation);
-
-        /// <summary>
         /// Do a raycast in a given direction ignoring this object.
         /// </summary>
         /// <param name="source">Source point to check from.</param>

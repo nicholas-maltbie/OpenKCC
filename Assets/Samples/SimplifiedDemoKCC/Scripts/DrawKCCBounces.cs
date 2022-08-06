@@ -18,6 +18,7 @@
 
 using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.Editor;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;

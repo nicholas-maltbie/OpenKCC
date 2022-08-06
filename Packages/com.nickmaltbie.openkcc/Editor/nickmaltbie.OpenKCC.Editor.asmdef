@@ -1,11 +1,12 @@
 {
-    "name": "OpenKCC.Demo",
-    "rootNamespace": "nickmaltbie.OpenKCC",
+    "name": "nickmaltbie.OpenKCC.Editor",
+    "rootNamespace": "nickmaltbie.OpenKCC.Editor",
     "references": [
-        "GUID:a39c454983160b74bad1ea1398c0807f",
-        "GUID:75469ad4d38634e559750d17036d5f7c"
+        "GUID:a39c454983160b74bad1ea1398c0807f"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
