@@ -16,14 +16,25 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace nickmaltbie.OpenKCC.Utils
 {
+    /// <summary>
+    /// Collection of utility functions for setting material properties.
+    /// </summary>
     public static class MaterialUtils
     {
-        public static void RecursiveSetShadowCasingMode(GameObject original, ShadowCastingMode shadowCastingMode)
+        /// <summary>
+        /// Recursively set the <see cref="ShadowCastingMode"/> for each
+        /// <see cref="Renderer"/> component in the object and its children. 
+        /// </summary>
+        /// <param name="original">Base game object to start operation from.</param>
+        /// <param name="shadowCastingMode">Shadow casting mode to set for Renderer component.</param>
+        public static void RecursiveSetShadowCastingMode(GameObject original, ShadowCastingMode shadowCastingMode)
         {
             foreach (Renderer renderer in original.GetComponentsInChildren<Renderer>())
             {
@@ -31,22 +42,38 @@ namespace nickmaltbie.OpenKCC.Utils
             }
         }
 
-        public static void RecursiveSetFloatProperty(GameObject original, string property, float value)
+        /// <summary>
+        /// Recursively set a float property for each <see cref="Renderer"/> components'
+        /// materials for a given object and its children.
+        /// </summary>
+        /// <param name="original">Base game object to start operation from.</param>
+        /// <param name="property">Name of porperty to modify.</param>
+        /// <param name="value">Value to set for float property.</param>
+        /// <param name="sharedMaterial">Should the shared materials be modified.</param>
+        public static void RecursiveSetFloatProperty(GameObject original, string property, float value, bool sharedMaterial = false)
         {
             foreach (Renderer renderer in original.GetComponentsInChildren<Renderer>())
             {
-                foreach (Material mat in renderer.materials)
+                foreach (Material mat in sharedMaterial ? renderer.sharedMaterials : renderer.materials)
                 {
                     mat.SetFloat(property, value);
                 }
             }
         }
 
-        public static void RecursiveSetColorProperty(GameObject original, string property, Color value)
+        /// <summary>
+        /// Recursively set a <see cref="Color"/> property for each
+        /// <see cref="Renderer"/> components' materials for a given object and its children.
+        /// </summary>
+        /// <param name="original">Base game object to start operation from.</param>
+        /// <param name="property">Name of porperty to modify.</param>
+        /// <param name="value">Value to set for color property.</param>
+        /// <param name="sharedMaterial">Should the shared materials be modified.</param>
+        public static void RecursiveSetColorProperty(GameObject original, string property, Color value, bool sharedMaterial = false)
         {
             foreach (Renderer renderer in original.GetComponentsInChildren<Renderer>())
             {
-                foreach (Material mat in renderer.materials)
+                foreach (Material mat in sharedMaterial ? renderer.sharedMaterials : renderer.materials)
                 {
                     mat.SetColor(property, value);
                 }

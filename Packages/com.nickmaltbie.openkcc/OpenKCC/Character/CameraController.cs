@@ -306,11 +306,11 @@ namespace nickmaltbie.OpenKCC.Character
                 thirdPersonCharacterBase.transform.localRotation = Quaternion.Euler(0, Yaw, 0);
                 if (actualDistance < shadowOnlyDistance)
                 {
-                    MaterialUtils.RecursiveSetShadowCasingMode(thirdPersonCharacterBase, UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly);
+                    MaterialUtils.RecursiveSetShadowCastingMode(thirdPersonCharacterBase, UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly);
                 }
                 else
                 {
-                    MaterialUtils.RecursiveSetShadowCasingMode(thirdPersonCharacterBase, UnityEngine.Rendering.ShadowCastingMode.On);
+                    MaterialUtils.RecursiveSetShadowCastingMode(thirdPersonCharacterBase, UnityEngine.Rendering.ShadowCastingMode.On);
                 }
 
                 if (actualDistance > shadowOnlyDistance && actualDistance < ditherDistance)
