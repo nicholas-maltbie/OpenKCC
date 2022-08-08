@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.Editor;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 

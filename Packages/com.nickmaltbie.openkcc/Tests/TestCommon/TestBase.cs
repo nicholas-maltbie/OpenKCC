@@ -16,6 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
@@ -109,6 +110,22 @@ namespace nickmaltbie.OpenKCC.TestCommon
         protected void RegisterGameObject(GameObject go)
         {
             gameObjects.Add(go);
+        }
+
+        /// <summary>
+        /// Basic mono behavior for validating gizmo behavior
+        /// </summary>
+        public class GizmoValidator : MonoBehaviour
+        {
+            public bool Invoked { get; set; }
+
+            public Action GizmoAction { get; set; }
+
+            public void OnDrawGizmos()
+            {
+                GizmoAction?.Invoke();
+                Invoked = true;
+            }
         }
     }
 }

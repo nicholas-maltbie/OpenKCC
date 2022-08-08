@@ -194,7 +194,7 @@ namespace nickmaltbie.OpenKCC.Utils
             bool isAbove = Vector3.Dot(footVector, config.Up) > 0;
             float distanceToFeet = footVector.magnitude * (isAbove ? 1 : -1);
 
-            bool hitStep = config.ColliderCast.CheckVerticalStepAhead(
+            bool hitStep = config.ColliderCast.DoRaycastInDirection(
                 hit.point - config.Up * Epsilon + hit.normal * Epsilon,
                 momentum.normalized,
                 momentum.magnitude,

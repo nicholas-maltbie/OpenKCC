@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Adding test coverage for EditMode tests
+
 ## [0.1.2] - 2022-06-26
 
 Small patch to automated release workflow for npm
