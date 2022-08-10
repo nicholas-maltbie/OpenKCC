@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
@@ -81,6 +82,18 @@ namespace nickmaltbie.OpenKCC.TestCommon
         }
 
         /// <summary>
+        /// Validate that given gizmos are drawn.
+        /// </summary>
+        /// <param name="GizmoAction">Gizmo action to validate.</param>
+        public IEnumerator ValidateDrawGizmo(Action GizmoAction, int maxIter = 60, bool assertDrawn = false)
+        {
+            GameObject go = CreateGameObject();
+            GizmoValidator gv = go.AddComponent<GizmoValidator>();
+            gv.GizmoAction = GizmoAction;
+            return gv.ValidateGizmosDrawn(maxIter, assertDrawn);
+        }
+
+        /// <summary>
         /// Create a game object and save it to cleanup at the end of the test.
         /// </summary>
         /// <param name="original">Original object to create from base.</param>
@@ -117,14 +130,34 @@ namespace nickmaltbie.OpenKCC.TestCommon
         /// </summary>
         public class GizmoValidator : MonoBehaviour
         {
+            /// <summary>
+            /// Has the gizmo action been invoked.
+            /// </summary>
             public bool Invoked { get; set; }
 
+            /// <summary>
+            /// Gizmo action to validate.
+            /// </summary>
             public Action GizmoAction { get; set; }
 
             public void OnDrawGizmos()
             {
                 GizmoAction?.Invoke();
                 Invoked = true;
+            }
+
+            public IEnumerator ValidateGizmosDrawn(int maxIter = 60, bool assertValidation = false)
+            {
+                Invoked = false;
+                for (int i = 0; i < maxIter && !Invoked; i++)
+                {
+                    yield return null;
+                }
+
+                if (assertValidation)
+                {
+                    Assert.IsTrue(Invoked);
+                }
             }
         }
     }
