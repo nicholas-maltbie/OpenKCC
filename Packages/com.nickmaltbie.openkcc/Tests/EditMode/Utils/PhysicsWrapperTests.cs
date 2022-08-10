@@ -19,7 +19,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using Moq;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;

@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using System.Linq;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
@@ -48,7 +47,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             objectTwo.transform.position = Vector3.forward * 5;
             objectThree.transform.position = Vector3.forward * 10;
 
-            objectList = new[] { objectOne, objectTwo, objectThree }; 
+            objectList = new[] { objectOne, objectTwo, objectThree };
         }
 
         [Test]

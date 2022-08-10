@@ -16,13 +16,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using nickmaltbie.OpenKCC.TestCommon;
-using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
-using UnityEngine;
 using static nickmaltbie.OpenKCC.Utils.CapsuleMaker;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
@@ -53,6 +48,5 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         {
             CapsuleData(longitudes, latitudes, rings, depth, radius, profile);
         }
-
     }
 }
