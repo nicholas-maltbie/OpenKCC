@@ -27,8 +27,8 @@ namespace nickmaltbie.OpenKCC.Utils
     public static class MaterialUtils
     {
         /// <summary>
-        /// Recursively set the <see cref="ShadowCastingMode"/> for each
-        /// <see cref="Renderer"/> component in the object and its children. 
+        /// Recursively set the ShadowCastingMode for each
+        /// Renderer component in the object and its children. 
         /// </summary>
         /// <param name="original">Base game object to start operation from.</param>
         /// <param name="shadowCastingMode">Shadow casting mode to set for Renderer component.</param>
@@ -41,11 +41,11 @@ namespace nickmaltbie.OpenKCC.Utils
         }
 
         /// <summary>
-        /// Recursively set a float property for each <see cref="Renderer"/> components'
+        /// Recursively set a float property for each Renderer components'
         /// materials for a given object and its children.
         /// </summary>
         /// <param name="original">Base game object to start operation from.</param>
-        /// <param name="property">Name of porperty to modify.</param>
+        /// <param name="property">Name of property to modify.</param>
         /// <param name="value">Value to set for float property.</param>
         /// <param name="sharedMaterial">Should the shared materials be modified.</param>
         public static void RecursiveSetFloatProperty(GameObject original, string property, float value, bool sharedMaterial = false)
@@ -60,11 +60,11 @@ namespace nickmaltbie.OpenKCC.Utils
         }
 
         /// <summary>
-        /// Recursively set a <see cref="Color"/> property for each
-        /// <see cref="Renderer"/> components' materials for a given object and its children.
+        /// Recursively set a Color property for each
+        /// Renderer components' materials for a given object and its children.
         /// </summary>
         /// <param name="original">Base game object to start operation from.</param>
-        /// <param name="property">Name of porperty to modify.</param>
+        /// <param name="property">Name of property to modify.</param>
         /// <param name="value">Value to set for color property.</param>
         /// <param name="sharedMaterial">Should the shared materials be modified.</param>
         public static void RecursiveSetColorProperty(GameObject original, string property, Color value, bool sharedMaterial = false)
