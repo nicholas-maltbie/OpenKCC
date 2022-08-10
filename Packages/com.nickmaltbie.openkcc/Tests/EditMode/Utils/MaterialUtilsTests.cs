@@ -25,7 +25,7 @@ using UnityEngine.Rendering;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 {
     /// <summary>
-    /// Tests for the <see cref="MaterialsUtils"/> class.
+    /// Tests for the MaterialsUtils class.
     /// </summary>
     [TestFixture]
     public class MaterialUtilsTests : TestBase
