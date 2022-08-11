@@ -47,6 +47,14 @@ namespace nickmaltbie.OpenKCC.Editor
             }
         }
 
+        /// <summary>
+        /// Draw capsule collider from a CapsuleColliderCast.
+        /// </summary>
+        /// <param name="capsuleColliderCast">CapsuleColliderCast data.</param>
+        /// <param name="outlineColor">Color to draw outline of character with.</param>
+        /// <param name="fillColor">Color to fill capsule with.</param>
+        /// <param name="position">Position to draw capsule collider cast.</param>
+        /// <param name="rotation">Rotation to draw capsule collider with.</param>
         public static void DrawCapsuleCollider(
             CapsuleColliderCast capsuleColliderCast,
             Color outlineColor,
@@ -59,7 +67,7 @@ namespace nickmaltbie.OpenKCC.Editor
                 capsuleColliderCast.DebugCapsuleMesh,
                 position + capsuleColliderCast.CapsuleCollider.center,
                 rotation);
-            CapsuleMaker.DrawWireCapsule(
+            CapsuleDebug.DrawWireCapsule(
                 position + capsuleColliderCast.CapsuleCollider.center,
                 rotation,
                 capsuleColliderCast.CapsuleCollider.radius,

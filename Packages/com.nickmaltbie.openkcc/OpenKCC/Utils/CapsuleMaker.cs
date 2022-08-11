@@ -16,9 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-# if UNITY_EDITOR
-using UnityEditor;
-#endif
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils
@@ -29,63 +26,9 @@ namespace nickmaltbie.OpenKCC.Utils
     /// </summary>
     public static class CapsuleMaker
     {
-        public static void DrawSolidCapsule(
-            Vector3 _pos,
-            Quaternion _rot,
-            float _radius,
-            float _height,
-            Color _color = default(Color))
-        {
-#if UNITY_EDITOR
-            Gizmos.color = _color;
-            Gizmos.DrawMesh(CapsuleMaker.CapsuleData(radius: _radius, depth: _height - _radius * 2), _pos, _rot);
-#endif
-        }
-
         /// <summary>
-        /// Draws a wire capsule on the screen, helpful function found here on the unity stack exchange:
-        /// https://answers.unity.com/questions/56063/draw-capsule-gizmo.html
+        /// UV Profile for capsule.
         /// </summary>
-        /// <param name="_pos">Position to draw wire capsule (center of capsule)</param>
-        /// <param name="_rot">Rotation to draw wire capsule</param>
-        /// <param name="_radius">Radius of wire capsule</param>
-        /// <param name="_height">Height of wire capsule</param>
-        /// <param name="_color">Color of wire capsule</param>
-        public static void DrawWireCapsule(
-            Vector3 _pos,
-            Quaternion _rot,
-            float _radius,
-            float _height,
-            Color _color = default(Color))
-        {
-#if UNITY_EDITOR
-            if (_color != default(Color))
-            {
-                Handles.color = _color;
-            }
-
-            var angleMatrix = Matrix4x4.TRS(_pos, _rot, Handles.matrix.lossyScale);
-            using (new Handles.DrawingScope(angleMatrix))
-            {
-                float pointOffset = (_height - (_radius * 2)) / 2;
-
-                //draw sideways
-                Handles.DrawWireArc(Vector3.up * pointOffset, Vector3.left, Vector3.back, -180, _radius);
-                Handles.DrawLine(new Vector3(0, pointOffset, -_radius), new Vector3(0, -pointOffset, -_radius));
-                Handles.DrawLine(new Vector3(0, pointOffset, _radius), new Vector3(0, -pointOffset, _radius));
-                Handles.DrawWireArc(Vector3.down * pointOffset, Vector3.left, Vector3.back, 180, _radius);
-                //draw frontways
-                Handles.DrawWireArc(Vector3.up * pointOffset, Vector3.back, Vector3.left, 180, _radius);
-                Handles.DrawLine(new Vector3(-_radius, pointOffset, 0), new Vector3(-_radius, -pointOffset, 0));
-                Handles.DrawLine(new Vector3(_radius, pointOffset, 0), new Vector3(_radius, -pointOffset, 0));
-                Handles.DrawWireArc(Vector3.down * pointOffset, Vector3.back, Vector3.left, -180, _radius);
-                //draw center
-                Handles.DrawWireDisc(Vector3.up * pointOffset, Vector3.up, _radius);
-                Handles.DrawWireDisc(Vector3.down * pointOffset, Vector3.up, _radius);
-            }
-#endif
-        }
-
         public enum UvProfile : int
         {
             Fixed = 0,
