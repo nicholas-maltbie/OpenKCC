@@ -754,7 +754,7 @@ namespace nickmaltbie.OpenKCC.Character
                 // For each object that we are currently standing on that we were not standing on the previous update
                 currentStanding.Where(floor => !previousStanding.Contains(floor))
                     .Where(floor => floor != null)
-                    .Select(floor => floor.GetComponent<DetectPlayerStand>())
+                    .Select(floor => floor.GetComponent<IDetectPlayerStand>())
                     .Where(detectStand => detectStand != null)
                     .ToList()
                     .ForEach(detectStand => detectStand.StepOn());
@@ -762,7 +762,7 @@ namespace nickmaltbie.OpenKCC.Character
                 // For each object that were standing on previously that we are not standing on now
                 previousStanding.Where(floor => !currentStanding.Contains(floor))
                     .Where(floor => floor != null)
-                    .Select(floor => floor.GetComponent<DetectPlayerStand>())
+                    .Select(floor => floor.GetComponent<IDetectPlayerStand>())
                     .Where(detectStand => detectStand != null)
                     .ToList()
                     .ForEach(detectStand => detectStand.StepOff());
