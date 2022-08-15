@@ -27,7 +27,7 @@ using UnityEngine;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
 {
     /// <summary>
-    /// Basic tests for MovingPlatformTests in edit mode.
+    /// Basic tests for MovingPlatform in edit mode.
     /// </summary>
     [TestFixture]
     public class MovingPlatformTests : TestBase
