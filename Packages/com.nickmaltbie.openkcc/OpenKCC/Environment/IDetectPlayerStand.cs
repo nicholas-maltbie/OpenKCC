@@ -16,30 +16,21 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using UnityEngine;
-
-namespace nickmaltbie.OpenKCC.Environment.Pushable
+namespace nickmaltbie.OpenKCC.Environment
 {
     /// <summary>
-    /// Pushable object that can be shoved with a given force
+    /// Detect when players stand on this object
     /// </summary>
-    [RequireComponent(typeof(Rigidbody))]
-    public class Pushable : MonoBehaviour, IPushable
+    public interface IDetectPlayerStand
     {
         /// <summary>
-        /// Object rigidbody for pushing by players.
+        /// When a player steps onto this tile
         /// </summary>
-        private Rigidbody objRigidbody;
+        void StepOn();
 
-        public void Awake()
-        {
-            objRigidbody = GetComponent<Rigidbody>();
-        }
-
-        /// <inheritdoc/>
-        public void PushObject(Vector3 force, Vector3 point, ForceMode forceMode)
-        {
-            objRigidbody.AddForce(force, forceMode);
-        }
+        /// <summary>
+        /// When a player steps off of this tile
+        /// </summary>
+        void StepOff();
     }
 }

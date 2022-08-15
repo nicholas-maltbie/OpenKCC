@@ -17,7 +17,7 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-
+using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Environment
@@ -29,45 +29,73 @@ namespace nickmaltbie.OpenKCC.Environment
     public class MovingPlatform : MonoBehaviour
     {
         /// <summary>
-        /// Velocity at which this platform should move
+        /// Current target the platform is heading for.
         /// </summary>
-        public float linearSpeed = 3;
+        public int currentTargetIndex { get; private set; } = 0;
 
         /// <summary>
-        /// Current target the platform is heading for
+        /// Unity service for managing time.
         /// </summary>
-        private int currentTargetIndex = 0;
+        internal IUnityService untiyService = UnityService.Instance;
 
         /// <summary>
-        /// Gets the current target we're moving towards
+        /// Should continuous movement be used to move the object
+        /// or discrete steps. uses the MovePosition and MoveRotation api
+        /// for continus movement otherwise.
         /// </summary>
-        public Transform CurrentTarget => targetsList[currentTargetIndex];
+        internal bool isContinuous = true;
 
         /// <summary>
-        /// List of targets to move between
+        /// Velocity at which this platform should move.
         /// </summary>
         [SerializeField]
-        public List<Transform> targetsList;
+        [Tooltip("Velocity at which this platform should move.")]
+        internal float linearSpeed = 3;
+
+        /// <summary>
+        /// List of targets to move between.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("List of targets to move between.")]
+        internal List<Transform> targetsList;
+
+        /// <summary>
+        /// Gets the current target we're moving towards.
+        /// </summary>
+        public Transform CurrentTarget => ValidTarget ? targetsList[currentTargetIndex] : null;
+
+        /// <summary>
+        /// Does the moving platform have a valid target.
+        /// </summary>
+        public bool ValidTarget => targetsList != null && targetsList.Count > 0;
 
         public void FixedUpdate()
         {
-            if (targetsList == null || targetsList.Count == 0)
+            if (!ValidTarget)
             {
                 return;
             }
 
-            float deltaTime = Time.fixedDeltaTime;
-            Vector3 direction = (CurrentTarget.position - transform.position).normalized;
-            Vector3 displacement = direction * deltaTime * linearSpeed;
-            float distanceToTarget = Vector3.Distance(transform.position, CurrentTarget.position);
+            Rigidbody rb = GetComponent<Rigidbody>();
+
+            Vector3 direction = (CurrentTarget.position - rb.position).normalized;
+            Vector3 displacement = direction * untiyService.fixedDeltaTime * linearSpeed;
+            float distanceToTarget = Vector3.Distance(rb.position, CurrentTarget.position);
 
             if (direction == Vector3.zero || distanceToTarget < displacement.magnitude)
             {
-                displacement = CurrentTarget.position - transform.position;
+                displacement = CurrentTarget.position - rb.position;
                 currentTargetIndex = (currentTargetIndex + 1) % targetsList.Count;
             }
 
-            GetComponent<Rigidbody>().MovePosition(transform.position + displacement);
+            if (isContinuous)
+            {
+                rb.MovePosition(rb.position + displacement);
+            }
+            else
+            {
+                rb.position += displacement;
+            }
         }
     }
 }

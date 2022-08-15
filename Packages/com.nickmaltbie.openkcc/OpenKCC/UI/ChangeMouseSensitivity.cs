@@ -28,18 +28,22 @@ namespace nickmaltbie.OpenKCC.UI.Actions
     /// </summary>
     public class ChangeMouseSensitivity : MonoBehaviour, IBindingControl
     {
-
-        public const string mouseSensitivityPlayerPref = "MouseSensitivity";
-
         /// <summary>
-        /// Slider to control mouse sensitivity
+        /// String key for saving mouse sensitivity to player preferences.
         /// </summary>
-        public Slider slider;
+        public const string mouseSensitivityPlayerPref = "MouseSensitivity";
 
         /// <summary>
         /// Power value for scaling mouse sensitivity between minimum and maximum
         /// </summary>
         public const float powerValue = 0.75f;
+
+        /// <summary>
+        /// Slider to control mouse sensitivity.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Slider to control mouse sensitivity.")]
+        internal Slider slider;
 
         /// <summary>
         /// Get the value on a slider from a given mouse sensitivity level
@@ -89,12 +93,14 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             });
         }
 
+        /// <inheritdoc/>
         public void ResetBinding()
         {
             PlayerPrefs.DeleteKey(mouseSensitivityPlayerPref);
             PlayerInputUtils.mouseSensitivity = PlayerInputUtils.DefaultMouseSensitivity;
         }
 
+        /// <inheritdoc/>
         public void UpdateDisplay()
         {
             slider.SetValueWithoutNotify(GetSliderValue(PlayerInputUtils.mouseSensitivity));

@@ -31,6 +31,6 @@ namespace nickmaltbie.OpenKCC.Environment.Pushable
         /// <param name="force">Force vector applied to the object.</param>
         /// <param name="point">Point to apply force on the object.</param>
         /// <param name="forceMode">Mode of the force being applied.</param>
-        void PushObject(Vector3 force, Vector3 point, int forceMode);
+        void PushObject(Vector3 force, Vector3 point, ForceMode forceMode);
     }
 }

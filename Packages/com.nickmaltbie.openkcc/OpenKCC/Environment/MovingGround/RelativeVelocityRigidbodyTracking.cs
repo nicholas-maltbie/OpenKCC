@@ -33,19 +33,19 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         /// </summary>
         [SerializeField]
         [Tooltip("Relative velocity under minimum velocity threshold will be fully attached.")]
-        private float minimumVelocityThreshold = 1.0f;
+        internal float minimumVelocityThreshold = 1.0f;
 
         /// <summary>
         /// Relative velocities above minimum velocity threshold will be fully detached.
         /// </summary>
         [SerializeField]
         [Tooltip("Relative velocities above minimum velocity threshold will be fully detached.")]
-        private float maximumVelocityThreshold = 3.0f;
+        internal float maximumVelocityThreshold = 3.0f;
 
         /// <inheritdoc/>
-        public override float GetMovementWeight(Vector3 point, Vector3 playerVelocity, float deltaTime)
+        public override float GetMovementWeight(Vector3 point, Vector3 playerVelocity)
         {
-            float objSpeed = GetVelocityAtPoint(point, deltaTime).magnitude;
+            float objSpeed = GetVelocityAtPoint(point).magnitude;
             float playerSpeed = playerVelocity.magnitude;
 
             float relativeVelocity = Mathf.Abs(objSpeed - playerSpeed);

@@ -754,7 +754,7 @@ namespace nickmaltbie.OpenKCC.Character
                 // For each object that we are currently standing on that we were not standing on the previous update
                 currentStanding.Where(floor => !previousStanding.Contains(floor))
                     .Where(floor => floor != null)
-                    .Select(floor => floor.GetComponent<DetectPlayerStand>())
+                    .Select(floor => floor.GetComponent<IDetectPlayerStand>())
                     .Where(detectStand => detectStand != null)
                     .ToList()
                     .ForEach(detectStand => detectStand.StepOn());
@@ -762,7 +762,7 @@ namespace nickmaltbie.OpenKCC.Character
                 // For each object that were standing on previously that we are not standing on now
                 previousStanding.Where(floor => !currentStanding.Contains(floor))
                     .Where(floor => floor != null)
-                    .Select(floor => floor.GetComponent<DetectPlayerStand>())
+                    .Select(floor => floor.GetComponent<IDetectPlayerStand>())
                     .Where(detectStand => detectStand != null)
                     .ToList()
                     .ForEach(detectStand => detectStand.StepOff());
@@ -795,10 +795,10 @@ namespace nickmaltbie.OpenKCC.Character
             {
                 // Weight movement of ground by ground movement weight
                 float velocityWeight =
-                    movingGround.GetMovementWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
+                    movingGround.GetMovementWeight(groundHitPosition, LinearVelocity);
                 float transferWeight =
-                    movingGround.GetTransferMomentumWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
-                groundVelocity = movingGround.GetVelocityAtPoint(groundHitPosition, Time.fixedDeltaTime);
+                    movingGround.GetTransferMomentumWeight(groundHitPosition, LinearVelocity);
+                groundVelocity = movingGround.GetVelocityAtPoint(groundHitPosition);
                 groundVelocity *= velocityWeight;
                 groundVelocity *= transferWeight;
             }
@@ -891,14 +891,14 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             // Get the displacement of the floor at the previous position
-            Vector3 displacement = movingGround.GetDisplacementAtPoint(groundHitPosition, Time.fixedDeltaTime);
+            Vector3 displacement = movingGround.GetDisplacementAtPoint(groundHitPosition);
             // Check if we were standing on moving ground the previous frame
             if (feetFollowObj.transform.parent != transform)
             {
                 displacement = (feetFollowObj.transform.position + footOffset) - transform.position;
             }
 
-            float weight = movingGround.GetMovementWeight(groundHitPosition, LinearVelocity, Time.fixedDeltaTime);
+            float weight = movingGround.GetMovementWeight(groundHitPosition, LinearVelocity);
 
             // Move player by floor displacement this frame
             transform.position += displacement * weight;

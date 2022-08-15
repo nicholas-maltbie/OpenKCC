@@ -16,9 +16,10 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
-namespace PropHunt.Environment
+namespace nickmaltbie.OpenKCC.Environment
 {
     /// <summary>
     /// Set parameters for a kinematic rigidbody
@@ -26,13 +27,24 @@ namespace PropHunt.Environment
     [RequireComponent(typeof(Rigidbody))]
     public class FixedRigidbodySet : MonoBehaviour
     {
+        /// <summary>
+        /// Reference to unity service for getting basic unity functions.
+        /// </summary>
+        internal IUnityService unityService = UnityService.Instance;
 
         /// <summary>
-        /// Angular velocity of object in degrees per second for each euclidian axis
+        /// Should continuous movement be used to move the object
+        /// or discrete steps. uses the MovePosition and MoveRotation api
+        /// for continus movement otherwise.
+        /// </summary>
+        internal bool isContinuous = true;
+
+        /// <summary>
+        /// Angular velocity of object in degrees per second for each Euclidean axis
         /// </summary>
         [SerializeField]
-        [Tooltip("Angular velocity of object in degrees per second for each euclidian axis")]
-        protected Vector3 angularVelocity;
+        [Tooltip("Angular velocity of object in degrees per second for each Euclidean axis")]
+        internal Vector3 angularVelocity;
 
         /// <summary>
         /// Does this rotation work in local or world space. If true, will rotate in local space.
@@ -40,14 +52,14 @@ namespace PropHunt.Environment
         /// </summary>
         [SerializeField]
         [Tooltip("Does this rotation work in local or world space")]
-        protected bool localRotation;
+        internal bool localRotation;
 
         /// <summary>
         /// Linear velocity of object in units per second for each axis
         /// </summary>
         [SerializeField]
         [Tooltip("Linear velocity of object in units per second for each axis")]
-        protected Vector3 linearVelocity;
+        internal Vector3 linearVelocity;
 
         /// <summary>
         /// Does this velocity work in local or world space. If true, will translate in local space.
@@ -55,7 +67,7 @@ namespace PropHunt.Environment
         /// </summary>
         [SerializeField]
         [Tooltip("Does this translation work in local or world space.")]
-        protected bool localTranslation;
+        internal bool localTranslation;
 
         /// <summary>
         /// Rigidbody for this object
@@ -73,28 +85,36 @@ namespace PropHunt.Environment
             if (linearVelocity.magnitude > 0)
             {
                 // move object by velocity
-                Vector3 deltaPos = Time.fixedDeltaTime * linearVelocity;
-                if (localTranslation && transform.parent != null)
+                Vector3 deltaPos = unityService.fixedDeltaTime * linearVelocity;
+                Vector3 targetPos = (localTranslation && transform.parent != null) ?
+                    transform.parent.position + transform.localPosition + deltaPos :
+                    transform.position + deltaPos;
+
+                if (isContinuous)
                 {
-                    rigidbody.MovePosition(transform.parent.position + transform.localPosition + deltaPos);
+                    rigidbody.MovePosition(targetPos);
                 }
                 else
                 {
-                    rigidbody.MovePosition(transform.position + deltaPos);
+                    rigidbody.position = targetPos;
                 }
             }
 
             if (angularVelocity.magnitude > 0)
             {
                 // rotate object by rotation
-                var deltaRotation = Quaternion.Euler(Time.fixedDeltaTime * angularVelocity);
-                if (localRotation && transform.parent != null)
+                var deltaRotation = Quaternion.Euler(unityService.fixedDeltaTime * angularVelocity);
+                Quaternion targetRot = (localRotation && transform.parent != null) ?
+                    transform.parent.rotation * transform.localRotation * deltaRotation :
+                    transform.rotation * deltaRotation;
+
+                if (isContinuous)
                 {
-                    rigidbody.MoveRotation(transform.parent.rotation * transform.localRotation * deltaRotation);
+                    rigidbody.MoveRotation(targetRot);
                 }
                 else
                 {
-                    rigidbody.MoveRotation(transform.rotation * deltaRotation);
+                    rigidbody.rotation = targetRot;
                 }
             }
         }

@@ -16,23 +16,26 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.OpenKCC.TestCommon;
+using nickmaltbie.OpenKCC.Utils;
+using NUnit.Framework;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Environment
+namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 {
     /// <summary>
-    /// Detect when players stand on this object
+    /// Tests to validate UnityService behaviors.
     /// </summary>
-    public abstract class DetectPlayerStand : MonoBehaviour
+    [TestFixture]
+    public class UnityServiceTests : TestBase
     {
-        /// <summary>
-        /// When a player steps onto this tile
-        /// </summary>
-        public virtual void StepOn() { }
-
-        /// <summary>
-        /// When a player steps off of this tile
-        /// </summary>
-        public virtual void StepOff() { }
+        [Test]
+        public void Validate_UnityService()
+        {
+            Assert.NotNull(UnityService.Instance);
+            Assert.AreEqual(UnityService.Instance.deltaTime, Time.deltaTime);
+            Assert.AreEqual(UnityService.Instance.fixedDeltaTime, Time.fixedDeltaTime);
+            Assert.AreEqual(UnityService.Instance.time, Time.time);
+        }
     }
 }

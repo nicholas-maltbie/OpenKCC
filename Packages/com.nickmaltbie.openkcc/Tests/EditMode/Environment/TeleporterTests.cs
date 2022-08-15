@@ -16,30 +16,40 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.OpenKCC.Environment;
+using nickmaltbie.OpenKCC.TestCommon;
+using NUnit.Framework;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Environment.Pushable
+namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
 {
     /// <summary>
-    /// Pushable object that can be shoved with a given force
+    /// Basic tests for Teleporter in edit mode.
     /// </summary>
-    [RequireComponent(typeof(Rigidbody))]
-    public class Pushable : MonoBehaviour, IPushable
+    [TestFixture]
+    public class TeleporterTests : TestBase
     {
-        /// <summary>
-        /// Object rigidbody for pushing by players.
-        /// </summary>
-        private Rigidbody objRigidbody;
-
-        public void Awake()
+        [Test]
+        public void Verify_TeleporterActions([Values] bool hasCharacterController)
         {
-            objRigidbody = GetComponent<Rigidbody>();
-        }
+            Teleporter tele = CreateGameObject().AddComponent<Teleporter>();
+            Collider co = CreateGameObject().AddComponent<SphereCollider>();
 
-        /// <inheritdoc/>
-        public void PushObject(Vector3 force, Vector3 point, ForceMode forceMode)
-        {
-            objRigidbody.AddForce(force, forceMode);
+            if (hasCharacterController)
+            {
+                co.gameObject.AddComponent<CharacterController>();
+            }
+
+            tele.transform.position = Vector3.forward * 10;
+            tele.transform.rotation = Quaternion.Euler(Vector3.up * 30);
+            tele.teleportLocation = tele.transform;
+
+            TestUtils.AssertInBounds(co.transform.position, Vector3.zero);
+
+            tele.OnTriggerEnter(co);
+
+            TestUtils.AssertInBounds(co.transform.position, Vector3.forward * 10);
+            TestUtils.AssertInBounds(co.transform.eulerAngles, Vector3.up * 30);
         }
     }
 }

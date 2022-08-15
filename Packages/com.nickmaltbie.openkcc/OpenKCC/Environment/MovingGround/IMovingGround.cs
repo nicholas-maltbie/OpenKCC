@@ -30,9 +30,8 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         /// at a given point on the surface of the object (in world space).
         /// </summary>
         /// <param name="point">Point on the surface of the object (in world space).</param>
-        /// <param name="deltaTime">delta time for computing velocity.</param>
         /// <returns>Velocity that the object is moving at the point.</returns>
-        Vector3 GetVelocityAtPoint(Vector3 point, float deltaTime);
+        Vector3 GetVelocityAtPoint(Vector3 point);
 
         /// <summary>
         /// Get displacement of the moving object at a given point on the
@@ -41,7 +40,7 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         /// <param name="point">Point on the surface of the object (in world space).</param>
         /// <returns>Displacement on the surface of this object from that point
         /// for the current fixed update</returns>
-        Vector3 GetDisplacementAtPoint(Vector3 point, float deltaTime);
+        Vector3 GetDisplacementAtPoint(Vector3 point);
 
         /// <summary>
         /// Get the weight of movement for a given player's velocity at a given point.
@@ -50,7 +49,7 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         /// <param name="playerVelocity">Velocity of the player.</param>
         /// <returns>Weight of player's attachment to the object given these
         /// parameters. Will be between 0 (not attached at all) and 1 (fully attached).</returns>
-        float GetMovementWeight(Vector3 point, Vector3 playerVelocity, float deltaTime);
+        float GetMovementWeight(Vector3 point, Vector3 playerVelocity);
 
         /// <summary>
         /// Get the weight of movement of transfering momentum when a player leaves this object
@@ -59,7 +58,7 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         /// <param name="playerVelocity">Velocity of the player.</param>
         /// <returns>How much relative velocity teh player should retain when departing from the surface of this object
         /// via jump or fall.</returns>
-        float GetTransferMomentumWeight(Vector3 point, Vector3 playerVelocity, float deltaTime);
+        float GetTransferMomentumWeight(Vector3 point, Vector3 playerVelocity);
 
         /// <summary>
         /// Should momentum be transferred to players when they

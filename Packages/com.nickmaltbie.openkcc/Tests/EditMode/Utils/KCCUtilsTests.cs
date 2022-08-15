@@ -31,7 +31,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
     /// Basic tests for KCCUtils in edit mode.
     /// </summary>
     [TestFixture]
-    public class KCCUtilsTests
+    public class KCCUtilsTests : TestBase
     {
         /// <summary>
         /// Collider cast mock used for testing.
@@ -51,23 +51,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         {
             colliderCastMock = new Mock<IColliderCast>();
             characterPushMock = new Mock<ICharacterPush>();
-        }
-
-        /// <summary>
-        /// Generate basic set of movements.
-        /// </summary>
-        /// <returns>Set of 9 possible movements.</returns>
-        public static IEnumerable<Vector3> MovementGenerator()
-        {
-            return new[]
-            {
-                Vector3.right,
-                Vector3.left,
-                Vector3.back,
-                Vector3.forward,
-                Vector3.up,
-                Vector3.down,
-            };
         }
 
         /// <summary>
@@ -201,7 +184,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         /// Test kcc hit nothing.
         /// </summary>
         [Test]
-        [TestCaseSource(nameof(MovementGenerator))]
+        [TestCaseSource(nameof(TestDirections))]
         public void Validate_KCCMoveUnblocked(Vector3 movement)
         {
             Vector3 initialPosition = Vector3.zero;
@@ -214,9 +197,18 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             var bounces = GetBounces(initialPosition, movement).ToList();
 
             // Validate bounce properties
-            Assert.IsTrue(bounces.Count == 2, $"Expected to find {2} bounce but instead found {bounces.Count}");
-            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Move, expectedFinalPosition, initialPosition, Vector3.zero, movement);
-            KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop, expectedFinalPosition, expectedFinalPosition, Vector3.zero, Vector3.zero);
+            if (movement.magnitude > 0)
+            {
+                Assert.IsTrue(bounces.Count == 2, $"Expected to find {2} bounce but instead found {bounces.Count}");
+                KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Move, expectedFinalPosition, initialPosition, Vector3.zero, movement);
+            }
+            else
+            {
+                Assert.IsTrue(bounces.Count == 1, $"Expected to find {1} bounce but instead found {bounces.Count}");
+            }
+
+            KCCValidation.ValidateKCCBounce(bounces.Last(), KCCUtils.MovementAction.Stop, expectedFinalPosition, expectedFinalPosition, Vector3.zero, Vector3.zero);
+
         }
 
         /// <summary>
@@ -237,7 +229,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         /// </summary>
         /// <param name="move">Input player movement for invalid movement value.</param>
         [Test]
-        [TestCaseSource(nameof(MovementGenerator))]
+        [TestCaseSource(nameof(TestDirections))]
         public void Verify_KCCInvalidProjectedMomentum(Vector3 move)
         {
             Vector3 projected = KCCUtils.GetProjectedMomentumSafe(move, Vector3.forward, Vector3.up);
