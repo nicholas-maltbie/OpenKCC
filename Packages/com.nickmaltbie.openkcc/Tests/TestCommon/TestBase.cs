@@ -31,6 +31,24 @@ namespace nickmaltbie.OpenKCC.TestCommon
     public class TestBase
     {
         /// <summary>
+        /// Set of basic directions for tests.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<Vector3> TestDirections()
+        {
+            return new[]
+            {
+                Vector3.forward,
+                Vector3.back,
+                Vector3.left,
+                Vector3.right,
+                Vector3.up,
+                Vector3.down,
+                Vector3.zero
+            };
+        }
+
+        /// <summary>
         /// List of game objects created as part of the test.
         /// </summary>
         protected List<GameObject> gameObjects;

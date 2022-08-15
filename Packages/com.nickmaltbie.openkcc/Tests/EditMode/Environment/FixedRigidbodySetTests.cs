@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using Moq;
 using nickmaltbie.OpenKCC.Environment;
 using nickmaltbie.OpenKCC.TestCommon;
@@ -58,20 +57,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
 
             fixedRigidbody.unityService = mockUnityService.Object;
             fixedRigidbody.Start();
-        }
-
-        public static IEnumerable<Vector3> TestDirections()
-        {
-            return new[]
-            {
-                Vector3.forward,
-                Vector3.back,
-                Vector3.left,
-                Vector3.right,
-                Vector3.up,
-                Vector3.down,
-                Vector3.zero
-            };
         }
 
         [Test]

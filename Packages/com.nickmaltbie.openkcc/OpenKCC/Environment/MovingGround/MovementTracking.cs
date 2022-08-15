@@ -16,6 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Environment.MovingGround
@@ -26,10 +27,16 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
     public class MovementTracking : MonoBehaviour, IMovingGround
     {
         /// <summary>
+        /// Unity service for getting fixed delta time.
+        /// </summary>
+        internal IUnityService unityService = UnityService.Instance;
+
+        /// <summary>
         /// Should momentum be transferred to players when they
         /// leave this object.
         /// </summary>
-        public bool avoidTransferMomentum;
+        [SerializeField]
+        internal bool avoidTransferMomentum;
 
         /// <summary>
         /// How much of the objects velocity should a player retain when leaving the surface of the object via jump or
@@ -37,7 +44,7 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         /// </summary>
         [SerializeField]
         [Range(0, 1)]
-        private float transferMomentumWeight = 1.0f;
+        internal float transferMomentumWeight = 1.0f;
 
         /// <inheritdoc/>
         public bool AvoidTransferMomentum() => avoidTransferMomentum;
@@ -77,13 +84,13 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         }
 
         /// <inheritdoc/>
-        public Vector3 GetVelocityAtPoint(Vector3 point, float deltaTime)
+        public virtual Vector3 GetVelocityAtPoint(Vector3 point)
         {
-            return GetDisplacementAtPoint(point, deltaTime) / deltaTime;
+            return GetDisplacementAtPoint(point) / unityService.fixedDeltaTime;
         }
 
         /// <inheritdoc/>
-        public Vector3 GetDisplacementAtPoint(Vector3 point, float deltaTime)
+        public virtual Vector3 GetDisplacementAtPoint(Vector3 point)
         {
             // Get relative position to previous start
             Vector3 relativePosition = point - PreviousPosition;
@@ -96,12 +103,13 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         }
 
         /// <inheritdoc/>
-        public virtual float GetMovementWeight(Vector3 point, Vector3 playerVelocity, float deltaTime)
+        public virtual float GetMovementWeight(Vector3 point, Vector3 playerVelocity)
         {
             return 1.0f;
         }
 
-        public float GetTransferMomentumWeight(Vector3 point, Vector3 playerVelocity, float deltaTime)
+        /// <inheritdoc/>
+        public virtual float GetTransferMomentumWeight(Vector3 point, Vector3 playerVelocity)
         {
             return transferMomentumWeight;
         }
