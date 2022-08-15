@@ -74,7 +74,7 @@ namespace nickmaltbie.OpenKCC.TestCommon
         /// <param name="range">Range in units of acceptable error.</param>
         /// <param name="errorMsg">Error message to log if failure, one will be generated if none is provided.</param>
         /// <param name="bound">Allow the actual vector to be shorter, longer, or either.</param>
-        public static void AssertInBounds(Vector3 actual, Vector3 expected, float range, string errorMsg = null, BoundRange bound = BoundRange.GraterThanOrLessThan)
+        public static void AssertInBounds(Vector3 actual, Vector3 expected, float range = 0.001f, string errorMsg = null, BoundRange bound = BoundRange.GraterThanOrLessThan)
         {
             float delta = (expected - actual).magnitude;
 
