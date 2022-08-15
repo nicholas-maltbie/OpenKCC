@@ -17,31 +17,37 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.ScreenManager;
-using UnityEngine;
+using nickmaltbie.OpenKCC.TestCommon;
+using nickmaltbie.OpenKCC.UI.Events;
+using NUnit.Framework;
 
-namespace nickmaltbie.OpenKCC.UI.Events
+namespace nickmaltbie.OpenKCC.Tests.EditMode.UI
 {
     /// <summary>
-    /// Simple class to set player movement state when menu loads
+    /// Basic tests for PlayerMovementStateOnMenuLoad in edit mode.
     /// </summary>
-    public class PlayerMovementStateOnMenuLoad : MonoBehaviour, IScreenComponent
+    [TestFixture]
+    public class PlayerMovementStateOnMenuLoadTests : TestBase
     {
-        /// <summary>
-        /// Player input state to set when this menu is loaded
-        /// </summary>
-        public PlayerInputState playerInputState = PlayerInputState.Allow;
-
-        /// <inheritdoc/>
-        public void OnScreenLoaded()
+        [Test]
+        public void Verify_PlayerMovementStateOnMenuLoad()
         {
-            PlayerInputUtils.playerMovementState = playerInputState;
-        }
+            PlayerMovementStateOnMenuLoad playerMovement = CreateGameObject().AddComponent<PlayerMovementStateOnMenuLoad>();
 
-        /// <inheritdoc/>
-        public void OnScreenUnloaded()
-        {
+            PlayerInputUtils.playerMovementState = PlayerInputState.Deny;
+            playerMovement.playerInputState = PlayerInputState.Allow;
 
+            Assert.AreEqual(PlayerInputUtils.playerMovementState, PlayerInputState.Deny);
+
+            playerMovement.OnScreenLoaded();
+            Assert.AreEqual(PlayerInputUtils.playerMovementState, PlayerInputState.Allow);
+
+            playerMovement.OnScreenUnloaded();
+            Assert.AreEqual(PlayerInputUtils.playerMovementState, PlayerInputState.Allow);
+
+            playerMovement.playerInputState = PlayerInputState.Deny;
+            playerMovement.OnScreenLoaded();
+            Assert.AreEqual(PlayerInputUtils.playerMovementState, PlayerInputState.Deny);
         }
     }
 }

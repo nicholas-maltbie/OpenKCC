@@ -45,7 +45,7 @@ namespace nickmaltbie.OpenKCC.TestCommon
         /// <param name="range">Acceptable range of error.</param>
         /// <param name="errorMsg">Error message to log if failure, one will be generated if none is provided.</param>
         /// <param name="bound">Allow the actual value to be lesser, grater, or either.</param>
-        public static void AssertInBounds(float actual, float expected, float range, string errorMsg = null, BoundRange bound = BoundRange.GraterThanOrLessThan)
+        public static void AssertInBounds(float actual, float expected, float range = 0.001f, string errorMsg = null, BoundRange bound = BoundRange.GraterThanOrLessThan)
         {
             float delta = Mathf.Abs(expected - actual);
 
