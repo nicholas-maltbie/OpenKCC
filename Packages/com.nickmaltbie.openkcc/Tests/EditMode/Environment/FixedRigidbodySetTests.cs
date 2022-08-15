@@ -116,6 +116,5 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
                 TestUtils.AssertInBounds(angleDelta, 0.0f, 0.1f);
             }
         }
-
     }
 }

@@ -95,7 +95,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
             platform.isContinuous = false;
 
             platform.targetsList = new List<Transform>(new[] { target1.transform, target2.transform });
-            
+
             for (int targetIdx = 0; targetIdx < platform.targetsList.Count; targetIdx++)
             {
 
