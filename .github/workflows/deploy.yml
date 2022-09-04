@@ -1,4 +1,4 @@
-name: Build and Deploy WebGL
+name: Build and Deploy WebGL and 
 
 concurrency: production-${{ github.ref }}
 
@@ -8,7 +8,7 @@ on:
       - 'main'
 
 env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
   create-package:
@@ -16,9 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: nschloe/action-cached-lfs-checkout@v1
+      - uses: ./.github/actions/setvars
 
       - name: Setup Package
-        run: sh ./setup-package.sh
+        run: sh ./setup-package.sh ${{ env.PACKAGE_PATH }}
 
       # Deploy build to release branch
       - name: Push package
@@ -29,12 +30,13 @@ jobs:
           force: true
 
   build-and-deploy-app:
-    name: Build and Deploy for Product
+    name: Build and Deploy for Production WebGL
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
+      - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
         with:
@@ -43,7 +45,7 @@ jobs:
       # Build the game deployment at build
       - uses: game-ci/unity-builder@v2.0.4
         with:
-          unityVersion: 2021.1.19f1
+          unityVersion: ${{ env.UNITY_VERSION }}
           targetPlatform: WebGL
           buildMethod: ScriptBatch.OfficialBuild_WebGL
 
@@ -52,7 +54,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           force_orphan: true
-          publish_dir: Builds/OpenKCC-WebGL
+          publish_dir: Builds/${{ env.PROJECT_NAME }}-WebGL
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   # Build the documentation
@@ -61,6 +63,7 @@ jobs:
     needs: build-and-deploy-app
     steps:
       - uses: actions/checkout@v3
+      - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
 
       - name: Install DocFX

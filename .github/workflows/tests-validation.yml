@@ -5,10 +5,9 @@ on:
   push:
     branches:
       - 'main'
-      - 'push-action/**'
 
 env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
   test-validation-pull-request:
@@ -18,20 +17,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
         with:
           target_platform: WebGL
 
-      - name: Run All Tests for Unity 2021.1.19f1
+      - name: Run All Tests for Unity ${{ env.UNITY_VERSION }}
         id: tests
         uses: game-ci/unity-test-runner@v2.0.2
         with:
-          unityVersion: 2021.1.19f1
+          unityVersion: ${{ env.UNITY_VERSION }}
           testMode: All
           checkName: All Test Results
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC'
-          customParameters: "-burst-disable-compilation -nographics"
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.TemplateUnityPackage'
 
       - name: Copy Coverage Results
         run: |

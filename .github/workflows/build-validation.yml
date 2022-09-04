@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
   build-verification:
@@ -12,18 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        target_platform:
-          - WebGL
-          - Win64
+
     steps:
       - uses: actions/checkout@v3
+      - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
         with:
-          target_platform: ${{ matrix.target_platform }}
+          target_platform: WebGL
 
       - uses: game-ci/unity-builder@v2.0.4
         with:
-          unityVersion: 2021.1.19f1
-          buildMethod: ScriptBatch.TestBuild_${{ matrix.target_platform }}
+          unityVersion: ${{ env.UNITY_VERSION }}
+          buildMethod: ScriptBatch.TestBuild_WebGL

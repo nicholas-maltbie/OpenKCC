@@ -6,10 +6,9 @@ on:
   push:
     branches:
       - 'main'
-      - 'push-action/**'
 
 env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE_2021_1 }}
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
   dotnet-code-format:
@@ -20,6 +19,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
         with:
@@ -28,7 +28,7 @@ jobs:
       - name: Ensure .sln file is generated
         uses: game-ci/unity-builder@v2.0.4
         with:
-          unityVersion: 2021.1.19f1
+          unityVersion: ${{ env.UNITY_VERSION }}
           buildMethod: Packages.Rider.Editor.RiderScriptEditor.SyncSolution
 
       - name: Set up .NET
@@ -53,6 +53,7 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v3
+    - uses: ./.github/actions/setvars
 
     - name: Lint Markdown Files
       uses: avto-dev/markdown-lint@v1
@@ -67,6 +68,7 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
+      - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
 
       - name: Install DocFX
