@@ -1,4 +1,4 @@
-name: Build and Deploy WebGL and 
+name: Build and Deploy WebGL and Documentation
 
 concurrency: production-${{ github.ref }}
 
