@@ -1,6 +1,9 @@
-name: Create Package
+name: Create and Publish npm Package
 
 on:
+  push:
+    tags:
+      - '*'
   release:
     types: [published]
 
@@ -10,21 +13,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/git-lfs-cache
+      - uses: ./.github/actions/setvars
 
       - name: Setup Package
-        run: sh ./setup-package.sh
+        run: sh ./setup-package.sh ${{ env.PACKAGE_PATH }}
 
       - name: Get tag name
         uses: olegtarasov/get-tag@v2.1.1
-        id: tagName
+        id: releaseTagName
 
       # Deploy build to release branch
-      - name: Push package
-        if: "${{ steps.tagName.outputs.tag != '' }}"
+      - name: Push package via Release Tag
+        if: "${{ steps.releaseTagName.outputs.tag != '' }}"
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/${{ steps.tagName.outputs.tag }}
+          branch: release/${{ steps.releaseTagName.outputs.tag }}
           force: true
 
       - name: Git lfs Pull
@@ -40,6 +44,7 @@ jobs:
       
       - name: Publish Package to NpmJS
         run: npm publish
+        continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
