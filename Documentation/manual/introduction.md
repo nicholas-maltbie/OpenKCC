@@ -1,9 +1,19 @@
 # Introduction to OpenKCC
 
-The Open Kinematic Character Controller is an open source kinematic character
-controller that allows for a player moving
+The Open Kinematic Character Controller (OpenKCC)
+is an open source Kinematic Character Controller (KCC)
+that allows for a player moving
 as a kinematic object through a scene. This is done through using unity's
 physics engine and projection based movement.
+
+See [Example Usage](usage.md) for how to use the Kinematic Character Controller
+in the project.
+
+## Design Notes
+
+For information detailing how the project works and the design of the project,
+see the [KCC Design Overview](design/overview.md) for a review of how the
+kinematic character controller works and detailed design descriptions.
 
 ## Learning
 
@@ -21,19 +31,19 @@ own project, how to modify the OpenKCC
 to add custom features, and on more in depth summaries on how the OpenKCC works
 as described in the videos above.
 
-## Organization of Project
+## Project Organization
 
-The project is organized into a few namespaces:
+The project is organized into a few different folders.
 
-* `nickmaltbie.OpenKCC.Animation` -
-    Code related to animating the player's avatar.
-* `nickmaltbie.OpenKCC.Character` -
-    Code for moving and controlling the character with inputs.
-* `nickmaltbie.OpenKCC.Demo` -
-    Debug code used for demonstrations and videos.
-* `nickmaltbie.OpenKCC.Environment` -
-    Code used for creating and interacting with the environment.
-* `nickmaltbie.OpenKCC.UI` -
-    Code used to create a user interface via buttons and on screen controls.
-* `nickmaltbie.OpenKCC.Utils` -
-    Utility code for generic functions used across the project.
+* `Assets\Samples` - OpenKCC Sample scenes and examples for the project.
+* `Packages\com.nickmaltbie.openkcc` -
+  main package folder with all the code, tests, and shared assets.
+  * `Packages\com.nickmaltbie.openkcc\common` -
+    Common prefabs, materials, and assets used across the entire project.
+  * `Packages\com.nickmaltbie.openkcc\Editor` -
+    Editor specific assets for the project configuration,
+    not included in builds.
+  * `Packages\com.nickmaltbie.openkcc\OpenKCC` -
+    Main project source code and assemblies.
+  * `Packages\com.nickmaltbie.openkcc\Tests` -
+    EditMode and PlayMode tests for the project.

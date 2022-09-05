@@ -1,2 +1,7 @@
 - name: Introduction
   href: introduction.md
+- name: Example Usage
+  href: usage.md
+
+- name: KCC Design overview
+  href: design/overview.md
