@@ -4,4 +4,12 @@
   href: usage.md
 
 - name: KCC Design overview
-  href: design/overview.md
+  href: kcc-design/overview.md
+  items:
+    - name: KCC Movement Design
+      href: kcc-design/kcc-movement.md
+    - name: Physics for Character Controllers
+      href: kcc-design/physics-notes.md
+
+- name: Test Design
+  href: test-design.md
