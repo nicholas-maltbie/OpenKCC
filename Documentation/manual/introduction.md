@@ -7,7 +7,7 @@ as a kinematic object through a scene. This is done through using unity's
 physics engine and projection based movement.
 
 See [Example Usage](usage.md) for how to use the character controller
-in the project.
+in a unity project.
 
 ## Why Kinematic?
 
