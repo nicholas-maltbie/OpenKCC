@@ -1,9 +1,31 @@
 # Introduction to OpenKCC
 
-The Open Kinematic Character Controller is an open source kinematic character
-controller that allows for a player moving
+The Open Kinematic Character Controller (OpenKCC)
+is an open source Kinematic Character Controller (KCC)
+that allows for a player moving
 as a kinematic object through a scene. This is done through using unity's
 physics engine and projection based movement.
+
+See [Example Usage](usage.md) for how to use the character controller
+in a unity project.
+
+## Why Kinematic?
+
+In the real world, every object has mass and interacts with objects around it.
+However, these kinds of "real" interactions can feel unnatural in a virtual
+environment. A kinematic object can push objects around it
+but not be pushed itself. This is useful for a character as it allows for
+moving around the virtual space with a high degree of control instead of just
+bouncing randomly off anything it collides with.
+
+See the [KCC Design Overview](kcc-design/overview.md) for more details on how
+KCC moves around and different kinds of physics objects.
+
+## Design Notes
+
+For information detailing how the project works and the design of the project,
+see the [KCC Design Overview](kcc-design/overview.md) for a review of how the
+kinematic character controller works and detailed design descriptions.
 
 ## Learning
 
@@ -21,19 +43,29 @@ own project, how to modify the OpenKCC
 to add custom features, and on more in depth summaries on how the OpenKCC works
 as described in the videos above.
 
-## Organization of Project
+## Project Organization
 
-The project is organized into a few namespaces:
+The project is organized into a few different folders, here are some of
+the important folders for using and learning about the project:
 
-* `nickmaltbie.OpenKCC.Animation` -
-    Code related to animating the player's avatar.
-* `nickmaltbie.OpenKCC.Character` -
-    Code for moving and controlling the character with inputs.
-* `nickmaltbie.OpenKCC.Demo` -
-    Debug code used for demonstrations and videos.
-* `nickmaltbie.OpenKCC.Environment` -
-    Code used for creating and interacting with the environment.
-* `nickmaltbie.OpenKCC.UI` -
-    Code used to create a user interface via buttons and on screen controls.
-* `nickmaltbie.OpenKCC.Utils` -
-    Utility code for generic functions used across the project.
+* `Assets\Samples` - OpenKCC Sample scenes and examples for the project.
+* `Packages\com.nickmaltbie.openkcc` -
+  main package folder with all the code, tests, and shared assets.
+  * `Packages\com.nickmaltbie.openkcc\common` -
+    Common prefabs, materials, and assets used across the entire project.
+  * `Packages\com.nickmaltbie.openkcc\Editor` -
+    Editor specific assets for the project configuration,
+    not included in builds.
+  * `Packages\com.nickmaltbie.openkcc\OpenKCC` -
+    Main project source code and assemblies.
+  * `Packages\com.nickmaltbie.openkcc\Tests` -
+    EditMode and PlayMode tests for the project.
+
+The rest of the assets folder contains code for render pipeline and
+settings, feel free to look through them if you want an example
+configuration.
+
+## Testing
+
+To see a summary of the tests included in the project and how
+to run them, see the [Test Design](test-design.md) document.

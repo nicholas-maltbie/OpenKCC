@@ -1,2 +1,15 @@
 - name: Introduction
   href: introduction.md
+- name: Example Usage
+  href: usage.md
+
+- name: KCC Design overview
+  href: kcc-design/overview.md
+  items:
+    - name: KCC Movement Design
+      href: kcc-design/kcc-movement.md
+    - name: Physics for Character Controllers
+      href: kcc-design/physics-notes.md
+
+- name: Test Design
+  href: test-design.md

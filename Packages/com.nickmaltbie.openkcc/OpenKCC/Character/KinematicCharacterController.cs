@@ -32,7 +32,8 @@ namespace nickmaltbie.OpenKCC.Character
     /// Kinematic character controller to move the player character
     /// as a kinematic object
     /// </summary>
-    [RequireComponent(typeof(CapsuleColliderCast))]
+    [RequireComponent(typeof(IColliderCast))]
+    [RequireComponent(typeof(ICameraControls))]
     [RequireComponent(typeof(Rigidbody))]
     public class KinematicCharacterController : MonoBehaviour, IKCCConfig
     {
@@ -62,28 +63,28 @@ namespace nickmaltbie.OpenKCC.Character
         [Header("Ground Checking")]
 
         /// <summary>
-        /// Distance to ground at which player is considered grounded
+        /// Distance to ground at which player is considered grounded.
         /// </summary>
         [Tooltip("Distance from ground at which a player is considered standing on the ground")]
         [SerializeField]
         private float groundedDistance = 0.01f;
 
         /// <summary>
-        /// Distance to ground at which player is considered standing on something
+        /// Distance to ground at which player is considered standing on something.
         /// </summary>
         [Tooltip("Distance to ground at which player is considered standing on something")]
         [SerializeField]
         private float standingDistance = 0.1f;
 
         /// <summary>
-        /// Distance to check player distance to ground
+        /// Distance to check player distance to ground.
         /// </summary>
         [Tooltip("Distance to draw rays down when checking if player is grounded")]
         [SerializeField]
         private float groundCheckDistance = 5f;
 
         /// <summary>
-        /// Maximum angle at which the player can walk (in degrees)
+        /// Maximum angle at which the player can walk (in degrees).
         /// </summary>
         [Tooltip("Maximum angle at which the player can walk")]
         [SerializeField]
@@ -114,7 +115,7 @@ namespace nickmaltbie.OpenKCC.Character
         private float sprintSpeed = 10.0f;
 
         /// <summary>
-        /// Maximum number of time player can bounce of walls/floors/objects during an update
+        /// Maximum number of time player can bounce of walls/floors/objects during an update.
         /// </summary>
         [Tooltip("Maximum number of bounces when a player is moving")]
         [SerializeField]
@@ -123,7 +124,7 @@ namespace nickmaltbie.OpenKCC.Character
 
         /// <summary>
         /// Decay value of momentum when hitting another object.
-        /// Should be between [0, 1]
+        /// Should be between [0, 1].
         /// </summary>
         [Tooltip("Decay in momentum when hitting another object")]
         [SerializeField]
@@ -142,14 +143,14 @@ namespace nickmaltbie.OpenKCC.Character
         private float anglePower = 0.5f;
 
         /// <summary>
-        /// Maximum distance the player can be pushed out of overlapping objects in units per second
+        /// Maximum distance the player can be pushed out of overlapping objects in units per second.
         /// </summary>
         [Tooltip("Maximum distance a player can be pushed when overlapping other objects in units per second")]
         [SerializeField]
         private float maxPushSpeed = 1.0f;
 
         /// <summary>
-        /// Distance that the character can "snap down" vertical steps
+        /// Distance that the character can "snap down" vertical steps.
         /// </summary>
         [Tooltip("Snap down distance when snapping onto the floor")]
         [SerializeField]
@@ -159,14 +160,14 @@ namespace nickmaltbie.OpenKCC.Character
 
         /// <summary>
         /// Minimum depth of a stair for a user to climb up
-        /// (thinner steps than this value will not let the player climb)
+        /// (thinner steps than this value will not let the player climb).
         /// </summary>
         [Tooltip("Minimum depth of stairs when climbing up steps")]
         [SerializeField]
         private float stepUpDepth = 0.1f;
 
         /// <summary>
-        /// Distance that the player can snap up when moving up stairs or vertical steps in terrain
+        /// Distance that the player can snap up when moving up stairs or vertical steps in terrain.
         /// </summary>
         [Tooltip("Maximum height of step the player can step up")]
         [SerializeField]
@@ -184,14 +185,14 @@ namespace nickmaltbie.OpenKCC.Character
         [Header("Player Jump Settings")]
 
         /// <summary>
-        /// Velocity of player jump in units per second
+        /// Velocity of player jump in units per second.
         /// </summary>
         [Tooltip("Vertical velocity of player jump")]
         [SerializeField]
         private float jumpVelocity = 5.0f;
 
         /// <summary>
-        /// Maximum angle at which the player can jump (in degrees)
+        /// Maximum angle at which the player can jump (in degrees).
         /// </summary>
         [Tooltip("Maximum angle at which the player can jump (in degrees)")]
         [SerializeField]
@@ -199,7 +200,7 @@ namespace nickmaltbie.OpenKCC.Character
         private float maxJumpAngle = 85f;
 
         /// <summary>
-        /// Weight to which the player's jump is weighted towards the direction
+        /// Weight to which the player's jump is weighted towards the direction.
         /// of the surface they are standing on.
         /// </summary>
         [Tooltip("Weight to which the player's jump is weighted towards the angle of their surface")]
@@ -215,7 +216,7 @@ namespace nickmaltbie.OpenKCC.Character
         private float jumpCooldown = 0.5f;
 
         /// <summary>
-        /// Time in seconds that a player can jump after their feet leave the ground
+        /// Time in seconds that a player can jump after their feet leave the ground.
         /// </summary>
         [Tooltip("Time in seconds that a player can jump after their feet leave the ground")]
         [SerializeField]
@@ -238,7 +239,7 @@ namespace nickmaltbie.OpenKCC.Character
         private float earlyStopProneThreshold = 0.2f;
 
         /// <summary>
-        /// Threshold angular velocity in degrees per second for existing prone early
+        /// Threshold angular velocity in degrees per second for existing prone early.
         /// </summary>
         [Tooltip("Threshold angular velocity in degrees per second for existing prone early")]
         [SerializeField]
@@ -369,7 +370,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Player collider for checking collisions.
         /// </summary>
-        public CapsuleColliderCast capsuleColliderCast { get; private set; }
+        public IColliderCast colliderCast { get; private set; }
 
         /// <summary>
         /// Push action associated with this kcc.
@@ -551,7 +552,7 @@ namespace nickmaltbie.OpenKCC.Character
         public bool Frozen { get; set; }
 
         /// <inheritdoc/>
-        public IColliderCast ColliderCast => capsuleColliderCast;
+        public IColliderCast ColliderCast => colliderCast;
 
         /// <inheritdoc/>
         public ICharacterPush Push => GetComponent<CharacterPush>();
@@ -571,7 +572,7 @@ namespace nickmaltbie.OpenKCC.Character
         {
             cameraControls = GetComponent<ICameraControls>();
             characterRigidbody = GetComponent<Rigidbody>();
-            capsuleColliderCast = GetComponent<CapsuleColliderCast>();
+            colliderCast = GetComponent<IColliderCast>();
             feetFollowObj = new GameObject();
             feetFollowObj.name = "feetFollowObj";
             feetFollowObj.transform.SetParent(transform);
@@ -746,7 +747,7 @@ namespace nickmaltbie.OpenKCC.Character
                 feetFollowObj.transform.position = groundHitPosition;
                 footOffset = transform.position - groundHitPosition;
 
-                var currentStanding = capsuleColliderCast
+                var currentStanding = colliderCast
                     .GetHits(transform.position, transform.rotation, Down, standingDistance)
                     .Select(hit => hit.collider.gameObject).ToList();
 
@@ -771,7 +772,7 @@ namespace nickmaltbie.OpenKCC.Character
                 previousGrounded = startGrounded;
                 previousJumped = jumped;
                 previousGroundVelocity = GetGroundVelocity();
-                previousStanding = capsuleColliderCast
+                previousStanding = colliderCast
                     .GetHits(transform.position, transform.rotation, Down, groundedDistance)
                     .Select(hit => hit.collider.gameObject).ToList();
             }
@@ -917,7 +918,7 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.rotation,
                 -surfaceNormal,
                 verticalSnapDown,
-                capsuleColliderCast);
+                colliderCast);
 
             CheckGrounded();
 
@@ -934,7 +935,7 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.rotation,
                 Down,
                 verticalSnapDown,
-                capsuleColliderCast);
+                colliderCast);
         }
 
         /// <summary>
@@ -946,7 +947,7 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 PushOutOverlapping()
         {
             float fixedDeltaTime = Time.fixedDeltaTime;
-            return capsuleColliderCast.PushOutOverlapping(
+            return colliderCast.PushOutOverlapping(
                 transform.position,
                 transform.rotation,
                 maxPushSpeed * fixedDeltaTime);
@@ -957,7 +958,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void CheckGrounded()
         {
-            bool didHit = capsuleColliderCast.CastSelf(
+            bool didHit = colliderCast.CastSelf(
                 transform.position,
                 transform.rotation,
                 Down,
