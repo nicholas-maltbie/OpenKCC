@@ -1,5 +1,7 @@
 # KCC Movement Design
 
+The Kinematic Character 
+
 <!-- Introduction on what KCC Movement Is -->
 
 <!-- YouTube video link -->
