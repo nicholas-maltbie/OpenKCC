@@ -1,10 +1,16 @@
 # KCC Movement Design
 
-The Kinematic Character
+This document provides a detailed description and overview of how the
+movement for the kinematic character controller works.
 
-<!-- Introduction on what KCC Movement Is -->
+Here is the companion YouTube video for this design document:
 
-<!-- YouTube video link -->
+<iframe width="560" height="315"
+    src="https://www.youtube.com/embed/s-99Z_W8bcQ"
+    title="Moving Characters in Games – Kinematic Character Controller in Unity"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen></iframe>
 
 ## Goals and Objectives
 
@@ -18,6 +24,6 @@ The Kinematic Character
 
 ## Adding Gravity
 
-## Summary
+## Algorithm Overview
 
 ## Code Links
