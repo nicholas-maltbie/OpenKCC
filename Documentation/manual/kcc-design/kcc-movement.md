@@ -112,7 +112,7 @@ distance we can move.
 ![Projected player movement bouncing off a wall](../../resources/design/projected-movement.png)
 
 During any individual movement, the player should not bounce too many times, so
-limiting this to three bounces should be sufficient. 
+limiting this to three bounces should be sufficient.
 We can also decrease this remaining momentum depending on how sharp of an angle
 the player makes when walking into the surface. This makes walking directly into
 walls move slowly while only grazing a wall have little effect.
@@ -151,9 +151,8 @@ movement that interacts responsively to player input.
 ## Simplified Example
 
 There is an example of this basic character controller in my open source
-projected called a [SimplifiedKCC](xref:nickmaltbie.OpenKCC.Demo.SimplifiedKCC)
-if you want to investigate the source code for how this works with a simple
-example.
+projected called a SimplifiedKCC if you want to investigate the source code for
+how this works with a simple example.
 
 The full KCC has quite a few more parameters and features that is a bit
 more complex, see the [Example Usage](../usage.md) for more details.

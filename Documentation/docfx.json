@@ -7,6 +7,12 @@
                     "files": [
                         "**/*.cs"
                     ]
+                },
+                {
+                    "src": "../Assets/Samples",
+                    "files": [
+                        "**/*.cs"
+                    ]
                 }
             ],
             "globalNamespaceId": "Global",
@@ -65,6 +71,12 @@
         "overwrite": [
             {
                 "src": "../Packages/com.nickmaltbie.openkcc",
+                "files": [
+                    "**/*.cs"
+                ]
+            },
+            {
+                "src": "../Assets/Samples",
                 "files": [
                     "**/*.cs"
                 ]

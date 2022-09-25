@@ -52,8 +52,8 @@ properly together to achieve some more complex function.
 ### EditMode Tests
 
 Edit mode tests usually end up 'Mocking' other components to make them
-easier to test independently (See [Mocking in Unit Tests](https://microsoft.github.io/code-with-engineering-playbook/automated-testing/unit-testing/mocking/) for a more detailed overview of
-mocking).
+easier to test independently (See [Mocking in Unit Tests](https://microsoft.github.io/code-with-engineering-playbook/automated-testing/unit-testing/mocking/)
+for a more detailed overview of mocking).
 
 This is achieved using the [Moq](https://github.com/Moq/moq4) library. Please
 see some existing examples of edit mode tests for examples.
@@ -81,7 +81,7 @@ PlayMode tests don't need to provide full coverage, but should instead
 be testing individual scenarios of how the project could be used.
 
 The benefit of creating the scene via script instead of as a unity scene is that
-it allows for very complex or programmatic interactions in setup (such as 
+it allows for very complex or programmatic interactions in setup (such as
 evaluating 1000 stair configurations without having to save every one).
 
 ### Parameterized Tests
