@@ -7,7 +7,7 @@ Mono Behaviour. This example character controller allows you to configure
 a character controller with a unique camera controller and collider cast.
 
 The default example in the samples has a character controller that
-uses the [CameraController](xref:nickmaltbie.OpenKCC.Character.CameraController]
+uses the [CameraController](xref:nickmaltbie.OpenKCC.Character.CameraController)
 and a
 [CapsuleColliderCast](xref:nickmaltbie.OpenKCC.Utils.CapsuleColliderCast).
 
