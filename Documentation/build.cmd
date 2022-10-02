@@ -15,7 +15,7 @@ docfx metadata %~dp0\docfx.json --warningsAsErrors --logLevel verbose --force &&
 )
 
 echo Generating website
-docfx build %~dp0\docfx.json --warningsAsErrors --logLevel verbose && (
+docfx build %~dp0\docfx.json -t default --warningsAsErrors --logLevel verbose && (
     echo Successfuly generated website for documentation
 ) || (
     echo Could not properly website for documentation
