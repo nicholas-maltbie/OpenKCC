@@ -18,7 +18,7 @@
 
 using System;
 
-namespace nickmaltbie.OpenKCC.StateMachine.Attributes
+namespace nickmaltbie.OpenKCC.FSM.Attributes
 {
     /// <summary>
     /// Action invoked with every frame update. See unity doc's
@@ -28,7 +28,7 @@ namespace nickmaltbie.OpenKCC.StateMachine.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class OnUpdateAttribute : ActionAttribute
     {
-        public OnUpdateAttribute(Action action) : base(action) { }
+        public OnUpdateAttribute(string action) : base(action) { }
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ namespace nickmaltbie.OpenKCC.StateMachine.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class OnFixedUpdateAttribute : ActionAttribute
     {
-        public OnFixedUpdateAttribute(Action action) : base(action) { }
+        public OnFixedUpdateAttribute(string action) : base(action) { }
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ namespace nickmaltbie.OpenKCC.StateMachine.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class OnLateUpdateAttribute : ActionAttribute
     {
-        public OnLateUpdateAttribute(Action action) : base(action) { }
+        public OnLateUpdateAttribute(string action) : base(action) { }
     }
     
     /// <summary>
@@ -61,7 +61,7 @@ namespace nickmaltbie.OpenKCC.StateMachine.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class OnGUIAttribute : ActionAttribute
     {
-        public OnGUIAttribute(Action action) : base(action) { }
+        public OnGUIAttribute(string action) : base(action) { }
     }
     
     /// <summary>
@@ -72,7 +72,7 @@ namespace nickmaltbie.OpenKCC.StateMachine.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class OnEnableAttribute : ActionAttribute
     {
-        public OnEnableAttribute(Action action) : base(action) { }
+        public OnEnableAttribute(string action) : base(action) { }
     }
     
     /// <summary>
@@ -83,7 +83,7 @@ namespace nickmaltbie.OpenKCC.StateMachine.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class OnDisableAttribute : ActionAttribute
     {
-        public OnDisableAttribute(Action action) : base(action) { }
+        public OnDisableAttribute(string action) : base(action) { }
     }
     
     /// <summary>
@@ -94,6 +94,6 @@ namespace nickmaltbie.OpenKCC.StateMachine.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class OnAnimatorIKAttribute : ActionAttribute
     {
-        public OnAnimatorIKAttribute(Action action) : base(action) { }
+        public OnAnimatorIKAttribute(string action) : base(action) { }
     }
 }

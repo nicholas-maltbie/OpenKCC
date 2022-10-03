@@ -19,7 +19,7 @@
 using System;
 using System.Linq;
 
-namespace nickmaltbie.OpenKCC.StateMachine.Attributes
+namespace nickmaltbie.OpenKCC.FSM.Attributes
 {
     /// <summary>
     /// Transition attribute to manage transitions between states for a state machine.
@@ -58,7 +58,7 @@ namespace nickmaltbie.OpenKCC.StateMachine.Attributes
         public static bool RequireTransition(Type currentState, Event raisedEvent, out Type nextState)
         {
             var transitions = GetCustomAttributes(currentState, typeof(TransitionAttribute)) as TransitionAttribute[];
-            nextState = transitions.FirstOrDefault(transition => raisedEvent.GetType().IsInstanceOfType(transition.TriggerEvent))?.TargetState;
+            nextState = transitions.FirstOrDefault(transition => raisedEvent.GetType().Equals(transition.TriggerEvent))?.TargetState;
             return nextState != null;
         }
     }

@@ -16,31 +16,10 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
-
-namespace nickmaltbie.OpenKCC.StateMachine.Attributes
+namespace nickmaltbie.OpenKCC.FSM
 {
     /// <summary>
-    /// Initial state for starting a state machine.
+    /// Event for manaing transitions in state machines.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class InitialStateAttribute : Attribute { }
-
-    /// <summary>
-    /// Action to invoke whenever a state is entered.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class OnEnterStateAttribute : ActionAttribute
-    {
-        public OnEnterStateAttribute(Action action) : base(action) { }
-    }
-    
-    /// <summary>
-    /// Action to invoke whenever a state is exited.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class OnExitStateAttribute : ActionAttribute
-    {
-        public OnExitStateAttribute(Action action) : base(action) { }
-    }
+    public class Event { }
 }

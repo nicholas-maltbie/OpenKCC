@@ -18,16 +18,17 @@
 
 using System;
 using System.Linq;
-using nickmaltbie.OpenKCC.StateMachine.Attributes;
+using System.Reflection;
+using nickmaltbie.OpenKCC.FSM.Attributes;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.StateMachine
+namespace nickmaltbie.OpenKCC.FSM
 {
     /// <summary>
     /// Abstract state machine to manage a set of given states
     /// and transitions.
     /// </summary>
-    public class AbstractStateMachine : MonoBehaviour
+    public class StateMachine : MonoBehaviour
     {
         /// <summary>
         /// Current state of the state machine.
@@ -39,13 +40,13 @@ namespace nickmaltbie.OpenKCC.StateMachine
         /// <see cref="MonoBehaviour"/> and will set the initial
         /// state to the state defined under this class with a <see cref="InitialStateAttribute"/>.
         /// </summary>
-        public AbstractStateMachine()
+        public StateMachine()
         {
             CurrentState = GetType().GetNestedTypes()
                 .Where(type => type.IsClass && type.IsSubclassOf(typeof(State)))
                 .First(type => State.IsInitialState(type));
 
-            State.OnEnter(CurrentState);
+            InvokeAction(State.OnEnter(CurrentState));
         }
 
         /// <summary>
@@ -62,45 +63,89 @@ namespace nickmaltbie.OpenKCC.StateMachine
         {
             if (TransitionAttribute.RequireTransition(CurrentState, evt, out Type nextState))
             {
-                State.OnExit(CurrentState);
+                InvokeAction(State.OnExit(CurrentState));
                 CurrentState = nextState;
-                State.OnEnter(nextState);
+                InvokeAction(State.OnEnter(nextState));
             }
+        }
+
+        /// <summary>
+        /// Synchronously invokes an action of a given name.
+        /// </summary>
+        /// <param name="actionName">Name of action to invoke.</param>
+        public void InvokeAction(string actionName)
+        {
+            if (actionName != null)
+            {
+                GetActionWithName(actionName)?.Invoke(this, new object[0]);
+            }
+        }
+
+        /// <summary>
+        /// Returns the action with the specified name.
+        /// </summary>
+        /// <param name="actionName">Name of action to search for.</param>
+        /// <returns>Method info for the given action.</returns>
+        private protected MethodInfo GetActionWithName(string actionName)
+        {
+            MethodInfo action;
+            Type actorType = GetType();
+
+            do
+            {
+                BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic |
+                    BindingFlags.Instance | BindingFlags.FlattenHierarchy;
+                action = actorType.GetMethod(actionName, bindingFlags, Type.DefaultBinder, Array.Empty<Type>(), null);
+                actorType = actorType.BaseType;
+            }
+            while (action is null && actorType != typeof(StateMachine) && actorType != typeof(MonoBehaviour));
+
+            return action;
+        }
+
+        /// <summary>
+        /// Gets the action for a attribute based on the current state.
+        /// </summary>
+        /// <typeparam name="E">Attribute to search for.</typeparam>
+        /// <returns>name of the action defined for the current state or null if none is provided.</returns>
+        public string GetActionForCurrentState<E>() where E : ActionAttribute
+        {
+            return State.GetActionForAttribute<E>(CurrentState);
         }
 
         public void Update()
         {
-            State.GetActionForAttribute<OnUpdateAttribute>(CurrentState)?.Invoke();
+            InvokeAction(GetActionForCurrentState<OnUpdateAttribute>());
         }
 
         public void FixedUpdate()
         {
-            State.GetActionForAttribute<OnFixedUpdateAttribute>(CurrentState)?.Invoke();
+            InvokeAction(GetActionForCurrentState<OnFixedUpdateAttribute>());
         }
 
         public void LateUpdate()
         {
-            State.GetActionForAttribute<OnLateUpdateAttribute>(CurrentState)?.Invoke();
+            InvokeAction(GetActionForCurrentState<OnLateUpdateAttribute>());
         }
 
         public void OnGUI()
         {
-            State.GetActionForAttribute<OnGUIAttribute>(CurrentState)?.Invoke();
+            InvokeAction(GetActionForCurrentState<OnGUIAttribute>());
         }
 
         public void OnEnable()
         {
-            State.GetActionForAttribute<OnEnableAttribute>(CurrentState)?.Invoke();
+            InvokeAction(GetActionForCurrentState<OnEnableAttribute>());
         }
 
         public void OnDisable()
         {
-            State.GetActionForAttribute<OnDisableAttribute>(CurrentState)?.Invoke();
+            InvokeAction(GetActionForCurrentState<OnDisableAttribute>());
         }
 
-        public void OnAnimatorIKAttribute()
+        public void OnAnimatorIK()
         {
-            State.GetActionForAttribute<OnAnimatorIKAttribute>(CurrentState)?.Invoke();
+            InvokeAction(GetActionForCurrentState<OnAnimatorIKAttribute>());
         }
     }
 }

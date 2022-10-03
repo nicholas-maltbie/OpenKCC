@@ -17,21 +17,21 @@
 // SOFTWARE.
 
 using System;
-using nickmaltbie.OpenKCC.StateMachine.Attributes;
+using nickmaltbie.OpenKCC.FSM.Attributes;
 
-namespace nickmaltbie.OpenKCC.StateMachine
+namespace nickmaltbie.OpenKCC.FSM
 {
     /// <summary>
     /// Basic state to represent the current configuration of a state machine.
     /// </summary>
-    public class State
+    public abstract class State
     {
         /// <summary>
         /// Gets the on entry behavior for a given state.
         /// </summary>
         /// <param name="type">Type of state to check.</param>
         /// <returns>Action for the on entry of the state or null if there is none defined.</returns>
-        public static Action OnEnter(Type type)
+        public static string OnEnter(Type type)
         {
             return GetActionForAttribute<OnEnterStateAttribute>(type);
         }
@@ -41,7 +41,7 @@ namespace nickmaltbie.OpenKCC.StateMachine
         /// </summary>
         /// <param name="type">Type of state to check.</param>
         /// <returns>Action for the on exit of the state or null if there is none defined.</returns>
-        public static Action OnExit(Type type)
+        public static string OnExit(Type type)
         {
             return GetActionForAttribute<OnExitStateAttribute>(type);
         }
@@ -62,20 +62,9 @@ namespace nickmaltbie.OpenKCC.StateMachine
         /// <typeparam name="E">Type of attribute to lookup action for.</typeparam>
         /// <param name="type">Type of state to check.</param>
         /// <returns>Action for given type and state or null if none is defined.</returns>
-        public static Action GetActionForAttribute<E>(Type type) where E : ActionAttribute
+        public static string GetActionForAttribute<E>(Type type) where E : ActionAttribute
         {
             return (Attribute.GetCustomAttribute(type, typeof(E)) as ActionAttribute)?.Action;
-        }
-
-        /// <summary>
-        /// Gets the action for a give <see cref="ActionAttribute"/> of this state.
-        /// </summary>
-        /// <param name="type">Type of state to check.</param>
-        /// <param name="actionType">Type of attribute to lookup action for.</typeparam>
-        /// <returns>Action for given type and state or null if none is defined.</returns>
-        public static Action GetActionForAttribute<E>(Type type, Type actionType)
-        {
-            return (Attribute.GetCustomAttribute(type, actionType) as ActionAttribute)?.Action;
         }
     }
 }

@@ -18,25 +18,14 @@
 
 using System;
 
-namespace nickmaltbie.OpenKCC.StateMachine.Attributes
+namespace nickmaltbie.OpenKCC.FSM.Attributes
 {
     /// <summary>
-    /// Basic attribute that contains an action.
+    /// Animation attribute to control animations for a state machine.
     /// </summary>
-    public abstract class ActionAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    public class AnimationAttribute : Attribute
     {
-        /// <summary>
-        /// Gets the action associated with this attribute.
-        /// </summary>
-        public Action Action { get; private set; }
-
-        /// <summary>
-        /// Constructs a new instance of Action attribute for a given action.
-        /// </summary>
-        /// <param name="action">Action to associate with this attribute.</param>
-        public ActionAttribute(Action action)
-        {
-            Action = action;
-        }
+            
     }
 }
