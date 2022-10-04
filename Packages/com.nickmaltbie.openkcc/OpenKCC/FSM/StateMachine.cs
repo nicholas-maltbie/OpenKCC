@@ -17,10 +17,11 @@
 // SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using nickmaltbie.OpenKCC.FSM.Attributes;
-using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.FSM
 {
@@ -28,7 +29,7 @@ namespace nickmaltbie.OpenKCC.FSM
     /// Abstract state machine to manage a set of given states
     /// and transitions.
     /// </summary>
-    public class StateMachine : MonoBehaviour
+    public abstract class StateMachine : IStateMachine
     {
         /// <summary>
         /// Current state of the state machine.
@@ -36,21 +37,65 @@ namespace nickmaltbie.OpenKCC.FSM
         public Type CurrentState { get; private set; }
 
         /// <summary>
-        /// Initializes an abstract state machine based on a
-        /// <see cref="MonoBehaviour"/> and will set the initial
+        /// Map of actions of state machine -> state, attribute) -> action.
+        /// </summary>
+        internal static ConcurrentDictionary<Type, Dictionary<(Type, Type), MethodInfo>> ActionCache =
+            new ConcurrentDictionary<Type, Dictionary<(Type, Type), MethodInfo>>();
+
+        /// <summary>
+        /// Map of transitions of state machine -> (state, event) -> state.
+        /// </summary>
+        internal static ConcurrentDictionary<Type, Dictionary<(Type, Type), Type>> TransitionCache =
+            new ConcurrentDictionary<Type, Dictionary<(Type, Type), Type>>();
+
+        /// <summary>
+        /// Map of actions of state machine -> (state, event) -> [ actions ]
+        /// </summary>
+        internal static ConcurrentDictionary<Type, Dictionary<(Type, Type), List<MethodInfo>>> EventCache =
+            new ConcurrentDictionary<Type, Dictionary<(Type, Type), List<MethodInfo>>>();
+
+        /// <summary>
+        /// Setup the cache for the state machine if it hasn't been done already.
+        /// </summary>
+        internal static void SetupCache(Type stateMachine)
+        {
+            if (!ActionCache.ContainsKey(stateMachine))
+            {
+                ActionCache.TryAdd(stateMachine, FSMUtils.CreateActionAttributeCache(stateMachine));
+            }
+            if (!TransitionCache.ContainsKey(stateMachine))
+            {
+                TransitionCache.TryAdd(stateMachine, FSMUtils.CreateTransationAttributeCache(stateMachine));
+            }
+            if (!EventCache.ContainsKey(stateMachine))
+            {
+                EventCache.TryAdd(stateMachine, FSMUtils.CreateEventActionCache(stateMachine));
+            }
+        }
+
+        /// <summary>
+        /// Initializes a state machine
+        /// and will set the initial
         /// state to the state defined under this class with a <see cref="InitialStateAttribute"/>.
         /// </summary>
         public StateMachine()
         {
+            // Ensure the cahce is setup if not done so already
+            SetupCache(GetType());
+
             CurrentState = GetType().GetNestedTypes()
                 .Where(type => type.IsClass && type.IsSubclassOf(typeof(State)))
                 .First(type => State.IsInitialState(type));
 
-            InvokeAction(State.OnEnter(CurrentState));
+            InvokeAction<OnEnterStateAttribute>(CurrentState);
         }
 
         /// <summary>
         /// Raise a synchronous event for a given state machine.
+        /// <br/>
+        /// First checks if this state machine expects any events of this type
+        /// for the state machine's <see cref="CurrentState"/>. These
+        /// would follow an attribute of type <see cref="OnEventDoActionAttribute"/>.
         /// <br/>
         /// If the state machine's <see cref="CurrentState"/> expects a transition
         /// based on the event, then this will trigger the <see cref="OnExitStateAttribute"/>
@@ -59,93 +104,52 @@ namespace nickmaltbie.OpenKCC.FSM
         /// of the next state.
         /// </summary>
         /// <param name="evt">Event to send to this state machine.</param>
-        public void RaiseEvent(Event evt)
+        public void RaiseEvent(IEvent evt)
         {
-            if (TransitionAttribute.RequireTransition(CurrentState, evt, out Type nextState))
+            if (EventCache[GetType()].TryGetValue((CurrentState, evt.GetType()), out List<MethodInfo> actions))
             {
-                InvokeAction(State.OnExit(CurrentState));
+                foreach (MethodInfo action in actions)
+                {
+                    action?.Invoke(this, new object[0]);
+                }
+            }
+
+            if (TransitionCache[GetType()].TryGetValue((CurrentState, evt.GetType()), out Type nextState))
+            {
+                InvokeAction<OnExitStateAttribute>(CurrentState);
                 CurrentState = nextState;
-                InvokeAction(State.OnEnter(nextState));
+                InvokeAction<OnEnterStateAttribute>(CurrentState);
             }
         }
 
         /// <summary>
         /// Synchronously invokes an action of a given name.
         /// </summary>
-        /// <param name="actionName">Name of action to invoke.</param>
-        public void InvokeAction(string actionName)
+        /// <typeparam name="E">Type of action to invoke.</typeparam>
+        /// <param name="state">State to invoke action for, if unspecificed will use current state.</param>
+        /// <returns>True if an action was found and invoked, false otherwise.</returns>
+        public bool InvokeAction<E>(Type state = null) where E : ActionAttribute
         {
-            if (actionName != null)
-            {
-                GetActionWithName(actionName)?.Invoke(this, new object[0]);
-            }
+            return InvokeAction(typeof(E), state);
         }
 
         /// <summary>
-        /// Returns the action with the specified name.
+        /// Synchronously invokes an action of a given name.
         /// </summary>
-        /// <param name="actionName">Name of action to search for.</param>
-        /// <returns>Method info for the given action.</returns>
-        private protected MethodInfo GetActionWithName(string actionName)
+        /// <param name="actionType">Type of action to invoke.</param>
+        /// <param name="state">State to invoke action for, if unspecificed will use current state.</param>
+        /// <returns>True if an action was found and invoked, false otherwise.</returns>
+        public bool InvokeAction(Type actionType, Type state = null)
         {
-            MethodInfo action;
-            Type actorType = GetType();
-
-            do
+            if (ActionCache[GetType()].TryGetValue((state ?? CurrentState, actionType), out MethodInfo method))
             {
-                BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic |
-                    BindingFlags.Instance | BindingFlags.FlattenHierarchy;
-                action = actorType.GetMethod(actionName, bindingFlags, Type.DefaultBinder, Array.Empty<Type>(), null);
-                actorType = actorType.BaseType;
+                method.Invoke(this, new object[0]);
+                return method != null;
             }
-            while (action is null && actorType != typeof(StateMachine) && actorType != typeof(MonoBehaviour));
-
-            return action;
-        }
-
-        /// <summary>
-        /// Gets the action for a attribute based on the current state.
-        /// </summary>
-        /// <typeparam name="E">Attribute to search for.</typeparam>
-        /// <returns>name of the action defined for the current state or null if none is provided.</returns>
-        public string GetActionForCurrentState<E>() where E : ActionAttribute
-        {
-            return State.GetActionForAttribute<E>(CurrentState);
-        }
-
-        public void Update()
-        {
-            InvokeAction(GetActionForCurrentState<OnUpdateAttribute>());
-        }
-
-        public void FixedUpdate()
-        {
-            InvokeAction(GetActionForCurrentState<OnFixedUpdateAttribute>());
-        }
-
-        public void LateUpdate()
-        {
-            InvokeAction(GetActionForCurrentState<OnLateUpdateAttribute>());
-        }
-
-        public void OnGUI()
-        {
-            InvokeAction(GetActionForCurrentState<OnGUIAttribute>());
-        }
-
-        public void OnEnable()
-        {
-            InvokeAction(GetActionForCurrentState<OnEnableAttribute>());
-        }
-
-        public void OnDisable()
-        {
-            InvokeAction(GetActionForCurrentState<OnDisableAttribute>());
-        }
-
-        public void OnAnimatorIK()
-        {
-            InvokeAction(GetActionForCurrentState<OnAnimatorIKAttribute>());
+            else
+            {
+                return false;
+            }
         }
     }
 }

@@ -47,19 +47,5 @@ namespace nickmaltbie.OpenKCC.FSM.Attributes
             TriggerEvent = triggerEvent;
             TargetState = targetState;
         }
-
-        /// <summary>
-        /// Does a given state require a transition when an event is raised.
-        /// </summary>
-        /// <param name="currentState">State to check for required transition.</param>
-        /// <param name="raisedEvent">Raised event based on the state transition.</param>
-        /// <param name="nextState"></param>
-        /// <returns></returns>
-        public static bool RequireTransition(Type currentState, Event raisedEvent, out Type nextState)
-        {
-            var transitions = GetCustomAttributes(currentState, typeof(TransitionAttribute)) as TransitionAttribute[];
-            nextState = transitions.FirstOrDefault(transition => raisedEvent.GetType().Equals(transition.TriggerEvent))?.TargetState;
-            return nextState != null;
-        }
     }
 }

@@ -16,24 +16,48 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using nickmaltbie.OpenKCC.FSM.Attributes;
+using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.FSM
 {
-    /// <summary>
-    /// Basic state to represent the current configuration of a state machine.
-    /// </summary>
-    public abstract class State
+    public abstract class StateMachineMonoBehaviour : MonoBehaviour
     {
-        /// <summary>
-        /// Checks if a given state is labeled with the initial state type.
-        /// </summary>
-        /// <param name="type">Type of state to check.</param>
-        /// <returns>True if this is the initial state, flase otherwise.</returns>
-        public static bool IsInitialState(Type type)
+        public abstract IStateMachine StateMachine { get; }
+
+        public virtual void Update()
         {
-            return Attribute.GetCustomAttribute(type, typeof(InitialStateAttribute)) != null;
+            StateMachine.RaiseEvent(OnUpdateEvent.Instance);
+        }
+
+        public virtual void FixedUpdate()
+        {
+            StateMachine.RaiseEvent(OnFixedUpdateEvent.Instance);
+        }
+
+        public virtual void LateUpdate()
+        {
+            StateMachine.RaiseEvent(OnLateUpdateEvent.Instance);
+        }
+
+        public virtual void OnGUI()
+        {
+            StateMachine.RaiseEvent(OnGUIEvent.Instance);
+        }
+
+        public virtual void OnEnable()
+        {
+            StateMachine.RaiseEvent(OnEnableEvent.Instance);
+        }
+
+        public virtual void OnDisable()
+        {
+            StateMachine.RaiseEvent(OnDisableEvent.Instance);
+        }
+
+        public virtual void OnAnimatorIK()
+        {
+            StateMachine.RaiseEvent(OnAnimatorIKEvent.Instance);
         }
     }
 }

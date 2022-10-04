@@ -17,23 +17,24 @@
 // SOFTWARE.
 
 using System;
-using nickmaltbie.OpenKCC.FSM.Attributes;
 
 namespace nickmaltbie.OpenKCC.FSM
 {
     /// <summary>
-    /// Basic state to represent the current configuration of a state machine.
+    /// Abstract state machine to manage a set of given states
+    /// and transitions.
     /// </summary>
-    public abstract class State
+    public interface IStateMachine
     {
         /// <summary>
-        /// Checks if a given state is labeled with the initial state type.
+        /// Current state of the state machine.
         /// </summary>
-        /// <param name="type">Type of state to check.</param>
-        /// <returns>True if this is the initial state, flase otherwise.</returns>
-        public static bool IsInitialState(Type type)
-        {
-            return Attribute.GetCustomAttribute(type, typeof(InitialStateAttribute)) != null;
-        }
+        public Type CurrentState { get; }
+
+        /// <summary>
+        /// Raise an event to the current state machine.
+        /// </summary>
+        /// <param name="evt">Event to send to the state machine.</param>
+        public void RaiseEvent(IEvent evt);
     }
 }

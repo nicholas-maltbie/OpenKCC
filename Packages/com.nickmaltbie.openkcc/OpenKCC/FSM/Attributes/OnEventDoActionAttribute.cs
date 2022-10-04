@@ -16,10 +16,29 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace nickmaltbie.OpenKCC.FSM
+using System;
+
+namespace nickmaltbie.OpenKCC.FSM.Attributes
 {
     /// <summary>
-    /// Event for manaing transitions in state machines.
+    /// Basic attribute that maps an event to an action.
     /// </summary>
-    public class Event { }
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    public class OnEventDoActionAttribute : ActionAttribute
+    {
+        /// <summary>
+        /// Event to wait for in order to execute an action.
+        /// </summary>
+        public Type Event { get; private set; }
+
+        /// <summary>
+        /// Constructs a new instance of Action attribute for a given action.
+        /// </summary>
+        /// <param name="evt">Event to wait for in order to execute action.</param>
+        /// <param name="action">Action to associate with this attribute.</param>
+        public OnEventDoActionAttribute(Type evt, string action) : base(action)
+        {
+            Event = evt;
+        }
+    }
 }

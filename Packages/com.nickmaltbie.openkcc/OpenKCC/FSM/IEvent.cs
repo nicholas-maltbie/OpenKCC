@@ -16,24 +16,10 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
-using nickmaltbie.OpenKCC.FSM.Attributes;
-
 namespace nickmaltbie.OpenKCC.FSM
 {
     /// <summary>
-    /// Basic state to represent the current configuration of a state machine.
+    /// Event for manaing transitions or executing actions in state machines.
     /// </summary>
-    public abstract class State
-    {
-        /// <summary>
-        /// Checks if a given state is labeled with the initial state type.
-        /// </summary>
-        /// <param name="type">Type of state to check.</param>
-        /// <returns>True if this is the initial state, flase otherwise.</returns>
-        public static bool IsInitialState(Type type)
-        {
-            return Attribute.GetCustomAttribute(type, typeof(InitialStateAttribute)) != null;
-        }
-    }
+    public interface IEvent { }
 }
