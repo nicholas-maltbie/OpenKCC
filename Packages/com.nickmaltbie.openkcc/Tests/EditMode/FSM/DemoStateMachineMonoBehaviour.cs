@@ -26,7 +26,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
     /// <summary>
     /// Demo state machine for 
     /// </summary>
-    public class DemoStateMachine : StateMachine
+    public class DemoStateMachineMonoBehaviour : StateMachineMonoBehaviour
     {
         /// <summary>
         /// Counts of actions for each combination of (Action, State).
@@ -47,11 +47,21 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
         [Transition(typeof(AEvent), typeof(StateA))]
         [Transition(typeof(BEvent), typeof(StateB))]
         [Transition(typeof(CEvent), typeof(StateC))]
+        [OnEnterState(nameof(OnEnterStartingState))]
+        [OnExitState(nameof(OnExitStartingState))]
+        [OnUpdate(nameof(OnUpdateStartingState))]
+        [OnFixedUpdate(nameof(OnFixedUpdateStartingState))]
+        [OnLateUpdate(nameof(OnLateUpdateStartingState))]
+        [OnGUI(nameof(OnGUIStartingState))]
+        [OnEnable(nameof(OnEnableStartingState))]
+        [OnDisable(nameof(OnDisableStartingState))]
+        [OnAnimatorIK(nameof(OnAnimatorIKStartingState))]
         public class StartingState : State { }
 
         [Transition(typeof(BEvent), typeof(StateB))]
         [Transition(typeof(CEvent), typeof(StateC))]
         [OnEnterState(nameof(OnEnterStateACount))]
+        [OnUpdate(nameof(OnUpdateStateA))]
         [OnEventDoAction(typeof(AEvent), nameof(DoNothing))]
         [OnEventDoAction(typeof(OnUpdateEvent), nameof(DoNothing))]
         public class StateA : State { }
@@ -73,9 +83,45 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
 
         }
 
+        public void OnUpdateStartingState()
+        {
+            actionStateCounts.AddOrUpdate((typeof(OnUpdateAttribute), typeof(StartingState)), 1, (_, v) => v + 1);
+        }
+
+        public void OnFixedUpdateStartingState()
+        {
+            actionStateCounts.AddOrUpdate((typeof(OnFixedUpdateAttribute), typeof(StartingState)), 1, (_, v) => v + 1);
+        }
+
+        public void OnLateUpdateStartingState()
+        {
+            actionStateCounts.AddOrUpdate((typeof(OnLateUpdateAttribute), typeof(StartingState)), 1, (_, v) => v + 1);
+        }
+
+        public void OnGUIStartingState()
+        {
+            actionStateCounts.AddOrUpdate((typeof(OnGUIAttribute), typeof(StartingState)), 1, (_, v) => v + 1);
+        }
+
+        public void OnEnableStartingState()
+        {
+            actionStateCounts.AddOrUpdate((typeof(OnEnableAttribute), typeof(StartingState)), 1, (_, v) => v + 1);
+        }
+
+        public void OnDisableStartingState()
+        {
+            actionStateCounts.AddOrUpdate((typeof(OnDisableAttribute), typeof(StartingState)), 1, (_, v) => v + 1);
+        }
+
+        public void OnAnimatorIKStartingState()
+        {
+            actionStateCounts.AddOrUpdate((typeof(OnAnimatorIKAttribute), typeof(StartingState)), 1, (_, v) => v + 1);
+        }
+
         public void OnEnterStartingState()
         {
             UnityEngine.Debug.Log("On Enter Starting State Invoked");
+            OnEntryCount.AddOrUpdate(typeof(StartingState), 1, (Type t, int v) => v + 1);
         }
 
         public void OnExitStartingState()

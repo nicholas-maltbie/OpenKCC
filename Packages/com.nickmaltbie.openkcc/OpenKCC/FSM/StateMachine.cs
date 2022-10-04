@@ -130,26 +130,7 @@ namespace nickmaltbie.OpenKCC.FSM
         /// <returns>True if an action was found and invoked, false otherwise.</returns>
         public bool InvokeAction<E>(Type state = null) where E : ActionAttribute
         {
-            return InvokeAction(typeof(E), state);
-        }
-
-        /// <summary>
-        /// Synchronously invokes an action of a given name.
-        /// </summary>
-        /// <param name="actionType">Type of action to invoke.</param>
-        /// <param name="state">State to invoke action for, if unspecificed will use current state.</param>
-        /// <returns>True if an action was found and invoked, false otherwise.</returns>
-        public bool InvokeAction(Type actionType, Type state = null)
-        {
-            if (ActionCache[GetType()].TryGetValue((state ?? CurrentState, actionType), out MethodInfo method))
-            {
-                method.Invoke(this, new object[0]);
-                return method != null;
-            }
-            else
-            {
-                return false;
-            }
+            return FSMUtils.InvokeAction(this, typeof(E), state ?? CurrentState, ActionCache[GetType()]);
         }
     }
 }

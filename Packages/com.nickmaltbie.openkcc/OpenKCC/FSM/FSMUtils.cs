@@ -71,7 +71,7 @@ namespace nickmaltbie.OpenKCC.FSM
                 foreach (ActionAttribute attr in Attribute.GetCustomAttributes(state, typeof(ActionAttribute)))
                 {
                     Type actionType = attr.GetType();
-                    actionLookup[(state, actionType)] = FSMUtils.GetActionWithName(stateMachine, attr.Action);
+                    actionLookup[(state, actionType)] = GetActionWithName(stateMachine, attr.Action);
                 }
             }
 
@@ -136,6 +136,27 @@ namespace nickmaltbie.OpenKCC.FSM
             }
 
             return eventLookup;
+        }
+
+        /// <summary>
+        /// Synchronously invokes an action of a given name.
+        /// </summary>
+        /// <param name="baseObject">Base object to invoke method of.</param>
+        /// <param name="actionType">Type of action to invoke.</param>
+        /// <param name="state">State to invoke action for.</param>
+        /// <param name="actionCache">Cache to lookup method info from.</param>
+        /// <returns>True if an action was found and invoked, false otherwise.</returns>
+        public static bool InvokeAction(object baseObject, Type actionType, Type state, Dictionary<(Type, Type), MethodInfo> actionCache)
+        {
+            if (actionCache.TryGetValue((state, actionType), out MethodInfo method))
+            {
+                method.Invoke(baseObject, new object[0]);
+                return method != null;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
