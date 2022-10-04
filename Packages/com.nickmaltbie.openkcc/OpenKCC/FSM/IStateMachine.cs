@@ -36,5 +36,13 @@ namespace nickmaltbie.OpenKCC.FSM
         /// </summary>
         /// <param name="evt">Event to send to the state machine.</param>
         public void RaiseEvent(IEvent evt);
+
+        /// <summary>
+        /// Internal method to set the current state of the state machine without
+        /// invoking the <see cref="Attributes.OnEnterStateAttribute"/>
+        /// or <see cref="Attributes.OnExitStateAttribute"/>
+        /// </summary>
+        /// <param name="newState">New state to set for the state machine.</param>
+        public void SetStateQuiet(Type newState);
     }
 }

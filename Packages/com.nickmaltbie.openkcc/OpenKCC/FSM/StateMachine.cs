@@ -17,10 +17,6 @@
 // SOFTWARE.
 
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using nickmaltbie.OpenKCC.FSM.Attributes;
 
 namespace nickmaltbie.OpenKCC.FSM
@@ -37,57 +33,13 @@ namespace nickmaltbie.OpenKCC.FSM
         public Type CurrentState { get; private set; }
 
         /// <summary>
-        /// Map of actions of state machine -> state, attribute) -> action.
-        /// </summary>
-        internal static ConcurrentDictionary<Type, Dictionary<(Type, Type), MethodInfo>> ActionCache =
-            new ConcurrentDictionary<Type, Dictionary<(Type, Type), MethodInfo>>();
-
-        /// <summary>
-        /// Map of transitions of state machine -> (state, event) -> state.
-        /// </summary>
-        internal static ConcurrentDictionary<Type, Dictionary<(Type, Type), Type>> TransitionCache =
-            new ConcurrentDictionary<Type, Dictionary<(Type, Type), Type>>();
-
-        /// <summary>
-        /// Map of actions of state machine -> (state, event) -> [ actions ]
-        /// </summary>
-        internal static ConcurrentDictionary<Type, Dictionary<(Type, Type), List<MethodInfo>>> EventCache =
-            new ConcurrentDictionary<Type, Dictionary<(Type, Type), List<MethodInfo>>>();
-
-        /// <summary>
-        /// Setup the cache for the state machine if it hasn't been done already.
-        /// </summary>
-        internal static void SetupCache(Type stateMachine)
-        {
-            if (!ActionCache.ContainsKey(stateMachine))
-            {
-                ActionCache.TryAdd(stateMachine, FSMUtils.CreateActionAttributeCache(stateMachine));
-            }
-            if (!TransitionCache.ContainsKey(stateMachine))
-            {
-                TransitionCache.TryAdd(stateMachine, FSMUtils.CreateTransationAttributeCache(stateMachine));
-            }
-            if (!EventCache.ContainsKey(stateMachine))
-            {
-                EventCache.TryAdd(stateMachine, FSMUtils.CreateEventActionCache(stateMachine));
-            }
-        }
-
-        /// <summary>
         /// Initializes a state machine
         /// and will set the initial
         /// state to the state defined under this class with a <see cref="InitialStateAttribute"/>.
         /// </summary>
         public StateMachine()
         {
-            // Ensure the cahce is setup if not done so already
-            SetupCache(GetType());
-
-            CurrentState = GetType().GetNestedTypes()
-                .Where(type => type.IsClass && type.IsSubclassOf(typeof(State)))
-                .First(type => State.IsInitialState(type));
-
-            InvokeAction<OnEnterStateAttribute>(CurrentState);
+            FSMUtils.InitializeStateMachine(this);
         }
 
         /// <summary>
@@ -106,31 +58,13 @@ namespace nickmaltbie.OpenKCC.FSM
         /// <param name="evt">Event to send to this state machine.</param>
         public void RaiseEvent(IEvent evt)
         {
-            if (EventCache[GetType()].TryGetValue((CurrentState, evt.GetType()), out List<MethodInfo> actions))
-            {
-                foreach (MethodInfo action in actions)
-                {
-                    action?.Invoke(this, new object[0]);
-                }
-            }
-
-            if (TransitionCache[GetType()].TryGetValue((CurrentState, evt.GetType()), out Type nextState))
-            {
-                InvokeAction<OnExitStateAttribute>(CurrentState);
-                CurrentState = nextState;
-                InvokeAction<OnEnterStateAttribute>(CurrentState);
-            }
+            FSMUtils.RaiseCachedEvent(this, evt);
         }
 
-        /// <summary>
-        /// Synchronously invokes an action of a given name.
-        /// </summary>
-        /// <typeparam name="E">Type of action to invoke.</typeparam>
-        /// <param name="state">State to invoke action for, if unspecificed will use current state.</param>
-        /// <returns>True if an action was found and invoked, false otherwise.</returns>
-        public bool InvokeAction<E>(Type state = null) where E : ActionAttribute
+        /// <inheritdoc/>
+        public void SetStateQuiet(Type newState)
         {
-            return FSMUtils.InvokeAction(this, typeof(E), state ?? CurrentState, ActionCache[GetType()]);
+            CurrentState = newState;
         }
     }
 }

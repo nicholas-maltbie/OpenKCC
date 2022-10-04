@@ -43,10 +43,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
         [Test]
         public void RebuildCache()
         {
-            StateMachine.ActionCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), MethodInfo>>();
-            StateMachine.TransitionCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), Type>>();
-            StateMachine.EventCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), List<MethodInfo>>>();
-            StateMachine.SetupCache(typeof(DemoStateMachine));
+            FSMUtils.ActionCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), MethodInfo>>();
+            FSMUtils.TransitionCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), Type>>();
+            FSMUtils.EventCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), List<MethodInfo>>>();
+            FSMUtils.SetupCache(typeof(DemoStateMachine));
+            FSMUtils.SetupCache(typeof(DemoStateMachineMonoBehaviour));
         }
 
         [Test]
