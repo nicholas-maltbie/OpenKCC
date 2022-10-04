@@ -47,6 +47,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
         [Transition(typeof(AEvent), typeof(StateA))]
         [Transition(typeof(BEvent), typeof(StateB))]
         [Transition(typeof(CEvent), typeof(StateC))]
+        [OnEnterState(nameof(OnEnterStartingState))]
+        [OnExitState(nameof(OnExitStartingState))]
         public class StartingState : State { }
 
         [Transition(typeof(BEvent), typeof(StateB))]
@@ -75,7 +77,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
 
         public void OnEnterStartingState()
         {
-            UnityEngine.Debug.Log("On Enter Starting State Invoked");
+            OnEntryCount.AddOrUpdate(typeof(StartingState), 1, (Type t, int v) => v + 1);
         }
 
         public void OnExitStartingState()

@@ -197,7 +197,7 @@ namespace nickmaltbie.OpenKCC.FSM
         /// <returns>True if an action was found and invoked, false otherwise.</returns>
         public static bool InvokeAction<E>(IStateMachine stateMachine, Type state = null) where E : ActionAttribute
         {
-            return InvokeAction(stateMachine, typeof(E), state ?? stateMachine.CurrentState);
+            return InvokeAction(stateMachine, typeof(E), state);
         }
 
         /// <summary>
@@ -209,7 +209,9 @@ namespace nickmaltbie.OpenKCC.FSM
         /// <returns>True if an action was found and invoked, false otherwise.</returns>
         public static bool InvokeAction(IStateMachine stateMachine, Type actionType, Type state)
         {
-            if (ActionCache[stateMachine.GetType()].TryGetValue((state, actionType), out MethodInfo method))
+            UnityEngine.Debug.Log($"Invoking sm: {stateMachine.GetType()} action: {actionType} state: {state}");
+            UnityEngine.Debug.Log($"Cached actions for sm: {stateMachine.GetType()} include: [{string.Join(", ", ActionCache[stateMachine.GetType()].Keys.Select(tuple => $"({tuple.Item1}, {tuple.Item2})"))})]");
+            if (ActionCache[stateMachine.GetType()].TryGetValue((state ?? stateMachine.CurrentState, actionType), out MethodInfo method))
             {
                 method.Invoke(stateMachine, new object[0]);
                 return method != null;
@@ -227,18 +229,14 @@ namespace nickmaltbie.OpenKCC.FSM
         /// <param name="stateMachine">state machine to setup.</param>
         public static void InitializeStateMachine(IStateMachine stateMachine)
         {
-            UnityEngine.Debug.Log($"Setting up state machine {stateMachine}");
-
             // Ensure the cahce is setup if not done so already
             SetupCache(stateMachine.GetType());
-
-            UnityEngine.Debug.Log($"Set initial state to {stateMachine.CurrentState}");
 
             stateMachine.SetStateQuiet(stateMachine.GetType().GetNestedTypes()
                 .Where(type => type.IsClass && type.IsSubclassOf(typeof(State)))
                 .First(type => State.IsInitialState(type)));
 
-            UnityEngine.Debug.Log($"Invoking OnEnterStateAttribute for {stateMachine.CurrentState}");
+            UnityEngine.Debug.Log($"Set initial state to \"{stateMachine.CurrentState}\" (isNull = {stateMachine.CurrentState == null})");
 
             InvokeAction<OnEnterStateAttribute>(stateMachine, stateMachine.CurrentState);
         }

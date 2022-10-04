@@ -29,8 +29,6 @@ namespace nickmaltbie.OpenKCC.FSM
         /// </summary>
         public Type CurrentState { get; private set; }
 
-        Type IStateMachine.CurrentState => throw new NotImplementedException();
-
         /// <summary>
         /// Initializes a state machine
         /// and will set the initial
