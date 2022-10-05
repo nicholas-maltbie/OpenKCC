@@ -73,16 +73,34 @@ by a set of [C# Attributes](https://learn.microsoft.com/en-us/dotnet/csharp/prog
 to configure and manage controls for the state machine
 directly from the C# code.
 
-* StateMachine - class to manage a set of states and transitions.
-* State - A state for a given FSM.
-* TransitionAttribute - Attribute to define and manage
+* [IStateMachine](xref:nickmaltbie.OpenKCC.FSM.IStateMachine) - interface to
+    manage a set of states and transitions.
+
+    * [StateMachine](xref:nickmaltbie.OpenKCC.FSM.StateMachine)
+        \- concrete implementation of state machine
+        with cached transitions and events from decorators from [FSMUtils](xref:nickmaltbie.OpenKCC.FSM.FSMUtils).
+    * [StateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.FSM.StateMachineMonoBehaviour)
+        \- concrete implementation of state machine with cached transitions and events
+        from decorators from [FSMUtils](xref:nickmaltbie.OpenKCC.FSM.FSMUtils)
+        in addition to firing off events for Unity Messages and supports
+        attributes such as
+        [OnUpdate](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnUpdateAttribute)
+
+* [State](xref:nickmaltbie.OpenKCC.FSM.State) - A state for a given FSM.
+* [TransitionAttribute](xref:nickmaltbie.OpenKCC.FSM.Attributes.TransitionAttribute)
+    \- Attribute to define and manage
     the transitions for a given state.
 * AnimationAttribute - Attribute to configure an animation
     or set of animations to play based on a configuration.
+
+    * Still under development...
+
 * Entry and exit behaviors defined via the attributes:
 
-    * OnEnterState - Called when state is entered
-    * OnExitState - Called when the state is exited
+    * [OnEnterState](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnEnterStateAttribute)
+        \- Called when stateis entered
+    * [OnExitState](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnExitStateAttribute)
+        \- Called when the state is exited
 
 * Update Attributes to be triggered on various [MonoBehaviour](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html)
     functions including the following subset. There are other
@@ -90,13 +108,20 @@ directly from the C# code.
     are the only planned ones as of now, feel free to extend
     the code or add your own events if you wish.
 
-    * OnUpdate - Called each frame.
-    * OnFixedUpdate - Called each fixed update.
-    * OnLateUpdate - Called at the end of each frame.
-    * OnGUI - Called each GUI update.
-    * OnEnable - Called when object is enabled.
-    * OnDisable - Called when object is disabled.
-    * OnAnimatorIk - Callback for setting up animation IK (inverse kinematics).
+    * [OnUpdate](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnUpdateAttribute)
+        : Called each frame.
+    * [OnFixedUpdate](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnFixedUpdateAttribute)
+        : Called each fixed update.
+    * [OnLateUpdate](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnLateUpdateAttribute)
+        : Called at the end of each frame.
+    * [OnGUI](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnGUIAttribute)
+        : Called each GUI update.
+    * [OnEnable](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnEnableAttribute)
+        : Called when object is enabled.
+    * [OnDisable](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnDisableAttribute)
+        : Called when object is disabled.
+    * [OnAnimatorIK](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnAnimatorIKAttribute)
+        : Callback for setting up animation IK (inverse kinematics).
 
 ## Customization
 
@@ -106,3 +131,13 @@ free to use or extend the code however you see fit.
 As of right now, there is only one state machine example
 in the project of the character controller
 but you can extend or change it however you wish.
+
+Some examples of custom state machines are added
+in the test code under
+
+* [DemoStateMachine](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoStateMachine)
+    \- Example implementation of a
+    [StateMachine](xref:nickmaltbie.OpenKCC.FSM.StateMachine).
+* [DemoStateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoStateMachineMonoBehaviour)
+    \- Example implementation of a
+    [StateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.FSM.StateMachineMonoBehaviour).
