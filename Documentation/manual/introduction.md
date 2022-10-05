@@ -50,16 +50,16 @@ the important folders for using and learning about the project:
 
 * `Assets\Samples` - OpenKCC Sample scenes and examples for the project.
 * `Packages\com.nickmaltbie.openkcc` -
-  main package folder with all the code, tests, and shared assets.
-  * `Packages\com.nickmaltbie.openkcc\common` -
-    Common prefabs, materials, and assets used across the entire project.
-  * `Packages\com.nickmaltbie.openkcc\Editor` -
-    Editor specific assets for the project configuration,
-    not included in builds.
-  * `Packages\com.nickmaltbie.openkcc\OpenKCC` -
-    Main project source code and assemblies.
-  * `Packages\com.nickmaltbie.openkcc\Tests` -
-    EditMode and PlayMode tests for the project.
+    main package folder with all the code, tests, and shared assets.
+    * `Packages\com.nickmaltbie.openkcc\common` -
+        Common prefabs, materials, and assets used across the entire project.
+    * `Packages\com.nickmaltbie.openkcc\Editor` -
+        Editor specific assets for the project configuration,
+        not included in builds.
+    * `Packages\com.nickmaltbie.openkcc\OpenKCC` -
+        Main project source code and assemblies.
+    * `Packages\com.nickmaltbie.openkcc\Tests` -
+        EditMode and PlayMode tests for the project.
 
 The rest of the assets folder contains code for render pipeline and
 settings, feel free to look through them if you want an example

@@ -12,4 +12,4 @@ echo "Building code metadata"
 docfx metadata $BASEDIR/docfx.json --warningsAsErrors --logLevel verbose --force
 
 echo "Generating website"
-docfx build $BASEDIR/docfx.json --warningsAsErrors --logLevel verbose
+docfx build $BASEDIR/docfx.json -t default --warningsAsErrors --logLevel verbose

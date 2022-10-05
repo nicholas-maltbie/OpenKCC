@@ -72,58 +72,58 @@ are also explained in depth in the
 documentation page.
 
 - **Input Controls** - Controls to manage character movement.
-  - _Move Action_ - Action to move player along two axis input
-    (forward back, left right)
-  - _Jump Action_ - Button action to start player jump
-  - _Sprint Action_ - Button action to control sprinting speed
-- **Ground Checking** - Configures grounded state for player.
-  - _Grounded Distance_ - Threshold distance for when player is considered
-    to be "on the ground". Used to detect if the player is falling or sliding.
-  - _Standing Distance_ - Distance to ground at which player is considered
-    standing on something. Used to identify what the player is standing on.
-  - _Ground Check Distance_ - Distance to create raycast for checking grounded
-    state. Sometimes useful to be slightly farther than grounded distance
-    or standing distance to catch edge cases.
-  - _Max Walk Angle_ - Maximum slope a player can walk without sliding
-    or falling down.
-  - _Gravity_ - Direction and magnitude of gravity in units per second squared.
+    - _Move Action_ - Action to move player along two axis input
+        (forward back, left right)
+    - _Jump Action_ - Button action to start player jump
+    - _Sprint Action_ - Button action to control sprinting speed
+    - **Ground Checking** - Configures grounded state for player.
+    - _Grounded Distance_ - Threshold distance for when player is considered
+        to be "on the ground". Used to detect if the player is falling or sliding.
+    - _Standing Distance_ - Distance to ground at which player is considered
+        standing on something. Used to identify what the player is standing on.
+    - _Ground Check Distance_ - Distance to create raycast for checking grounded
+        state. Sometimes useful to be slightly farther than grounded distance
+        or standing distance to catch edge cases.
+    - _Max Walk Angle_ - Maximum slope a player can walk without sliding
+        or falling down.
+    - _Gravity_ - Direction and magnitude of gravity in units per second squared.
 - **Motion Settings** - Settings for controlling player movement.
   Many of these settings are based on the character movement design,
   See [KCC Movement Design](kcc-design/kcc-movement.md) for more details.
-  - _Walking Speed_ - Speed at which the player walks, in units per second.
-  - _Sprint Speed_ - Speed of player when sprinting, in units per second.
-  - _Max Bounces_ - Maximum bounces for computing player movement.
-  - _Push Decay_ - Preserved momentum percentage when pushing an object. A value
-    of 0 would indicate a complete stop while a value of 1 would be fully
-    bouncing off an object when the player collides with it.
-  - _Angle Power_ - Angle decay rate when sliding off surfaces.
-  - _Max Push Speed_ - Maximum distance a player can be pushed when overlapping
-    other objects in units per second. Useful for resolving collisions.
-  - _Vertical Snap Down_ - Distance at which the player can "snap down" when
-    walking.
+    - _Walking Speed_ - Speed at which the player walks, in units per second.
+    - _Sprint Speed_ - Speed of player when sprinting, in units per second.
+    - _Max Bounces_ - Maximum bounces for computing player movement.
+    - _Push Decay_ - Preserved momentum percentage when pushing an object. A value
+        of 0 would indicate a complete stop while a value of 1 would be fully
+        bouncing off an object when the player collides with it.
+    - _Angle Power_ - Angle decay rate when sliding off surfaces.
+    - _Max Push Speed_ - Maximum distance a player can be pushed when overlapping
+        other objects in units per second. Useful for resolving collisions.
+    - _Vertical Snap Down_ - Distance at which the player can "snap down" when
+        walking.
 - **Stair and Step** - Setting related to player stairs and steps.
-  - _Step Up Depth_ - Minimum depth required when stepping up stairs.
-  - _Vertical Snap Up_ - Max distance the player can snap up stairs.
-  - _Snap Buffer Time_ - Time in which the player can snap up or down
-    steps even after starting to fall
+    - _Step Up Depth_ - Minimum depth required when stepping up stairs.
+    - _Vertical Snap Up_ - Max distance the player can snap up stairs.
+    - _Snap Buffer Time_ - Time in which the player can snap up or down
+        steps even after starting to fall
 - **Player Jump Settings** - Settings relevant to player jumps
-  - _Jump Velocity_ - Vertical velocity of player when they jump.
-  - _Max Jump Angle_ - Maximum surface angle when the player wants to jump.
-  - _Jump Angle Weight Factor_ - How much does surface angle impact jump
-    direction.
-  - _Jump Cooldown_ - Minimum time between jumps in seconds.
-  - _Coyote Time_ - Time in which the player will float before they start to
-    fall when they are not grounded.
-  - _Jump Buffer Time_ - Time in which the player's input for jumping
-    will be buffered before hitting hte ground in seconds.
+    - _Jump Velocity_ - Vertical velocity of player when they jump.
+    - _Max Jump Angle_ - Maximum surface angle when the player wants to jump.
+    - _Jump Angle Weight Factor_ - How much does surface angle impact jump
+        direction.
+    - _Jump Cooldown_ - Minimum time between jumps in seconds.
+    - _Coyote Time_ - Time in which the player will float before they start to
+        fall when they are not grounded.
+    - _Jump Buffer Time_ - Time in which the player's input for jumping
+        will be buffered before hitting hte ground in seconds.
 - **Player Prone Settings** - Settings to control player behavior when knocked
   prone/rag doll
-  - _Early Stop Prone Threshold_ - Threshold time in which player is not moving
-    to exit prone state.
-  - _Threshold Angular Velocity_ - Threshold angular velocity in degrees per
-    second for existing prone early.
-  - _Threshold Velocity_ - Threshold linear velocity in units per seconds for
-    exiting prone early.
+    - _Early Stop Prone Threshold_ - Threshold time in which player is not moving
+        to exit prone state.
+    - _Threshold Angular Velocity_ - Threshold angular velocity in degrees per
+        second for existing prone early.
+    - _Threshold Velocity_ - Threshold linear velocity in units per seconds for
+        exiting prone early.
 
 ## Making Your Own Custom Kinematic Character Controller
 

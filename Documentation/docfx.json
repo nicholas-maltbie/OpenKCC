@@ -22,6 +22,10 @@
         }
     ],
     "build": {
+        "template": [
+            "default",
+            "templates/mermaid"
+        ],
         "globalMetadata": {
             "_appTitle": "OpenKCC Documentation",
             "_appFooter": "OpenKCC Documentation",

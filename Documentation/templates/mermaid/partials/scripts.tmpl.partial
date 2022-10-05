@@ -1,0 +1,21 @@
+<!-- Derived from https://blog.christian-schou.dk/how-to-produce-static-documentation-using-docfx/#including-diagrams-in-your-documentation-mermaid-with-docfx !-->
+<!-- mermaid support -->
+<script src="https://unpkg.com/mermaid@8.4/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize({
+        startOnLoad: false
+    });
+
+    window.onload = function () {
+        const elements = document.getElementsByClassName("lang-mermaid");
+        let index = 0;
+
+        while (elements.length != 0) {
+            let element = elements[0];
+            mermaid.render('graph'+index, element.innerText, (svgGraph) => {                    
+                element.parentElement.outerHTML = "<div class='mermaid'>" + svgGraph + "</div>";
+            });
+            ++index;
+        }
+    }
+</script>
