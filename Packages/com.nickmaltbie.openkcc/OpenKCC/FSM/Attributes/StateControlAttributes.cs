@@ -34,7 +34,7 @@ namespace nickmaltbie.OpenKCC.FSM.Attributes
     {
         public OnEnterStateAttribute(string action) : base(action) { }
     }
-    
+
     /// <summary>
     /// Action to invoke whenever a state is exited.
     /// </summary>

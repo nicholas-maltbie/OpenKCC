@@ -29,5 +29,4 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
     public class ResetEvent : IEvent { }
 
     public class EmptyEvent : IEvent { }
-
 }

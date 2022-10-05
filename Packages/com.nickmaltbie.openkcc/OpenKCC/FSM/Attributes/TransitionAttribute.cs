@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System;
-using System.Linq;
 
 namespace nickmaltbie.OpenKCC.FSM.Attributes
 {

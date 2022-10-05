@@ -26,6 +26,6 @@ namespace nickmaltbie.OpenKCC.FSM.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class AnimationAttribute : Attribute
     {
-            
+
     }
 }

@@ -251,10 +251,12 @@ namespace nickmaltbie.OpenKCC.FSM
             {
                 ActionCache.TryAdd(stateMachine, FSMUtils.CreateActionAttributeCache(stateMachine));
             }
+
             if (!TransitionCache.ContainsKey(stateMachine))
             {
                 TransitionCache.TryAdd(stateMachine, FSMUtils.CreateTransationAttributeCache(stateMachine));
             }
+
             if (!EventCache.ContainsKey(stateMachine))
             {
                 EventCache.TryAdd(stateMachine, FSMUtils.CreateEventActionCache(stateMachine));

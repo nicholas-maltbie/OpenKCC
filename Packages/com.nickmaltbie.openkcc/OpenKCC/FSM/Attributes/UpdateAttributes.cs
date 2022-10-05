@@ -129,7 +129,7 @@ namespace nickmaltbie.OpenKCC.FSM.Attributes
     {
         public OnLateUpdateAttribute(string action) : base(typeof(OnLateUpdateEvent), action) { }
     }
-    
+
     /// <summary>
     /// OnGUI is called for rendering and handling GUI events.
     /// See unity doc's <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnGUI.html">MonoBehaviour.OnGUI</see>
@@ -140,7 +140,7 @@ namespace nickmaltbie.OpenKCC.FSM.Attributes
     {
         public OnGUIAttribute(string action) : base(typeof(OnGUIEvent), action) { }
     }
-    
+
     /// <summary>
     /// This function is called when the object becomes enabled and active.
     /// See unity doc's <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnEnable.html">MonoBehaviour.OnEnable</see>
@@ -151,7 +151,7 @@ namespace nickmaltbie.OpenKCC.FSM.Attributes
     {
         public OnEnableAttribute(string action) : base(typeof(OnEnableEvent), action) { }
     }
-    
+
     /// <summary>
     /// This function is called when the behaviour becomes disabled.
     /// See unity doc's <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnDisable.html">MonoBehaviour.OnDisable</see>
@@ -162,7 +162,7 @@ namespace nickmaltbie.OpenKCC.FSM.Attributes
     {
         public OnDisableAttribute(string action) : base(typeof(OnDisableEvent), action) { }
     }
-    
+
     /// <summary>
     /// Callback for setting up animation IK (inverse kinematics).
     /// See unity doc's <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnAnimatorIK.html">MonoBehaviour.OnAnimatorIK</see>

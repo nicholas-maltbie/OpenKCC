@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System;
-using nickmaltbie.OpenKCC.FSM.Attributes;
 
 namespace nickmaltbie.OpenKCC.FSM
 {
