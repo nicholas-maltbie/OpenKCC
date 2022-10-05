@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Added Finite State Machine design docs and a decorator
+  based code implementation to the project.
 * Adding test coverage for EditMode tests
 
 ## [0.1.2] - 2022-06-26

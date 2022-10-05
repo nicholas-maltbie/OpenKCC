@@ -71,10 +71,10 @@ namespace nickmaltbie.OpenKCC.FSM
 
         /// <summary>
         /// Sets up an action lookup by enumerating the <see cref="State"/> classes
-        /// defined within a state machine type and getting all <see cref="ActionAttribute"/>
+        /// defined within a state machine type and getting all <see cref="nickmaltbie.OpenKCC.FSM.Attributes.ActionAttribute"/>
         /// decorators defined for each <see cref="State"/> within the class.
         /// </summary>
-        /// <param name="stateMachine">State machine to lookup <see cref="State"/> and <see cref="ActionAttribute"/> for.</param>
+        /// <param name="stateMachine">State machine to lookup <see cref="State"/> and <see cref="nickmaltbie.OpenKCC.FSM.Attributes.ActionAttribute"/> for.</param>
         /// <returns>A lookup table mapped as (state, actionType) -> Method</returns>
         public static Dictionary<(Type, Type), MethodInfo> CreateActionAttributeCache(Type stateMachine)
         {
@@ -97,10 +97,10 @@ namespace nickmaltbie.OpenKCC.FSM
 
         /// <summary>
         /// Sets up an transition lookup by enumerating the <see cref="State"/> classes
-        /// defined within a state machine type and getting all <see cref="TransitionAttribute"/>
+        /// defined within a state machine type and getting all <see cref="nickmaltbie.OpenKCC.FSM.Attributes.TransitionAttribute"/>
         /// decorators defined for each <see cref="State"/> within the class.
         /// </summary>
-        /// <param name="stateMachine">State machine to lookup <see cref="State"/> and <see cref="TransitionAttribute"/> for.</param>
+        /// <param name="stateMachine">State machine to lookup <see cref="State"/> and <see cref="nickmaltbie.OpenKCC.FSM.Attributes.TransitionAttribute"/> for.</param>
         /// <returns>A lookup table mapped as (state, event) -> state</returns>
         public static Dictionary<(Type, Type), Type> CreateTransationAttributeCache(Type stateMachine)
         {
@@ -122,10 +122,10 @@ namespace nickmaltbie.OpenKCC.FSM
 
         /// <summary>
         /// Sets up an event lookup by enumerating the <see cref="State"/> classes
-        /// defined within a state machine type and getting all <see cref="OnEventDoActionAttribute"/>
+        /// defined within a state machine type and getting all <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnEventDoActionAttribute"/>
         /// decorators defined for each <see cref="State"/> within the class.
         /// </summary>
-        /// <param name="stateMachine">State machine to lookup <see cref="State"/> and <see cref="OnEventDoActionAttribute"/> for.</param>
+        /// <param name="stateMachine">State machine to lookup <see cref="State"/> and <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnEventDoActionAttribute"/> for.</param>
         /// <returns>A lookup table mapped as (state, event) -> [ methods ]</returns>
         public static Dictionary<(Type, Type), List<MethodInfo>> CreateEventActionCache(Type stateMachine)
         {
@@ -159,13 +159,14 @@ namespace nickmaltbie.OpenKCC.FSM
         /// Raise a synchronous event for a given state machine.
         /// <br/>
         /// First checks if this state machine expects any events of this type
-        /// for the state machine's <see cref="CurrentState"/>. These
-        /// would follow an attribute of type <see cref="OnEventDoActionAttribute"/>.
+        /// for the state machine's <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/>. These
+        /// would follow an attribute of type <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnEventDoActionAttribute"/>.
         /// <br/>
-        /// If the state machine's <see cref="CurrentState"/> expects a transition
-        /// based on the event, then this will trigger the <see cref="OnExitStateAttribute"/>
-        /// of the <see cref="CurrentState"/>, change to the next state defined in
-        /// the <see cref="TransitionAttribute"/>, then trigger the <see cref="OnEnterStateAttribute"/>
+        /// If the state machine's <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/> expects a transition
+        /// based on the event, then this will trigger the <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnExitStateAttribute"/>
+        /// of the <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/>, change to the next state defined in
+        /// the <see cref="nickmaltbie.OpenKCC.FSM.Attributes.TransitionAttribute"/>, then trigger the
+        /// <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnEnterStateAttribute"/>
         /// of the next state.
         /// </summary>
         /// <param name="StateMachine">state machine to invoke method of.</param>
@@ -193,7 +194,7 @@ namespace nickmaltbie.OpenKCC.FSM
         /// </summary>
         /// <typeparam name="E">Type of action to invoke.</typeparam>
         /// <param name="stateMachine">state machine to invoke method of.</param>
-        /// <param name="state">State to invoke action for, if unspecificed will use current state.</param>
+        /// <param name="state">State to invoke action for, if unspecified or null, will use the <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/>.</param>
         /// <returns>True if an action was found and invoked, false otherwise.</returns>
         public static bool InvokeAction<E>(IStateMachine stateMachine, Type state = null) where E : ActionAttribute
         {
@@ -223,13 +224,13 @@ namespace nickmaltbie.OpenKCC.FSM
         }
 
         /// <summary>
-        /// Initialize a state machine with the initializetion state and ensure
+        /// Initialize a state machine with the initialization state and ensure
         /// all the events, transitions, and actions are cached.
         /// </summary>
         /// <param name="stateMachine">state machine to setup.</param>
         public static void InitializeStateMachine(IStateMachine stateMachine)
         {
-            // Ensure the cahce is setup if not done so already
+            // Ensure the cache is setup if not done so already
             SetupCache(stateMachine.GetType());
 
             stateMachine.SetStateQuiet(stateMachine.GetType().GetNestedTypes()

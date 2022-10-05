@@ -35,7 +35,8 @@ namespace nickmaltbie.OpenKCC.FSM
         /// <summary>
         /// Initializes a state machine
         /// and will set the initial
-        /// state to the state defined under this class with a <see cref="InitialStateAttribute"/>.
+        /// state to the state defined under this class with an
+        /// <see cref="nickmaltbie.OpenKCC.FSM.Attributes.InitialStateAttribute"/>.
         /// </summary>
         public StateMachine()
         {
@@ -47,12 +48,12 @@ namespace nickmaltbie.OpenKCC.FSM
         /// <br/>
         /// First checks if this state machine expects any events of this type
         /// for the state machine's <see cref="CurrentState"/>. These
-        /// would follow an attribute of type <see cref="OnEventDoActionAttribute"/>.
+        /// would follow an attribute of type <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnEventDoActionAttribute"/>.
         /// <br/>
         /// If the state machine's <see cref="CurrentState"/> expects a transition
-        /// based on the event, then this will trigger the <see cref="OnExitStateAttribute"/>
+        /// based on the event, then this will trigger the <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnExitStateAttribute"/>
         /// of the <see cref="CurrentState"/>, change to the next state defined in
-        /// the <see cref="TransitionAttribute"/>, then trigger the <see cref="OnEnterStateAttribute"/>
+        /// the <see cref="nickmaltbie.OpenKCC.FSM.Attributes.TransitionAttribute"/>, then trigger the <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnEnterStateAttribute"/>
         /// of the next state.
         /// </summary>
         /// <param name="evt">Event to send to this state machine.</param>

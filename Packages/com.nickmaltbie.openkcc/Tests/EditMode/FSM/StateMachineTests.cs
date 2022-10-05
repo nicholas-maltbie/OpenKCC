@@ -27,7 +27,7 @@ using NUnit.Framework;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
 {
     /// <summary>
-    /// Basic tests for <see cref="StateMachine"/> in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.FSM.StateMachine"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class StateMachineTests : TestBase
