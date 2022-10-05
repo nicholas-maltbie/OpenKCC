@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## In Progress
 
 * Added Finite State Machine design docs and a decorator
-  based code implementation to the project.
+    based code implementation to the project.
 * Adding test coverage for EditMode tests
 
 ## [0.1.2] - 2022-06-26
@@ -23,13 +23,13 @@ Major Refactor
 * Converting project to follow unity package layout
 * Moved example FPS cahracter into example first person cahracter sample folder
 * Moved simplified demo examples to demo sample folder
-  * Also fixed dependency issues so each sample can be imported independently
+    * Also fixed dependency issues so each sample can be imported independently
 * Setup package build workflow to copy `Assets/Samples` to
-  `./Packages/com.nickmaltbie.openkcc/Samples~` and validating github workflow
-  to ensure this works as expected.
+    `./Packages/com.nickmaltbie.openkcc/Samples~` and validating github workflow
+    to ensure this works as expected.
 * Created a common folder for assets shared between mulitple samples
-  `./Packages/com.nickmaltbie.openkcc/Common` - will keep small files
-  and assets here that are shared (but avoid large models and textures).
+    `./Packages/com.nickmaltbie.openkcc/Common` - will keep small files
+    and assets here that are shared (but avoid large models and textures).
 * Emptied all assets from `Assets\OpenKCC` to avoid complexity.
 
 Minor Fixes
