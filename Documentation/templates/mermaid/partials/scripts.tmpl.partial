@@ -1,3 +1,7 @@
+<script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+<script type="text/javascript" src="../../styles/docfx.js"></script>
+<script type="text/javascript" src="../../styles/main.js"></script>
+
 <!-- Derived from https://blog.christian-schou.dk/how-to-produce-static-documentation-using-docfx/#including-diagrams-in-your-documentation-mermaid-with-docfx !-->
 <!-- mermaid support -->
 <script src="https://unpkg.com/mermaid@8.4/dist/mermaid.min.js"></script>
