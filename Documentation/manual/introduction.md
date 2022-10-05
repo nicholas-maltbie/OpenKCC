@@ -56,6 +56,8 @@ the important folders for using and learning about the project:
     * `Packages\com.nickmaltbie.openkcc\Editor` -
         Editor specific assets for the project configuration,
         not included in builds.
+    * `Packages\com.nickmaltbie.openkcc\FSM` -
+        State Machine code for the project.
     * `Packages\com.nickmaltbie.openkcc\OpenKCC` -
         Main project source code and assemblies.
     * `Packages\com.nickmaltbie.openkcc\Tests` -
