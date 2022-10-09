@@ -1,6 +1,6 @@
-<script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
-<script type="text/javascript" src="../../styles/docfx.js"></script>
-<script type="text/javascript" src="../../styles/main.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/docfx.vendor.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/docfx.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/main.js"></script>
 
 <!-- Derived from https://blog.christian-schou.dk/how-to-produce-static-documentation-using-docfx/#including-diagrams-in-your-documentation-mermaid-with-docfx !-->
 <!-- mermaid support -->
