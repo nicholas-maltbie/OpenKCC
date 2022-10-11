@@ -27,17 +27,17 @@ using NUnit.Framework;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
 {
     /// <summary>
-    /// Basic tests for <see cref="nickmaltbie.OpenKCC.FSM.StateMachine"/> in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.FSM.FixedStateMachine"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class StateMachineTests : TestBase
     {
-        public DemoStateMachine demoStateMachine;
+        public DemoFixedStateMachine demoStateMachine;
 
         [SetUp]
         public void SetUp()
         {
-            demoStateMachine = new DemoStateMachine();
+            demoStateMachine = new DemoFixedStateMachine();
         }
 
         [Test]
@@ -46,23 +46,23 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
             FSMUtils.ActionCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), MethodInfo>>();
             FSMUtils.TransitionCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), Type>>();
             FSMUtils.EventCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), List<MethodInfo>>>();
-            FSMUtils.SetupCache(typeof(DemoStateMachine));
-            FSMUtils.SetupCache(typeof(DemoStateMachineMonoBehaviour));
+            FSMUtils.SetupCache(typeof(DemoFixedStateMachine));
+            FSMUtils.SetupCache(typeof(DemoFixedStateMachineBehaviour));
         }
 
         [Test]
         public void VerifyTransitionNoEvent()
         {
             UnityEngine.Debug.Log($"State machine in state {demoStateMachine.CurrentState}");
-            Assert.AreEqual(demoStateMachine.CurrentState, typeof(DemoStateMachine.StartingState));
+            Assert.AreEqual(demoStateMachine.CurrentState, typeof(DemoFixedStateMachine.StartingState));
 
             SendAndVerifyEventSequence(new (IEvent, Type)[]
             {
-                (new EmptyEvent(), typeof(DemoStateMachine.StartingState)),
-                (new EmptyEvent(), typeof(DemoStateMachine.StartingState)),
-                (new EmptyEvent(), typeof(DemoStateMachine.StartingState)),
-                (new EmptyEvent(), typeof(DemoStateMachine.StartingState)),
-                (new EmptyEvent(), typeof(DemoStateMachine.StartingState)),
+                (new EmptyEvent(), typeof(DemoFixedStateMachine.StartingState)),
+                (new EmptyEvent(), typeof(DemoFixedStateMachine.StartingState)),
+                (new EmptyEvent(), typeof(DemoFixedStateMachine.StartingState)),
+                (new EmptyEvent(), typeof(DemoFixedStateMachine.StartingState)),
+                (new EmptyEvent(), typeof(DemoFixedStateMachine.StartingState)),
             });
         }
 
@@ -70,14 +70,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
         public void VerifyTransitionsDeadEnd()
         {
             UnityEngine.Debug.Log($"State machine in state {demoStateMachine.CurrentState}");
-            Assert.AreEqual(demoStateMachine.CurrentState, typeof(DemoStateMachine.StartingState));
+            Assert.AreEqual(demoStateMachine.CurrentState, typeof(DemoFixedStateMachine.StartingState));
 
             SendAndVerifyEventSequence(new (IEvent, Type)[]
             {
-                (new AEvent(), typeof(DemoStateMachine.StateA)),
-                (new BEvent(), typeof(DemoStateMachine.StateB)),
-                (new BEvent(), typeof(DemoStateMachine.StateB)),
-                (new CEvent(), typeof(DemoStateMachine.StateB)),
+                (new AEvent(), typeof(DemoFixedStateMachine.StateA)),
+                (new BEvent(), typeof(DemoFixedStateMachine.StateB)),
+                (new BEvent(), typeof(DemoFixedStateMachine.StateB)),
+                (new CEvent(), typeof(DemoFixedStateMachine.StateB)),
             });
         }
 
@@ -85,16 +85,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
         public void VerifyTransitionsCycle()
         {
             UnityEngine.Debug.Log($"State machine in state {demoStateMachine.CurrentState}");
-            Assert.AreEqual(demoStateMachine.CurrentState, typeof(DemoStateMachine.StartingState));
+            Assert.AreEqual(demoStateMachine.CurrentState, typeof(DemoFixedStateMachine.StartingState));
 
             SendAndVerifyEventSequence(new (IEvent, Type)[]
             {
-                (new AEvent(), typeof(DemoStateMachine.StateA)),
-                (new CEvent(), typeof(DemoStateMachine.StateC)),
-                (new ResetEvent(), typeof(DemoStateMachine.StartingState)),
-                (new AEvent(), typeof(DemoStateMachine.StateA)),
-                (new CEvent(), typeof(DemoStateMachine.StateC)),
-                (new ResetEvent(), typeof(DemoStateMachine.StartingState)),
+                (new AEvent(), typeof(DemoFixedStateMachine.StateA)),
+                (new CEvent(), typeof(DemoFixedStateMachine.StateC)),
+                (new ResetEvent(), typeof(DemoFixedStateMachine.StartingState)),
+                (new AEvent(), typeof(DemoFixedStateMachine.StateA)),
+                (new CEvent(), typeof(DemoFixedStateMachine.StateC)),
+                (new ResetEvent(), typeof(DemoFixedStateMachine.StartingState)),
             });
         }
 
@@ -102,48 +102,48 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
         public void VerifyEnterExitCount()
         {
             UnityEngine.Debug.Log($"State machine in state {demoStateMachine.CurrentState}");
-            Assert.AreEqual(demoStateMachine.CurrentState, typeof(DemoStateMachine.StartingState));
+            Assert.AreEqual(demoStateMachine.CurrentState, typeof(DemoFixedStateMachine.StartingState));
 
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StartingState)], 1);
-            Assert.AreEqual(demoStateMachine.OnExitCount.GetOrAdd(typeof(DemoStateMachine.StartingState), t => 0), 0);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StartingState)], 1);
+            Assert.AreEqual(demoStateMachine.OnExitCount.GetOrAdd(typeof(DemoFixedStateMachine.StartingState), t => 0), 0);
 
-            SendAndVerifyEventSequence((new CEvent(), typeof(DemoStateMachine.StateC)));
+            SendAndVerifyEventSequence((new CEvent(), typeof(DemoFixedStateMachine.StateC)));
 
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StartingState)], 1);
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StateC)], 1);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StartingState)], 1);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StateC)], 1);
 
-            UnityEngine.Debug.Log(demoStateMachine.OnExitCount[typeof(DemoStateMachine.StartingState)]);
+            UnityEngine.Debug.Log(demoStateMachine.OnExitCount[typeof(DemoFixedStateMachine.StartingState)]);
 
-            Assert.AreEqual(demoStateMachine.OnExitCount[typeof(DemoStateMachine.StartingState)], 1);
+            Assert.AreEqual(demoStateMachine.OnExitCount[typeof(DemoFixedStateMachine.StartingState)], 1);
 
-            SendAndVerifyEventSequence((new ResetEvent(), typeof(DemoStateMachine.StartingState)));
+            SendAndVerifyEventSequence((new ResetEvent(), typeof(DemoFixedStateMachine.StartingState)));
 
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StartingState)], 2);
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StateC)], 1);
-            Assert.AreEqual(demoStateMachine.OnExitCount[typeof(DemoStateMachine.StartingState)], 1);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StartingState)], 2);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StateC)], 1);
+            Assert.AreEqual(demoStateMachine.OnExitCount[typeof(DemoFixedStateMachine.StartingState)], 1);
 
-            SendAndVerifyEventSequence((new CEvent(), typeof(DemoStateMachine.StateC)));
-            SendAndVerifyEventSequence((new CEvent(), typeof(DemoStateMachine.StateC)));
+            SendAndVerifyEventSequence((new CEvent(), typeof(DemoFixedStateMachine.StateC)));
+            SendAndVerifyEventSequence((new CEvent(), typeof(DemoFixedStateMachine.StateC)));
 
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StartingState)], 2);
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StateC)], 3);
-            Assert.AreEqual(demoStateMachine.OnExitCount[typeof(DemoStateMachine.StartingState)], 2);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StartingState)], 2);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StateC)], 3);
+            Assert.AreEqual(demoStateMachine.OnExitCount[typeof(DemoFixedStateMachine.StartingState)], 2);
 
-            SendAndVerifyEventSequence((new ResetEvent(), typeof(DemoStateMachine.StartingState)));
+            SendAndVerifyEventSequence((new ResetEvent(), typeof(DemoFixedStateMachine.StartingState)));
 
-            Assert.AreEqual(demoStateMachine.OnEntryCount.GetOrAdd(typeof(DemoStateMachine.StateA), t => 0), 0);
+            Assert.AreEqual(demoStateMachine.OnEntryCount.GetOrAdd(typeof(DemoFixedStateMachine.StateA), t => 0), 0);
 
-            SendAndVerifyEventSequence((new ResetEvent(), typeof(DemoStateMachine.StartingState)));
-            SendAndVerifyEventSequence((new AEvent(), typeof(DemoStateMachine.StateA)));
+            SendAndVerifyEventSequence((new ResetEvent(), typeof(DemoFixedStateMachine.StartingState)));
+            SendAndVerifyEventSequence((new AEvent(), typeof(DemoFixedStateMachine.StateA)));
 
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StartingState)], 3);
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StateC)], 3);
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StateA)], 1);
-            Assert.AreEqual(demoStateMachine.OnExitCount[typeof(DemoStateMachine.StartingState)], 3);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StartingState)], 3);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StateC)], 3);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StateA)], 1);
+            Assert.AreEqual(demoStateMachine.OnExitCount[typeof(DemoFixedStateMachine.StartingState)], 3);
 
-            SendAndVerifyEventSequence((new AEvent(), typeof(DemoStateMachine.StateA)));
+            SendAndVerifyEventSequence((new AEvent(), typeof(DemoFixedStateMachine.StateA)));
 
-            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoStateMachine.StateA)], 1);
+            Assert.AreEqual(demoStateMachine.OnEntryCount[typeof(DemoFixedStateMachine.StateA)], 1);
         }
 
         /// <summary>

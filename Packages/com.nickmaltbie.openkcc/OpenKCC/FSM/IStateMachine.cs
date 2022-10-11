@@ -24,12 +24,12 @@ namespace nickmaltbie.OpenKCC.FSM
     /// Abstract state machine to manage a set of given states
     /// and transitions.
     /// </summary>
-    public interface IStateMachine
+    public interface IStateMachine<E>
     {
         /// <summary>
         /// Current state of the state machine.
         /// </summary>
-        public Type CurrentState { get; }
+        public E CurrentState { get; }
 
         /// <summary>
         /// Raise an event to the current state machine.

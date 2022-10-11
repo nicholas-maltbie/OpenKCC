@@ -79,7 +79,7 @@ directly from the C# code.
     * [StateMachine](xref:nickmaltbie.OpenKCC.FSM.StateMachine)
         \- concrete implementation of state machine
         with cached transitions and events from decorators from [FSMUtils](xref:nickmaltbie.OpenKCC.FSM.FSMUtils).
-    * [StateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.FSM.StateMachineMonoBehaviour)
+    * [FixedStateMachineBehaviour](xref:nickmaltbie.OpenKCC.FSM.FixedStateMachineBehaviour)
         \- concrete implementation of state machine with cached transitions and events
         from decorators from [FSMUtils](xref:nickmaltbie.OpenKCC.FSM.FSMUtils)
         in addition to firing off events for Unity Messages and supports
@@ -138,6 +138,6 @@ in the test code under
 * [DemoStateMachine](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoStateMachine)
     \- Example implementation of a
     [StateMachine](xref:nickmaltbie.OpenKCC.FSM.StateMachine).
-* [DemoStateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoStateMachineMonoBehaviour)
+* [DemoFixedStateMachineBehaviour](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoFixedStateMachineBehaviour)
     \- Example implementation of a
-    [StateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.FSM.StateMachineMonoBehaviour).
+    [FixedStateMachineBehaviour](xref:nickmaltbie.OpenKCC.FSM.FixedStateMachineBehaviour).
