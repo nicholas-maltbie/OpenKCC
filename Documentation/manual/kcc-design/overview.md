@@ -5,13 +5,16 @@ is a character controller that uses a kinematic rigidbody
 to move the player through a virtual environment.
 
 <!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD033 -->
 <!-- Disable line length lint rule for portion of embed -->
-<iframe width="560" height="315"
+<div class="videoWrapper">
+<iframe
     src="https://www.youtube.com/embed/Hv4CQMCxSWE"
     title="Designing Character Controllers - Kinematic Character Controller in Unity"
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen></iframe>
+</div>
 <!-- markdownlint-enable MD013 -->
 
 ## Design Goals
