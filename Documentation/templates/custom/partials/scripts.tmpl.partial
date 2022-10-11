@@ -1,0 +1,13 @@
+<script type="text/javascript" src="{{_rel}}styles/docfx.vendor.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/docfx.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/main.js"></script>
+
+<!-- Derived from https://blog.christian-schou.dk/how-to-produce-static-documentation-using-docfx/#including-diagrams-in-your-documentation-mermaid-with-docfx !-->
+<!-- mermaid support -->
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@9/dist/mermaid.esm.min.mjs';
+mermaid.initialize({
+    startOnLoad: false
+});
+mermaid.init(undefined, ".lang-mermaid");
+</script>

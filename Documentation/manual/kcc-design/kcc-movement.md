@@ -6,13 +6,16 @@ movement for the kinematic character controller works.
 Here is the companion YouTube video for this design document:
 
 <!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD033 -->
 <!-- Disable line length lint rule for portion of embed -->
-<iframe width="560" height="315"
+<div class="videoWrapper">
+<iframe
     src="https://www.youtube.com/embed/s-99Z_W8bcQ"
     title="Moving Characters in Games – Kinematic Character Controller in Unity"
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen></iframe>
+</div>
 <!-- markdownlint-enable MD013 -->
 
 ## Goals and Objectives

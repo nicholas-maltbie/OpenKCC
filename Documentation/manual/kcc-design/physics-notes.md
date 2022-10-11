@@ -7,13 +7,16 @@ overview of physics objects in Unity.
 Here is the companion YouTube video for this design document:
 
 <!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD033 -->
 <!-- Disable line length lint rule for portion of embed -->
-<iframe width="560" height="315"
+<div class="videoWrapper">
+<iframe
     src="https://www.youtube.com/embed/rzD-Lm8pOX0"
     title="Explaining The Physics Behind Character Controllers - OpenKCC"
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen></iframe>
+</div>
 <!-- markdownlint-enable MD013 -->
 
 ## Physics in Virtual Environment
