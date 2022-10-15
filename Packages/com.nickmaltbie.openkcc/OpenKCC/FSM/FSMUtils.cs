@@ -210,8 +210,6 @@ namespace nickmaltbie.OpenKCC.FSM
         /// <returns>True if an action was found and invoked, false otherwise.</returns>
         public static bool InvokeAction(IStateMachine<Type> stateMachine, Type actionType, Type state)
         {
-            UnityEngine.Debug.Log($"Invoking sm: {stateMachine.GetType()} action: {actionType} state: {state}");
-            UnityEngine.Debug.Log($"Cached actions for sm: {stateMachine.GetType()} include: [{string.Join(", ", ActionCache[stateMachine.GetType()].Keys.Select(tuple => $"({tuple.Item1}, {tuple.Item2})"))})]");
             if (ActionCache[stateMachine.GetType()].TryGetValue((state ?? stateMachine.CurrentState, actionType), out MethodInfo method))
             {
                 method.Invoke(stateMachine, new object[0]);
@@ -236,8 +234,6 @@ namespace nickmaltbie.OpenKCC.FSM
             stateMachine.SetStateQuiet(stateMachine.GetType().GetNestedTypes()
                 .Where(type => type.IsClass && type.IsSubclassOf(typeof(State)))
                 .First(type => State.IsInitialState(type)));
-
-            UnityEngine.Debug.Log($"Set initial state to \"{stateMachine.CurrentState}\" (isNull = {stateMachine.CurrentState == null})");
 
             InvokeAction<OnEnterStateAttribute>(stateMachine, stateMachine.CurrentState);
         }
