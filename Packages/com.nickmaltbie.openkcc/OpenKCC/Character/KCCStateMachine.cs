@@ -50,18 +50,18 @@ namespace nickmaltbie.OpenKCC.Character
         public InputActionReference moveAction;
 
         /// <summary>
-        /// Action reference for jumping.
-        /// </summary>
-        [Tooltip("Action reference for jumping")]
-        [SerializeField]
-        public JumpAction jumpAction;
-
-        /// <summary>
         /// Action reference for sprinting.
         /// </summary>
         [Tooltip("Action reference for moving the player")]
         [SerializeField]
         public InputActionReference sprintAction;
+
+        /// <summary>
+        /// Action reference for jumping.
+        /// </summary>
+        [Tooltip("Action reference for jumping")]
+        [SerializeField]
+        public JumpAction jumpAction;
 
         [Header("Ground Checking")]
 
