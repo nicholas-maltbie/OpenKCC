@@ -69,9 +69,9 @@ namespace nickmaltbie.OpenKCC.Character.Action
         private bool jumpedWhileSliding = false;
 
         /// <summary>
-        /// Grounded state for manaing player grounded configuration.
+        /// Grounded state for managing player grounded configuration.
         /// </summary>
-        private KCCGroundedState groundedState;
+        private IKCCGrounded kccGrounded;
 
         /// <summary>
         /// Actor to apply jumps to.
@@ -79,17 +79,17 @@ namespace nickmaltbie.OpenKCC.Character.Action
         private IJumping actor;
 
         /// <summary>
-        /// Configureation of the character controller.
+        /// Configuration of the character controller.
         /// </summary>
         private IKCCConfig kccConfig;
 
         /// <summary>
         /// Setup this jump action.
         /// </summary>
-        public void Setup(KCCGroundedState groundedState, IKCCConfig kccConfig, IJumping actor)
+        public void Setup(IKCCGrounded kccGrounded, IKCCConfig kccConfig, IJumping actor)
         {
             base.condition = CanJump;
-            this.groundedState = groundedState;
+            this.kccGrounded = kccGrounded;
             this.kccConfig = kccConfig;
             this.actor = actor;
         }
@@ -100,7 +100,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
             base.Update();
             jumpInput.Update();
 
-            if (groundedState.StandingOnGround && !groundedState.Sliding)
+            if (kccGrounded.StandingOnGround && !kccGrounded.Sliding)
             {
                 jumpedWhileSliding = false;
             }
@@ -127,15 +127,15 @@ namespace nickmaltbie.OpenKCC.Character.Action
         /// </summary>
         public void Jump()
         {
-            Vector3 jumpDirection = (groundedState.StandingOnGround ? groundedState.SurfaceNormal : kccConfig.Up) *
-                jumpAngleWeightFactor + kccConfig.Up * (1 - jumpAngleWeightFactor);
-            actor.ApplyJump(jumpVelocity * jumpDirection.normalized);
-            jumpInput.Reset();
-
-            if (groundedState.Sliding)
+            if (kccGrounded.Sliding)
             {
                 jumpedWhileSliding = true;
             }
+
+            Vector3 jumpDirection = (kccGrounded.StandingOnGround ? kccGrounded.SurfaceNormal : kccConfig.Up) *
+                jumpAngleWeightFactor + kccConfig.Up * (1 - jumpAngleWeightFactor);
+            actor.ApplyJump(jumpVelocity * jumpDirection.normalized);
+            jumpInput.Reset();
         }
 
         /// <summary>
@@ -146,16 +146,16 @@ namespace nickmaltbie.OpenKCC.Character.Action
         /// <summary>
         /// Can the player jump based on their current state.
         /// </summary>
-        /// <returns>True if the player can jump, false oterwise.</returns>
+        /// <returns>True if the player can jump, false otherwise.</returns>
         public bool CanJump()
         {
-            if (groundedState.StandingOnGround && groundedState.Angle <= maxJumpAngle)
+            if (kccGrounded.StandingOnGround && kccGrounded.Angle <= maxJumpAngle)
             {
-                if (!groundedState.Sliding)
+                if (!kccGrounded.Sliding)
                 {
                     return true;
                 }
-                else if (groundedState.Sliding)
+                else if (kccGrounded.Sliding)
                 {
                     return !jumpedWhileSliding;
                 }

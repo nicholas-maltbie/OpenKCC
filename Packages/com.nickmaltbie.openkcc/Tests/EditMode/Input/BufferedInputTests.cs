@@ -22,7 +22,6 @@ using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TestTools;
 
@@ -56,7 +55,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
             bufferedInput.bufferTime = 3.0f;
 
             testAction.Enable();
-            bufferedInput.Reset();
         }
 
         [TearDown]

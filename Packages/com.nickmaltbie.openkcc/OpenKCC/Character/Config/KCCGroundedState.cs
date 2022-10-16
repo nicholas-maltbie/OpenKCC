@@ -27,7 +27,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
     /// a given kinematic character controller.
     /// </summary>
     [Serializable]
-    public class KCCGroundedState
+    public class KCCGroundedState : IKCCGrounded
     {
         /// <summary>
         /// Distance to ground at which player is considered grounded.
