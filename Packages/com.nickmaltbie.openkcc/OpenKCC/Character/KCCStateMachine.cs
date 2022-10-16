@@ -17,10 +17,12 @@
 // SOFTWARE.
 
 using System;
+using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
 using nickmaltbie.OpenKCC.FSM;
 using nickmaltbie.OpenKCC.FSM.Attributes;
+using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -31,7 +33,7 @@ namespace nickmaltbie.OpenKCC.Character
     /// <summary>
     /// Have a character controller push any dynamic rigidbody it hits
     /// </summary>
-    public class KCCStateMachine : FixedStateMachineBehaviour, IKCCConfig
+    public class KCCStateMachine : FixedStateMachineBehaviour, IKCCConfig, IJumping
     {
         /// <summary>
         /// Unity service for managing unit inputs in a testable manner.
@@ -50,9 +52,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Action reference for jumping.
         /// </summary>
-        [Tooltip("Action reference for moving the player")]
+        [Tooltip("Action reference for jumping")]
         [SerializeField]
-        public InputActionReference jumpAction;
+        public JumpAction jumpAction;
 
         /// <summary>
         /// Action reference for sprinting.
@@ -160,53 +162,6 @@ namespace nickmaltbie.OpenKCC.Character
         [SerializeField]
         public float snapBufferTime = 0.05f;
 
-        [Header("Player Jump Settings")]
-
-        /// <summary>
-        /// Velocity of player jump in units per second.
-        /// </summary>
-        [Tooltip("Vertical velocity of player jump")]
-        [SerializeField]
-        public float jumpVelocity = 5.0f;
-
-        /// <summary>
-        /// Maximum angle at which the player can jump (in degrees).
-        /// </summary>
-        [Tooltip("Maximum angle at which the player can jump (in degrees)")]
-        [SerializeField]
-        [Range(0, 90)]
-        public float maxJumpAngle = 85f;
-
-        /// <summary>
-        /// Weight to which the player's jump is weighted towards the direction.
-        /// of the surface they are standing on.
-        /// </summary>
-        [Tooltip("Weight to which the player's jump is weighted towards the angle of their surface")]
-        [SerializeField]
-        [Range(0, 1)]
-        public float jumpAngleWeightFactor = 0.0f;
-
-        /// <summary>
-        /// Minimum time in seconds between player jumps
-        /// </summary>
-        [Tooltip("Minimum time in seconds between player jumps")]
-        [SerializeField]
-        public float jumpCooldown = 0.5f;
-
-        /// <summary>
-        /// Time in seconds that a player can jump after their feet leave the ground.
-        /// </summary>
-        [Tooltip("Time in seconds that a player can jump after their feet leave the ground")]
-        [SerializeField]
-        public float coyoteTime = 0.25f;
-
-        /// <summary>
-        /// Time in seconds that an input can be buffered for jumping.
-        /// </summary>
-        [Tooltip("Time in seconds that an input can be buffered for jumping")]
-        [SerializeField]
-        public float jumpBufferTime = 0.05f;
-
         /// <inheritdoc/>
         public int MaxBounces => maxBounces;
 
@@ -270,35 +225,59 @@ namespace nickmaltbie.OpenKCC.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [MovementSettings(AllowVelocity = false, AllowWalk = false)]
+        [OnFixedUpdate(nameof(SnapPlayerDown))]
         public class IdleState : State { }
 
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [MovementSettings(AllowVelocity = false, AllowWalk = true)]
+        [OnFixedUpdate(nameof(SnapPlayerDown))]
         public class WalkingState : State { }
 
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(GroundedEvent), typeof(IdleState))]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         [ApplyGravity]
+        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
+        [OnFixedUpdate(nameof(SnapPlayerDown))]
         public class SlidingState : State { }
 
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(GroundedEvent), typeof(IdleState))]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         [ApplyGravity]
+        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class FallingState : State { }
 
         /// <inheritdoc/>
         public override void FixedUpdate()
         {
+            // Push player out of overlapping objects
+            PushOutOverlapping();
+
+            // Update grounded state
             groundedState.CheckGrounded(this, transform.position, transform.rotation);
             RaiseEvent(
                 !groundedState.StandingOnGround ? LeaveGroundEvent.Instance :
                 groundedState.Sliding ? SteepSlopeEvent.Instance :
                     GroundedEvent.Instance as IEvent);
 
+            // Apply gravity if needed
+            if (Attribute.GetCustomAttribute(CurrentState, typeof(ApplyGravity)) is ApplyGravity)
+            {
+                Velocity += gravity * unityService.fixedDeltaTime;
+            }
+
+            jumpAction.ApplyJumpIfPossible();
+            ApplyMovement();
+
+            base.FixedUpdate();
+        }
+
+        /// <summary>
+        /// Apply player movement if allowed.
+        /// </summary>
+        public void ApplyMovement()
+        {
             // Move the player based on movement settings
             var moveSettings = Attribute.GetCustomAttribute(CurrentState, typeof(MovementSettingsAttribute)) as MovementSettingsAttribute;
 
@@ -308,12 +287,7 @@ namespace nickmaltbie.OpenKCC.Character
                 MovePlayer(GetProjectedMovement() * unityService.fixedDeltaTime);
             }
 
-            // Apply gravity if needed
-            if (Attribute.GetCustomAttribute(CurrentState, typeof(ApplyGravity)) is ApplyGravity)
-            {
-                Velocity += gravity * unityService.fixedDeltaTime;
-            }
-
+            // Apply velocity fi allowed to move via velocity
             if (moveSettings?.AllowVelocity ?? false)
             {
                 MovePlayer(Velocity * unityService.fixedDeltaTime);
@@ -322,15 +296,28 @@ namespace nickmaltbie.OpenKCC.Character
             {
                 Velocity = Vector3.zero;
             }
+        }
 
+        /// <summary>
+        /// Snap the player down based on their current position.
+        /// </summary>
+        public void SnapPlayerDown()
+        {
             transform.position = KCCUtils.SnapPlayerDown(
                 transform.position,
                 transform.rotation,
                 Down,
                 verticalSnapDown,
                 ColliderCast);
+        }
 
-            base.FixedUpdate();
+        /// <summary>
+        /// Configure kcc state machine operations.
+        /// </summary>
+        public void Awake()
+        {
+            GetComponent<Rigidbody>().isKinematic = true;
+            jumpAction.Setup(groundedState, this, this);
         }
 
         /// <inheritdoc/>
@@ -341,8 +328,7 @@ namespace nickmaltbie.OpenKCC.Character
             RaiseEvent(InputMovement.magnitude >= KCCUtils.Epsilon ?
                 MoveInput.Instance as IEvent : StopMoveInput.Instance as IEvent);
 
-            Debug.Log(CurrentState);
-
+            jumpAction.Update();
             base.Update();
         }
 
@@ -354,6 +340,21 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 GetProjectedMovement()
         {
             return GetProjectedMovement(InputMovement);
+        }
+
+        /// <summary>
+        /// Push the player out of any overlapping objects. This will constrain movement to only 
+        /// pushing the player at maxPushSpeed out of overlapping objects as to not violently teleport
+        /// the player when they overlap with another object.
+        /// </summary>
+        /// <returns>Total distance player was pushed.</returns>
+        public Vector3 PushOutOverlapping()
+        {
+            float fixedDeltaTime = Time.fixedDeltaTime;
+            return ColliderCast.PushOutOverlapping(
+                transform.position,
+                transform.rotation,
+                maxPushSpeed * fixedDeltaTime);
         }
 
         /// <summary>
@@ -405,6 +406,13 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             return snappedUp;
+        }
+
+        /// <inheritdoc/>
+        public void ApplyJump(Vector3 velocity)
+        {
+            Velocity = velocity;
+            RaiseEvent(LeaveGroundEvent.Instance);
         }
 
         /// <summary>

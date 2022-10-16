@@ -15,11 +15,11 @@
                 },
                 {
                     "name": "Jump",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "bca05cba-8116-4a1d-9624-dc2929c1d827",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press,Hold"
                 },
                 {
                     "name": "Interact",
