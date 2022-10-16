@@ -47,7 +47,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.FSM
             FSMUtils.TransitionCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), Type>>();
             FSMUtils.EventCache = new ConcurrentDictionary<Type, Dictionary<(Type, Type), List<MethodInfo>>>();
             FSMUtils.SetupCache(typeof(DemoFixedStateMachine));
-            FSMUtils.SetupCache(typeof(DemoFixedStateMachineBehaviour));
+            FSMUtils.SetupCache(typeof(DemoFixedStateMachineMonoBehaviour));
         }
 
         [Test]

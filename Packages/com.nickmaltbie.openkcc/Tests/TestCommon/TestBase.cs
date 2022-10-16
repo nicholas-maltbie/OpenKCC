@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.TestCommon
@@ -28,7 +29,7 @@ namespace nickmaltbie.OpenKCC.TestCommon
     /// <summary>
     /// Basic unity test base class.
     /// </summary>
-    public class TestBase
+    public class TestBase : InputTestFixture
     {
         /// <summary>
         /// Set of basic directions for tests.
@@ -54,6 +55,16 @@ namespace nickmaltbie.OpenKCC.TestCommon
         protected List<GameObject> gameObjects;
 
         /// <summary>
+        /// List of scriptable objects created as part of the test.
+        /// </summary>
+        protected List<ScriptableObject> scriptableObjects;
+
+        /// <summary>
+        /// List of created input devices.
+        /// </summary>
+        protected List<InputDevice> createdDevices;
+
+        /// <summary>
         /// Setup a basic test.
         /// </summary>
         [OneTimeSetUp]
@@ -67,19 +78,21 @@ namespace nickmaltbie.OpenKCC.TestCommon
 #endif
 
             gameObjects = new List<GameObject>();
+            scriptableObjects = new List<ScriptableObject>();
+            createdDevices = new List<InputDevice>();
         }
 
         /// <summary>
         /// Cleanup created objects in the basic test.
         /// </summary>
         [TearDown]
-        public virtual void TearDown()
+        public override void TearDown()
         {
+            base.TearDown();
             while (gameObjects.Count > 0)
             {
                 GameObject go = gameObjects[0];
                 gameObjects.RemoveAt(0);
-
                 GameObject.DestroyImmediate(go);
             }
         }
@@ -100,6 +113,24 @@ namespace nickmaltbie.OpenKCC.TestCommon
         }
 
         /// <summary>
+        /// Setup an input device and given action map.
+        /// </summary>
+        /// <typeparam name="E">Type of device craeted.</typeparam>
+        /// <returns>Tuple of the input device, player input, and created action map.</returns>
+        public (E, GameObject, InputActionMap) SetupInputDevice<E>() where E : InputDevice
+        {
+            E inputDevice = InputSystem.AddDevice<E>();
+            GameObject go = CreateGameObject();
+            _ = go.AddComponent<PlayerInput>();
+            InputActionAsset inputActionAsset = CreateScriptableObject<InputActionAsset>();
+            InputActionMap actionMap = inputActionAsset.AddActionMap("testMap");
+
+            RegisterInputDevice(inputDevice);
+
+            return (inputDevice, go, actionMap);
+        }
+
+        /// <summary>
         /// Validate that given gizmos are drawn.
         /// </summary>
         /// <param name="GizmoAction">Gizmo action to validate.</param>
@@ -109,6 +140,18 @@ namespace nickmaltbie.OpenKCC.TestCommon
             GizmoValidator gv = go.AddComponent<GizmoValidator>();
             gv.GizmoAction = GizmoAction;
             return gv.ValidateGizmosDrawn(maxIter, assertDrawn);
+        }
+
+        /// <summary>
+        /// Create a scriptable object and register it as part of the test.
+        /// </summary>
+        /// <typeparam name="E">Type of scriptable object to create.</typeparam>
+        /// <returns>Created scriptable object.</returns>
+        protected E CreateScriptableObject<E>() where E : ScriptableObject
+        {
+            E created = ScriptableObject.CreateInstance<E>();
+            RegisterScriptableObject(created);
+            return created;
         }
 
         /// <summary>
@@ -141,6 +184,24 @@ namespace nickmaltbie.OpenKCC.TestCommon
         protected void RegisterGameObject(GameObject go)
         {
             gameObjects.Add(go);
+        }
+
+        /// <summary>
+        /// Register a ScriptableObject as part of a test to cleanup once the test is completed.
+        /// </summary>
+        /// <param name="so">ScriptableObject to register.</param>
+        protected void RegisterScriptableObject(ScriptableObject so)
+        {
+            scriptableObjects.Add(so);
+        }
+
+        /// <summary>
+        /// Register an InputDevice as part of a test to cleanup once the test is completed.
+        /// </summary>
+        /// <param name="device">InputDevice to register.</param>
+        protected void RegisterInputDevice(InputDevice device)
+        {
+            createdDevices.Add(device);
         }
 
         /// <summary>

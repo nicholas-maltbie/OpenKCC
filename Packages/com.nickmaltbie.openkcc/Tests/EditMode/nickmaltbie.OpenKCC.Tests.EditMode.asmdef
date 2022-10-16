@@ -3,10 +3,11 @@
     "rootNamespace": "nickmaltbie.OpenKCC.Tests.EditMode",
     "references": [
         "nickmaltbie.OpenKCC",
-        "nickmaltbie.OpenKCC.TestCommon"
-    ],
-    "optionalUnityReferences": [
-        "TestAssemblies"
+        "nickmaltbie.OpenKCC.TestCommon",
+        "Unity.InputSystem",
+        "Unity.InputSystem.TestFramework",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [
         "Editor"
