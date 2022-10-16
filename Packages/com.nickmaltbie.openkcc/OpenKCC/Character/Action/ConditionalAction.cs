@@ -45,7 +45,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
         /// <summary>
         /// Can this action be performed.
         /// </summary>
-        public bool CanPerform => condition?.Invoke() is true || elapsed <= coyoteTime;
+        public bool CanPerform => condition?.Invoke() is true || (coyoteTime > 0 && elapsed <= coyoteTime);
 
         /// <summary>
         /// Condition for configuring this conditional action.
@@ -63,10 +63,19 @@ namespace nickmaltbie.OpenKCC.Character.Action
         /// </summary>
         public virtual void Update()
         {
-            if (condition?.Invoke() is true)
+            if (!(condition?.Invoke() is true))
             {
                 elapsed += unityService.deltaTime;
             }
+        }
+
+        /// <summary>
+        /// Configure the condition for this action.
+        /// </summary>
+        /// <param name="condition">Condition for the action.</param>
+        public void SetCondition(Func<bool> condition)
+        {
+            this.condition = condition;
         }
     }
 }
