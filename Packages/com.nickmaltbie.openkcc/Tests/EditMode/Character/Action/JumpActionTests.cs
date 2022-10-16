@@ -16,6 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections;
 using Moq;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
@@ -26,6 +27,7 @@ using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
 {
@@ -120,6 +122,25 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
 
             // Assert that cannot jump too steep slope
             Assert.IsFalse(jumpAction.CanJump());
+        }
+
+        [UnityTest]
+        public IEnumerator Validate_JumpAction_AttemptingJump()
+        {
+            // set the value as true and update the input device
+            Set(gamepad.aButton, 1);
+            yield return null;
+            jumpAction.Update();
+            Assert.IsTrue(jumpAction.AttemptingJump);
+
+            Set(gamepad.aButton, 0);
+            yield return null;
+            jumpAction.Update();
+            Assert.IsTrue(jumpAction.AttemptingJump);
+
+            unityServiceMock.Setup(e => e.deltaTime).Returns(1000);
+            jumpAction.Update();
+            Assert.IsFalse(jumpAction.AttemptingJump);
         }
 
         [Test]
