@@ -1,0 +1,108 @@
+﻿// Copyright (C) 2022 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+using Moq;
+using nickmaltbie.OpenKCC.Character.Config;
+using nickmaltbie.OpenKCC.TestCommon;
+using nickmaltbie.OpenKCC.Utils;
+using NUnit.Framework;
+using UnityEngine;
+
+namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
+{
+    /// <summary>
+    /// Basic tests for <see cref="KCCGroundedState"/> in edit mode.
+    /// </summary>
+    [TestFixture]
+    public class KCCGroundedStateTests : TestBase
+    {
+        private Mock<IColliderCast> colliderCastMock;
+        private Mock<IKCCConfig> kccConfigMock;
+        private KCCGroundedState kccGroundedState;
+        
+        [SetUp]
+        public void SetUp()
+        {
+            colliderCastMock = new Mock<IColliderCast>();
+            kccConfigMock = new Mock<IKCCConfig>();
+            kccGroundedState = new KCCGroundedState();
+            kccConfigMock.Setup(e => e.ColliderCast).Returns(colliderCastMock.Object);
+            kccConfigMock.Setup(e => e.Up).Returns(Vector3.up);
+        }
+
+        [Test]
+        public void Validate_KCCGroundedState_CheckGrounded_StandingOnGround()
+        {
+            SetupRaycastHit(normal: Vector3.up, distance: 0.001f);
+            kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
+
+            TestUtils.AssertInBounds(kccGroundedState.Angle, 0.0f);
+            Assert.IsTrue(kccGroundedState.StandingOnGround);
+            Assert.IsTrue(kccGroundedState.groundedDistance == 0.001f);
+            Assert.IsFalse(kccGroundedState.Sliding);
+        }
+
+        [Test]
+        public void Validate_KCCGroundedState_CheckGrounded_Falling(
+            [Values(10.0f, 100.0f, Mathf.Infinity)] float distance
+        )
+        {
+            SetupRaycastHit(normal: Vector3.up, distance: distance);
+            kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
+
+            Assert.IsFalse(kccGroundedState.StandingOnGround);
+            Assert.IsFalse(kccGroundedState.Sliding);
+            Assert.IsTrue(kccGroundedState.groundedDistance == distance);
+            Assert.IsFalse(kccGroundedState.Falling);
+        }
+
+        [Test]
+        public void Validate_KCCGroundedState_CheckGrounded_Sliding()
+        {
+            SetupRaycastHit(distance: 0.001f, normal: (Vector3.up + Vector3.right * 10).normalized);
+            kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
+
+            Assert.IsTrue(kccGroundedState.StandingOnGround);
+            Assert.IsTrue(kccGroundedState.Sliding);
+            Assert.IsTrue(kccGroundedState.groundedDistance == 0.001f);
+        }
+
+        /// <summary>
+        /// Setup a raycast hit mock.
+        /// </summary>
+        /// <param name="collider">Collider to return from the mock.</param>
+        /// <param name="point">Point of collision for the mock.</param>
+        /// <param name="distance">Distance from source from the mock.</param>
+        /// <param name="normal">Normal vector for the collision from the mock.</param>
+        /// <param name="fraction">Fraction of movement.</param>
+        /// <returns>Mock raycast hit object with the specified properties.</returns>
+        public IRaycastHit SetupRaycastHit(Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f)
+        {
+            IRaycastHit raycastHit = TestUtils.SetupRaycastHitMock(normal: Vector3.up, distance: 0.1f);
+            colliderCastMock.Setup(e => e.CastSelf(
+                It.IsAny<Vector3>(),
+                It.IsAny<Quaternion>(),
+                It.IsAny<Vector3>(),
+                It.IsAny<float>(),
+                out raycastHit
+            ));
+
+            return raycastHit;
+        }
+    }
+}

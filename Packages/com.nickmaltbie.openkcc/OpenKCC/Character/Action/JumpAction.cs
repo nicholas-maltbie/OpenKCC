@@ -92,7 +92,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
             this.kccGrounded = kccGrounded;
             this.kccConfig = kccConfig;
             this.actor = actor;
-            this.JumpedWhileSliding = false;
+            JumpedWhileSliding = false;
         }
 
         /// <inheritdoc/>
