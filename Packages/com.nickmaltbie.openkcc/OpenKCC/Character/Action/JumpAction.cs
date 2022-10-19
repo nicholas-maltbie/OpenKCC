@@ -150,16 +150,14 @@ namespace nickmaltbie.OpenKCC.Character.Action
         /// <returns>True if the player can jump, false otherwise.</returns>
         public bool CanJump()
         {
-            if (kccGrounded.StandingOnGround && kccGrounded.Angle <= maxJumpAngle)
+            bool canJump = kccGrounded.StandingOnGround && kccGrounded.Angle <= maxJumpAngle;
+            if (canJump && !kccGrounded.Sliding)
             {
-                if (!kccGrounded.Sliding)
-                {
-                    return true;
-                }
-                else if (kccGrounded.Sliding)
-                {
-                    return !JumpedWhileSliding;
-                }
+                return true;
+            }
+            else if (canJump)
+            {
+                return !JumpedWhileSliding;
             }
 
             return false;

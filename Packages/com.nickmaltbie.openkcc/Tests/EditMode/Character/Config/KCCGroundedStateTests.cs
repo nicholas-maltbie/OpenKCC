@@ -43,17 +43,19 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             kccGroundedState = new KCCGroundedState();
             kccConfigMock.Setup(e => e.ColliderCast).Returns(colliderCastMock.Object);
             kccConfigMock.Setup(e => e.Up).Returns(Vector3.up);
+            kccGroundedState.groundedDistance = 0.01f;
+            kccGroundedState.maxWalkAngle = 60.0f;
         }
 
         [Test]
         public void Validate_KCCGroundedState_CheckGrounded_StandingOnGround()
         {
-            SetupRaycastHit(normal: Vector3.up, distance: 0.001f);
+            SetupRaycastHit(normal: Vector3.up, distance: 0.001f, didHit: true);
             kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
 
             TestUtils.AssertInBounds(kccGroundedState.Angle, 0.0f);
             Assert.IsTrue(kccGroundedState.StandingOnGround);
-            Assert.IsTrue(kccGroundedState.groundedDistance == 0.001f);
+            Assert.IsTrue(kccGroundedState.DistanceToGround == 0.001f);
             Assert.IsFalse(kccGroundedState.Sliding);
         }
 
@@ -62,45 +64,40 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             [Values(10.0f, 100.0f, Mathf.Infinity)] float distance
         )
         {
-            SetupRaycastHit(normal: Vector3.up, distance: distance);
+            SetupRaycastHit(normal: Vector3.up, distance: distance, didHit: distance < Mathf.Infinity);
             kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
 
             Assert.IsFalse(kccGroundedState.StandingOnGround);
             Assert.IsFalse(kccGroundedState.Sliding);
-            Assert.IsTrue(kccGroundedState.groundedDistance == distance);
-            Assert.IsFalse(kccGroundedState.Falling);
+            Assert.IsTrue(kccGroundedState.DistanceToGround == distance);
+            Assert.IsTrue(kccGroundedState.Falling);
         }
 
         [Test]
         public void Validate_KCCGroundedState_CheckGrounded_Sliding()
         {
-            SetupRaycastHit(distance: 0.001f, normal: (Vector3.up + Vector3.right * 10).normalized);
+            SetupRaycastHit(distance: 0.001f, normal: (Vector3.up + Vector3.right * 10).normalized, didHit: true);
             kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
 
             Assert.IsTrue(kccGroundedState.StandingOnGround);
             Assert.IsTrue(kccGroundedState.Sliding);
-            Assert.IsTrue(kccGroundedState.groundedDistance == 0.001f);
+            Assert.IsTrue(kccGroundedState.DistanceToGround == 0.001f);
         }
 
-        /// <summary>
-        /// Setup a raycast hit mock.
-        /// </summary>
-        /// <param name="collider">Collider to return from the mock.</param>
-        /// <param name="point">Point of collision for the mock.</param>
-        /// <param name="distance">Distance from source from the mock.</param>
-        /// <param name="normal">Normal vector for the collision from the mock.</param>
-        /// <param name="fraction">Fraction of movement.</param>
-        /// <returns>Mock raycast hit object with the specified properties.</returns>
-        public IRaycastHit SetupRaycastHit(Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f)
+        public IRaycastHit SetupRaycastHit(Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f, bool didHit = false)
         {
-            IRaycastHit raycastHit = TestUtils.SetupRaycastHitMock(normal: Vector3.up, distance: 0.1f);
+            IRaycastHit raycastHit = TestUtils.SetupRaycastHitMock(
+                collider,
+                point,
+                normal,
+                distance);
             colliderCastMock.Setup(e => e.CastSelf(
                 It.IsAny<Vector3>(),
                 It.IsAny<Quaternion>(),
                 It.IsAny<Vector3>(),
                 It.IsAny<float>(),
                 out raycastHit
-            ));
+            )).Returns(didHit);
 
             return raycastHit;
         }

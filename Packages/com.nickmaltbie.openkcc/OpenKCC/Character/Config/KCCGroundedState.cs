@@ -37,13 +37,6 @@ namespace nickmaltbie.OpenKCC.Character.Config
         public float groundedDistance = 0.01f;
 
         /// <summary>
-        /// Distance to ground at which player is considered standing on something.
-        /// </summary>
-        [Tooltip("Distance to ground at which player is considered standing on something")]
-        [SerializeField]
-        public float standingDistance = 0.1f;
-
-        /// <summary>
         /// Distance to check player distance to ground.
         /// </summary>
         [Tooltip("Distance to draw rays down when checking if player is grounded")]
