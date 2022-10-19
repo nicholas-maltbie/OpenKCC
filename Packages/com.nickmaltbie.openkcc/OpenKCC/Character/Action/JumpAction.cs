@@ -64,11 +64,6 @@ namespace nickmaltbie.OpenKCC.Character.Action
         public float jumpAngleWeightFactor = 0.0f;
 
         /// <summary>
-        /// Has the player jumped while they are sliding.
-        /// </summary>
-        private bool jumpedWhileSliding = false;
-
-        /// <summary>
         /// Grounded state for managing player grounded configuration.
         /// </summary>
         private IKCCGrounded kccGrounded;
@@ -84,6 +79,11 @@ namespace nickmaltbie.OpenKCC.Character.Action
         private IKCCConfig kccConfig;
 
         /// <summary>
+        /// Has the player jumped while they are sliding.
+        /// </summary>
+        public bool JumpedWhileSliding { get; private set; }
+
+        /// <summary>
         /// Setup this jump action.
         /// </summary>
         public void Setup(IKCCGrounded kccGrounded, IKCCConfig kccConfig, IJumping actor)
@@ -92,6 +92,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
             this.kccGrounded = kccGrounded;
             this.kccConfig = kccConfig;
             this.actor = actor;
+            this.JumpedWhileSliding = false;
         }
 
         /// <inheritdoc/>
@@ -102,7 +103,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
 
             if (kccGrounded.StandingOnGround && !kccGrounded.Sliding)
             {
-                jumpedWhileSliding = false;
+                JumpedWhileSliding = false;
             }
         }
 
@@ -129,7 +130,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
         {
             if (kccGrounded.Sliding)
             {
-                jumpedWhileSliding = true;
+                JumpedWhileSliding = true;
             }
 
             Vector3 jumpDirection = (kccGrounded.StandingOnGround ? kccGrounded.SurfaceNormal : kccConfig.Up) *
@@ -157,7 +158,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
                 }
                 else if (kccGrounded.Sliding)
                 {
-                    return !jumpedWhileSliding;
+                    return !JumpedWhileSliding;
                 }
             }
 

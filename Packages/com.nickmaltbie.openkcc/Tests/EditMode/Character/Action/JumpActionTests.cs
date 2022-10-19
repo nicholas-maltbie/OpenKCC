@@ -84,6 +84,54 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         }
 
         [Test]
+        public void Verify_JumpAction_JumpDirection([NUnit.Framework.Range(0.0f, 1.0f, 0.2f)] float jumpWeight)
+        {
+            jumpAction.jumpAngleWeightFactor = jumpWeight;
+
+            kccGroundedMock.Setup(e => e.StandingOnGround).Returns(true);
+            kccGroundedMock.Setup(e => e.SurfaceNormal).Returns(Vector3.forward);
+            jumpAction.Jump();
+
+            Vector3 expected = Vector3.Lerp(Vector3.up, Vector3.forward, jumpWeight).normalized * jumpAction.jumpVelocity;
+
+            TestUtils.AssertInBounds(inputJump, expected);
+        }
+
+        [Test]
+        public void Verify_JumpAction_JumpedWhileSliding()
+        {
+            kccGroundedMock.Setup(e => e.Sliding).Returns(true);
+            Assert.IsFalse(jumpAction.JumpedWhileSliding);
+
+            jumpAction.Jump();
+            Assert.IsTrue(jumpAction.JumpedWhileSliding);
+            jumpAction.Update();
+            Assert.IsTrue(jumpAction.JumpedWhileSliding);
+
+            kccGroundedMock.Setup(e => e.StandingOnGround).Returns(true);
+            kccGroundedMock.Setup(e => e.Sliding).Returns(false);
+            jumpAction.Update();
+            Assert.IsFalse(jumpAction.JumpedWhileSliding);
+        }
+
+        [Test]
+        public void Verify_JumpAction_ApplyJumpIfPossible()
+        {
+            jumpAction.maxJumpAngle = 60.0f;
+            kccGroundedMock.Setup(e => e.StandingOnGround).Returns(true);
+            kccGroundedMock.Setup(e => e.Angle).Returns(30);
+            kccGroundedMock.Setup(e => e.Sliding).Returns(false);
+
+            // Assert that can jump when standing on flat ground.
+            Set(gamepad.aButton, 1);
+
+            jumpAction.Update();
+            Assert.IsTrue(jumpAction.AttemptingJump);
+            Assert.IsTrue(jumpAction.ApplyJumpIfPossible());
+            Assert.IsFalse(jumpAction.ApplyJumpIfPossible());
+        }
+
+        [Test]
         public void Verify_JumpAction_CanJump_Sliding()
         {
             jumpAction.maxJumpAngle = 60.0f;
