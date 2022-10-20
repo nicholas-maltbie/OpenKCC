@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,11 +18,9 @@
 
 using Moq;
 using nickmaltbie.OpenKCC.Character.Action;
-using nickmaltbie.OpenKCC.Environment;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
-using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
 {

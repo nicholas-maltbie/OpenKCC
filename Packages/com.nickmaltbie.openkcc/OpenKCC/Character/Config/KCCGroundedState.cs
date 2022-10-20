@@ -80,7 +80,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// What is the player standing on.
         /// </summary>
         public GameObject Floor { get; private set; }
-        
+
         /// <summary>
         /// Is the player currently standing on the ground?
         /// Will be true if the hit the ground and the distance to the ground is less than
@@ -89,7 +89,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// (and would therefore not be on the ground) versus when they are stuck in the floor.
         /// </summary>
         public bool StandingOnGround => OnGround && DistanceToGround <= groundedDistance && DistanceToGround > 0;
-    
+
         /// <summary>
         /// Is the player currently falling? this is true if they are either not standing on 
         /// the ground or if the angle between them and the ground is grater than the player's

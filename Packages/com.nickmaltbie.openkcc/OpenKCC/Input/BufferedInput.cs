@@ -20,7 +20,6 @@ using System;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.InputSystem.InputAction;
 
 namespace nickmaltbie.OpenKCC.Input
 {

@@ -94,7 +94,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
             this.actor = actor;
             JumpedWhileSliding = false;
 
-            this.jumpInput.inputAction.action.Enable();
+            jumpInput.inputAction.action.Enable();
         }
 
         /// <inheritdoc/>

@@ -22,7 +22,6 @@ using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
 using nickmaltbie.OpenKCC.FSM;
 using nickmaltbie.OpenKCC.FSM.Attributes;
-using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -188,7 +187,7 @@ namespace nickmaltbie.OpenKCC.Character
 
         /// <inheritdoc/>
         public Vector3 Up => Vector3.up;
-        
+
         /// <summary>
         /// Collider cast associated with the character.
         /// </summary>

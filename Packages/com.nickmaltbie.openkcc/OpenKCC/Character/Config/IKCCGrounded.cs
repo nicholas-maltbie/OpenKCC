@@ -55,12 +55,12 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// What is the player standing on.
         /// </summary>
         public GameObject Floor { get; }
-        
+
         /// <summary>
         /// Is the player currently standing on the ground?
         /// </summary>
         public bool StandingOnGround { get; }
-    
+
         /// <summary>
         /// Is the player currently falling?
         /// </summary>

@@ -34,7 +34,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         private Mock<IColliderCast> colliderCastMock;
         private Mock<IKCCConfig> kccConfigMock;
         private KCCGroundedState kccGroundedState;
-        
+
         [SetUp]
         public void SetUp()
         {

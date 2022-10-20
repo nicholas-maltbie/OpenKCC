@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -53,7 +53,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         private JumpAction jumpAction;
         private KCCGroundedState kccGroundedState;
         private KCCStateMachine kccStateMachine;
-        
+
         [SetUp]
         public void SetUp()
         {

@@ -27,7 +27,7 @@ namespace nickmaltbie.OpenKCC.Character.Events
     {
         public static readonly GroundedEvent Instance = new GroundedEvent();
 
-        private GroundedEvent() {}
+        private GroundedEvent() { }
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ namespace nickmaltbie.OpenKCC.Character.Events
     {
         public static readonly LeaveGroundEvent Instance = new LeaveGroundEvent();
 
-        private LeaveGroundEvent() {}
+        private LeaveGroundEvent() { }
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ namespace nickmaltbie.OpenKCC.Character.Events
     {
         public static readonly SteepSlopeEvent Instance = new SteepSlopeEvent();
 
-        private SteepSlopeEvent() {}
+        private SteepSlopeEvent() { }
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ namespace nickmaltbie.OpenKCC.Character.Events
     {
         public static readonly MoveInput Instance = new MoveInput();
 
-        private MoveInput() {}
+        private MoveInput() { }
     }
 
     /// <summary>
@@ -67,6 +67,6 @@ namespace nickmaltbie.OpenKCC.Character.Events
     {
         public static readonly StopMoveInput Instance = new StopMoveInput();
 
-        private StopMoveInput() {}
+        private StopMoveInput() { }
     }
 }
