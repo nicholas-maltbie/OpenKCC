@@ -77,9 +77,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             kccConfigMock.Setup(e => e.Up).Returns(Vector3.up);
             jumpingMock.Setup(e => e.ApplyJump(It.IsAny<Vector3>()))
                 .Callback((Vector3 jump) => inputJump = jump);
+            jumpAction.jumpInput = bufferedInput;
             jumpAction.Setup(kccGroundedMock.Object, kccConfigMock.Object, jumpingMock.Object);
 
-            jumpAction.jumpInput = bufferedInput;
 
             testAction.Enable();
         }
