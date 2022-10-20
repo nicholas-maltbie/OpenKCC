@@ -33,7 +33,7 @@ using UnityEngine.TestTools;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
     /// <summary>
-    /// Basic tests for <see cref="KCCStateMachine"/> in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.KCCStateMachine"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class KCCStateMachineTests : TestBase

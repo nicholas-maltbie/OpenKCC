@@ -26,7 +26,7 @@ using UnityEngine;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
 {
     /// <summary>
-    /// Basic tests for <see cref="KCCGroundedState"/> in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.Config.KCCGroundedState"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class KCCGroundedStateTests : TestBase

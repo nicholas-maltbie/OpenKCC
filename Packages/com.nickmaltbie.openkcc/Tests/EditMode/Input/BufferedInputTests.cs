@@ -28,7 +28,7 @@ using UnityEngine.TestTools;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
 {
     /// <summary>
-    /// Tests for the <see cref="BufferedInput"/> class.
+    /// Tests for the <see cref="nickmaltbie.OpenKCC.Input.BufferedInput"/> class.
     /// </summary>
     [TestFixture]
     public class BufferedInputTests : TestBase

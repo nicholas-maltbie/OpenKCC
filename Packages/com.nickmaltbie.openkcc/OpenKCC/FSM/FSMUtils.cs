@@ -159,12 +159,12 @@ namespace nickmaltbie.OpenKCC.FSM
         /// Raise a synchronous event for a given state machine.
         /// <br/>
         /// First checks if this state machine expects any events of this type
-        /// for the state machine's <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/>. These
+        /// for the state machine's CurrentState. These
         /// would follow an attribute of type <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnEventDoActionAttribute"/>.
         /// <br/>
-        /// If the state machine's <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/> expects a transition
+        /// If the state machine's CurrentState expects a transition
         /// based on the event, then this will trigger the <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnExitStateAttribute"/>
-        /// of the <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/>, change to the next state defined in
+        /// of the nickmaltbie.OpenKCC.FSM.IStateMachine, change to the next state defined in
         /// the <see cref="nickmaltbie.OpenKCC.FSM.Attributes.TransitionAttribute"/>, then trigger the
         /// <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnEnterStateAttribute"/>
         /// of the next state.
@@ -194,7 +194,7 @@ namespace nickmaltbie.OpenKCC.FSM
         /// </summary>
         /// <typeparam name="E">Type of action to invoke.</typeparam>
         /// <param name="stateMachine">state machine to invoke method of.</param>
-        /// <param name="state">State to invoke action for, if unspecified or null, will use the <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/>.</param>
+        /// <param name="state">State to invoke action for, if unspecified or null, will use the CurrentState.</param>
         /// <returns>True if an action was found and invoked, false otherwise.</returns>
         public static bool InvokeAction<E>(IStateMachine<Type> stateMachine, Type state = null) where E : ActionAttribute
         {
