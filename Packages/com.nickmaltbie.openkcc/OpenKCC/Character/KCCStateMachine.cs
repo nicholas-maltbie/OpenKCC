@@ -33,6 +33,7 @@ namespace nickmaltbie.OpenKCC.Character
     /// <summary>
     /// Have a character controller push any dynamic rigidbody it hits
     /// </summary>
+    [RequireComponent(typeof(Rigidbody))]
     public class KCCStateMachine : FixedStateMachineBehaviour, IKCCConfig, IJumping
     {
         /// <summary>
@@ -182,22 +183,37 @@ namespace nickmaltbie.OpenKCC.Character
 
         /// <inheritdoc/>
         public Vector3 Up => Vector3.up;
+        
+        /// <summary>
+        /// Collider cast associated with the character.
+        /// </summary>
+        internal IColliderCast _colliderCast;
 
         /// <inheritdoc/>
-        public IColliderCast ColliderCast => GetComponent<IColliderCast>();
+        public IColliderCast ColliderCast => _colliderCast;
+
+        /// <summary>
+        /// Character push associated with the player.
+        /// </summary>
+        internal ICharacterPush _characterPush;
 
         /// <inheritdoc/>
-        public ICharacterPush Push => GetComponent<ICharacterPush>();
+        public ICharacterPush Push => _characterPush;
+
+        /// <summary>
+        /// Camera controls associated with the player.
+        /// </summary>
+        internal ICameraControls _cameraControls;
 
         /// <summary>
         /// Get the camera controls associated with the state machine.
         /// </summary>
-        public ICameraControls Cameracontrols => GetComponent<ICameraControls>();
+        public ICameraControls CameraControls => _cameraControls;
 
         /// <summary>
         /// Rotation of the plane the player is viewing
         /// </summary>
-        private Quaternion HorizPlaneView => Quaternion.Euler(0, Cameracontrols?.Yaw ?? transform.eulerAngles.y, 0);
+        private Quaternion HorizPlaneView => Quaternion.Euler(0, CameraControls?.Yaw ?? transform.eulerAngles.y, 0);
 
         /// <summary>
         /// Player rotated movement that they intend to move.
@@ -318,6 +334,10 @@ namespace nickmaltbie.OpenKCC.Character
         {
             GetComponent<Rigidbody>().isKinematic = true;
             jumpAction.Setup(groundedState, this, this);
+
+            _cameraControls = GetComponent<ICameraControls>();
+            _characterPush = GetComponent<ICharacterPush>();
+            _colliderCast = GetComponent<IColliderCast>();
         }
 
         /// <inheritdoc/>
@@ -386,9 +406,8 @@ namespace nickmaltbie.OpenKCC.Character
         /// Move the player based on some vector of desired movement.
         /// </summary>
         /// <param name="movement">Movement in world space in which the player model should be moved.</param>
-        public bool MovePlayer(Vector3 movement)
+        public void MovePlayer(Vector3 movement)
         {
-            bool snappedUp = false;
             foreach (KCCBounce bounce in KCCUtils.GetBounces(
                 transform.position,
                 movement,
@@ -399,13 +418,7 @@ namespace nickmaltbie.OpenKCC.Character
                 {
                     transform.position = bounce.finalPosition;
                 }
-                else if (bounce.action == MovementAction.SnapUp)
-                {
-                    snappedUp = true;
-                }
             }
-
-            return snappedUp;
         }
 
         /// <inheritdoc/>

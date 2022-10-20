@@ -116,5 +116,24 @@ namespace nickmaltbie.OpenKCC.TestCommon
 
             return raycastHitMock.Object;
         }
+
+        public static IRaycastHit SetupCastSelf(Mock<IColliderCast> colliderCastMock, Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f, bool didHit = false)
+        {
+            IRaycastHit raycastHit = TestUtils.SetupRaycastHitMock(
+                collider,
+                point,
+                normal,
+                distance);
+
+            colliderCastMock.Setup(e => e.CastSelf(
+                It.IsAny<Vector3>(),
+                It.IsAny<Quaternion>(),
+                It.IsAny<Vector3>(),
+                It.IsAny<float>(),
+                out raycastHit
+            )).Returns(didHit);
+
+            return raycastHit;
+        }
     }
 }

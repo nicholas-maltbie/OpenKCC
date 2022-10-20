@@ -52,6 +52,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         [SetUp]
         public void SetUp()
         {
+            base.Setup();
+
             unityServiceMock = new Mock<IUnityService>();
             unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
 
