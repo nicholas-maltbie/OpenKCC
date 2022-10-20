@@ -181,6 +181,11 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public bool CanSnapUp => !groundedState.Falling;
 
+        /// <summary>
+        /// Time in which the player has been falling.
+        /// </summary>
+        public float FallingTime { get; private set; }
+
         /// <inheritdoc/>
         public Vector3 Up => Vector3.up;
         
@@ -277,6 +282,15 @@ namespace nickmaltbie.OpenKCC.Character
                 groundedState.Sliding ? SteepSlopeEvent.Instance :
                     GroundedEvent.Instance as IEvent);
 
+            if (CurrentState == typeof(FallingState))
+            {
+                FallingTime += unityService.fixedDeltaTime;
+            }
+            else
+            {
+                FallingTime = 0;
+            }
+
             // Apply gravity if needed
             if (Attribute.GetCustomAttribute(CurrentState, typeof(ApplyGravity)) is ApplyGravity)
             {
@@ -338,6 +352,8 @@ namespace nickmaltbie.OpenKCC.Character
             _cameraControls = GetComponent<ICameraControls>();
             _characterPush = GetComponent<ICharacterPush>();
             _colliderCast = GetComponent<IColliderCast>();
+
+            moveAction.action.Enable();
         }
 
         /// <inheritdoc/>

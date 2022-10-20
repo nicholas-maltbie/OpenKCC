@@ -58,7 +58,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <summary>
         /// Character controller for getting character motion information
         /// </summary>
-        public KinematicCharacterController kcc;
+        public KCCStateMachine kcc;
 
         /// <summary>
         /// Camera controller for getting player rotation information
@@ -79,10 +79,10 @@ namespace nickmaltbie.OpenKCC.Animation
                 return;
             }
 
-            bool jumping = kcc.CanJump && kcc.AttemptingJump;
-            bool falling = kcc.IsProne || kcc.FallingTime >= fallingThreshold;
+            bool jumping = kcc.jumpAction.CanJump() && kcc.jumpAction.AttemptingJump;
+            bool falling = kcc.FallingTime >= fallingThreshold;
             bool jumpingOrFalling = falling || jumping;
-            bool moving = !kcc.IsProne && !jumpingOrFalling && kcc.InputMovement.magnitude > movementDeadZone;
+            bool moving = !jumpingOrFalling && kcc.InputMovement.magnitude > movementDeadZone;
 
             animState.move = new Vector2(kcc.InputMovement.x, kcc.InputMovement.z);
             animState.moving = moving;

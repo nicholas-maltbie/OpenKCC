@@ -39,7 +39,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1928389238801210310}
-  - component: {fileID: 1928389238801210311}
   - component: {fileID: 1928389238801210314}
   - component: {fileID: 1928389238801210309}
   - component: {fileID: 1928389238801210308}
@@ -48,6 +47,7 @@ GameObject:
   - component: {fileID: 3373348097961067066}
   - component: {fileID: 6826506219202058344}
   - component: {fileID: 609951634059087576}
+  - component: {fileID: 1928389240043740980}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -71,45 +71,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1928389238801210311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928389238801210305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a954ee42f6e1e2d4da1fb1e7b75ff275, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveAction: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-  jumpAction: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-  sprintAction: {fileID: -6424176782126915535, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-  groundedDistance: 0.01
-  standingDistance: 0.1
-  groundCheckDistance: 5
-  maxWalkAngle: 60
-  gravity: {x: 0, y: -18, z: 0}
-  walkingSpeed: 7.5
-  sprintSpeed: 10
-  maxBounces: 5
-  pushDecay: 0.25
-  anglePower: 1
-  maxPushSpeed: 50
-  verticalSnapDown: 0.2
-  stepUpDepth: 0.1
-  verticalSnapUp: 0.3
-  snapBufferTime: 0.05
-  jumpVelocity: 6.5
-  maxJumpAngle: 75
-  jumpAngleWeightFactor: 0
-  jumpCooldown: 0.5
-  coyoteTime: 0.25
-  jumpBufferTime: 0.05
-  earlyStopProneThreshold: 0.4
-  thresholdAngularVelocity: 15
-  thresholdVelocity: 0.1
 --- !u!114 &1928389238801210314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +173,7 @@ MonoBehaviour:
   turningDeadZone: 0.35
   fallingThreshold: 0.1
   longFallingThreshold: 1.5
-  kcc: {fileID: 1928389238801210311}
+  kcc: {fileID: 1928389240043740980}
   cameraController: {fileID: 1928389238801210314}
   animator: {fileID: 5452054172197868652}
 --- !u!114 &6826506219202058344
@@ -325,6 +286,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c42e37a994cc4d43a30612e8d4227e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1928389240043740980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928389238801210305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd4109d88f6439b48a5b1b84d3d0d451, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveAction: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
+  sprintAction: {fileID: -6424176782126915535, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
+  jumpAction:
+    coyoteTime: 0.25
+    jumpInput:
+      inputAction: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
+      bufferTime: 0.05
+      cooldown: 0.5
+    jumpVelocity: 6.5
+    maxJumpAngle: 85
+    jumpAngleWeightFactor: 0
+  groundedState:
+    groundedDistance: 0.01
+    groundCheckDistance: 5
+    maxWalkAngle: 60
+  gravity: {x: 0, y: -20, z: 0}
+  walkingSpeed: 6.5
+  sprintSpeed: 8.5
+  maxBounces: 5
+  pushDecay: 0.9
+  anglePower: 0.5
+  maxPushSpeed: 10
+  verticalSnapDown: 0.2
+  stepUpDepth: 0.1
+  verticalSnapUp: 0.3
+  snapBufferTime: 0.05
 --- !u!1001 &1928389239579011581
 PrefabInstance:
   m_ObjectHideFlags: 0

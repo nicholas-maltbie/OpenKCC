@@ -93,6 +93,8 @@ namespace nickmaltbie.OpenKCC.Character.Action
             this.kccConfig = kccConfig;
             this.actor = actor;
             JumpedWhileSliding = false;
+
+            this.jumpInput.inputAction.action.Enable();
         }
 
         /// <inheritdoc/>
