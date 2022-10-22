@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections;
 using Moq;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
@@ -26,7 +25,6 @@ using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
 {
@@ -62,7 +60,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
 
             InputActionMap actionMap;
             (gamepad, _, actionMap) = base.SetupInputDevice<Gamepad>();
-            testAction = actionMap.AddAction("testAction", InputActionType.Button, gamepad.aButton.path);
+            testAction = actionMap.AddAction("testAction", InputActionType.Button, gamepad.aButton.path, interactions: "press");
 
             var bufferedInput = new BufferedInput();
             bufferedInput.unityService = unityServiceMock.Object;
@@ -79,7 +77,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
                 .Callback((Vector3 jump) => inputJump = jump);
             jumpAction.jumpInput = bufferedInput;
             jumpAction.Setup(kccGroundedMock.Object, kccConfigMock.Object, jumpingMock.Object);
-
 
             testAction.Enable();
         }
@@ -173,23 +170,20 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             Assert.IsFalse(jumpAction.CanJump());
         }
 
-        [UnityTest]
-        public IEnumerator Validate_JumpAction_AttemptingJump()
+        [Test]
+        public void Validate_JumpAction_AttemptingJump()
         {
             // set the value as true and update the input device
-            Set(gamepad.aButton, 1);
-            yield return null;
+            Press(gamepad.aButton);
             jumpAction.Update();
             Assert.IsTrue(jumpAction.AttemptingJump);
 
-            Set(gamepad.aButton, 0);
-            yield return null;
             jumpAction.Update();
             Assert.IsTrue(jumpAction.AttemptingJump);
 
-            unityServiceMock.Setup(e => e.deltaTime).Returns(1000);
+            unityServiceMock.Setup(e => e.deltaTime).Returns(100);
             jumpAction.Update();
-            Assert.IsFalse(jumpAction.AttemptingJump);
+            Assert.IsFalse(jumpAction.CanJump());
         }
 
         [Test]

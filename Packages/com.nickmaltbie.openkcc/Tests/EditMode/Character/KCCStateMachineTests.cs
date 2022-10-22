@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections;
 using Moq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
@@ -28,7 +27,6 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
-using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
@@ -149,13 +147,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Assert.IsFalse(kccStateMachine.groundedState.Falling);
         }
 
-        [UnityTest]
-        public IEnumerator Validate_KCCStateMachine_Move_Transition()
+        [Test]
+        public void Validate_KCCStateMachine_Move_Transition()
         {
             TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
-            Set(moveStick, Vector2.up);
+            Move(moveStick, Vector2.up);
             Debug.Log("Move input action value: " + moveInputAction.ReadValue<Vector2>());
-            yield return null;
 
             kccStateMachine.Update();
             TestUtils.AssertInBounds(kccStateMachine.InputMovement, Vector3.forward);
