@@ -17,12 +17,14 @@
 // SOFTWARE.
 
 using System;
-using nickmaltbie.OpenKCC.FSM.Attributes;
-using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.FSM
 {
-    public abstract class StateMachineMonoBehaviour : MonoBehaviour, IStateMachine
+    /// <summary>
+    /// Abstract state machine to manage a set of given states
+    /// and transitions.
+    /// </summary>
+    public abstract class FixedStateMachine : IStateMachine<Type>
     {
         /// <summary>
         /// Current state of the state machine.
@@ -32,9 +34,10 @@ namespace nickmaltbie.OpenKCC.FSM
         /// <summary>
         /// Initializes a state machine
         /// and will set the initial
-        /// state to the state defined under this class with a <see cref="nickmaltbie.OpenKCC.FSM.Attributes.InitialStateAttribute"/>.
+        /// state to the state defined under this class with an
+        /// <see cref="nickmaltbie.OpenKCC.FSM.Attributes.InitialStateAttribute"/>.
         /// </summary>
-        public StateMachineMonoBehaviour()
+        public FixedStateMachine()
         {
             FSMUtils.InitializeStateMachine(this);
         }
@@ -62,41 +65,6 @@ namespace nickmaltbie.OpenKCC.FSM
         public void SetStateQuiet(Type newState)
         {
             CurrentState = newState;
-        }
-
-        public virtual void Update()
-        {
-            RaiseEvent(OnUpdateEvent.Instance);
-        }
-
-        public virtual void FixedUpdate()
-        {
-            RaiseEvent(OnFixedUpdateEvent.Instance);
-        }
-
-        public virtual void LateUpdate()
-        {
-            RaiseEvent(OnLateUpdateEvent.Instance);
-        }
-
-        public virtual void OnGUI()
-        {
-            RaiseEvent(OnGUIEvent.Instance);
-        }
-
-        public virtual void OnEnable()
-        {
-            RaiseEvent(OnEnableEvent.Instance);
-        }
-
-        public virtual void OnDisable()
-        {
-            RaiseEvent(OnDisableEvent.Instance);
-        }
-
-        public virtual void OnAnimatorIK()
-        {
-            RaiseEvent(OnAnimatorIKEvent.Instance);
         }
     }
 }

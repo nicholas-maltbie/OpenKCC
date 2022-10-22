@@ -2,6 +2,8 @@
     "name": "nickmaltbie.OpenKCC.Tests.PlayMode",
     "rootNamespace": "nickmaltbie.OpenKCC.Tests.PlayMode",
     "references": [
+        "Unity.InputSystem",
+        "Unity.InputSystem.TestFramework",
         "Unity.ProBuilder",
         "Unity.ProBuilder.Editor",
         "Unity.ProBuilder.Poly2Tri",

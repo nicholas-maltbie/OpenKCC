@@ -159,19 +159,19 @@ namespace nickmaltbie.OpenKCC.FSM
         /// Raise a synchronous event for a given state machine.
         /// <br/>
         /// First checks if this state machine expects any events of this type
-        /// for the state machine's <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/>. These
+        /// for the state machine's CurrentState. These
         /// would follow an attribute of type <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnEventDoActionAttribute"/>.
         /// <br/>
-        /// If the state machine's <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/> expects a transition
+        /// If the state machine's CurrentState expects a transition
         /// based on the event, then this will trigger the <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnExitStateAttribute"/>
-        /// of the <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/>, change to the next state defined in
+        /// of the nickmaltbie.OpenKCC.FSM.IStateMachine, change to the next state defined in
         /// the <see cref="nickmaltbie.OpenKCC.FSM.Attributes.TransitionAttribute"/>, then trigger the
         /// <see cref="nickmaltbie.OpenKCC.FSM.Attributes.OnEnterStateAttribute"/>
         /// of the next state.
         /// </summary>
         /// <param name="StateMachine">state machine to invoke method of.</param>
         /// <param name="evt">Event to send to this state machine.</param>
-        public static void RaiseCachedEvent(IStateMachine stateMachine, IEvent evt)
+        public static void RaiseCachedEvent(IStateMachine<Type> stateMachine, IEvent evt)
         {
             if (EventCache[stateMachine.GetType()].TryGetValue((stateMachine.CurrentState, evt.GetType()), out List<MethodInfo> actions))
             {
@@ -194,9 +194,9 @@ namespace nickmaltbie.OpenKCC.FSM
         /// </summary>
         /// <typeparam name="E">Type of action to invoke.</typeparam>
         /// <param name="stateMachine">state machine to invoke method of.</param>
-        /// <param name="state">State to invoke action for, if unspecified or null, will use the <see cref="nickmaltbie.OpenKCC.FSM.IStateMachine.CurrentState"/>.</param>
+        /// <param name="state">State to invoke action for, if unspecified or null, will use the CurrentState.</param>
         /// <returns>True if an action was found and invoked, false otherwise.</returns>
-        public static bool InvokeAction<E>(IStateMachine stateMachine, Type state = null) where E : ActionAttribute
+        public static bool InvokeAction<E>(IStateMachine<Type> stateMachine, Type state = null) where E : ActionAttribute
         {
             return InvokeAction(stateMachine, typeof(E), state);
         }
@@ -208,10 +208,8 @@ namespace nickmaltbie.OpenKCC.FSM
         /// <param name="actionType">Type of action to invoke.</param>
         /// <param name="state">State to invoke action for.</param>
         /// <returns>True if an action was found and invoked, false otherwise.</returns>
-        public static bool InvokeAction(IStateMachine stateMachine, Type actionType, Type state)
+        public static bool InvokeAction(IStateMachine<Type> stateMachine, Type actionType, Type state)
         {
-            UnityEngine.Debug.Log($"Invoking sm: {stateMachine.GetType()} action: {actionType} state: {state}");
-            UnityEngine.Debug.Log($"Cached actions for sm: {stateMachine.GetType()} include: [{string.Join(", ", ActionCache[stateMachine.GetType()].Keys.Select(tuple => $"({tuple.Item1}, {tuple.Item2})"))})]");
             if (ActionCache[stateMachine.GetType()].TryGetValue((state ?? stateMachine.CurrentState, actionType), out MethodInfo method))
             {
                 method.Invoke(stateMachine, new object[0]);
@@ -228,7 +226,7 @@ namespace nickmaltbie.OpenKCC.FSM
         /// all the events, transitions, and actions are cached.
         /// </summary>
         /// <param name="stateMachine">state machine to setup.</param>
-        public static void InitializeStateMachine(IStateMachine stateMachine)
+        public static void InitializeStateMachine(IStateMachine<Type> stateMachine)
         {
             // Ensure the cache is setup if not done so already
             SetupCache(stateMachine.GetType());
@@ -236,8 +234,6 @@ namespace nickmaltbie.OpenKCC.FSM
             stateMachine.SetStateQuiet(stateMachine.GetType().GetNestedTypes()
                 .Where(type => type.IsClass && type.IsSubclassOf(typeof(State)))
                 .First(type => State.IsInitialState(type)));
-
-            UnityEngine.Debug.Log($"Set initial state to \"{stateMachine.CurrentState}\" (isNull = {stateMachine.CurrentState == null})");
 
             InvokeAction<OnEnterStateAttribute>(stateMachine, stateMachine.CurrentState);
         }

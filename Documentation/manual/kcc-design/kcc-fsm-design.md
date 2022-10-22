@@ -30,19 +30,19 @@ other states based on external input.
 stateDiagram
     [*] --> Idling
 
-    Idling --> Walking : Move Input
-    Idling --> Falling : Not Grounded
-    Idling --> Sliding : Steep Slope
+    Idling --> Walking : MoveInput
+    Idling --> Falling : LeaveGround
+    Idling --> Sliding : SteepSlope
 
-    Walking --> Idling : Stop Input
-    Walking --> Falling : Not Grounded
-    Walking --> Sliding : Steep Slope
+    Walking --> Idling : StopMove
+    Walking --> Falling : LeaveGround
+    Walking --> Sliding : SteepSlope
 
-    Sliding --> Falling : Not Grounded
-    Sliding --> Idling : Flat Ground
+    Sliding --> Falling : LeaveGround
+    Sliding --> Idling : Grounded
 
-    Falling --> Idling : Grounded + Flat
-    Falling --> Sliding : Grounded + Steep
+    Falling --> Idling : Grounded
+    Falling --> Sliding : SteepSlope
 ```
 
 ### State Attributes
@@ -73,13 +73,13 @@ by a set of [C# Attributes](https://learn.microsoft.com/en-us/dotnet/csharp/prog
 to configure and manage controls for the state machine
 directly from the C# code.
 
-* [IStateMachine](xref:nickmaltbie.OpenKCC.FSM.IStateMachine) - interface to
-    manage a set of states and transitions.
+* [IStateMachine\<E\>](xref:nickmaltbie.OpenKCC.FSM.IStateMachine\<E\>) -
+    interface to manage a set of states and transitions.
 
-    * [StateMachine](xref:nickmaltbie.OpenKCC.FSM.StateMachine)
+    * [FixedStateMachine](xref:nickmaltbie.OpenKCC.FSM.FixedStateMachine)
         \- concrete implementation of state machine
         with cached transitions and events from decorators from [FSMUtils](xref:nickmaltbie.OpenKCC.FSM.FSMUtils).
-    * [StateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.FSM.StateMachineMonoBehaviour)
+    * [FixedStateMachineBehaviour](xref:nickmaltbie.OpenKCC.FSM.FixedStateMachineBehaviour)
         \- concrete implementation of state machine with cached transitions and events
         from decorators from [FSMUtils](xref:nickmaltbie.OpenKCC.FSM.FSMUtils)
         in addition to firing off events for Unity Messages and supports
@@ -135,9 +135,9 @@ but you can extend or change it however you wish.
 Some examples of custom state machines are added
 in the test code under
 
-* [DemoStateMachine](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoStateMachine)
+* [DemoStateMachine](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoFixedStateMachine)
     \- Example implementation of a
-    [StateMachine](xref:nickmaltbie.OpenKCC.FSM.StateMachine).
-* [DemoStateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoStateMachineMonoBehaviour)
+    [FixedStateMachine](xref:nickmaltbie.OpenKCC.FSM.FixedStateMachine).
+* [DemoFixedStateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoFixedStateMachineMonoBehaviour)
     \- Example implementation of a
-    [StateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.FSM.StateMachineMonoBehaviour).
+    [FixedStateMachineBehaviour](xref:nickmaltbie.OpenKCC.FSM.FixedStateMachineBehaviour).

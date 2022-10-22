@@ -16,33 +16,19 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
+using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.FSM
+namespace nickmaltbie.OpenKCC.Character.Config
 {
     /// <summary>
-    /// Abstract state machine to manage a set of given states
-    /// and transitions.
+    /// Character this is able to jump.
     /// </summary>
-    public interface IStateMachine<E>
+    public interface IJumping
     {
         /// <summary>
-        /// Current state of the state machine.
+        /// Apply a jump to the player.
         /// </summary>
-        public E CurrentState { get; }
-
-        /// <summary>
-        /// Raise an event to the current state machine.
-        /// </summary>
-        /// <param name="evt">Event to send to the state machine.</param>
-        public void RaiseEvent(IEvent evt);
-
-        /// <summary>
-        /// Internal method to set the current state of the state machine without
-        /// invoking the <see cref="Attributes.OnEnterStateAttribute"/>
-        /// or <see cref="Attributes.OnExitStateAttribute"/>
-        /// </summary>
-        /// <param name="newState">New state to set for the state machine.</param>
-        public void SetStateQuiet(Type newState);
+        /// <param name="velocity">Velocity change for the player jump.</param>
+        public void ApplyJump(Vector3 velocity);
     }
 }
