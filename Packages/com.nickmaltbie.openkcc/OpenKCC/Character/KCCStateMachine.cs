@@ -358,7 +358,8 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public override void Update()
         {
-            Vector2 moveVector = moveAction.action.ReadValue<Vector2>();
+            Vector2 moveVector = PlayerInputUtils.playerMovementState == PlayerInputState.Deny ?
+                moveVector = Vector3.zero : moveAction.action.ReadValue<Vector2>();
             InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
             RaiseEvent(InputMovement.magnitude >= KCCUtils.Epsilon ?
                 MoveInput.Instance as IEvent : StopMoveInput.Instance as IEvent);
