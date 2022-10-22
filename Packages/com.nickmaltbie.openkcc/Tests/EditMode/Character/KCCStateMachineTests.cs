@@ -180,6 +180,28 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         }
 
         [Test]
+        public void Validate_KCCStateMachine_PlayerInputUtilsFlags()
+        {
+            TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
+            Set(moveStick, Vector2.up);
+            PlayerInputUtils.playerMovementState = PlayerInputState.Deny;
+
+            kccStateMachine.Update();
+            TestUtils.AssertInBounds(kccStateMachine.InputMovement, Vector3.zero);
+
+            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
+
+            kccStateMachine.FixedUpdate();
+
+            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
+            Assert.IsTrue(kccStateMachine.groundedState.StandingOnGround);
+            Assert.IsFalse(kccStateMachine.groundedState.Sliding);
+            Assert.IsFalse(kccStateMachine.groundedState.Falling);
+
+            PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
+        }
+
+        [Test]
         public void Validate_KCCStateMachine_Values(
             [Random(2)] int maxBounces,
             [Random(2)] float pushDecay,
