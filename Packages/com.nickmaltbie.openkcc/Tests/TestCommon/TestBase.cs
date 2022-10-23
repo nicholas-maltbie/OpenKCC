@@ -117,17 +117,20 @@ namespace nickmaltbie.OpenKCC.TestCommon
         /// </summary>
         /// <typeparam name="E">Type of device craeted.</typeparam>
         /// <returns>Tuple of the input device, player input, and created action map.</returns>
-        public (E, GameObject, InputActionMap) SetupInputDevice<E>() where E : InputDevice
+        public (E, PlayerInput, InputActionMap) SetupInputDevice<E>() where E : InputDevice
         {
             E inputDevice = InputSystem.AddDevice<E>();
             GameObject go = CreateGameObject();
-            _ = go.AddComponent<PlayerInput>();
+            PlayerInput playerInput = go.AddComponent<PlayerInput>();
             InputActionAsset inputActionAsset = CreateScriptableObject<InputActionAsset>();
             InputActionMap actionMap = inputActionAsset.AddActionMap("testMap");
 
+            playerInput.actions = inputActionAsset;
+            playerInput.currentActionMap = actionMap;
+
             RegisterInputDevice(inputDevice);
 
-            return (inputDevice, go, actionMap);
+            return (inputDevice, playerInput, actionMap);
         }
 
         /// <summary>

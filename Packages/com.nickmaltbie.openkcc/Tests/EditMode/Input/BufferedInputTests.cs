@@ -64,30 +64,27 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
             InputActionReference.DestroyImmediate(bufferedInput.inputAction);
         }
 
-        [UnityTest]
-        public IEnumerator Validate_BufferedInput_False()
+        [Test]
+        public void Validate_BufferedInput_False()
         {
             // Validate that input is disabled
             Assert.IsFalse(bufferedInput.Pressed);
 
             // set the value as true and update the input device
-            Set(gamepad.aButton, 1);
-            yield return null;
+            Press(gamepad.aButton);
             bufferedInput.Update();
             Assert.IsTrue(bufferedInput.Pressed);
         }
 
-        [UnityTest]
-        public IEnumerator Validate_BufferedInput_BufferTime()
+        [Test]
+        public void Validate_BufferedInput_BufferTime()
         {
             // set the value as true and update the input device
-            Set(gamepad.aButton, 1);
-            yield return null;
+            Press(gamepad.aButton);
             bufferedInput.Update();
             Assert.IsTrue(bufferedInput.Pressed);
 
-            Set(gamepad.aButton, 0);
-            yield return null;
+            Release(gamepad.aButton);
             bufferedInput.Update();
             Assert.IsTrue(bufferedInput.Pressed);
 
@@ -96,12 +93,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
             Assert.IsFalse(bufferedInput.Pressed);
         }
 
-        [UnityTest]
-        public IEnumerator Validate_BufferedInput_Cooldown()
+        [Test]
+        public void Validate_BufferedInput_Cooldown()
         {
             // set the value as true and update the input device
-            Set(gamepad.aButton, 1);
-            yield return null;
+            Press(gamepad.aButton);
             bufferedInput.Update();
             Assert.IsTrue(bufferedInput.Pressed);
 

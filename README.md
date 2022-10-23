@@ -219,9 +219,9 @@ Future improvements that are in development
 If you want to help with the project, feel free to make some
 changes and submit a PR to the repo.
 
-This project is developed using Unity Release [2021.1.19f1](https://unity3d.com/unity/whats-new/2021.1.19).
+This project is developed using Unity Release [2021.3.11f1](https://unity3d.com/unity/whats-new/2021.3.11).
 Install this version of Unity from Unity Hub using this link:
-[unityhub://2021.1.19f1/d0d1bb862f9d](unityhub://2021.1.19f1/d0d1bb862f9d).
+[unityhub://2021.3.11f1/0a5ca18544bf](unityhub://2021.3.11f1/0a5ca18544bf).
 
 ### Git LFS Setup
 

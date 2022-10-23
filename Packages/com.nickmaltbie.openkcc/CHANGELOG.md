@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 
 * Added Finite State Machine design docs and a decorator
     based code implementation to the project.
+* Added KCCStateMachine implementation and changed relevant examples to use
+    this state machine.
+* Updated unity version of project to v2021.3.11f1
 * Adding test coverage for EditMode tests
 
 ## [0.1.2] - 2022-06-26
