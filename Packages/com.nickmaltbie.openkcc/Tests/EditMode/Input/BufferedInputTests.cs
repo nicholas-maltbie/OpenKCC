@@ -16,14 +16,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections;
 using Moq;
 using nickmaltbie.OpenKCC.Input;
-using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine.InputSystem;
-using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
 {

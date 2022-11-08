@@ -17,8 +17,8 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.UI.Events;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.UI

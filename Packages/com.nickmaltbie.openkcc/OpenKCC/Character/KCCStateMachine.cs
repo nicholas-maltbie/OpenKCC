@@ -20,9 +20,11 @@ using System;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
-using nickmaltbie.OpenKCC.FSM;
-using nickmaltbie.OpenKCC.FSM.Attributes;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.StateMachineUnity;
+using nickmaltbie.StateMachineUnity.Attributes;
+using nickmaltbie.StateMachineUnity.Event;
+using nickmaltbie.StateMachineUnity.Fixed;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
@@ -33,13 +35,8 @@ namespace nickmaltbie.OpenKCC.Character
     /// Have a character controller push any dynamic rigidbody it hits
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    public class KCCStateMachine : FixedStateMachineBehaviour, IKCCConfig, IJumping
+    public class KCCStateMachine : FixedSMAnim, IKCCConfig, IJumping
     {
-        /// <summary>
-        /// Unity service for managing unit inputs in a testable manner.
-        /// </summary>
-        public IUnityService unityService = UnityService.Instance;
-
         [Header("Input Controls")]
 
         /// <summary>
@@ -276,10 +273,21 @@ namespace nickmaltbie.OpenKCC.Character
 
             // Update grounded state
             groundedState.CheckGrounded(this, transform.position, transform.rotation);
-            RaiseEvent(
-                !groundedState.StandingOnGround ? LeaveGroundEvent.Instance :
-                groundedState.Sliding ? SteepSlopeEvent.Instance :
-                    GroundedEvent.Instance as IEvent);
+            IEvent groundedEvent;
+            if (!groundedState.StandingOnGround)
+            {
+                groundedEvent = LeaveGroundEvent.Instance;
+            }
+            else if (groundedState.Sliding)
+            {
+                groundedEvent = SteepSlopeEvent.Instance;
+            }
+            else
+            {
+                groundedEvent = GroundedEvent.Instance;
+            }
+
+            RaiseEvent(groundedEvent);
 
             if (CurrentState == typeof(FallingState))
             {
@@ -343,8 +351,10 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Configure kcc state machine operations.
         /// </summary>
-        public void Awake()
+        public override void Awake()
         {
+            base.Awake();
+
             GetComponent<Rigidbody>().isKinematic = true;
             jumpAction.Setup(groundedState, this, this);
 
@@ -359,7 +369,7 @@ namespace nickmaltbie.OpenKCC.Character
         public override void Update()
         {
             Vector2 moveVector = PlayerInputUtils.playerMovementState == PlayerInputState.Deny ?
-                moveVector = Vector3.zero : moveAction.action.ReadValue<Vector2>();
+                _ = Vector3.zero : moveAction.action.ReadValue<Vector2>();
             InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
             RaiseEvent(InputMovement.magnitude >= KCCUtils.Epsilon ?
                 MoveInput.Instance as IEvent : StopMoveInput.Instance as IEvent);

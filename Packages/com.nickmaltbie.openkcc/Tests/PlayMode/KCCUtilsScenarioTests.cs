@@ -24,11 +24,11 @@ using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Environment.Pushable;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 using UnityEngine.TestTools;
-using static nickmaltbie.OpenKCC.TestCommon.TestUtils;
 
 namespace nickmaltbie.OpenKCC.Tests.PlayMode
 {
@@ -471,7 +471,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
                         KCCValidation.ValidateKCCBounce(moveBounce, KCCUtils.MovementAction.Move);
                         KCCValidation.ValidateKCCBounce(stopBounce, KCCUtils.MovementAction.Stop);
                         TestUtils.AssertInBounds(stopBounce.finalPosition.y, size.y, stepHeight);
-                        TestUtils.AssertInBounds(stopBounce.finalPosition.z, size.z, 6, bound: BoundRange.GraterThan);
+                        TestUtils.AssertInBounds(stopBounce.finalPosition.z, size.z, 6, bound: TestUtils.BoundRange.GraterThan);
 
                         Assert.IsTrue(climbedSteps());
                         Assert.IsTrue(snapUpCount > 0, $"Expected player to snap up but did not find any snap up events.");
@@ -504,7 +504,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode
             KCCValidation.ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
 
             TestUtils.AssertInBounds(bounces[0].Movement, Vector3.forward * 2, 1.0f);
-            TestUtils.AssertInBounds(bounces[1].Movement.magnitude, 0.5f, movement.magnitude - bounces[0].Movement.magnitude, bound: BoundRange.GraterThan);
+            TestUtils.AssertInBounds(bounces[1].Movement.magnitude, 0.5f, movement.magnitude - bounces[0].Movement.magnitude, bound: TestUtils.BoundRange.GraterThan);
         }
     }
 }

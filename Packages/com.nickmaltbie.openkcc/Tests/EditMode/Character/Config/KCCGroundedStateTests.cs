@@ -20,6 +20,7 @@ using Moq;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -50,7 +51,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         [Test]
         public void Validate_KCCGroundedState_CheckGrounded_StandingOnGround()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: 0.001f, didHit: true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: 0.001f, didHit: true);
             kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
 
             TestUtils.AssertInBounds(kccGroundedState.Angle, 0.0f);
@@ -64,7 +65,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             [Values(10.0f, 100.0f, Mathf.Infinity)] float distance
         )
         {
-            TestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: distance, didHit: distance < Mathf.Infinity);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: distance, didHit: distance < Mathf.Infinity);
             kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
 
             Assert.IsFalse(kccGroundedState.StandingOnGround);
@@ -76,7 +77,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         [Test]
         public void Validate_KCCGroundedState_CheckGrounded_Sliding()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: (Vector3.up + Vector3.right * 10).normalized, didHit: true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: (Vector3.up + Vector3.right * 10).normalized, didHit: true);
             kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
 
             Assert.IsTrue(kccGroundedState.StandingOnGround);

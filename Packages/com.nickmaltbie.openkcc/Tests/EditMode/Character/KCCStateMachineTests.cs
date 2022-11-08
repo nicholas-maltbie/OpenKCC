@@ -23,6 +23,7 @@ using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -105,7 +106,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Validate_KCCStateMachine_Idle_FixedUpdate()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
 
@@ -120,7 +121,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Validate_KCCStateMachine_Falling_Transition()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, didHit: false);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, didHit: false);
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
 
@@ -135,7 +136,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Validate_KCCStateMachine_Sliding_Transition()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.Lerp(Vector3.up, Vector3.forward, 0.9f), didHit: true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.Lerp(Vector3.up, Vector3.forward, 0.9f), didHit: true);
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
 
@@ -150,7 +151,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Validate_KCCStateMachine_Move_Transition()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
             Move(moveStick, Vector2.up);
             Debug.Log("Move input action value: " + moveInputAction.ReadValue<Vector2>());
 
@@ -179,7 +180,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Validate_KCCStateMachine_PlayerInputUtilsFlags()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
             Set(moveStick, Vector2.up);
             PlayerInputUtils.playerMovementState = PlayerInputState.Deny;
 
