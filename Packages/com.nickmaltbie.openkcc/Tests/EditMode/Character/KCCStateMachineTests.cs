@@ -25,6 +25,7 @@ using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -97,6 +98,23 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.jumpAction = jumpAction;
             kccStateMachine.moveAction = InputActionReference.Create(moveInputAction);
 
+            // Setup basic animator animations
+            var controller = new AnimatorController();
+            controller.AddLayer("base");
+            AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
+            controller.AddParameter("MoveX", AnimatorControllerParameterType.Float);
+            controller.AddParameter("MoveY", AnimatorControllerParameterType.Float);
+            rootStateMachine.AddState(KCCStateMachine.IdleAnimState);
+            rootStateMachine.AddState(KCCStateMachine.JumpAnimState);
+            rootStateMachine.AddState(KCCStateMachine.LandingAnimState);
+            rootStateMachine.AddState(KCCStateMachine.WalkingAnimState);
+            rootStateMachine.AddState(KCCStateMachine.SlidingAnimState);
+            rootStateMachine.AddState(KCCStateMachine.FallingAnimState);
+            rootStateMachine.AddState(KCCStateMachine.LongFallingAnimState);
+
+            Animator anim = go.AddComponent<Animator>();
+            anim.runtimeAnimatorController = controller;
+
             kccStateMachine.Awake();
             kccStateMachine._cameraControls = cameraControlsMock.Object;
             kccStateMachine._characterPush = characterPushMock.Object;
@@ -152,17 +170,17 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         public void Validate_KCCStateMachine_Move_Transition()
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
-            Move(moveStick, Vector2.up);
+            Set(moveStick, Vector2.up);
             Debug.Log("Move input action value: " + moveInputAction.ReadValue<Vector2>());
 
             kccStateMachine.Update();
-            TestUtils.AssertInBounds(kccStateMachine.InputMovement, Vector3.forward);
 
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.WalkingState));
+            Assert.AreEqual(typeof(KCCStateMachine.WalkingState), kccStateMachine.CurrentState);
+            TestUtils.AssertInBounds(kccStateMachine.InputMovement, Vector3.forward);
 
             kccStateMachine.FixedUpdate();
 
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.WalkingState));
+            Assert.AreEqual(typeof(KCCStateMachine.WalkingState), kccStateMachine.CurrentState);
             Assert.IsTrue(kccStateMachine.groundedState.StandingOnGround);
             Assert.IsFalse(kccStateMachine.groundedState.Sliding);
             Assert.IsFalse(kccStateMachine.groundedState.Falling);
@@ -171,10 +189,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Validate_KCCStateMachine_ApplyJump([NUnit.Framework.Range(0.0f, 5.0f, 1.0f)] float strength)
         {
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
+            Assert.AreEqual(typeof(KCCStateMachine.IdleState), kccStateMachine.CurrentState);
             kccStateMachine.ApplyJump(Vector3.up * strength);
             TestUtils.AssertInBounds(kccStateMachine.Velocity, Vector3.up * strength);
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.FallingState));
+            Assert.AreEqual(typeof(KCCStateMachine.JumpState), kccStateMachine.CurrentState);
         }
 
         [Test]
