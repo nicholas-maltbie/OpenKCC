@@ -238,13 +238,34 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 InputMovement { get; private set; }
 
         [InitialState]
+        [Animation("Idle", 0.35f)]
         [Transition(typeof(MoveInput), typeof(WalkingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
+        [Transition(typeof(JumpEvent), typeof(JumpState))]
         [MovementSettings(AllowVelocity = false, AllowWalk = false)]
         [OnFixedUpdate(nameof(SnapPlayerDown))]
         public class IdleState : State { }
 
+        [ApplyGravity]
+        [Animation("Jump", 0.35f)]
+        [TransitionOnAnimationComplete(typeof(FallingState), 0.15f, true)]
+        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.1f, true)]
+        [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
+        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
+        public class JumpState : State { }
+
+        [Animation("Landing", 0.35f)]
+        [TransitionOnAnimationComplete(typeof(IdleState), 0.1f, true)]
+        [AnimationTransition(typeof(MoveInput), typeof(WalkingState), 0.35f, true)]
+        [AnimationTransition(typeof(LeaveGroundEvent), typeof(SlidingState), 0.35f, true)]
+        [AnimationTransition(typeof(SteepSlopeEvent), typeof(SlidingState), 0.35f, true)]
+        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
+        [OnFixedUpdate(nameof(SnapPlayerDown))]
+        public class LandingState : State { }
+
+        [Animation("Walking", 0.35f)]
+        [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
@@ -252,18 +273,29 @@ namespace nickmaltbie.OpenKCC.Character
         [OnFixedUpdate(nameof(SnapPlayerDown))]
         public class WalkingState : State { }
 
-        [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
-        [Transition(typeof(GroundedEvent), typeof(IdleState))]
         [ApplyGravity]
+        [Animation("Sliding", 0.35f)]
+        [Transition(typeof(JumpEvent), typeof(JumpState))]
+        [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
+        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.1f, true)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         [OnFixedUpdate(nameof(SnapPlayerDown))]
         public class SlidingState : State { }
 
-        [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [Transition(typeof(GroundedEvent), typeof(IdleState))]
         [ApplyGravity]
+        [Animation("Falling", 0.35f)]
+        [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
+        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.1f, true)]
+        [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class FallingState : State { }
+
+        [ApplyGravity]
+        [Animation("Long Falling", 0.35f)]
+        [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
+        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.1f, true)]
+        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
+        public class LongFallingState : State { }
 
         /// <inheritdoc/>
         public override void FixedUpdate()
@@ -368,14 +400,21 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public override void Update()
         {
-            Vector2 moveVector = PlayerInputUtils.playerMovementState == PlayerInputState.Deny ?
-                _ = Vector3.zero : moveAction.action.ReadValue<Vector2>();
-            InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
-            RaiseEvent(InputMovement.magnitude >= KCCUtils.Epsilon ?
-                MoveInput.Instance as IEvent : StopMoveInput.Instance as IEvent);
-
             jumpAction.Update();
             base.Update();
+
+            bool denyMovement = PlayerInputUtils.playerMovementState == PlayerInputState.Deny;
+            bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
+            Vector2 moveVector = denyMovement ? Vector3.zero : moveAction.action.ReadValue<Vector2>();
+            InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
+            RaiseEvent(moving ? MoveInput.Instance : StopMoveInput.Instance);
+
+            float moveX = AttachedAnimator.GetFloat("MoveX");
+            float moveY = AttachedAnimator.GetFloat("MoveY");
+            moveX = Mathf.Lerp(moveX, moveVector.x, 4 * unityService.deltaTime);
+            moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
+            AttachedAnimator.SetFloat("MoveX", moveX);
+            AttachedAnimator.SetFloat("MoveY", moveY);
         }
 
         /// <summary>
@@ -397,10 +436,12 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 PushOutOverlapping()
         {
             float fixedDeltaTime = Time.fixedDeltaTime;
-            return ColliderCast.PushOutOverlapping(
+            Vector3 push = ColliderCast.PushOutOverlapping(
                 transform.position,
                 transform.rotation,
                 maxPushSpeed * fixedDeltaTime);
+            transform.position += push;
+            return push;
         }
 
         /// <summary>
@@ -451,7 +492,7 @@ namespace nickmaltbie.OpenKCC.Character
         public void ApplyJump(Vector3 velocity)
         {
             Velocity = velocity;
-            RaiseEvent(LeaveGroundEvent.Instance);
+            RaiseEvent(JumpEvent.Instance);
         }
 
         /// <summary>

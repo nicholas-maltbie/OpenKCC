@@ -45,7 +45,6 @@ GameObject:
   - component: {fileID: 1928389238801210308}
   - component: {fileID: 1443923188}
   - component: {fileID: 1014123492234295141}
-  - component: {fileID: 3373348097961067066}
   - component: {fileID: 6826506219202058344}
   - component: {fileID: 609951634059087576}
   - component: {fileID: 1928389240043740980}
@@ -159,25 +158,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pushPower: 4
---- !u!114 &3373348097961067066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928389238801210305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bf20b9ca1e79c14b9e2b34cff1ddb2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movementDeadZone: 0.01
-  turningDeadZone: 0.35
-  fallingThreshold: 0.1
-  longFallingThreshold: 1.5
-  kcc: {fileID: 1928389240043740980}
-  cameraController: {fileID: 1928389238801210314}
-  animator: {fileID: 5452054172197868652}
 --- !u!114 &6826506219202058344
 MonoBehaviour:
   m_ObjectHideFlags: 0

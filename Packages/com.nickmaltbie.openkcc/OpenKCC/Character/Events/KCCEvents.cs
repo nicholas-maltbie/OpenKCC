@@ -41,6 +41,16 @@ namespace nickmaltbie.OpenKCC.Character.Events
     }
 
     /// <summary>
+    /// Event when the player jumps off the ground.
+    /// </summary>
+    public class JumpEvent : IEvent
+    {
+        public static readonly JumpEvent Instance = new JumpEvent();
+
+        private JumpEvent() { }
+    }
+
+    /// <summary>
     /// Event when the player steps on a slope too steep to stand on.
     /// </summary>
     public class SteepSlopeEvent : IEvent

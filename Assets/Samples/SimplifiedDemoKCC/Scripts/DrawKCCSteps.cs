@@ -28,13 +28,13 @@ namespace nickmaltbie.OpenKCC.Demo
     /// <summary>
     /// Draw the step based Character Movement.
     /// </summary>
-    [RequireComponent(typeof(KinematicCharacterController))]
+    [RequireComponent(typeof(KCCStateMachine))]
     public class DrawKCCSteps : MonoBehaviour
     {
         /// <summary>
         /// Kinematic character controller reference.
         /// </summary>
-        private KinematicCharacterController kcc;
+        private KCCStateMachine kcc;
 
         /// <summary>
         /// Collider cast for checking movement and collision of the character controller.
@@ -126,7 +126,7 @@ namespace nickmaltbie.OpenKCC.Demo
 
         public void Start()
         {
-            kcc = GetComponent<KinematicCharacterController>();
+            kcc = GetComponent<KCCStateMachine>();
             colliderCast = GetComponent<CapsuleColliderCast>();
         }
 
@@ -134,7 +134,7 @@ namespace nickmaltbie.OpenKCC.Demo
         {
             if (kcc == null)
             {
-                kcc = GetComponent<KinematicCharacterController>();
+                kcc = GetComponent<KCCStateMachine>();
             }
 
             if (colliderCast == null)

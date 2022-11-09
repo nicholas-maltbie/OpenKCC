@@ -35,14 +35,29 @@ stateDiagram
     Idling --> Walking : MoveInput
     Idling --> Falling : LeaveGround
     Idling --> Sliding : SteepSlope
+    Idling --> Jumping : JumpEvent
+
+    Jumping --> Falling : Animation Completed
+    Jumping --> Landing : Grounded
+    Jumping --> Sliding : SteepSlope
+
+    Landing --> Idle : Animation Completed
+    Landing --> Walking : MoveInput
+    Landing --> Falling : LeaveGround
+    Landing --> Sliding : SteepSlope
 
     Walking --> Idling : StopMove
     Walking --> Falling : LeaveGround
     Walking --> Sliding : SteepSlope
 
     Sliding --> Falling : LeaveGround
-    Sliding --> Idling : Grounded
+    Sliding --> Landing : Grounded
+    Sliding --> Jumping : JumpEvent
 
-    Falling --> Idling : Grounded
+    Falling --> Landing : Grounded
     Falling --> Sliding : SteepSlope
+    Falling --> LongFalling : Wait 4 Seconds
+
+    LongFalling --> Landing : Grounded
+    LongFalling --> Sliding : SteepSlope
 ```
