@@ -258,7 +258,7 @@ namespace nickmaltbie.OpenKCC.Character
         private ConstraintSource floorConstraint;
 
         [InitialState]
-        [Animation(IdleAnimState, 0.35f)]
+        [Animation(IdleAnimState, 0.35f, true)]
         [Transition(typeof(MoveInput), typeof(WalkingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
@@ -268,23 +268,23 @@ namespace nickmaltbie.OpenKCC.Character
         public class IdleState : State { }
 
         [ApplyGravity]
-        [Animation(JumpAnimState, 0.35f)]
+        [Animation(JumpAnimState, 0.1f, true)]
         [TransitionOnAnimationComplete(typeof(FallingState), 0.15f, true)]
-        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.1f, true)]
+        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class JumpState : State { }
 
-        [Animation(LandingAnimState, 0.35f)]
+        [Animation(LandingAnimState, 0.1f, true)]
         [TransitionOnAnimationComplete(typeof(IdleState), 0.1f, true)]
-        [AnimationTransition(typeof(MoveInput), typeof(WalkingState), 0.35f, true)]
-        [AnimationTransition(typeof(LeaveGroundEvent), typeof(SlidingState), 0.35f, true)]
-        [AnimationTransition(typeof(SteepSlopeEvent), typeof(SlidingState), 0.35f, true)]
+        [Transition(typeof(MoveInput), typeof(WalkingState))]
+        [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
+        [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [MovementSettings(AllowVelocity = false, AllowWalk = true)]
         [OnFixedUpdate(nameof(SnapPlayerDown))]
         public class LandingState : State { }
 
-        [Animation(WalkingAnimState, 0.35f)]
+        [Animation(WalkingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
@@ -294,28 +294,27 @@ namespace nickmaltbie.OpenKCC.Character
         public class WalkingState : State { }
 
         [ApplyGravity]
-        [Animation(SlidingAnimState, 0.35f)]
+        [Animation(SlidingAnimState, 0.35f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
-        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.1f, true)]
+        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         [OnFixedUpdate(nameof(SnapPlayerDown))]
         public class SlidingState : State { }
 
         [ApplyGravity]
-        [Animation(FallingAnimState, 0.35f)]
-        [Transition(typeof(JumpEvent), typeof(JumpState))]
+        [Animation(FallingAnimState, 0.1f, true)]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.1f, true)]
+        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class FallingState : State { }
 
         [ApplyGravity]
-        [Animation(LongFallingAnimState, 0.35f)]
+        [Animation(LongFallingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.1f, true)]
+        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 1.0f)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class LongFallingState : State { }
 
@@ -393,7 +392,7 @@ namespace nickmaltbie.OpenKCC.Character
 
             if (movingGround)
             {
-                var floorTransform = groundedState.Floor.transform;
+                Transform floorTransform = groundedState.Floor.transform;
                 floorConstraint.sourceTransform = floorTransform;
                 floorConstraint.weight = 1.0f;
                 parentConstraint.AddSource(floorConstraint);
