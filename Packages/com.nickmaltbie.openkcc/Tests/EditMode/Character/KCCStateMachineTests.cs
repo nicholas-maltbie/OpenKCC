@@ -167,6 +167,18 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         }
 
         [Test]
+        public void Validate_KCCStateMachine_MovingGround_Update()
+        {
+
+        }
+
+        [Test]
+        public void Validate_KCCStateMachine_MovingGround_GetVelocity()
+        {
+
+        }
+
+        [Test]
         public void Validate_KCCStateMachine_Move_Transition()
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
