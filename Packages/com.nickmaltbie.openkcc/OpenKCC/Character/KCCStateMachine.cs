@@ -20,12 +20,14 @@ using System;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
+using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
 using nickmaltbie.StateMachineUnity.Event;
 using nickmaltbie.StateMachineUnity.Fixed;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
@@ -37,6 +39,14 @@ namespace nickmaltbie.OpenKCC.Character
     [RequireComponent(typeof(Rigidbody))]
     public class KCCStateMachine : FixedSMAnim, IKCCConfig, IJumping
     {
+        public const string IdleAnimState = "Idle";
+        public const string JumpAnimState = "Jump";
+        public const string LandingAnimState = "Landing";
+        public const string WalkingAnimState = "Walking";
+        public const string SlidingAnimState = "Sliding";
+        public const string FallingAnimState = "Falling";
+        public const string LongFallingAnimState = "Long Falling";
+
         [Header("Input Controls")]
 
         /// <summary>
@@ -237,13 +247,15 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public Vector3 InputMovement { get; private set; }
 
-        public const string IdleAnimState = "Idle";
-        public const string JumpAnimState = "Jump";
-        public const string LandingAnimState = "Landing";
-        public const string WalkingAnimState = "Walking";
-        public const string SlidingAnimState = "Sliding";
-        public const string FallingAnimState = "Falling";
-        public const string LongFallingAnimState = "Long Falling";
+        /// <summary>
+        /// Parent constraints to attach position to floor.
+        /// </summary>
+        private ParentConstraint parentConstraint;
+
+        /// <summary>
+        /// Floor Constraint used for parent constraint to move with ground/
+        /// </summary>
+        private ConstraintSource floorConstraint;
 
         [InitialState]
         [Animation(IdleAnimState, 0.35f)]
@@ -268,7 +280,7 @@ namespace nickmaltbie.OpenKCC.Character
         [AnimationTransition(typeof(MoveInput), typeof(WalkingState), 0.35f, true)]
         [AnimationTransition(typeof(LeaveGroundEvent), typeof(SlidingState), 0.35f, true)]
         [AnimationTransition(typeof(SteepSlopeEvent), typeof(SlidingState), 0.35f, true)]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
+        [MovementSettings(AllowVelocity = false, AllowWalk = true)]
         [OnFixedUpdate(nameof(SnapPlayerDown))]
         public class LandingState : State { }
 
@@ -292,6 +304,7 @@ namespace nickmaltbie.OpenKCC.Character
 
         [ApplyGravity]
         [Animation(FallingAnimState, 0.35f)]
+        [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.1f, true)]
         [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
@@ -300,6 +313,7 @@ namespace nickmaltbie.OpenKCC.Character
 
         [ApplyGravity]
         [Animation(LongFallingAnimState, 0.35f)]
+        [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.1f, true)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
@@ -308,26 +322,16 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public override void FixedUpdate()
         {
+            while (parentConstraint.sourceCount > 0)
+            {
+                parentConstraint.RemoveSource(0);
+            }
+
             // Push player out of overlapping objects
             PushOutOverlapping();
 
             // Update grounded state
-            groundedState.CheckGrounded(this, transform.position, transform.rotation);
-            IEvent groundedEvent;
-            if (!groundedState.StandingOnGround)
-            {
-                groundedEvent = LeaveGroundEvent.Instance;
-            }
-            else if (groundedState.Sliding)
-            {
-                groundedEvent = SteepSlopeEvent.Instance;
-            }
-            else
-            {
-                groundedEvent = GroundedEvent.Instance;
-            }
-
-            RaiseEvent(groundedEvent);
+            UpdateGroundedState();
 
             if (CurrentState == typeof(FallingState))
             {
@@ -348,6 +352,83 @@ namespace nickmaltbie.OpenKCC.Character
             ApplyMovement();
 
             base.FixedUpdate();
+
+            UpdateMovingGround();
+        }
+
+        /// <summary>
+        /// Update the grounded state of the kinematic character controller.
+        /// </summary>
+        public void UpdateGroundedState()
+        {
+            groundedState.CheckGrounded(this, transform.position, transform.rotation);
+            IEvent groundedEvent;
+            if (!groundedState.StandingOnGround)
+            {
+                groundedEvent = LeaveGroundEvent.Instance;
+            }
+            else if (groundedState.Sliding)
+            {
+                groundedEvent = SteepSlopeEvent.Instance;
+            }
+            else
+            {
+                groundedEvent = GroundedEvent.Instance;
+            }
+
+            RaiseEvent(groundedEvent);
+        }
+
+        /// <summary>
+        /// Update the moving ground state of the KCC State machine.
+        /// </summary>
+        private void UpdateMovingGround()
+        {
+            UpdateGroundedState();
+            bool movingGround = groundedState.StandingOnGround &&
+                groundedState.Floor?.GetComponent<IMovingGround>() != null;
+            parentConstraint.constraintActive = movingGround;
+            parentConstraint.translationAtRest = transform.position;
+            parentConstraint.rotationAtRest = transform.rotation.eulerAngles;
+
+            if (movingGround)
+            {
+                var floorTransform = groundedState.Floor.transform;
+                floorConstraint.sourceTransform = floorTransform;
+                floorConstraint.weight = 1.0f;
+                parentConstraint.AddSource(floorConstraint);
+
+                Vector3 relativePos = transform.position - floorTransform.position;
+                Vector3 localRelativePos = floorTransform.InverseTransformDirection(relativePos);
+                parentConstraint.SetTranslationOffset(0, localRelativePos);
+            }
+            else
+            {
+                floorConstraint = default;
+            }
+        }
+
+        /// <summary>
+        /// Gets the velocity of the ground the player is standing on where the player is currently
+        /// </summary>
+        /// <returns>The velocity of the ground at the point the player is standing on</returns>
+        private Vector3 GetGroundVelocity(GameObject floor, Vector3 groundHitPosition)
+        {
+            Vector3 groundVelocity = Vector3.zero;
+            IMovingGround movingGround = floor?.GetComponent<IMovingGround>();
+            if (movingGround != null && !movingGround.AvoidTransferMomentum())
+            {
+                // Weight movement of ground by ground movement weight
+                float velocityWeight =
+                    movingGround.GetMovementWeight(groundHitPosition, Velocity);
+                float transferWeight =
+                    movingGround.GetTransferMomentumWeight(groundHitPosition, Velocity);
+                groundVelocity = movingGround.GetVelocityAtPoint(groundHitPosition);
+                groundVelocity *= velocityWeight;
+                groundVelocity *= transferWeight;
+            }
+
+            return groundVelocity;
         }
 
         /// <summary>
@@ -394,6 +475,11 @@ namespace nickmaltbie.OpenKCC.Character
         public override void Awake()
         {
             base.Awake();
+
+            parentConstraint = gameObject.AddComponent<ParentConstraint>();
+            parentConstraint.constraintActive = false;
+            parentConstraint.translationAxis = Axis.X | Axis.Y | Axis.Z;
+            parentConstraint.rotationAxis = Axis.None;
 
             GetComponent<Rigidbody>().isKinematic = true;
             jumpAction.Setup(groundedState, this, this);
@@ -444,12 +530,10 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 PushOutOverlapping()
         {
             float fixedDeltaTime = Time.fixedDeltaTime;
-            Vector3 push = ColliderCast.PushOutOverlapping(
+            return ColliderCast.PushOutOverlapping(
                 transform.position,
                 transform.rotation,
                 maxPushSpeed * fixedDeltaTime);
-            transform.position += push;
-            return push;
         }
 
         /// <summary>
@@ -499,7 +583,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public void ApplyJump(Vector3 velocity)
         {
-            Velocity = velocity;
+            Velocity = velocity + GetGroundVelocity(groundedState.Floor, groundedState.GroundHitPosition);
             RaiseEvent(JumpEvent.Instance);
         }
 
