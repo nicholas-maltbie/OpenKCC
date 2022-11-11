@@ -263,8 +263,7 @@ namespace nickmaltbie.OpenKCC.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = false)]
-        [OnFixedUpdate(nameof(SnapPlayerDown))]
+        [MovementSettings(AllowVelocity = false, AllowWalk = false, SnapPlayerDown = true)]
         public class IdleState : State { }
 
         [ApplyGravity]
@@ -276,12 +275,12 @@ namespace nickmaltbie.OpenKCC.Character
         public class JumpState : State { }
 
         [Animation(LandingAnimState, 0.1f, true)]
-        [TransitionOnAnimationComplete(typeof(IdleState), 0.1f, true)]
-        [Transition(typeof(MoveInput), typeof(WalkingState))]
+        [TransitionOnAnimationComplete(typeof(IdleState), 0.25f, true)]
+        [AnimationTransition(typeof(MoveInput), typeof(WalkingState), 0.35f, true)]
+        [AnimationTransition(typeof(JumpEvent), typeof(JumpState), 0.35f, true)]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = true)]
-        [OnFixedUpdate(nameof(SnapPlayerDown))]
+        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true)]
         public class LandingState : State { }
 
         [Animation(WalkingAnimState, 0.1f, true)]
@@ -289,8 +288,7 @@ namespace nickmaltbie.OpenKCC.Character
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = true)]
-        [OnFixedUpdate(nameof(SnapPlayerDown))]
+        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true)]
         public class WalkingState : State { }
 
         [ApplyGravity]
@@ -298,8 +296,7 @@ namespace nickmaltbie.OpenKCC.Character
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
-        [OnFixedUpdate(nameof(SnapPlayerDown))]
+        [MovementSettings(AllowVelocity = true, AllowWalk = true, SnapPlayerDown = true)]
         public class SlidingState : State { }
 
         [ApplyGravity]
@@ -383,7 +380,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         private void UpdateMovingGround()
         {
-            UpdateGroundedState();
+            groundedState.CheckGrounded(this, transform.position, transform.rotation);
             bool movingGround = groundedState.StandingOnGround &&
                 groundedState.Floor?.GetComponent<IMovingGround>() != null;
             parentConstraint.constraintActive = movingGround;
@@ -452,6 +449,12 @@ namespace nickmaltbie.OpenKCC.Character
             else
             {
                 Velocity = Vector3.zero;
+            }
+
+            // Snap player down if requested
+            if (moveSettings?.SnapPlayerDown ?? false)
+            {
+                SnapPlayerDown();
             }
         }
 
@@ -599,12 +602,17 @@ namespace nickmaltbie.OpenKCC.Character
             /// <summary>
             /// Allow movement by normal velocity.
             /// </summary>
-            public bool AllowVelocity = true;
+            public bool AllowVelocity = false;
 
             /// <summary>
             /// Allow movement by player input movement.
             /// </summary>
-            public bool AllowWalk = true;
+            public bool AllowWalk = false;
+
+            /// <summary>
+            /// Should the player be snapped down after moving.
+            /// </summary>
+            public bool SnapPlayerDown = false;
         }
     }
 }
