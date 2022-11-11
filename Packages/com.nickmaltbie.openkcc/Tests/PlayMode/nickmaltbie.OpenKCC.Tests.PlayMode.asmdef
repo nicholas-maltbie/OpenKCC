@@ -10,6 +10,7 @@
         "nickmaltbie.OpenKCC",
         "nickmaltbie.OpenKCC.TestCommon",
         "UnityEngine.TestRunner",
+        "nickmaltbie.StateMachineUnity",
         "UnityEditor.TestRunner",
         "nickmaltbie.TestUtilsUnity",
         "nickmaltbie.TestUtilsUnity.Tests.TestCommon"

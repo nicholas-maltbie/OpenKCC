@@ -87,7 +87,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
                 true,
                 Vector3.zero
             );
-            
+
             NoMovementTracking mt = CreateMovingGround<NoMovementTracking>();
             Assert.IsFalse(mt.ShouldAttach());
             Assert.AreEqual(mt.AvoidTransferMomentum(), true);

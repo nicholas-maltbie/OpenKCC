@@ -36,6 +36,7 @@ namespace nickmaltbie.OpenKCC.Character
     /// <summary>
     /// Have a character controller push any dynamic rigidbody it hits
     /// </summary>
+    [RequireComponent(typeof(ParentConstraint))]
     [RequireComponent(typeof(Rigidbody))]
     public class KCCStateMachine : FixedSMAnim, IKCCConfig, IJumping
     {
@@ -372,11 +373,11 @@ namespace nickmaltbie.OpenKCC.Character
             base.FixedUpdate();
 
             UpdateMovingGround();
+            UpdateGroundedState();
 
             Vector3 disp = start - previousPosition;
             Vector3 vel = disp / unityService.fixedDeltaTime;
 
-            UnityEngine.Debug.Log($"disp:{disp} vel:{vel} previousVelocity:{previousVelocity}");
             previousVelocity = Vector3.Lerp(previousVelocity, vel, 0.5f);
             previousPosition = transform.position;
         }
@@ -521,18 +522,24 @@ namespace nickmaltbie.OpenKCC.Character
         {
             base.Awake();
 
-            parentConstraint = gameObject.AddComponent<ParentConstraint>();
+            parentConstraint = GetComponent<ParentConstraint>();
             parentConstraint.constraintActive = false;
             parentConstraint.translationAxis = Axis.X | Axis.Y | Axis.Z;
             parentConstraint.rotationAxis = Axis.None;
 
             GetComponent<Rigidbody>().isKinematic = true;
-            jumpAction.Setup(groundedState, this, this);
 
             _cameraControls = GetComponent<ICameraControls>();
             _characterPush = GetComponent<ICharacterPush>();
             _colliderCast = GetComponent<IColliderCast>();
+        }
 
+        /// <summary>
+        /// Setup KCC StateMachine inputs.
+        /// </summary>
+        public void Start()
+        {
+            jumpAction.Setup(groundedState, this, this);
             moveAction.action.Enable();
         }
 

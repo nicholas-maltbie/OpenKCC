@@ -121,6 +121,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             anim.runtimeAnimatorController = controller;
 
             kccStateMachine.Awake();
+            kccStateMachine.Start();
             kccStateMachine._cameraControls = cameraControlsMock.Object;
             kccStateMachine._characterPush = characterPushMock.Object;
             kccStateMachine._colliderCast = colliderCastMock.Object;
@@ -222,7 +223,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             Assert.AreEqual(movingGround, kccStateMachine.groundedState.Floor);
             Assert.AreEqual(shouldAttach ? 1 : 0, constraint.sourceCount);
-            
+
             if (shouldAttach)
             {
                 Assert.AreEqual(movingGround.transform, constraint.GetSource(0).sourceTransform);
