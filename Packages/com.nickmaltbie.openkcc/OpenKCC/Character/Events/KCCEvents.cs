@@ -16,7 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.FSM;
+using nickmaltbie.StateMachineUnity.Event;
 
 namespace nickmaltbie.OpenKCC.Character.Events
 {
@@ -38,6 +38,16 @@ namespace nickmaltbie.OpenKCC.Character.Events
         public static readonly LeaveGroundEvent Instance = new LeaveGroundEvent();
 
         private LeaveGroundEvent() { }
+    }
+
+    /// <summary>
+    /// Event when the player jumps off the ground.
+    /// </summary>
+    public class JumpEvent : IEvent
+    {
+        public static readonly JumpEvent Instance = new JumpEvent();
+
+        private JumpEvent() { }
     }
 
     /// <summary>

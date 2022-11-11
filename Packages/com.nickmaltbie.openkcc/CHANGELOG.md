@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Switched to using com.nickmaltbie.StateMachineUnity library
 * Added Finite State Machine design docs and a decorator
     based code implementation to the project.
 * Added KCCStateMachine implementation and changed relevant examples to use
     this state machine.
+* Updated follow object to use unity's ParentConstraint
+    examples for following parent objects.
 * Updated unity version of project to v2021.3.11f1
 * Adding test coverage for EditMode tests
 

@@ -26,13 +26,13 @@ namespace nickmaltbie.OpenKCC.Demo
     /// <summary>
     /// Draw the Grounded state of player using the gizmos in unity. 
     /// </summary>
-    [RequireComponent(typeof(KinematicCharacterController))]
+    [RequireComponent(typeof(KCCStateMachine))]
     public class DrawKCCGrounded : MonoBehaviour
     {
         /// <summary>
         /// Kinematic character controller reference.
         /// </summary>
-        private KinematicCharacterController kcc;
+        private KCCStateMachine kcc;
 
         /// <summary>
         /// Collider cast for checking movement and collision of the character controller.
@@ -81,7 +81,7 @@ namespace nickmaltbie.OpenKCC.Demo
 
         public void Start()
         {
-            kcc = GetComponent<KinematicCharacterController>();
+            kcc = GetComponent<KCCStateMachine>();
             colliderCast = GetComponent<IColliderCast>();
         }
 
@@ -89,7 +89,7 @@ namespace nickmaltbie.OpenKCC.Demo
         {
             if (kcc == null)
             {
-                kcc = GetComponent<KinematicCharacterController>();
+                kcc = GetComponent<KCCStateMachine>();
             }
 
             if (colliderCast == null)

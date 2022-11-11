@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1928389238801210310}
   m_RootOrder: 0
@@ -44,7 +45,6 @@ GameObject:
   - component: {fileID: 1928389238801210308}
   - component: {fileID: 1443923188}
   - component: {fileID: 1014123492234295141}
-  - component: {fileID: 3373348097961067066}
   - component: {fileID: 6826506219202058344}
   - component: {fileID: 609951634059087576}
   - component: {fileID: 1928389240043740980}
@@ -65,6 +65,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1928389238472999755}
   - {fileID: 2110423193989123606}
@@ -157,25 +158,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pushPower: 4
---- !u!114 &3373348097961067066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928389238801210305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bf20b9ca1e79c14b9e2b34cff1ddb2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movementDeadZone: 0.01
-  turningDeadZone: 0.35
-  fallingThreshold: 0.1
-  longFallingThreshold: 1.5
-  kcc: {fileID: 1928389240043740980}
-  cameraController: {fileID: 1928389238801210314}
-  animator: {fileID: 5452054172197868652}
 --- !u!114 &6826506219202058344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,14 +280,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd4109d88f6439b48a5b1b84d3d0d451, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _attachedAnimator: {fileID: 5452054172197868652}
   moveAction: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   sprintAction: {fileID: -6424176782126915535, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   jumpAction:
-    coyoteTime: 0.25
+    coyoteTime: 0.15
     jumpInput:
       inputAction: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
       bufferTime: 0.05
-      cooldown: 0.5
+      cooldown: 0.25
     jumpVelocity: 6.5
     maxJumpAngle: 85
     jumpAngleWeightFactor: 0
@@ -320,9 +303,9 @@ MonoBehaviour:
   pushDecay: 0.9
   anglePower: 0.5
   maxPushSpeed: 10
-  verticalSnapDown: 0.2
+  verticalSnapDown: 0.25
   stepUpDepth: 0.1
-  verticalSnapUp: 0.3
+  verticalSnapUp: 0.35
   snapBufferTime: 0.05
 --- !u!1001 &1928389239579011581
 PrefabInstance:

@@ -8,18 +8,23 @@
         "Unity.ProBuilder.Editor",
         "Unity.ProBuilder.Poly2Tri",
         "nickmaltbie.OpenKCC",
-        "nickmaltbie.OpenKCC.TestCommon"
-    ],
-    "optionalUnityReferences": [
-        "TestAssemblies"
+        "nickmaltbie.OpenKCC.TestCommon",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "nickmaltbie.TestUtilsUnity",
+        "nickmaltbie.TestUtilsUnity.Tests.TestCommon"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [],
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
     "autoReferenced": false,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

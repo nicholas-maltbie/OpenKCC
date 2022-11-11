@@ -29,6 +29,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 640097780250268970}
   m_RootOrder: 0
@@ -106,6 +107,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -128,7 +130,7 @@ GameObject:
   - component: {fileID: 640097779924159908}
   - component: {fileID: 640097779924159909}
   - component: {fileID: 7240584183667545690}
-  - component: {fileID: -8770226178689363579}
+  - component: {fileID: 1532540804215992921}
   m_Layer: 0
   m_Name: SimplifiedPlayerWithJump
   m_TagString: Untagged
@@ -146,6 +148,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 640097780250268970}
   - {fileID: 92804191233720816}
@@ -212,7 +215,7 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &-8770226178689363579
+--- !u!114 &1532540804215992921
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -228,7 +231,7 @@ MonoBehaviour:
   movePlayer: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   jumpAction: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   rotateSpeed: 90
-  cameraTransform: {fileID: 640097780250268970}
+  cameraTransform: {fileID: 0}
   maxBounces: 5
   moveSpeed: 5
   anglePower: 0.5
@@ -268,6 +271,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1631472612}
   m_Father: {fileID: 640097779924159911}
@@ -301,6 +305,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.9, z: 0}
   m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 640097779924159911}
   m_RootOrder: 1

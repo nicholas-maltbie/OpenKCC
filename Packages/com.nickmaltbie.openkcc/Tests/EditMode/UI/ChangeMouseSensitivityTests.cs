@@ -17,8 +17,8 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.UI.Actions;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;

@@ -2,24 +2,23 @@
 
 The OpenKCC can be added as a basic character controller to your project
 via using the
-[KinematicCharacterController](xref:nickmaltbie.OpenKCC.Character.KinematicCharacterController)
+@nickmaltbie.OpenKCC.Character.KCCStateMachine
 Mono Behaviour. This example character controller allows you to configure
 a character controller with a unique camera controller and collider cast.
 
 The default example in the samples has a character controller that
-uses the [CameraController](xref:nickmaltbie.OpenKCC.Character.CameraController)
-and a
-[CapsuleColliderCast](xref:nickmaltbie.OpenKCC.Utils.CapsuleColliderCast).
+uses the @nickmaltbie.OpenKCC.Character.CameraController
+and a @nickmaltbie.OpenKCC.Utils.CapsuleColliderCast.
 
 - This creates a character with a hybrid first and third person camera
   perspective and has a capsule collider shape similar to unity's basic
-  [CharacterController](https://docs.unity3d.com/ScriptReference/CharacterController.html)
+  @UnityEngine.PhysicsModule.CharacterController
 
 ![Example panel of OpenKCC](../resources/example-usage-openkcc.png)
 
 ## Use Cases
 
-The KinematicCharacterController serves as a basic character controller
+The KCCStateMachine serves as a basic character controller
 for movement in 3D space tied to a camera controller.
 
 For examples on how to use the project, check out the
@@ -67,8 +66,7 @@ a basic use case.
 ### Configurable Properties
 
 There are many properties that configure the OpenKCC. These properties
-are also explained in depth in the
-[KinematicCharacterController](xref:nickmaltbie.OpenKCC.Character.KinematicCharacterController)
+are also explained in depth in the @nickmaltbie.OpenKCC.Character.KCCStateMachine
 documentation page.
 
 - **Input Controls** - Controls to manage character movement.

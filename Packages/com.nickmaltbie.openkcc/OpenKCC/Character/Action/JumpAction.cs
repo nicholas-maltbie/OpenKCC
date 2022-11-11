@@ -116,7 +116,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
         /// <returns>True if the player jumped, false otherwise.</returns>
         public bool ApplyJumpIfPossible()
         {
-            if (AttemptingJump && CanJump())
+            if (AttemptingJump && CanPerform)
             {
                 Jump();
                 return true;

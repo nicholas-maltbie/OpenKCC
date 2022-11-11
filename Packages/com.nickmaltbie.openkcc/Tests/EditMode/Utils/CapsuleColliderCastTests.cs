@@ -18,8 +18,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 

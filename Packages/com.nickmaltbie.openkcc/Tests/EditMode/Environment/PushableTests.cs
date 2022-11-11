@@ -17,7 +17,7 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Environment.Pushable;
-using nickmaltbie.OpenKCC.TestCommon;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 

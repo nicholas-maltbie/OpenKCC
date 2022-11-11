@@ -2,10 +2,12 @@
     "name": "nickmaltbie.OpenKCC",
     "rootNamespace": "nickmaltbie.OpenKCC",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:33ba47153cb20554cb9674037eacaed0",
-        "GUID:a929a29aeb8e4324582bbc050c364874"
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "nickmaltbie.ScreenManager",
+        "nickmaltbie.ScreenManager.Actions",
+        "nickmaltbie.TestUtilsUnity",
+        "nickmaltbie.StateMachineUnity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

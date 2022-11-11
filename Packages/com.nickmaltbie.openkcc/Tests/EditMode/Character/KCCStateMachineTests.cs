@@ -20,11 +20,15 @@ using Moq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
+using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
+using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
@@ -96,6 +100,23 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.jumpAction = jumpAction;
             kccStateMachine.moveAction = InputActionReference.Create(moveInputAction);
 
+            // Setup basic animator animations
+            var controller = new AnimatorController();
+            controller.AddLayer("base");
+            AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
+            controller.AddParameter("MoveX", AnimatorControllerParameterType.Float);
+            controller.AddParameter("MoveY", AnimatorControllerParameterType.Float);
+            rootStateMachine.AddState(KCCStateMachine.IdleAnimState);
+            rootStateMachine.AddState(KCCStateMachine.JumpAnimState);
+            rootStateMachine.AddState(KCCStateMachine.LandingAnimState);
+            rootStateMachine.AddState(KCCStateMachine.WalkingAnimState);
+            rootStateMachine.AddState(KCCStateMachine.SlidingAnimState);
+            rootStateMachine.AddState(KCCStateMachine.FallingAnimState);
+            rootStateMachine.AddState(KCCStateMachine.LongFallingAnimState);
+
+            Animator anim = go.AddComponent<Animator>();
+            anim.runtimeAnimatorController = controller;
+
             kccStateMachine.Awake();
             kccStateMachine._cameraControls = cameraControlsMock.Object;
             kccStateMachine._characterPush = characterPushMock.Object;
@@ -105,7 +126,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Validate_KCCStateMachine_Idle_FixedUpdate()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
 
@@ -120,7 +141,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Validate_KCCStateMachine_Falling_Transition()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, didHit: false);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, didHit: false);
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
 
@@ -135,7 +156,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Validate_KCCStateMachine_Sliding_Transition()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.Lerp(Vector3.up, Vector3.forward, 0.9f), didHit: true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.Lerp(Vector3.up, Vector3.forward, 0.9f), didHit: true);
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
 
@@ -148,20 +169,66 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         }
 
         [Test]
+        public void Validate_KCCStateMachine_MovingGround_Update(
+            [ValueSource(nameof(TestDirections))] Vector3 direction
+        )
+        {
+            GameObject movingGround = CreateGameObject();
+            _ = movingGround.AddComponent<MovementTracking>();
+            BoxCollider collider = movingGround.AddComponent<BoxCollider>();
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true, collider: collider);
+            ParentConstraint constraint = kccStateMachine.GetComponent<ParentConstraint>();
+            kccStateMachine.transform.position = direction;
+
+            // Update the moving ground object and assert
+            // that the player is attached to the moving ground
+            kccStateMachine.UpdateMovingGround();
+
+            Assert.AreEqual(movingGround, kccStateMachine.groundedState.Floor);
+            Assert.AreEqual(1, constraint.sourceCount);
+            Assert.AreEqual(movingGround.transform, constraint.GetSource(0).sourceTransform);
+            Assert.AreEqual(1, constraint.GetSource(0).weight);
+
+            Assert.AreEqual(direction, constraint.GetTranslationOffset(0));
+        }
+
+        [Test]
+        public void Validate_KCCStateMachine_MovingGround_GetVelocity()
+        {
+            GameObject movingGround = CreateGameObject();
+            MovementTracking tracking = movingGround.AddComponent<MovementTracking>();
+            BoxCollider collider = movingGround.AddComponent<BoxCollider>();
+
+            var unityServiceMock = new Mock<IUnityService>();
+            tracking.unityService = unityServiceMock.Object;
+            unityServiceMock.Setup(e => e.fixedDeltaTime).Returns(1.0f);
+            unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
+
+            tracking.FixedUpdate();
+            tracking.transform.position += Vector3.forward;
+            tracking.FixedUpdate();
+
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true, collider: collider);
+            kccStateMachine.UpdateGroundedState();
+            Vector3 velocity = kccStateMachine.GetGroundVelocity(movingGround, Vector3.zero);
+            Assert.AreEqual(velocity, tracking.GetVelocityAtPoint(Vector3.zero));
+        }
+
+        [Test]
         public void Validate_KCCStateMachine_Move_Transition()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
-            Move(moveStick, Vector2.up);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
+            Set(moveStick, Vector2.up);
             Debug.Log("Move input action value: " + moveInputAction.ReadValue<Vector2>());
 
             kccStateMachine.Update();
-            TestUtils.AssertInBounds(kccStateMachine.InputMovement, Vector3.forward);
 
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.WalkingState));
+            Assert.AreEqual(typeof(KCCStateMachine.WalkingState), kccStateMachine.CurrentState);
+            TestUtils.AssertInBounds(kccStateMachine.InputMovement, Vector3.forward);
 
             kccStateMachine.FixedUpdate();
 
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.WalkingState));
+            Assert.AreEqual(typeof(KCCStateMachine.WalkingState), kccStateMachine.CurrentState);
             Assert.IsTrue(kccStateMachine.groundedState.StandingOnGround);
             Assert.IsFalse(kccStateMachine.groundedState.Sliding);
             Assert.IsFalse(kccStateMachine.groundedState.Falling);
@@ -170,16 +237,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Validate_KCCStateMachine_ApplyJump([NUnit.Framework.Range(0.0f, 5.0f, 1.0f)] float strength)
         {
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
+            Assert.AreEqual(typeof(KCCStateMachine.IdleState), kccStateMachine.CurrentState);
             kccStateMachine.ApplyJump(Vector3.up * strength);
             TestUtils.AssertInBounds(kccStateMachine.Velocity, Vector3.up * strength);
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.FallingState));
+            Assert.AreEqual(typeof(KCCStateMachine.JumpState), kccStateMachine.CurrentState);
         }
 
         [Test]
         public void Validate_KCCStateMachine_PlayerInputUtilsFlags()
         {
-            TestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
             Set(moveStick, Vector2.up);
             PlayerInputUtils.playerMovementState = PlayerInputState.Deny;
 

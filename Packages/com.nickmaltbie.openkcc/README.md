@@ -13,15 +13,29 @@ Feel free to use a build of the project for your own work. If you see an error
 in the project or have any suggestions, write an issue or make a pull request,
 I'll happy include any suggestions or ideas into the project.
 
+You can see a demo of the project running here:
+[https://nickmaltbie.com/OpenKCC/](https://nickmaltbie.com/OpenKCC/).
+The project hosted on the website is up to date with the most recent
+version on the `main` branch of this github repo
+and is automatically deployed with each update to the codebase.
+
 ## Installation
 
 Make sure to add the required dependcies to your project
-* [com.unity.inputsystem](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.3/manual/index.html) - version 1.0 or newer
-* [com.unity.textmeshpro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.0/manual/index.html) - version 3.0 or newer
-* [com.nickmaltbie.screenmanager](https://nickmaltbie.com/ScreenManager/docs/index.html) - version 3.0 or newer
+
+* [com.unity.inputsystem](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.3/manual/index.html)
+  version 1.0.0 or newer
+* [com.unity.textmeshpro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.0/manual/index.html)
+  version 3.0.0 or newer
+* [com.nickmaltbie.screenmanager](https://nickmaltbie.com/ScreenManager/docs/index.html)
+  version 3.0.0 or newer
+* [com.nickmaltbie.statemachineunity](https://nickmaltbie.com/StateMachineUnity/docs/index.html)
+  version 1.1.0 or newer
+* [com.nickmaltbie.testutilsunity](https://nickmaltbie.com/TestUtilsUnity/docs/index.html)
+  version 0.0.2 or newer
 
 In order to use the samples in the project, make sure to also add the following
-projects to your project. 
+projects to your project.
 
 Install the latest version of the project by importing a project via git
 at this URL:
@@ -31,10 +45,7 @@ If you want to reference a specific tag of the project such as version `v0.1.0`,
 add a `release/#v1.0.0` to the end of the git URL to download the package
 from th auto-generated branch for that release. An example of importing `v0.1.0`
 would look like this:
-
-```text
-https://github.com/nicholas-maltbie/openkcc.git#release/v0.1.0
-```
+`https://github.com/nicholas-maltbie/openkcc.git#release/v0.1.0`.
 
 To use the latest release, simply reference:
 
@@ -123,12 +134,16 @@ and is automatically deployed with each update to the codebase.
 
 In order to run the samples from the project, you must import the following
 projects:
-* [com.unity.probuilder](https://docs.unity3d.com/Packages/com.unity.probuilder@5.0/manual/index.html) - version 5.0 or newer
-* [com.unity.render-pipelines.universal](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@11.0/manual/index.html) - version 10.0 or newer
+
+* [com.unity.probuilder](https://docs.unity3d.com/Packages/com.unity.probuilder@5.0/manual/index.html)
+  version 5.0 or newer
+* [com.unity.render-pipelines.universal](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@11.0/manual/index.html)
+  version 10.0 or newer
 
 The samples in the project include:
+
 * ExampleFirstPersonKCC - Example first person character controller with a basic
-    test scene.
+  test scene.
 * SimplifiedDemoKCC - Simplified character controller with basic movement scripts.
 
 ## Documentation

@@ -5,9 +5,11 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
+        "com.nickmaltbie.screenmanager": "3.0.0",
+        "com.nickmaltbie.statemachineunity": "1.1.0",
+        "com.nickmaltbie.testutilsunity": "0.0.2",
         "com.unity.inputsystem": "1.0.0",
-        "com.unity.textmeshpro": "3.0.0",
-        "com.nickmaltbie.screenmanager": "3.0.0"
+        "com.unity.textmeshpro": "3.0.0"
       }
     },
     "com.nickmaltbie.screenmanager": {
@@ -17,6 +19,25 @@
       "dependencies": {
         "com.unity.inputsystem": "1.0.2",
         "com.unity.textmeshpro": "3.0.6"
+      },
+      "url": "https://registry.npmjs.org"
+    },
+    "com.nickmaltbie.statemachineunity": {
+      "version": "1.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.nickmaltbie.testutilsunity": "0.0.2",
+        "com.unity.inputsystem": "1.0.0"
+      },
+      "url": "https://registry.npmjs.org"
+    },
+    "com.nickmaltbie.testutilsunity": {
+      "version": "0.0.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.inputsystem": "1.0.0"
       },
       "url": "https://registry.npmjs.org"
     },

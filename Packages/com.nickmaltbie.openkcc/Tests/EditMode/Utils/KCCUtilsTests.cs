@@ -22,6 +22,7 @@ using Moq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -64,7 +65,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             Vector3 movement = Vector3.forward * 10;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            SetupColliderCast(true, TestUtils.SetupRaycastHitMock(distance: 0.1f, normal: (Vector3.right + Vector3.back).normalized));
+            SetupColliderCast(true, KCCTestUtils.SetupRaycastHitMock(distance: 0.1f, normal: (Vector3.right + Vector3.back).normalized));
 
             // Simulate bounces
             var bounces = GetBounces(initialPosition, movement, maxBounces: maxBounces, anglePower: 0.0f).ToList();
@@ -87,7 +88,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             Vector3 movement = Vector3.forward;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            SetupColliderCast(true, TestUtils.SetupRaycastHitMock(distance: 0));
+            SetupColliderCast(true, KCCTestUtils.SetupRaycastHitMock(distance: 0));
 
             // Simulate bounces
             var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f).ToList();
@@ -105,7 +106,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         public void Validate_KCCNoMovement()
         {
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            SetupColliderCast(false, TestUtils.SetupRaycastHitMock());
+            SetupColliderCast(false, KCCTestUtils.SetupRaycastHitMock());
 
             // Simulate bounces
             var bounces = GetBounces(Vector3.zero, Vector3.zero).ToList();
@@ -126,15 +127,15 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting a step slightly above foot position
-                (true, TestUtils.SetupRaycastHitMock(distance: KCCUtils.Epsilon, point: Vector3.up * 0.05f)),
+                (true, KCCTestUtils.SetupRaycastHitMock(distance: KCCUtils.Epsilon, point: Vector3.up * 0.05f)),
                 // Second hit should be simulating hitting a step and having to stop (hitting middle of step)
-                (true, TestUtils.SetupRaycastHitMock(distance: KCCUtils.Epsilon, point: Vector3.up * 0.05f)),
+                (true, KCCTestUtils.SetupRaycastHitMock(distance: KCCUtils.Epsilon, point: Vector3.up * 0.05f)),
                 // Next hit should not collide with anything as we are above the step
-                (false, TestUtils.SetupRaycastHitMock(distance: 0.2f, point: Vector3.up * 0.1f)),
+                (false, KCCTestUtils.SetupRaycastHitMock(distance: 0.2f, point: Vector3.up * 0.1f)),
             });
 
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
-            IRaycastHit wallCollision = TestUtils.SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
+            IRaycastHit wallCollision = KCCTestUtils.SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
             colliderCastMock.Setup(mock => mock.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out wallCollision)).Returns(true);
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
@@ -160,13 +161,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting a step slightly above foot position
-                (true, TestUtils.SetupRaycastHitMock(distance: 0.1f, point: Vector3.up * snapUpDistance / 2, normal: Vector3.back)),
+                (true, KCCTestUtils.SetupRaycastHitMock(distance: 0.1f, point: Vector3.up * snapUpDistance / 2, normal: Vector3.back)),
                 // Next hit should not collide with anything as we are above the step
-                (false, TestUtils.SetupRaycastHitMock()),
+                (false, KCCTestUtils.SetupRaycastHitMock()),
             });
 
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
-            IRaycastHit wallCollision = TestUtils.SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
+            IRaycastHit wallCollision = KCCTestUtils.SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
             colliderCastMock.Setup(mock => mock.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out wallCollision)).Returns(true);
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
@@ -217,7 +218,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         [Test]
         public void Verify_KCCSnapPlayerDown()
         {
-            SetupColliderCast(true, TestUtils.SetupRaycastHitMock(null, Vector3.zero, Vector3.up, 0.01f));
+            SetupColliderCast(true, KCCTestUtils.SetupRaycastHitMock(null, Vector3.zero, Vector3.up, 0.01f));
 
             Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, colliderCastMock.Object);
 
@@ -248,11 +249,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting an object and sliding to the left
-                (true, TestUtils.SetupRaycastHitMock(
+                (true, KCCTestUtils.SetupRaycastHitMock(
                     distance: distance / 5,
                     normal: (Vector3.back * 2 + Vector3.left).normalized)),
                 // Next hit should simulate hitting another wall and sliding back
-                (true, TestUtils.SetupRaycastHitMock(
+                (true, KCCTestUtils.SetupRaycastHitMock(
                     distance: distance / 5,
                     normal: (Vector3.back * 2 + Vector3.right).normalized)),
             });
@@ -286,12 +287,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             SetupColliderCast(new[]
             {
                 // First hit should be simulating hitting a a pushable object
-                (true, TestUtils.SetupRaycastHitMock(
+                (true, KCCTestUtils.SetupRaycastHitMock(
                     collider: null,
                     distance: 0.1f,
                     normal: (Vector3.back + Vector3.left).normalized)),
                 // Next hit should not collide with anything as we are above the step
-                (false, TestUtils.SetupRaycastHitMock()),
+                (false, KCCTestUtils.SetupRaycastHitMock()),
             });
             characterPushMock.Setup(mock => mock.CanPushObject(It.IsAny<Collider>())).Returns(true);
             characterPushMock.Setup(mock => mock.PushObject(It.IsAny<IControllerColliderHit>())).Callback(() => { });

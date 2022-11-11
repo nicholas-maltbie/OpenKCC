@@ -17,8 +17,10 @@ of a few different states.
 
 * Idling - When the player is standing still on the ground
 * Walking - When the player is moving around
+* Jumping - When the player starts the jumping action
 * Falling - When the player is not standing on something
 * Sliding - When the player is standing on a steep surface
+* Landing - Brief transition period between falling and grounded states
 
 Each of these states will have a different set of
 capabilities and behaviors and will transition to
@@ -33,111 +35,29 @@ stateDiagram
     Idling --> Walking : MoveInput
     Idling --> Falling : LeaveGround
     Idling --> Sliding : SteepSlope
+    Idling --> Jumping : JumpEvent
+
+    Jumping --> Falling : Animation Completed
+    Jumping --> Landing : Grounded
+    Jumping --> Sliding : SteepSlope
+
+    Landing --> Idling : Animation Completed
+    Landing --> Walking : MoveInput
+    Landing --> Falling : LeaveGround
+    Landing --> Sliding : SteepSlope
 
     Walking --> Idling : StopMove
     Walking --> Falling : LeaveGround
     Walking --> Sliding : SteepSlope
 
     Sliding --> Falling : LeaveGround
-    Sliding --> Idling : Grounded
+    Sliding --> Landing : Grounded
+    Sliding --> Jumping : JumpEvent
 
-    Falling --> Idling : Grounded
+    Falling --> Landing : Grounded
     Falling --> Sliding : SteepSlope
+    Falling --> LongFalling : Wait 4 Seconds
+
+    LongFalling --> Landing : Grounded
+    LongFalling --> Sliding : SteepSlope
 ```
-
-### State Attributes
-
-Each state of the KCC will have a few different
-attributes:
-
-* State name and transitions
-* Animation to play during state (if any)
-* Behavior on entry, exit, and update
-* Available player inputs
-    such as movement, camera control, etc...
-
-In addition, each transition will also
-have a set of configurations that include:
-
-* Conditions to trigger transition
-* Animation to play on transition (if any)
-* Transition time and configuration
-    such as allow early exit/cancellation
-
-## Code Design
-
-The code for this is still in development
-but it will be managed via a few different classes.
-The main design of these classes will be managed
-by a set of [C# Attributes](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes/)
-to configure and manage controls for the state machine
-directly from the C# code.
-
-* [IStateMachine\<E\>](xref:nickmaltbie.OpenKCC.FSM.IStateMachine\<E\>) -
-    interface to manage a set of states and transitions.
-
-    * [FixedStateMachine](xref:nickmaltbie.OpenKCC.FSM.FixedStateMachine)
-        \- concrete implementation of state machine
-        with cached transitions and events from decorators from [FSMUtils](xref:nickmaltbie.OpenKCC.FSM.FSMUtils).
-    * [FixedStateMachineBehaviour](xref:nickmaltbie.OpenKCC.FSM.FixedStateMachineBehaviour)
-        \- concrete implementation of state machine with cached transitions and events
-        from decorators from [FSMUtils](xref:nickmaltbie.OpenKCC.FSM.FSMUtils)
-        in addition to firing off events for Unity Messages and supports
-        attributes such as
-        [OnUpdate](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnUpdateAttribute)
-
-* [State](xref:nickmaltbie.OpenKCC.FSM.State) - A state for a given FSM.
-* [TransitionAttribute](xref:nickmaltbie.OpenKCC.FSM.Attributes.TransitionAttribute)
-    \- Attribute to define and manage
-    the transitions for a given state.
-* AnimationAttribute - Attribute to configure an animation
-    or set of animations to play based on a configuration.
-
-    * Still under development...
-
-* Entry and exit behaviors defined via the attributes:
-
-    * [OnEnterState](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnEnterStateAttribute)
-        \- Called when stateis entered
-    * [OnExitState](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnExitStateAttribute)
-        \- Called when the state is exited
-
-* Update Attributes to be triggered on various [MonoBehaviour](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html)
-    functions including the following subset. There are other
-    messages defined for the unity MonoBehaviour but these
-    are the only planned ones as of now, feel free to extend
-    the code or add your own events if you wish.
-
-    * [OnUpdate](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnUpdateAttribute)
-        : Called each frame.
-    * [OnFixedUpdate](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnFixedUpdateAttribute)
-        : Called each fixed update.
-    * [OnLateUpdate](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnLateUpdateAttribute)
-        : Called at the end of each frame.
-    * [OnGUI](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnGUIAttribute)
-        : Called each GUI update.
-    * [OnEnable](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnEnableAttribute)
-        : Called when object is enabled.
-    * [OnDisable](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnDisableAttribute)
-        : Called when object is disabled.
-    * [OnAnimatorIK](xref:nickmaltbie.OpenKCC.FSM.Attributes.OnAnimatorIKAttribute)
-        : Callback for setting up animation IK (inverse kinematics).
-
-## Customization
-
-You may want to design your own character controller or
-other object based on this state machine design, feel
-free to use or extend the code however you see fit.
-As of right now, there is only one state machine example
-in the project of the character controller
-but you can extend or change it however you wish.
-
-Some examples of custom state machines are added
-in the test code under
-
-* [DemoStateMachine](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoFixedStateMachine)
-    \- Example implementation of a
-    [FixedStateMachine](xref:nickmaltbie.OpenKCC.FSM.FixedStateMachine).
-* [DemoFixedStateMachineMonoBehaviour](xref:nickmaltbie.OpenKCC.Tests.EditMode.FSM.DemoFixedStateMachineMonoBehaviour)
-    \- Example implementation of a
-    [FixedStateMachineBehaviour](xref:nickmaltbie.OpenKCC.FSM.FixedStateMachineBehaviour).
