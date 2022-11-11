@@ -169,6 +169,15 @@ namespace nickmaltbie.OpenKCC.Character
         [SerializeField]
         public float snapBufferTime = 0.05f;
 
+        /// <summary>
+        /// Max velocity at which the player can be launched
+        /// when gaining momentum from a floor object without
+        /// an IMovingGround attached to it.
+        /// </summary>
+        [Tooltip("Max velocity for launch without a rigidbody attached.")]
+        [SerializeField]
+        public float maxDefaultLaunchVelocity = 5.0f;
+
         /// <inheritdoc/>
         public int MaxBounces => maxBounces;
 
@@ -257,6 +266,16 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         private ConstraintSource floorConstraint;
 
+        /// <summary>
+        /// Position of the player previous frame.
+        /// </summary>
+        private Vector3 previousPosition;
+
+        /// <summary>
+        /// Velocity of the player from the previous frame.
+        /// </summary>
+        private Vector3 previousVelocity;
+
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
         [Transition(typeof(MoveInput), typeof(WalkingState))]
@@ -318,6 +337,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public override void FixedUpdate()
         {
+            // Compute displacement without player movement
+            Vector3 start = transform.position;
+
             while (parentConstraint.sourceCount > 0)
             {
                 parentConstraint.RemoveSource(0);
@@ -350,6 +372,11 @@ namespace nickmaltbie.OpenKCC.Character
             base.FixedUpdate();
 
             UpdateMovingGround();
+
+            Vector3 disp = start - previousPosition;
+            Vector3 vel = disp / unityService.fixedDeltaTime;
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 0.5f);
+            previousPosition = transform.position;
         }
 
         /// <summary>
@@ -402,7 +429,7 @@ namespace nickmaltbie.OpenKCC.Character
                 }
                 else
                 {
-                    
+                    transform.position += ground.GetDisplacementAtPoint(transform.position);
                 }
             }
             else
@@ -429,6 +456,11 @@ namespace nickmaltbie.OpenKCC.Character
                 groundVelocity = movingGround.GetVelocityAtPoint(groundHitPosition);
                 groundVelocity *= velocityWeight;
                 groundVelocity *= transferWeight;
+            }
+            else if (groundedState.StandingOnGround)
+            {
+                float velocity = Mathf.Min(previousVelocity.magnitude, maxDefaultLaunchVelocity);
+                return previousVelocity.normalized * velocity;
             }
 
             return groundVelocity;
