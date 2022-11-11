@@ -378,7 +378,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Update the moving ground state of the KCC State machine.
         /// </summary>
-        private void UpdateMovingGround()
+        public void UpdateMovingGround()
         {
             groundedState.CheckGrounded(this, transform.position, transform.rotation);
             bool movingGround = groundedState.StandingOnGround &&
@@ -408,7 +408,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Gets the velocity of the ground the player is standing on where the player is currently
         /// </summary>
         /// <returns>The velocity of the ground at the point the player is standing on</returns>
-        private Vector3 GetGroundVelocity(GameObject floor, Vector3 groundHitPosition)
+        public Vector3 GetGroundVelocity(GameObject floor, Vector3 groundHitPosition)
         {
             Vector3 groundVelocity = Vector3.zero;
             IMovingGround movingGround = floor?.GetComponent<IMovingGround>();
