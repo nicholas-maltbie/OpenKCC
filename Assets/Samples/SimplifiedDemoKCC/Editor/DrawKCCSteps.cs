@@ -23,7 +23,7 @@ using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
-namespace nickmaltbie.OpenKCC.Demo
+namespace nickmaltbie.OpenKCC.Demo.Editor
 {
     /// <summary>
     /// Draw the step based Character Movement.

@@ -381,22 +381,29 @@ namespace nickmaltbie.OpenKCC.Character
         public void UpdateMovingGround()
         {
             groundedState.CheckGrounded(this, transform.position, transform.rotation);
-            bool movingGround = groundedState.StandingOnGround &&
-                groundedState.Floor?.GetComponent<IMovingGround>() != null;
-            parentConstraint.constraintActive = movingGround;
+            parentConstraint.constraintActive = groundedState.StandingOnGround;
             parentConstraint.translationAtRest = transform.position;
             parentConstraint.rotationAtRest = transform.rotation.eulerAngles;
 
-            if (movingGround)
+            if (groundedState.StandingOnGround)
             {
-                Transform floorTransform = groundedState.Floor.transform;
-                floorConstraint.sourceTransform = floorTransform;
-                floorConstraint.weight = 1.0f;
-                parentConstraint.AddSource(floorConstraint);
+                IMovingGround ground = groundedState.Floor.GetComponent<IMovingGround>();
 
-                Vector3 relativePos = transform.position - floorTransform.position;
-                Vector3 localRelativePos = floorTransform.InverseTransformDirection(relativePos);
-                parentConstraint.SetTranslationOffset(0, localRelativePos);
+                if (ground == null || ground.ShouldAttach())
+                {
+                    Transform floorTransform = groundedState.Floor.transform;
+                    floorConstraint.sourceTransform = floorTransform;
+                    floorConstraint.weight = 1.0f;
+                    parentConstraint.AddSource(floorConstraint);
+
+                    Vector3 relativePos = transform.position - floorTransform.position;
+                    Vector3 localRelativePos = floorTransform.InverseTransformDirection(relativePos);
+                    parentConstraint.SetTranslationOffset(0, localRelativePos);
+                }
+                else
+                {
+                    
+                }
             }
             else
             {

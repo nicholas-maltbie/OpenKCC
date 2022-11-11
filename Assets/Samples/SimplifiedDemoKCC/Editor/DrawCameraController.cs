@@ -21,7 +21,7 @@ using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Demo
+namespace nickmaltbie.OpenKCC.Demo.Editor
 {
     /// <summary>
     /// Draw the DrawCameraController state of player using the gizmos in unity. 
