@@ -174,7 +174,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         )
         {
             GameObject movingGround = CreateGameObject();
-            MovementTracking tracking = movingGround.AddComponent<MovementTracking>();
+            _ = movingGround.AddComponent<MovementTracking>();
             BoxCollider collider = movingGround.AddComponent<BoxCollider>();
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true, collider: collider);
             ParentConstraint constraint = kccStateMachine.GetComponent<ParentConstraint>();
@@ -198,8 +198,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             GameObject movingGround = CreateGameObject();
             MovementTracking tracking = movingGround.AddComponent<MovementTracking>();
             BoxCollider collider = movingGround.AddComponent<BoxCollider>();
-            
-            Mock<IUnityService> unityServiceMock = new Mock<IUnityService>();
+
+            var unityServiceMock = new Mock<IUnityService>();
             tracking.unityService = unityServiceMock.Object;
             unityServiceMock.Setup(e => e.fixedDeltaTime).Returns(1.0f);
             unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
@@ -207,7 +207,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             tracking.FixedUpdate();
             tracking.transform.position += Vector3.forward;
             tracking.FixedUpdate();
-            
+
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true, collider: collider);
             kccStateMachine.UpdateGroundedState();
             Vector3 velocity = kccStateMachine.GetGroundVelocity(movingGround, Vector3.zero);

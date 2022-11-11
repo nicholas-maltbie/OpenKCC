@@ -41,7 +41,7 @@ stateDiagram
     Jumping --> Landing : Grounded
     Jumping --> Sliding : SteepSlope
 
-    Landing --> Idle : Animation Completed
+    Landing --> Idling : Animation Completed
     Landing --> Walking : MoveInput
     Landing --> Falling : LeaveGround
     Landing --> Sliding : SteepSlope
