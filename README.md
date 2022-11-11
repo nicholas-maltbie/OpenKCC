@@ -26,11 +26,15 @@ and is automatically deployed with each update to the codebase.
 Make sure to add the required dependcies to your project
 
 * [com.unity.inputsystem](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.3/manual/index.html)
-  version 1.0 or newer
+  version 1.0.0 or newer
 * [com.unity.textmeshpro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.0/manual/index.html)
-  version 3.0 or newer
+  version 3.0.0 or newer
 * [com.nickmaltbie.screenmanager](https://nickmaltbie.com/ScreenManager/docs/index.html)
-  version 3.0 or newer
+  version 3.0.0 or newer
+* [com.nickmaltbie.statemachineunity](https://nickmaltbie.com/StateMachineUnity/docs/index.html)
+  version 1.1.0 or newer
+* [com.nickmaltbie.testutilsunity](https://nickmaltbie.com/TestUtilsUnity/docs/index.html)
+  version 0.0.2 or newer
 
 In order to use the samples in the project, make sure to also add the following
 projects to your project.
