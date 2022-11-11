@@ -375,6 +375,8 @@ namespace nickmaltbie.OpenKCC.Character
 
             Vector3 disp = start - previousPosition;
             Vector3 vel = disp / unityService.fixedDeltaTime;
+
+            UnityEngine.Debug.Log($"disp:{disp} vel:{vel} previousVelocity:{previousVelocity}");
             previousVelocity = Vector3.Lerp(previousVelocity, vel, 0.5f);
             previousPosition = transform.position;
         }
@@ -412,7 +414,7 @@ namespace nickmaltbie.OpenKCC.Character
             parentConstraint.translationAtRest = transform.position;
             parentConstraint.rotationAtRest = transform.rotation.eulerAngles;
 
-            if (groundedState.StandingOnGround)
+            if (groundedState.StandingOnGround && groundedState.Floor != null)
             {
                 IMovingGround ground = groundedState.Floor.GetComponent<IMovingGround>();
 
@@ -442,26 +444,28 @@ namespace nickmaltbie.OpenKCC.Character
         /// Gets the velocity of the ground the player is standing on where the player is currently
         /// </summary>
         /// <returns>The velocity of the ground at the point the player is standing on</returns>
-        public Vector3 GetGroundVelocity(GameObject floor, Vector3 groundHitPosition)
+        public Vector3 GetGroundVelocity()
         {
             Vector3 groundVelocity = Vector3.zero;
-            IMovingGround movingGround = floor?.GetComponent<IMovingGround>();
+            IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();
             if (movingGround != null && !movingGround.AvoidTransferMomentum())
             {
                 // Weight movement of ground by ground movement weight
                 float velocityWeight =
-                    movingGround.GetMovementWeight(groundHitPosition, Velocity);
+                    movingGround.GetMovementWeight(groundedState.GroundHitPosition, Velocity);
                 float transferWeight =
-                    movingGround.GetTransferMomentumWeight(groundHitPosition, Velocity);
-                groundVelocity = movingGround.GetVelocityAtPoint(groundHitPosition);
+                    movingGround.GetTransferMomentumWeight(groundedState.GroundHitPosition, Velocity);
+                groundVelocity = movingGround.GetVelocityAtPoint(groundedState.GroundHitPosition);
                 groundVelocity *= velocityWeight;
                 groundVelocity *= transferWeight;
             }
             else if (groundedState.StandingOnGround)
             {
                 float velocity = Mathf.Min(previousVelocity.magnitude, maxDefaultLaunchVelocity);
-                return previousVelocity.normalized * velocity;
+                groundVelocity = previousVelocity.normalized * velocity;
             }
+
+            UnityEngine.Debug.Log($"groundedState.StandingOnGround:{groundedState.StandingOnGround} previousVelocity:{previousVelocity}");
 
             return groundVelocity;
         }
@@ -624,7 +628,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public void ApplyJump(Vector3 velocity)
         {
-            Velocity = velocity + GetGroundVelocity(groundedState.Floor, groundedState.GroundHitPosition);
+            Velocity = velocity + GetGroundVelocity();
             RaiseEvent(JumpEvent.Instance);
         }
 

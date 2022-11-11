@@ -18,7 +18,7 @@
 
 using Moq;
 using nickmaltbie.OpenKCC.Input;
-using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine.InputSystem;

@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using Moq;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
-using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
@@ -65,10 +65,34 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
             [ValueSource(nameof(TestDirections))] Vector3 rotation,
             [ValueSource(nameof(MovingGroundTypes))] Type type)
         {
-            Validate_MovingGroundDiplacement_Helper(
+            Validate_MovingGroundDisplacement_Helper(
                 move,
                 rotation * 30, type,
                 Vector3.zero);
+        }
+
+        /// <summary>
+        /// Validate the NoMovementTracking object.
+        /// </summary>
+        [Test]
+        public void Validate_NoMovementTracking(
+            [ValueSource(nameof(TestDirections))] Vector3 move,
+            [ValueSource(nameof(TestDirections))] Vector3 rotation)
+        {
+            Validate_MovingGroundDisplacement_Helper(
+                move,
+                rotation * 30,
+                typeof(NoMovementTracking),
+                Vector3.zero,
+                true,
+                Vector3.zero
+            );
+            
+            NoMovementTracking mt = CreateMovingGround<NoMovementTracking>();
+            Assert.IsFalse(mt.ShouldAttach());
+            Assert.AreEqual(mt.AvoidTransferMomentum(), true);
+            Assert.AreEqual(mt.GetTransferMomentumWeight(Vector3.zero, Vector3.zero), 0.0f);
+            Assert.AreEqual(mt.GetMovementWeight(Vector3.zero, Vector3.zero), 0.0f);
         }
 
         /// <summary>
@@ -85,7 +109,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
             {
                 foreach (Vector3 rotation in TestDirections())
                 {
-                    Validate_MovingGroundDiplacement_Helper(
+                    Validate_MovingGroundDisplacement_Helper(
                         translation,
                         rotation * 30,
                         type,
@@ -202,12 +226,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
         /// <param name="type">Type of moving ground to create.</param>
         /// <param name="relativePosition">Relative position of object to moving ground.</param>
         /// <param name="deltaTime">Delta time for processing moving ground.</param>
-        protected void Validate_MovingGroundDiplacement_Helper(
+        protected void Validate_MovingGroundDisplacement_Helper(
             Vector3 move,
             Vector3 rotation,
             Type type,
             Vector3 relativePosition,
-            bool verifyVelocity = true)
+            bool verifyVelocity = true,
+            Vector3? expectedDisp = null)
         {
             IMovingGround movingGround = CreateMovingGround(type);
             var behaviour = movingGround as MonoBehaviour;
@@ -221,7 +246,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
             var changeAttitude = Quaternion.Euler(rotation);
 
             Vector3 deltaRotation = (changeAttitude * relativePosition) - relativePosition;
-            Vector3 expectedDisplacement = move + deltaRotation;
+            Vector3 expectedDisplacement = expectedDisp ?? move + deltaRotation;
 
             TestUtils.AssertInBounds(
                 movingGround.GetDisplacementAtPoint(behaviour.transform.position + relativePosition),
