@@ -172,6 +172,8 @@ namespace nickmaltbie.OpenKCC.Character
         [SerializeField]
         public float snapBufferTime = 0.05f;
 
+        [Header("Moving Ground")]
+
         /// <summary>
         /// Max velocity at which the player can be launched
         /// when gaining momentum from a floor object without
