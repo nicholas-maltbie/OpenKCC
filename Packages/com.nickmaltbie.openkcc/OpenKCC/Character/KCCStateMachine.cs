@@ -467,8 +467,6 @@ namespace nickmaltbie.OpenKCC.Character
                 groundVelocity = previousVelocity.normalized * velocity;
             }
 
-            UnityEngine.Debug.Log($"groundedState.StandingOnGround:{groundedState.StandingOnGround} previousVelocity:{previousVelocity}");
-
             return groundVelocity;
         }
 
