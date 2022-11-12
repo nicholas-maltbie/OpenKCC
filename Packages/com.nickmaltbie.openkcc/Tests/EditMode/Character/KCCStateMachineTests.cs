@@ -171,6 +171,30 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Assert.IsTrue(kccStateMachine.groundedState.Sliding);
             Assert.IsFalse(kccStateMachine.groundedState.Falling);
         }
+         
+        [Test]
+        public void Validate_KCCStateMachine_MovingGround_Teleport()
+        {
+            GameObject movingGround = CreateGameObject();
+            BoxCollider collider = movingGround.AddComponent<BoxCollider>();
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true, collider: collider);
+            ParentConstraint constraint = kccStateMachine.GetComponent<ParentConstraint>();
+
+            Assert.AreEqual(constraint.sourceCount, 0);
+            kccStateMachine.FixedUpdate();
+
+            Assert.AreEqual(constraint.sourceCount, 1);
+
+            kccStateMachine.TeleportPlayer(Vector3.forward * 10);
+            Assert.AreEqual(kccStateMachine.transform.position, Vector3.forward * 10);
+
+            KCCTestUtils.SetupCastSelf(colliderCastMock, didHit: false);
+            kccStateMachine.FixedUpdate();
+            Assert.AreEqual(constraint.sourceCount, 0);
+
+            kccStateMachine.TeleportPlayer(Vector3.back * 10);
+            Assert.AreEqual(kccStateMachine.transform.position, Vector3.back * 10);
+        }
 
         [Test]
         public void Validate_KCCStateMachine_MovingGround_ResetConstraints()

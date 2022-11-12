@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 
 using nickmaltbie.OpenKCC.Utils;
-
+using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -30,6 +30,8 @@ namespace nickmaltbie.OpenKCC.Character
     /// </summary>
     public class CameraController : MonoBehaviour, ICameraControls
     {
+        public IUnityService unityService = UnityService.Instance;
+
         [Header("Input Actions")]
 
         /// <summary>
@@ -37,14 +39,14 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [Tooltip("Player look action to rotate camera.")]
         [SerializeField]
-        private InputActionReference lookAction;
+        public InputActionReference lookAction;
 
         /// <summary>
         /// Zoom action to zoom in and out.
         /// </summary>
         [Tooltip("Player zoom action with camera.")]
         [SerializeField]
-        private InputActionReference zoomAction;
+        public InputActionReference zoomAction;
 
         [Header("Rotation Bounds")]
 
@@ -151,7 +153,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Get the current distance of the camera from the player camera location
         /// </summary>
-        public float CameraDistance { get; private set; }
+        public float CameraDistance { get; internal set; }
 
         /// <summary>
         /// Source camera position in real world space, this is where the head of 
@@ -176,55 +178,6 @@ namespace nickmaltbie.OpenKCC.Character
             baseCameraOffset = cameraTransform.localPosition;
             currentDistance = Mathf.Clamp(currentDistance, minCameraDistance, maxCameraDistance);
             ignoreObjects.Add(gameObject);
-        }
-
-        /// <summary>
-        /// Raycast a line from the camera's base.
-        /// </summary>
-        /// <param name="maxDistance">Maximum distance to draw ray.</param>
-        /// <param name="layerMask">Layer mask for raycast</param>
-        /// <param name="queryTriggerInteraction">Query trigger interaction for raycast</param>
-        /// <param name="hit">Object the raycast hits, if any.</param>
-        /// <returns>True if an object is hit, false otherwise.</returns>
-        public bool RaycastFromCameraBase(float maxDistance, LayerMask layerMask, QueryTriggerInteraction queryTriggerInteraction, out RaycastHit hit)
-        {
-            return PhysicsUtils.RaycastFirstHitIgnore(ignoreObjects, CameraSource, cameraTransform.forward, maxDistance,
-                layerMask, queryTriggerInteraction, out hit);
-        }
-
-        /// <summary>
-        /// Draw a spherecase from the camera's base.
-        /// </summary>
-        /// <param name="maxDistance">Maximum distance to draw sphere.</param>
-        /// <param sphereRadius="sphereRadius">Radius of sphere when drawing</param>
-        /// <param name="layerMask">Layer mask for spherecase</param>
-        /// <param name="queryTriggerInteraction">Query trigger interaction for spherecase</param>
-        /// <param name="hit">Object the spherecase hits, if any.</param>
-        /// <returns>True if an object is hit, false otherwise.</returns>
-        public bool SpherecastFromCameraBase(float maxDistance, LayerMask layerMask, float sphereRadius, QueryTriggerInteraction queryTriggerInteraction, out RaycastHit hit)
-        {
-            return PhysicsUtils.SphereCastFirstHitIgnore(ignoreObjects, CameraSource, sphereRadius, cameraTransform.forward, maxDistance,
-                layerMask, queryTriggerInteraction, out hit);
-        }
-
-        /// <summary>
-        /// Look action changes for camera movement
-        /// </summary>
-        public void OnLook(InputAction.CallbackContext context)
-        {
-            Vector2 look = context.ReadValue<Vector2>();
-            look *= PlayerInputUtils.mouseSensitivity;
-            yawChange = look.x;
-            pitchChange = look.y;
-        }
-
-        /// <summary>
-        /// Zoom camera in and out
-        /// </summary>
-        /// <param name="context"></param>
-        public void OnZoom(InputAction.CallbackContext context)
-        {
-            zoomAxis = context.ReadValue<Vector2>().y;
         }
 
         /// <summary>
@@ -253,22 +206,29 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void Update()
         {
-            float deltaTime = Time.deltaTime;
+            Vector2 look = lookAction.action.ReadValue<Vector2>();
+            look *= PlayerInputUtils.mouseSensitivity;
+            zoomAxis = zoomAction.action.ReadValue<Vector2>().y;
+            yawChange = look.x;
+            pitchChange = look.y;
 
-            float zoomChange = 0;
             // bound pitch between -180 and 180
+            float zoomChange = 0;
             Pitch = (Pitch % 360 + 180) % 360 - 180;
+
             // Only allow rotation if player is allowed to move
             if (PlayerInputUtils.playerMovementState == PlayerInputState.Allow)
             {
-                yawChange = rotationRate * deltaTime * yawChange;
+                yawChange = rotationRate * unityService.deltaTime * yawChange;
                 Yaw += yawChange;
-                Pitch += rotationRate * deltaTime * -1 * pitchChange;
-                zoomChange = zoomSpeed * deltaTime * -1 * zoomAxis;
+                Pitch += rotationRate * unityService.deltaTime * -1 * pitchChange;
+                zoomChange = zoomSpeed * unityService.deltaTime * -1 * zoomAxis;
             }
+
             // Clamp rotation of camera between minimum and maximum specified pitch
             Pitch = Mathf.Clamp(Pitch, minPitch, maxPitch);
             frameRotation = yawChange;
+
             // Change camera zoom by desired level
             // Bound the current distance between minimum and maximum
             currentDistance = Mathf.Clamp(currentDistance + zoomChange, minCameraDistance, maxCameraDistance);
@@ -296,52 +256,43 @@ namespace nickmaltbie.OpenKCC.Character
             CameraDistance = cameraDirection.magnitude;
             cameraTransform.position = cameraSource + cameraDirection;
 
-            bool hittingSelf = PhysicsUtils.SphereCastAllow(gameObject, cameraSource + cameraDirection, 0.01f, -cameraDirection.normalized,
-                cameraDirection.magnitude, ~0, QueryTriggerInteraction.Ignore, out RaycastHit selfHit);
-
-            float actualDistance = hittingSelf ? selfHit.distance : cameraDirection.magnitude;
-
             if (thirdPersonCharacterBase != null)
             {
-                thirdPersonCharacterBase.transform.localRotation = Quaternion.Euler(0, Yaw, 0);
-                if (actualDistance < shadowOnlyDistance)
-                {
-                    MaterialUtils.RecursiveSetShadowCastingMode(thirdPersonCharacterBase, UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly);
-                }
-                else
-                {
-                    MaterialUtils.RecursiveSetShadowCastingMode(thirdPersonCharacterBase, UnityEngine.Rendering.ShadowCastingMode.On);
-                }
-
-                if (actualDistance > shadowOnlyDistance && actualDistance < ditherDistance)
-                {
-                    float newOpacity = (actualDistance - shadowOnlyDistance) / (ditherDistance - minCameraDistance);
-                    float lerpPosition = transitionTime > 0 ? deltaTime * 1 / transitionTime : 1;
-                    previousOpacity = Mathf.Lerp(previousOpacity, newOpacity, lerpPosition);
-                    // Set opacity of character based on how close the camera is
-                    MaterialUtils.RecursiveSetFloatProperty(thirdPersonCharacterBase, "_Opacity", previousOpacity);
-                }
-                else
-                {
-                    // Set opacity of character based on how close the camera is
-                    MaterialUtils.RecursiveSetFloatProperty(thirdPersonCharacterBase, "_Opacity", 1);
-                    previousOpacity = actualDistance > shadowOnlyDistance ? 1 : 0;
-                }
+                UpdateThirdPersonCamera(cameraDirection);
             }
 
             Yaw %= 360;
         }
 
-        public void OnEnable()
+        public void UpdateThirdPersonCamera(Vector3 cameraDirection)
         {
-            zoomAction.action.performed += OnZoom;
-            lookAction.action.performed += OnLook;
-        }
+            bool hittingSelf = PhysicsUtils.SphereCastAllow(gameObject, CameraSource + cameraDirection, 0.01f, -cameraDirection.normalized,
+                cameraDirection.magnitude, ~0, QueryTriggerInteraction.Ignore, out RaycastHit selfHit);
+            float actualDistance = hittingSelf ? selfHit.distance : cameraDirection.magnitude;
+            thirdPersonCharacterBase.transform.localRotation = Quaternion.Euler(0, Yaw, 0);
+            if (actualDistance < shadowOnlyDistance)
+            {
+                MaterialUtils.RecursiveSetShadowCastingMode(thirdPersonCharacterBase, UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly);
+            }
+            else
+            {
+                MaterialUtils.RecursiveSetShadowCastingMode(thirdPersonCharacterBase, UnityEngine.Rendering.ShadowCastingMode.On);
+            }
 
-        public void OnDisable()
-        {
-            zoomAction.action.performed -= OnZoom;
-            lookAction.action.performed -= OnLook;
+            if (actualDistance > shadowOnlyDistance && actualDistance < ditherDistance)
+            {
+                float newOpacity = (actualDistance - shadowOnlyDistance) / (ditherDistance - minCameraDistance);
+                float lerpPosition = transitionTime > 0 ? unityService.deltaTime * 1 / transitionTime : 1;
+                previousOpacity = Mathf.Lerp(previousOpacity, newOpacity, lerpPosition);
+                // Set opacity of character based on how close the camera is
+                MaterialUtils.RecursiveSetFloatProperty(thirdPersonCharacterBase, "_Opacity", previousOpacity);
+            }
+            else
+            {
+                // Set opacity of character based on how close the camera is
+                MaterialUtils.RecursiveSetFloatProperty(thirdPersonCharacterBase, "_Opacity", 1);
+                previousOpacity = actualDistance > shadowOnlyDistance ? 1 : 0;
+            }
         }
     }
 }
