@@ -45,6 +45,7 @@ namespace nickmaltbie.OpenKCC.Character
         public const string JumpAnimState = "Jump";
         public const string LandingAnimState = "Landing";
         public const string WalkingAnimState = "Walking";
+        public const string SprintingAnimState = "Sprinting";
         public const string SlidingAnimState = "Sliding";
         public const string FallingAnimState = "Falling";
         public const string LongFallingAnimState = "Long Falling";
@@ -171,6 +172,8 @@ namespace nickmaltbie.OpenKCC.Character
         [SerializeField]
         public float snapBufferTime = 0.05f;
 
+        [Header("Moving Ground")]
+
         /// <summary>
         /// Max velocity at which the player can be launched
         /// when gaining momentum from a floor object without
@@ -280,7 +283,7 @@ namespace nickmaltbie.OpenKCC.Character
 
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
-        [Transition(typeof(MoveInput), typeof(WalkingState))]
+        [Transition(typeof(StartMoveInput), typeof(WalkingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
@@ -297,7 +300,7 @@ namespace nickmaltbie.OpenKCC.Character
 
         [Animation(LandingAnimState, 0.1f, true)]
         [TransitionOnAnimationComplete(typeof(IdleState), 0.25f, true)]
-        [AnimationTransition(typeof(MoveInput), typeof(WalkingState), 0.35f, true)]
+        [AnimationTransition(typeof(StartMoveInput), typeof(WalkingState), 0.35f, true)]
         [AnimationTransition(typeof(JumpEvent), typeof(JumpState), 0.35f, true)]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
@@ -309,8 +312,18 @@ namespace nickmaltbie.OpenKCC.Character
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
+        [Transition(typeof(StartSprintEvent), typeof(SprintingState))]
         [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true)]
         public class WalkingState : State { }
+
+        [Animation(SprintingAnimState, 0.1f, true)]
+        [Transition(typeof(JumpEvent), typeof(JumpState))]
+        [Transition(typeof(StopMoveInput), typeof(IdleState))]
+        [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
+        [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
+        [Transition(typeof(StopSprintEvent), typeof(WalkingState))]
+        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true, OverrideVelocityFunction = nameof(sprintSpeed))]
+        public class SprintingState : State { }
 
         [ApplyGravity]
         [Animation(SlidingAnimState, 0.35f, true)]
@@ -481,7 +494,17 @@ namespace nickmaltbie.OpenKCC.Character
             // Move the player if they are allowed to walk
             if (moveSettings?.AllowWalk ?? false)
             {
-                MovePlayer(GetProjectedMovement() * unityService.fixedDeltaTime);
+                Vector3 movementDir = GetProjectedMovement();
+                float vel = walkingSpeed;
+
+                string overrideParam = moveSettings.OverrideVelocityFunction;
+
+                if (!string.IsNullOrEmpty(overrideParam))
+                {
+                    vel = (float)GetType().GetField(overrideParam).GetValue(this);
+                }
+
+                MovePlayer(movementDir * vel * unityService.fixedDeltaTime);
             }
 
             // Apply velocity fi allowed to move via velocity
@@ -549,7 +572,19 @@ namespace nickmaltbie.OpenKCC.Character
             Vector2 moveVector = denyMovement ? Vector3.zero : moveAction.action.ReadValue<Vector2>();
             InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
             bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
-            RaiseEvent(moving ? MoveInput.Instance : StopMoveInput.Instance);
+            RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
+
+            if (moving)
+            {
+                if (sprintAction.action.IsPressed())
+                {
+                    RaiseEvent(StartSprintEvent.Instance);
+                }
+                else
+                {
+                    RaiseEvent(StopSprintEvent.Instance);
+                }
+            }
 
             float moveX = AttachedAnimator.GetFloat("MoveX");
             float moveY = AttachedAnimator.GetFloat("MoveY");
@@ -595,7 +630,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// ground.</returns>
         public Vector3 GetProjectedMovement(Vector3 inputMovement)
         {
-            Vector3 movement = RotatedMovement(inputMovement) * walkingSpeed;
+            Vector3 movement = RotatedMovement(inputMovement);
 
             // If the player is standing on the ground, project their movement onto the ground plane
             // This allows them to walk up gradual slopes without facing a hit in movement speed
@@ -675,6 +710,11 @@ namespace nickmaltbie.OpenKCC.Character
             /// Should the player be snapped down after moving.
             /// </summary>
             public bool SnapPlayerDown = false;
+
+            /// <summary>
+            /// Function to override velocity value.
+            /// </summary>
+            public string OverrideVelocityFunction = null;
         }
     }
 }

@@ -55,7 +55,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
         public float maxJumpAngle = 85f;
 
         /// <summary>
-        /// Weight to which the player's jump is weighted towards the direction.
+        /// Weight to which the player's jump is weighted towards the direction
         /// of the surface they are standing on.
         /// </summary>
         [Tooltip("Weight to which the player's jump is weighted towards the angle of their surface.")]

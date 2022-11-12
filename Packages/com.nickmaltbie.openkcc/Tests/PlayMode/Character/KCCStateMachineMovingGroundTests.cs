@@ -18,17 +18,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Character.Action;
-using nickmaltbie.OpenKCC.Input;
-using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
-using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.Animations;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
@@ -36,18 +29,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
     /// <summary>
     /// Test basic movement scenarios for KCCStateMachine with moving ground.
     /// </summary>
-    public class KCCStateMachineMovingGroundTests : TestBase
+    public class KCCStateMachineMovingGroundTests : KCCStateMachineTestBase
     {
-        private KCCStateMachine kccStateMachine;
-        private StickControl moveStick;
-        private ButtonControl jumpButton;
-
-        private Gamepad gamepad;
-        private InputAction moveInputAction;
-        private InputAction jumpInputAction;
-        private JumpAction jumpAction;
-        private ParentConstraint constraint;
-
         private GameObject floor;
 
         public static IEnumerable<Vector3> DirectionsOnFlatPlane()
@@ -73,57 +56,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
         public override void Setup()
         {
             base.Setup();
-            var go = new GameObject();
-            CapsuleCollider capsuleCollider = go.AddComponent<CapsuleCollider>();
-            go.AddComponent<CapsuleColliderCast>();
-            capsuleCollider.center = new Vector3(0, 1, 0);
-            capsuleCollider.height = 2.0f;
-            capsuleCollider.radius = 0.5f;
-
-            var controller = new AnimatorController();
-            controller.AddLayer("base");
-            AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
-            controller.AddParameter("MoveX", AnimatorControllerParameterType.Float);
-            controller.AddParameter("MoveY", AnimatorControllerParameterType.Float);
-            rootStateMachine.AddState(KCCStateMachine.IdleAnimState);
-            rootStateMachine.AddState(KCCStateMachine.JumpAnimState);
-            rootStateMachine.AddState(KCCStateMachine.LandingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.WalkingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.SlidingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.FallingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.LongFallingAnimState);
-
-            Animator anim = go.AddComponent<Animator>();
-            anim.runtimeAnimatorController = controller;
-
-            var jumpInput = new BufferedInput();
-            PlayerInput playerInput = go.AddComponent<PlayerInput>();
-            gamepad = InputSystem.AddDevice<Gamepad>();
-            InputActionAsset inputActionAsset = CreateScriptableObject<InputActionAsset>();
-            InputActionMap actionMap = inputActionAsset.AddActionMap("testMap");
-            playerInput.actions = inputActionAsset;
-            playerInput.currentActionMap = actionMap;
-            jumpButton = gamepad.aButton;
-            moveStick = gamepad.leftStick;
-            jumpInputAction = actionMap.AddAction("jumpAction", InputActionType.Button, jumpButton.path);
-            moveInputAction = actionMap.AddAction("moveAction", InputActionType.Value, moveStick.path);
-
-            jumpInputAction.Enable();
-            moveInputAction.Enable();
-
-            jumpInput.inputAction = InputActionReference.Create(jumpInputAction);
-            jumpInput.cooldown = 1.0f;
-            jumpInput.bufferTime = 3.0f;
-            jumpAction = new JumpAction();
-            jumpAction.jumpInput = jumpInput;
-
-            kccStateMachine = go.AddComponent<KCCStateMachine>();
-            kccStateMachine.jumpAction = jumpAction;
-            kccStateMachine.moveAction = InputActionReference.Create(moveInputAction);
-            kccStateMachine.Start();
-
-            constraint = kccStateMachine.GetComponent<ParentConstraint>();
-
             floor = CreateGameObject();
             BoxCollider box = floor.AddComponent<BoxCollider>();
             box.center = Vector3.zero;
@@ -131,14 +63,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             box.transform.position = Vector3.zero;
             box.transform.rotation = Quaternion.identity;
             floor.transform.position = new Vector3(0, -0.5f, 0);
-        }
-
-        [TearDown]
-        public override void TearDown()
-        {
-            InputSystem.RemoveDevice(gamepad);
-            GameObject.Destroy(kccStateMachine.gameObject);
-            base.TearDown();
         }
 
         [UnityTest]
@@ -150,6 +74,12 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             kccStateMachine.TeleportPlayer(relativePos);
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
+
+            // Wait until player is no longer overlapping with object.
+            while (kccStateMachine.groundedState.DistanceToGround <= 0)
+            {
+                yield return new WaitForFixedUpdate();
+            }
 
             // Move the box forward and wait a fixed update, the player should
             // move along with the box

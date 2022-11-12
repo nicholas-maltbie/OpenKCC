@@ -18,20 +18,16 @@
 
 using Moq;
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
+using nickmaltbie.OpenKCC.Character.Events;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
-using nickmaltbie.OpenKCC.Input;
-using nickmaltbie.OpenKCC.TestCommon;
+using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Animations;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
@@ -39,23 +35,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
     /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.KCCStateMachine"/> in edit mode.
     /// </summary>
     [TestFixture]
-    public class KCCStateMachineTests : TestBase
+    public class KCCStateMachineTests : KCCStateMachineTestBase
     {
         private Mock<IUnityService> unityServiceMock;
         private Mock<IColliderCast> colliderCastMock;
         private Mock<IKCCConfig> kccConfigMock;
         private Mock<ICharacterPush> characterPushMock;
         private Mock<ICameraControls> cameraControlsMock;
-
-        private StickControl moveStick;
-        private ButtonControl jumpButton;
-
-        private Gamepad gamepad;
-        private InputAction moveInputAction;
-        private InputAction jumpInputAction;
-        private JumpAction jumpAction;
-        private KCCGroundedState kccGroundedState;
-        private KCCStateMachine kccStateMachine;
 
         [SetUp]
         public void SetUp()
@@ -77,69 +63,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccGroundedState.groundedDistance = 0.01f;
             kccGroundedState.maxWalkAngle = 60.0f;
 
-            InputActionMap actionMap;
-            var jumpInput = new BufferedInput();
-            (gamepad, _, actionMap) = base.SetupInputDevice<Gamepad>();
-            jumpButton = gamepad.aButton;
-            moveStick = gamepad.leftStick;
-            jumpInputAction = actionMap.AddAction("jumpAction", InputActionType.Button, jumpButton.path);
-            moveInputAction = actionMap.AddAction("moveAction", InputActionType.Value, moveStick.path);
-
-            jumpInputAction.Enable();
-            moveInputAction.Enable();
-
-            jumpInput.unityService = unityServiceMock.Object;
-            jumpInput.inputAction = InputActionReference.Create(jumpInputAction);
-            jumpInput.cooldown = 1.0f;
-            jumpInput.bufferTime = 3.0f;
-
-            jumpAction = new JumpAction();
-            jumpAction.jumpInput = jumpInput;
-            jumpAction.unityService = unityServiceMock.Object;
-
-            GameObject go = base.CreateGameObject();
-            kccStateMachine = go.AddComponent<KCCStateMachine>();
-            kccStateMachine.unityService = unityServiceMock.Object;
-            kccStateMachine.jumpAction = jumpAction;
-            kccStateMachine.moveAction = InputActionReference.Create(moveInputAction);
-
-            // Setup basic animator animations
-            var controller = new AnimatorController();
-            controller.AddLayer("base");
-            AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
-            controller.AddParameter("MoveX", AnimatorControllerParameterType.Float);
-            controller.AddParameter("MoveY", AnimatorControllerParameterType.Float);
-            rootStateMachine.AddState(KCCStateMachine.IdleAnimState);
-            rootStateMachine.AddState(KCCStateMachine.JumpAnimState);
-            rootStateMachine.AddState(KCCStateMachine.LandingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.WalkingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.SlidingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.FallingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.LongFallingAnimState);
-
-            Animator anim = go.AddComponent<Animator>();
-            anim.runtimeAnimatorController = controller;
-
             kccStateMachine.Awake();
             kccStateMachine.Start();
+            kccStateMachine.groundedState = kccGroundedState;
             kccStateMachine._cameraControls = cameraControlsMock.Object;
             kccStateMachine._characterPush = characterPushMock.Object;
             kccStateMachine._colliderCast = colliderCastMock.Object;
-        }
-
-        [Test]
-        public void Validate_KCCStateMachine_Idle_FixedUpdate()
-        {
-            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
-
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
-
-            kccStateMachine.FixedUpdate();
-
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
-            Assert.IsTrue(kccStateMachine.groundedState.StandingOnGround);
-            Assert.IsFalse(kccStateMachine.groundedState.Sliding);
-            Assert.IsFalse(kccStateMachine.groundedState.Falling);
         }
 
         [Test]
@@ -155,6 +84,18 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Assert.IsFalse(kccStateMachine.groundedState.StandingOnGround);
             Assert.IsFalse(kccStateMachine.groundedState.Sliding);
             Assert.IsTrue(kccStateMachine.groundedState.Falling);
+        }
+
+        [Test]
+        public void Validate_KCCStateMachine_SprintingInput()
+        {
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
+            Set(moveStick, Vector2.up);
+            Set(sprintButton, 1);
+            Debug.Log($"MoveInput:{moveInputAction.ReadValue<Vector2>()} SprintInput:{sprintInputAction.IsPressed()}");
+            kccStateMachine.Update();
+            Assert.AreEqual(typeof(KCCStateMachine.SprintingState), kccStateMachine.CurrentState);
+            kccStateMachine.FixedUpdate();
         }
 
         [Test]
@@ -310,7 +251,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.UpdateGroundedState();
             // Now the velocity should be within the bounds of about direction
             velocity = kccStateMachine.GetGroundVelocity();
-            TestUtils.AssertInBounds(velocity, dir);
         }
 
         [Test]
@@ -362,6 +302,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Assert.IsFalse(kccStateMachine.groundedState.Falling);
 
             PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
+        }
+
+        [Test]
+        public void Validate_KCCStateMachine_SprintSpeedValue()
+        {
+            kccStateMachine.RaiseEvent(StartMoveInput.Instance);
+            kccStateMachine.RaiseEvent(StartSprintEvent.Instance);
+            kccStateMachine.ApplyMovement();
         }
 
         [Test]

@@ -31,6 +31,26 @@ namespace nickmaltbie.OpenKCC.Character.Events
     }
 
     /// <summary>
+    /// Event when the player starts sprinting.
+    /// </summary>
+    public class StartSprintEvent : IEvent
+    {
+        public static readonly StartSprintEvent Instance = new StartSprintEvent();
+
+        private StartSprintEvent() { }
+    }
+
+    /// <summary>
+    /// Event when the player stops sprinting.
+    /// </summary>
+    public class StopSprintEvent : IEvent
+    {
+        public static readonly StopSprintEvent Instance = new StopSprintEvent();
+
+        private StopSprintEvent() { }
+    }
+
+    /// <summary>
     /// Event when the player steps off the ground.
     /// </summary>
     public class LeaveGroundEvent : IEvent
@@ -63,11 +83,11 @@ namespace nickmaltbie.OpenKCC.Character.Events
     /// <summary>
     /// Event when player starts movement input.
     /// </summary>
-    public class MoveInput : IEvent
+    public class StartMoveInput : IEvent
     {
-        public static readonly MoveInput Instance = new MoveInput();
+        public static readonly StartMoveInput Instance = new StartMoveInput();
 
-        private MoveInput() { }
+        private StartMoveInput() { }
     }
 
     /// <summary>
