@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -98,7 +98,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             Assert.AreEqual(0, cameraController.Pitch);
             Assert.AreEqual(0, cameraController.Yaw);
-            
+
             Set(lookAction, Vector3.left);
             cameraController.Update();
 
@@ -117,14 +117,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             Assert.AreEqual(-cameraController.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
             Assert.AreEqual(0, cameraController.Yaw);
-            
+
             Set(lookAction, Vector3.left);
             cameraController.Update();
 
             Assert.AreEqual(-cameraController.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
             Assert.AreEqual(-cameraController.rotationRate * 0.1f * 0.25f, cameraController.Yaw);
         }
-        
+
         [Test]
         public void Validate_CameraController_IgnoreObjects(
             [NUnit.Framework.Range(2, 10, 4)] float dist

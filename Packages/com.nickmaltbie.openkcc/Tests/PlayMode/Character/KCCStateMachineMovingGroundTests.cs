@@ -52,7 +52,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
 
         public static IEnumerable<Vector3> DirectionsOnFlatPlane()
         {
-            return new [] {
+            return new[] {
                 Vector3.forward,
                 Vector3.left,
                 Vector3.forward + Vector3.left,
@@ -62,7 +62,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
 
         public static IEnumerable<Vector3> RotationAxis()
         {
-            return new [] {
+            return new[] {
                 new Vector3(1, 0, 0),
                 new Vector3(0, 1, 0),
                 new Vector3(0, 0, 1),
@@ -73,7 +73,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
         public override void Setup()
         {
             base.Setup();
-            GameObject go = new GameObject();
+            var go = new GameObject();
             CapsuleCollider capsuleCollider = go.AddComponent<CapsuleCollider>();
             go.AddComponent<CapsuleColliderCast>();
             capsuleCollider.center = new Vector3(0, 1, 0);
@@ -132,7 +132,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             box.transform.rotation = Quaternion.identity;
             floor.transform.position = new Vector3(0, -0.5f, 0);
         }
-        
+
         [TearDown]
         public override void TearDown()
         {
@@ -201,7 +201,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
                 Assert.IsTrue(kccStateMachine.groundedState.StandingOnGroundOrOverlap);
                 Assert.AreEqual(1, constraint.sourceCount);
                 Assert.AreEqual(floor.transform, constraint.GetSource(0).sourceTransform);
-                
+
                 // Expected position should be relative position
                 Vector3 expectedPos = floor.transform.rotation * relativePos;
                 TestUtils.AssertInBounds(kccStateMachine.transform.position, expectedPos, 1.0f);

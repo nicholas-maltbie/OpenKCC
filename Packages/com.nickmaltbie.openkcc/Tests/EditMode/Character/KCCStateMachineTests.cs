@@ -171,7 +171,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Assert.IsTrue(kccStateMachine.groundedState.Sliding);
             Assert.IsFalse(kccStateMachine.groundedState.Falling);
         }
-         
+
         [Test]
         public void Validate_KCCStateMachine_MovingGround_Teleport()
         {

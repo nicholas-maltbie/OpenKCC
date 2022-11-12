@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,19 +16,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections;
 using Moq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Environment.Pushable;
-using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.Utils;
-using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
-using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
@@ -78,7 +72,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kinematic.AddComponent<Rigidbody>().isKinematic = true;
             noPushable.AddComponent<Rigidbody>();
 
-            Mock<IControllerColliderHit> hit = new Mock<IControllerColliderHit>();
+            var hit = new Mock<IControllerColliderHit>();
             hit.Setup(e => e.gameObject).Returns(noRigidbody);
             character.PushObject(hit.Object);
 
@@ -94,7 +88,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void Verify_CharacterPush_PushObject()
         {
-            Mock<IControllerColliderHit> hit = new Mock<IControllerColliderHit>();
+            var hit = new Mock<IControllerColliderHit>();
             hit.Setup(e => e.gameObject).Returns(pushable);
             hit.Setup(e => e.rigidbody).Returns(pushable.GetComponent<Rigidbody>());
             character.PushObject(hit.Object);

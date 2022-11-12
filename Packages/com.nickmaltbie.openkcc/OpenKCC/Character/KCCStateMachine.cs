@@ -633,12 +633,13 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void TeleportPlayer(Vector3 position)
         {
-            List<ConstraintSource> sources = new List<ConstraintSource>();
+            var sources = new List<ConstraintSource>();
             parentConstraint.GetSources(sources);
             if (parentConstraint.sourceCount > 0)
             {
                 parentConstraint.RemoveSource(0);
             }
+
             transform.position = position;
             parentConstraint.SetSources(sources);
         }
