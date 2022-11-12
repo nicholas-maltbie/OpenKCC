@@ -441,8 +441,7 @@ namespace nickmaltbie.OpenKCC.Character
                     parentConstraint.AddSource(floorConstraint);
 
                     Vector3 relativePos = transform.position - floorTransform.position;
-                    Vector3 localRelativePos = floorTransform.InverseTransformDirection(relativePos);
-                    parentConstraint.SetTranslationOffset(0, localRelativePos);
+                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePos));
                 }
                 else
                 {
