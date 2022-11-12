@@ -20,7 +20,7 @@ using nickmaltbie.OpenKCC.Utils;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.TestCommon
+namespace nickmaltbie.OpenKCC.Tests.TestCommon
 {
     /// <summary>
     /// Utility functions for KCC Validation

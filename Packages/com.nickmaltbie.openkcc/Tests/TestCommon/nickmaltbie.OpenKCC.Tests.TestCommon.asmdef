@@ -1,12 +1,15 @@
 {
-    "name": "nickmaltbie.OpenKCC.TestCommon",
-    "rootNamespace": "nickmaltbie.OpenKCC.TestCommon",
+    "name": "nickmaltbie.OpenKCC.Tests.TestCommon",
+    "rootNamespace": "nickmaltbie.OpenKCC.Tests.TestCommon",
     "references": [
         "nickmaltbie.OpenKCC",
         "Unity.InputSystem",
         "Unity.InputSystem.TestFramework",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "nickmaltbie.TestUtilsUnity",
+        "nickmaltbie.TestUtilsUnity.Tests.TestCommon",
+        "nickmaltbie.StateMachineUnity"
     ],
     "includePlatforms": [
         "Editor"

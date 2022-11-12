@@ -20,7 +20,7 @@ using Moq;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.TestCommon
+namespace nickmaltbie.OpenKCC.Tests.TestCommon
 {
     /// <summary>
     /// Unity test utilities.
