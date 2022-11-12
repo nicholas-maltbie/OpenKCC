@@ -16,13 +16,11 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.Utils;
-using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEditor.Animations;
@@ -56,7 +54,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         public override void Setup()
         {
             base.Setup();
-            var go = CreateGameObject();
+            GameObject go = CreateGameObject();
             CapsuleCollider capsuleCollider = go.AddComponent<CapsuleCollider>();
             go.AddComponent<CapsuleColliderCast>();
             capsuleCollider.center = new Vector3(0, 1, 0);
@@ -117,7 +115,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         public override void TearDown()
         {
             InputSystem.RemoveDevice(gamepad);
-        
+
             if (Application.isPlaying)
             {
                 GameObject.Destroy(kccStateMachine.gameObject);

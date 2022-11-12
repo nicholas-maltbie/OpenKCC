@@ -496,12 +496,12 @@ namespace nickmaltbie.OpenKCC.Character
             {
                 Vector3 movementDir = GetProjectedMovement();
                 float vel = walkingSpeed;
-                
+
                 string overrideParam = moveSettings.OverrideVelocityFunction;
 
                 if (!string.IsNullOrEmpty(overrideParam))
                 {
-                    vel = (float) GetType().GetField(overrideParam).GetValue(this);
+                    vel = (float)GetType().GetField(overrideParam).GetValue(this);
                 }
 
                 MovePlayer(movementDir * vel * unityService.fixedDeltaTime);

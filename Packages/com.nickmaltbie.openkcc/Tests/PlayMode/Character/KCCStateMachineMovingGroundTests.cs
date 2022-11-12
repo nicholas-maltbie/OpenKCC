@@ -18,18 +18,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Character.Action;
-using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
-using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
-using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.Animations;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
