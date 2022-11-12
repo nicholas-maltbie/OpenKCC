@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using System.Collections;
+using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Input;
@@ -46,6 +47,27 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
         private InputAction jumpInputAction;
         private JumpAction jumpAction;
         private ParentConstraint constraint;
+
+        private GameObject floor;
+
+        public static IEnumerable<Vector3> DirectionsOnFlatPlane()
+        {
+            return new [] {
+                Vector3.forward,
+                Vector3.left,
+                Vector3.forward + Vector3.left,
+                Vector3.forward + Vector3.right,
+            };
+        }
+
+        public static IEnumerable<Vector3> RotationAxis()
+        {
+            return new [] {
+                new Vector3(1, 0, 0),
+                new Vector3(0, 1, 0),
+                new Vector3(0, 0, 1),
+            };
+        }
 
         [SetUp]
         public override void Setup()
@@ -95,15 +117,20 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             jumpAction = new JumpAction();
             jumpAction.jumpInput = jumpInput;
 
-            Set(gamepad.aButton, 0);
-            Set(gamepad.leftStick, Vector3.zero);
-
             kccStateMachine = go.AddComponent<KCCStateMachine>();
             kccStateMachine.jumpAction = jumpAction;
             kccStateMachine.moveAction = InputActionReference.Create(moveInputAction);
             kccStateMachine.Start();
 
             constraint = kccStateMachine.GetComponent<ParentConstraint>();
+
+            floor = CreateGameObject();
+            BoxCollider box = floor.AddComponent<BoxCollider>();
+            box.center = Vector3.zero;
+            box.size = new Vector3(10, 1, 10);
+            box.transform.position = Vector3.zero;
+            box.transform.rotation = Quaternion.identity;
+            floor.transform.position = new Vector3(0, -0.5f, 0);
         }
         
         [TearDown]
@@ -116,46 +143,68 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
 
         [UnityTest]
         public IEnumerator FollowLinearMovement(
-            [ValueSource(nameof(TestDirections))] Vector3 dir
+            [ValueSource(nameof(TestDirections))] Vector3 dir,
+            [ValueSource(nameof(DirectionsOnFlatPlane))] Vector3 relativePos
         )
         {
-            GameObject floor = CreateGameObject();
-            BoxCollider box = floor.AddComponent<BoxCollider>();
-            box.center = Vector3.zero;
-            box.size = Vector3.one;
-            kccStateMachine.transform.position = Vector3.zero;
-            floor.transform.position = new Vector3(0, -0.51f, 0);
-
-            yield return null;
-
-            while (!kccStateMachine.groundedState.StandingOnGround)
-            {
-                yield return new WaitForFixedUpdate();
-            }
-
-            UnityEngine.Debug.Log($"OnGround:{kccStateMachine.groundedState.OnGround} DistanceToGround:{kccStateMachine.groundedState.DistanceToGround}");
-
-            // Assert that the player is attached to the floor.
-            Assert.AreEqual(floor, kccStateMachine.groundedState.Floor);
-            Assert.IsTrue(kccStateMachine.groundedState.StandingOnGround);
-            Assert.AreEqual(1, constraint.sourceCount);
-            Assert.AreEqual(floor.transform, constraint.GetSource(0).sourceTransform);
+            kccStateMachine.TeleportPlayer(relativePos);
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
 
             // Move the box forward and wait a fixed update, the player should
             // move along with the box
             for (int i = 0; i < 10; i++)
             {
-                box.transform.position += dir * 0.1f;
+                // Account for drift in player overlap with platform.
+                relativePos = floor.transform.InverseTransformPoint(kccStateMachine.transform.position);
+
+                // Translate the current floor
+                floor.transform.position += dir * 0.1f;
+
                 yield return new WaitForFixedUpdate();
-                yield return null;
                 yield return new WaitForFixedUpdate();
+
                 Assert.AreEqual(floor, kccStateMachine.groundedState.Floor);
-                Assert.IsTrue(kccStateMachine.groundedState.StandingOnGround);
+                Assert.IsTrue(kccStateMachine.groundedState.StandingOnGroundOrOverlap);
                 Assert.AreEqual(1, constraint.sourceCount);
                 Assert.AreEqual(floor.transform, constraint.GetSource(0).sourceTransform);
                 yield return new WaitForFixedUpdate();
-                yield return null;
-                TestUtils.AssertInBounds(kccStateMachine.transform.position, box.transform.position + Vector3.up * 0.5f, range: 0.1f);
+
+                Vector3 expectedPosition = floor.transform.position + relativePos;
+                TestUtils.AssertInBounds(kccStateMachine.transform.position, expectedPosition, range: 0.25f);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator FollowAngularMovement(
+            [ValueSource(nameof(RotationAxis))] Vector3 axis,
+            [ValueSource(nameof(DirectionsOnFlatPlane))] Vector3 relativePos
+        )
+        {
+            kccStateMachine.TeleportPlayer(relativePos);
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+
+            // Move the box forward and wait a fixed update, the player should
+            // move along with the box
+            for (int i = 0; i < 10; i++)
+            {
+                // Account for drift in player overlap with platform.
+                relativePos = floor.transform.InverseTransformPoint(kccStateMachine.transform.position);
+
+                // Rotated by the current floor
+                floor.transform.rotation *= Quaternion.Euler(axis.normalized * 5);
+
+                yield return new WaitForFixedUpdate();
+                yield return new WaitForFixedUpdate();
+                Assert.AreEqual(floor, kccStateMachine.groundedState.Floor);
+                Assert.IsTrue(kccStateMachine.groundedState.StandingOnGroundOrOverlap);
+                Assert.AreEqual(1, constraint.sourceCount);
+                Assert.AreEqual(floor.transform, constraint.GetSource(0).sourceTransform);
+                
+                // Expected position should be relative position
+                Vector3 expectedPos = floor.transform.rotation * relativePos;
+                TestUtils.AssertInBounds(kccStateMachine.transform.position, expectedPos, 1.0f);
             }
         }
     }

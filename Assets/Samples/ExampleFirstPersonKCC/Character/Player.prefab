@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 6826506219202058344}
   - component: {fileID: 609951634059087576}
   - component: {fileID: 1928389240043740980}
+  - component: {fileID: 304317461983122140}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -308,6 +309,28 @@ MonoBehaviour:
   verticalSnapUp: 0.35
   snapBufferTime: 0.05
   maxDefaultLaunchVelocity: 2.5
+--- !u!1773428102 &304317461983122140
+ParentConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928389238801210305}
+  m_Enabled: 1
+  m_Weight: 1
+  m_TranslationAtRest: {x: 0, y: 0, z: 0}
+  m_RotationAtRest: {x: 0, y: 0, z: 0}
+  m_TranslationOffsets: []
+  m_RotationOffsets: []
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 1
+  m_IsContraintActive: 0
+  m_IsLocked: 0
+  m_Sources: []
 --- !u!1001 &1928389239579011581
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
@@ -415,7 +416,7 @@ namespace nickmaltbie.OpenKCC.Character
             parentConstraint.translationAtRest = transform.position;
             parentConstraint.rotationAtRest = transform.rotation.eulerAngles;
 
-            if (groundedState.StandingOnGround && groundedState.Floor != null)
+            if (groundedState.StandingOnGroundOrOverlap && groundedState.Floor != null)
             {
                 IMovingGround ground = groundedState.Floor.GetComponent<IMovingGround>();
 
@@ -630,6 +631,18 @@ namespace nickmaltbie.OpenKCC.Character
                     transform.position = bounce.finalPosition;
                 }
             }
+        }
+
+        public void TeleportPlayer(Vector3 position)
+        {
+            List<ConstraintSource> sources = new List<ConstraintSource>();
+            parentConstraint.GetSources(sources);
+            if (parentConstraint.sourceCount > 0)
+            {
+                parentConstraint.RemoveSource(0);
+            }
+            transform.position = position;
+            parentConstraint.SetSources(sources);
         }
 
         /// <inheritdoc/>
