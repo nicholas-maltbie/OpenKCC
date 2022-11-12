@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.0.0] 2022-11-12
+
 * Added a SprintingState to the KCCStateMachine.
 * Updated the usage doc to include proper notes and links for KCCStateMachine.
 * Switched to using com.nickmaltbie.StateMachineUnity library.

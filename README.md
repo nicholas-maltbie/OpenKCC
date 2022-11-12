@@ -43,11 +43,11 @@ Install the latest version of the project by importing a project via git
 at this URL:
 `https://github.com/nicholas-maltbie/OpenKCC.git#release/latest`
 
-If you want to reference a specific tag of the project such as version `v0.1.0`,
-add a `release/#v1.0.0` to the end of the git URL to download the package
-from th auto-generated branch for that release. An example of importing `v0.1.0`
+If you want to reference a specific tag of the project such as version `v1.0.0`,
+add a `#release/v1.0.0` to the end of the git URL to download the package
+from th auto-generated branch for that release. An example of importing `v1.0.0`
 would look like this:
-`https://github.com/nicholas-maltbie/openkcc.git#release/v0.1.0`.
+`https://github.com/nicholas-maltbie/openkcc.git#release/v1.0.0`.
 
 To use the latest release, simply reference:
 
@@ -59,7 +59,7 @@ For a full list of all tags, check the [OpenKCC Tags](https://github.com/nichola
 list on github. I will usually associated a tag with each release of the project.
 
 _Note_: before I started using the package format for the project, I manually
-released a unity package you needed to import. Any version before `v0.1.0`
+released a unity package you needed to import. Any version before `v1.0.0`
 will not work to import the project.
 
 If you do not include a tag, this means that your project will update whenever
@@ -100,7 +100,7 @@ manager will be able to download it from the registry at
 
 ```json
 "dependencies": {
-  "com.nickmaltbie.openkcc": "0.1.0",
+  "com.nickmaltbie.openkcc": "1.0.0",
   "com.nickmaltbie.screenmanager": "3.0.0",
   "com.unity.inputsystem": "1.0.2",
   "com.unity.textmeshpro": "3.0.6"
