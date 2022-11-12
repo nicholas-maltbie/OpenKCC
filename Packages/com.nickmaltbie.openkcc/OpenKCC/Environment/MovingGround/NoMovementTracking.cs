@@ -16,26 +16,49 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.Utils;
-using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
-using NUnit.Framework;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
+namespace nickmaltbie.OpenKCC.Environment.MovingGround
 {
     /// <summary>
-    /// Tests to validate UnityService behaviors.
+    /// Component to not move players with an object.
     /// </summary>
-    [TestFixture]
-    public class UnityServiceTests : TestBase
+    public class NoMovementTracking : MonoBehaviour, IMovingGround
     {
-        [Test]
-        public void Validate_UnityService()
+        /// <inheritdoc/>
+        public virtual Vector3 GetVelocityAtPoint(Vector3 point)
         {
-            Assert.NotNull(UnityService.Instance);
-            Assert.AreEqual(UnityService.Instance.deltaTime, Time.deltaTime);
-            Assert.AreEqual(UnityService.Instance.fixedDeltaTime, Time.fixedDeltaTime);
-            Assert.AreEqual(UnityService.Instance.time, Time.time);
+            return Vector3.zero;
+        }
+
+        /// <inheritdoc/>
+        public virtual Vector3 GetDisplacementAtPoint(Vector3 point)
+        {
+            return Vector3.zero;
+        }
+
+        /// <inheritdoc/>
+        public virtual float GetMovementWeight(Vector3 point, Vector3 playerVelocity)
+        {
+            return 0;
+        }
+
+        /// <inheritdoc/>
+        public virtual float GetTransferMomentumWeight(Vector3 point, Vector3 playerVelocity)
+        {
+            return 0;
+        }
+
+        /// <inheritdoc/>
+        public bool AvoidTransferMomentum()
+        {
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public bool ShouldAttach()
+        {
+            return false;
         }
     }
 }

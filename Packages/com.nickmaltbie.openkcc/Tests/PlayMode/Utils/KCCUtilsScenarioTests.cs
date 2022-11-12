@@ -30,7 +30,7 @@ using UnityEngine;
 using UnityEngine.ProBuilder;
 using UnityEngine.TestTools;
 
-namespace nickmaltbie.OpenKCC.Tests.PlayMode
+namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
 {
     /// <summary>
     /// Test basic movement scenarios for KCC Scenarios.

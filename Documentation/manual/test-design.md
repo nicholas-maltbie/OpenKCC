@@ -91,7 +91,7 @@ These inputs are controlled via the [NUnit Framework Attributes](https://docs.nu
 such as [Range](https://docs.nunit.org/articles/nunit/writing-tests/attributes/range.html)
 or [Values](https://docs.nunit.org/articles/nunit/writing-tests/attributes/values.html).
 
-See some tests such as [KCCUtilsScenarioTests](xref:nickmaltbie.OpenKCC.Tests.PlayMode.KCCUtilsScenarioTests)
+See some tests such as [KCCUtilsScenarioTests](xref:nickmaltbie.OpenKCC.Tests.PlayMode.Utils.KCCUtilsScenarioTests)
 for examples.
 
 ## Coverage Reports

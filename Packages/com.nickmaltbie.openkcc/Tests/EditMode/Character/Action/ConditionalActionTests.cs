@@ -18,7 +18,7 @@
 
 using Moq;
 using nickmaltbie.OpenKCC.Character.Action;
-using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 

@@ -91,6 +91,11 @@ namespace nickmaltbie.OpenKCC.Character.Config
         public bool StandingOnGround => OnGround && DistanceToGround <= groundedDistance && DistanceToGround > 0;
 
         /// <summary>
+        /// Is the player currently standing on or overlapping with the ground.
+        /// </summary>
+        public bool StandingOnGroundOrOverlap => OnGround && DistanceToGround <= groundedDistance;
+
+        /// <summary>
         /// Is the player currently falling? this is true if they are either not standing on 
         /// the ground or if the angle between them and the ground is grater than the player's
         /// ability to walk.

@@ -16,7 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Environment.MovingGround
@@ -46,11 +46,14 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         [Range(0, 1)]
         internal float transferMomentumWeight = 1.0f;
 
+        [SerializeField]
+        internal bool shouldAttach = true;
+
         /// <inheritdoc/>
         public bool AvoidTransferMomentum() => avoidTransferMomentum;
 
         /// <inheritdoc/>
-        public bool ShouldAttach() => true;
+        public bool ShouldAttach() => shouldAttach;
 
         /// <summary>
         /// Previously measured position of an object (previous frame)

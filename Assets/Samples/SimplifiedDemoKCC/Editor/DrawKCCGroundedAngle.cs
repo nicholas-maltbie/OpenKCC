@@ -17,17 +17,19 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Editor;
 using nickmaltbie.OpenKCC.Utils;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Demo
+namespace nickmaltbie.OpenKCC.Demo.Editor
 {
     /// <summary>
-    /// Draw the Grounded state of player using the gizmos in unity. 
+    /// Draw angle the kcc makes between the ground and their player as a debug gizmo.
     /// </summary>
     [RequireComponent(typeof(KCCStateMachine))]
-    public class DrawKCCGrounded : MonoBehaviour
+    public class DrawKCCGroundedAngle : MonoBehaviour
     {
         /// <summary>
         /// Kinematic character controller reference.
@@ -54,30 +56,53 @@ namespace nickmaltbie.OpenKCC.Demo
         /// </summary>
         [SerializeField]
         [Tooltip("Color of player when standing on the ground.")]
-        public Color groundedColor = new Color(22 / 255f, 231 / 255f, 49 / 255f);
+        public Color groundedColor = Color.blue;
 
         /// <summary>
-        /// Color of of player when floating above ground.
+        /// Color of of player when over the sliding threshold.
         /// </summary>
         [SerializeField]
-        [Tooltip("Color of of player when floating above ground.")]
-        public Color floatingColor = Color.red;
+        [Tooltip("Color of of player when over the sliding threshold.")]
+        public Color slidingColor = Color.yellow;
 
         /// <summary>
-        /// Alpha value for drawing the character collider fill.
+        /// Alpha value for drawing the angle arc.
         /// </summary>
         [SerializeField]
-        [Tooltip("Alpha value for drawing the character collider fill.")]
+        [Tooltip("Alpha value for drawing the angle arc.")]
         [Range(0, 1)]
         public float fillAlpha = 0.5f;
 
         /// <summary>
-        /// Alpha value for drawing the character collider outline.
+        /// Length of arc for drawing character angle.
         /// </summary>
         [SerializeField]
-        [Tooltip("Alpha value for drawing the character collider outline.")]
-        [Range(0, 1)]
-        public float outlineAlpha = 1.0f;
+        [Tooltip("Length of arc for drawing character angle.")]
+        [Range(0, 2)]
+        public float debugAngleLength = 0.5f;
+
+        /// <summary>
+        /// Treshold angle for when player is considered sliding.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Treshold angle for when player is considered sliding.")]
+        [Range(0, 90.0f)]
+        public float thresholdAngle = 60f;
+
+        /// <summary>
+        /// Radius of grounded draw point.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Radius of grounded draw point.")]
+        public float pointRadius = 0.01f;
+
+        /// <summary>
+        /// Should the ground position be used to draw the angle or should it be drawn from the origin of the kcc's
+        /// feet. 
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Location to draw angle, at ground position (true) or feet (false).")]
+        public bool useGroundPosition = true;
 
         public void Start()
         {
@@ -104,16 +129,29 @@ namespace nickmaltbie.OpenKCC.Demo
                 groundCheckDistance,
                 out IRaycastHit hit);
 
-            bool isGrounded = hitGround && hit.distance <= groundedDistance;
+            if (hitGround)
+            {
+                bool isGrounded = hitGround && hit.distance <= groundedDistance;
 
-            Color castColor = isGrounded ? groundedColor : floatingColor;
-            Vector3 finalPosition = transform.position + (hitGround ? hit.distance : groundCheckDistance) * Vector3.down;
+                Vector3 source = useGroundPosition ? hit.point : colliderCast.GetBottom(
+                    transform.position, transform.rotation);
 
-            colliderCast.DrawMeshGizmo(
-                new Color(castColor.r, castColor.g, castColor.b, outlineAlpha),
-                new Color(castColor.r, castColor.g, castColor.b, fillAlpha),
-                finalPosition,
-                transform.rotation);
+                float angle = Vector3.Angle(kcc.Up, hit.normal);
+                bool sliding = angle >= thresholdAngle;
+
+                Color selectedColor = sliding ? slidingColor : groundedColor;
+                Gizmos.DrawWireSphere(hit.point, pointRadius);
+                Gizmos.color = selectedColor;
+                Gizmos.DrawRay(source, Vector3.up * debugAngleLength);
+                Gizmos.DrawRay(source, hit.normal * debugAngleLength);
+
+#if UNITY_EDITOR
+                Handles.color = selectedColor;
+                Handles.DrawWireArc(source, Vector3.Cross(hit.normal, kcc.Up), kcc.Up, -angle, debugAngleLength);
+                Handles.color = new Color(selectedColor.r, selectedColor.g, selectedColor.b, fillAlpha);
+                Handles.DrawSolidArc(source, Vector3.Cross(hit.normal, kcc.Up), kcc.Up, -angle, debugAngleLength);
+#endif
+            }
         }
     }
 }

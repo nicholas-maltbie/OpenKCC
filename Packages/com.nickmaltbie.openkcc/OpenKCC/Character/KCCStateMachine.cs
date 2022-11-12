@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
@@ -36,6 +37,7 @@ namespace nickmaltbie.OpenKCC.Character
     /// <summary>
     /// Have a character controller push any dynamic rigidbody it hits
     /// </summary>
+    [RequireComponent(typeof(ParentConstraint))]
     [RequireComponent(typeof(Rigidbody))]
     public class KCCStateMachine : FixedSMAnim, IKCCConfig, IJumping
     {
@@ -169,6 +171,15 @@ namespace nickmaltbie.OpenKCC.Character
         [SerializeField]
         public float snapBufferTime = 0.05f;
 
+        /// <summary>
+        /// Max velocity at which the player can be launched
+        /// when gaining momentum from a floor object without
+        /// an IMovingGround attached to it.
+        /// </summary>
+        [Tooltip("Max velocity for launch without a rigidbody attached.")]
+        [SerializeField]
+        public float maxDefaultLaunchVelocity = 5.0f;
+
         /// <inheritdoc/>
         public int MaxBounces => maxBounces;
 
@@ -257,6 +268,16 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         private ConstraintSource floorConstraint;
 
+        /// <summary>
+        /// Position of the player previous frame.
+        /// </summary>
+        private Vector3 previousPosition;
+
+        /// <summary>
+        /// Velocity of the player from the previous frame.
+        /// </summary>
+        private Vector3 previousVelocity;
+
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
         [Transition(typeof(MoveInput), typeof(WalkingState))]
@@ -318,6 +339,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public override void FixedUpdate()
         {
+            // Compute displacement without player movement
+            Vector3 start = transform.position;
+
             while (parentConstraint.sourceCount > 0)
             {
                 parentConstraint.RemoveSource(0);
@@ -350,6 +374,13 @@ namespace nickmaltbie.OpenKCC.Character
             base.FixedUpdate();
 
             UpdateMovingGround();
+            UpdateGroundedState();
+
+            Vector3 disp = start - previousPosition;
+            Vector3 vel = disp / unityService.fixedDeltaTime;
+
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 0.5f);
+            previousPosition = transform.position;
         }
 
         /// <summary>
@@ -381,22 +412,29 @@ namespace nickmaltbie.OpenKCC.Character
         public void UpdateMovingGround()
         {
             groundedState.CheckGrounded(this, transform.position, transform.rotation);
-            bool movingGround = groundedState.StandingOnGround &&
-                groundedState.Floor?.GetComponent<IMovingGround>() != null;
-            parentConstraint.constraintActive = movingGround;
+            parentConstraint.constraintActive = groundedState.StandingOnGround;
             parentConstraint.translationAtRest = transform.position;
             parentConstraint.rotationAtRest = transform.rotation.eulerAngles;
 
-            if (movingGround)
+            if (groundedState.StandingOnGroundOrOverlap && groundedState.Floor != null)
             {
-                Transform floorTransform = groundedState.Floor.transform;
-                floorConstraint.sourceTransform = floorTransform;
-                floorConstraint.weight = 1.0f;
-                parentConstraint.AddSource(floorConstraint);
+                IMovingGround ground = groundedState.Floor.GetComponent<IMovingGround>();
 
-                Vector3 relativePos = transform.position - floorTransform.position;
-                Vector3 localRelativePos = floorTransform.InverseTransformDirection(relativePos);
-                parentConstraint.SetTranslationOffset(0, localRelativePos);
+                if (ground == null || ground.ShouldAttach())
+                {
+                    Transform floorTransform = groundedState.Floor.transform;
+                    floorConstraint.sourceTransform = floorTransform;
+                    floorConstraint.weight = 1.0f;
+                    parentConstraint.AddSource(floorConstraint);
+
+                    Vector3 relativePos = transform.position - floorTransform.position;
+                    Vector3 localRelativePos = floorTransform.InverseTransformDirection(relativePos);
+                    parentConstraint.SetTranslationOffset(0, localRelativePos);
+                }
+                else
+                {
+                    transform.position += ground.GetDisplacementAtPoint(transform.position);
+                }
             }
             else
             {
@@ -408,20 +446,25 @@ namespace nickmaltbie.OpenKCC.Character
         /// Gets the velocity of the ground the player is standing on where the player is currently
         /// </summary>
         /// <returns>The velocity of the ground at the point the player is standing on</returns>
-        public Vector3 GetGroundVelocity(GameObject floor, Vector3 groundHitPosition)
+        public Vector3 GetGroundVelocity()
         {
             Vector3 groundVelocity = Vector3.zero;
-            IMovingGround movingGround = floor?.GetComponent<IMovingGround>();
+            IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();
             if (movingGround != null && !movingGround.AvoidTransferMomentum())
             {
                 // Weight movement of ground by ground movement weight
                 float velocityWeight =
-                    movingGround.GetMovementWeight(groundHitPosition, Velocity);
+                    movingGround.GetMovementWeight(groundedState.GroundHitPosition, Velocity);
                 float transferWeight =
-                    movingGround.GetTransferMomentumWeight(groundHitPosition, Velocity);
-                groundVelocity = movingGround.GetVelocityAtPoint(groundHitPosition);
+                    movingGround.GetTransferMomentumWeight(groundedState.GroundHitPosition, Velocity);
+                groundVelocity = movingGround.GetVelocityAtPoint(groundedState.GroundHitPosition);
                 groundVelocity *= velocityWeight;
                 groundVelocity *= transferWeight;
+            }
+            else if (groundedState.StandingOnGround)
+            {
+                float velocity = Mathf.Min(previousVelocity.magnitude, maxDefaultLaunchVelocity);
+                groundVelocity = previousVelocity.normalized * velocity;
             }
 
             return groundVelocity;
@@ -478,18 +521,24 @@ namespace nickmaltbie.OpenKCC.Character
         {
             base.Awake();
 
-            parentConstraint = gameObject.AddComponent<ParentConstraint>();
+            parentConstraint = GetComponent<ParentConstraint>();
             parentConstraint.constraintActive = false;
             parentConstraint.translationAxis = Axis.X | Axis.Y | Axis.Z;
             parentConstraint.rotationAxis = Axis.None;
 
             GetComponent<Rigidbody>().isKinematic = true;
-            jumpAction.Setup(groundedState, this, this);
 
             _cameraControls = GetComponent<ICameraControls>();
             _characterPush = GetComponent<ICharacterPush>();
             _colliderCast = GetComponent<IColliderCast>();
+        }
 
+        /// <summary>
+        /// Setup KCC StateMachine inputs.
+        /// </summary>
+        public void Start()
+        {
+            jumpAction.Setup(groundedState, this, this);
             moveAction.action.Enable();
         }
 
@@ -582,10 +631,23 @@ namespace nickmaltbie.OpenKCC.Character
             }
         }
 
+        public void TeleportPlayer(Vector3 position)
+        {
+            var sources = new List<ConstraintSource>();
+            parentConstraint.GetSources(sources);
+            if (parentConstraint.sourceCount > 0)
+            {
+                parentConstraint.RemoveSource(0);
+            }
+
+            transform.position = position;
+            parentConstraint.SetSources(sources);
+        }
+
         /// <inheritdoc/>
         public void ApplyJump(Vector3 velocity)
         {
-            Velocity = velocity + GetGroundVelocity(groundedState.Floor, groundedState.GroundHitPosition);
+            Velocity = velocity + GetGroundVelocity();
             RaiseEvent(JumpEvent.Instance);
         }
 
