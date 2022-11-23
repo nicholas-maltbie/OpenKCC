@@ -122,6 +122,11 @@ Additionally, some of the testing code uses pro builder's api, so make
 sure to import [com.unity.probuilder](https://docs.unity3d.com/Packages/com.unity.probuilder@5.0/manual/index.html)
 version 5.0 or newer as well.
 
+Also, the testable assemblies reference [Moq](https://www.nuget.org/packages/moq/)
+library. To install `Moq.dll` in your unity project, I recommend
+using [NuGet for Unity](https://github.com/GlitchEnzo/NuGetForUnity)
+and install [Moq](https://www.nuget.org/packages/moq/).
+
 ## Demo
 
 You can see a demo of the project running here:
