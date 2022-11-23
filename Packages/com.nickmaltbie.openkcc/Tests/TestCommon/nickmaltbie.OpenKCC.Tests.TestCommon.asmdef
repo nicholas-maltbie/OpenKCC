@@ -5,11 +5,12 @@
         "nickmaltbie.OpenKCC",
         "Unity.InputSystem",
         "Unity.InputSystem.TestFramework",
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
         "nickmaltbie.TestUtilsUnity",
         "nickmaltbie.TestUtilsUnity.Tests.TestCommon",
         "nickmaltbie.StateMachineUnity"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
     ],
     "includePlatforms": [
         "Editor"
@@ -18,13 +19,10 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll",
         "Moq.dll"
     ],
     "autoReferenced": false,
-    "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
-    ],
+    "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
 }

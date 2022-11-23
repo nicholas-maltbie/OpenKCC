@@ -8,9 +8,10 @@
         "nickmaltbie.TestUtilsUnity.Tests.TestCommon",
         "nickmaltbie.StateMachineUnity",
         "Unity.InputSystem",
-        "Unity.InputSystem.TestFramework",
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "Unity.InputSystem.TestFramework"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
     ],
     "includePlatforms": [
         "Editor"
