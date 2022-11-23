@@ -113,8 +113,9 @@ of the project manifest.
 
 ```json
   "testables": [
-    "com.unity.inputsystem",
-    "com.nickmaltbie.openkcc"
+    "com.nickmaltbie.openkcc",
+    "com.nickmaltbie.testutilsunity",
+    "com.unity.inputsystem"
   ]
 ```
 
