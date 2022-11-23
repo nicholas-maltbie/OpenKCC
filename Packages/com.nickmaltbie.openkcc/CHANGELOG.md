@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.0.1] 2022-11-22
+
+* Fixed import errors of project due to improperly setup test assembly definitions.
+
 ## [1.0.0] 2022-11-12
 
 * Added a SprintingState to the KCCStateMachine.
