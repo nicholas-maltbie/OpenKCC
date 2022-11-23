@@ -100,10 +100,12 @@ manager will be able to download it from the registry at
 
 ```json
 "dependencies": {
-  "com.nickmaltbie.openkcc": "1.0.0",
+  "com.nickmaltbie.openkcc": "1.0.1",
   "com.nickmaltbie.screenmanager": "3.0.0",
-  "com.unity.inputsystem": "1.0.2",
-  "com.unity.textmeshpro": "3.0.6"
+  "com.nickmaltbie.statemachineunity": "1.1.0",
+  "com.nickmaltbie.testutilsunity": "0.0.2",
+  "com.unity.inputsystem": "1.0.0",
+  "com.unity.textmeshpro": "3.0.0"
 }
 ```
 
@@ -139,6 +141,13 @@ The samples in the project include:
 * ExampleFirstPersonKCC - Example first person character controller with a basic
   test scene.
 * SimplifiedDemoKCC - Simplified character controller with basic movement scripts.
+
+## Netcode Example
+
+Using [Unity's netcode package](https://docs-multiplayer.unity3d.com/netcode/current/about)
+I created another example package called `com.nickmaltbie.openkcc.netcode`
+with a sample `NetcodeExample` for an example of
+setting up the OpenKCC as a networked character controller.
 
 ## Documentation
 
@@ -180,43 +189,6 @@ As these videos are created they will be listed here:
 * [How the KCC Manages Jumping](https://youtu.be/CGsDdBZa5EM)
 * [Camera controller and Dither Shader](https://youtu.be/Zw6qvOOHGC4)
 * \[Planned\] Character Controller Case Study and Requirements Engineering
-
-## Features
-
-Movement in a 3D space including
-
-* Physics based movement off dynamic surfaces
-* Configurable jump and speed
-* Multiplayer support
-* Ground detection
-* Maximum slope for walking
-* Moving and rotating platforms
-* Snapping up and down stairs
-* Rag-doll mode
-* Animation and inverse kinematics
-* First and third person camera
-* Adjustable camera zoom
-* Fading character model
-* Configurable controls
-* Changing player model
-* Interactable objects
-
-Some of these features are still  in the previous
-[Falling Parkour](https://github.com/nicholas-maltbie/FallingParkour)
-project but will be added to the Open KCC soon.
-
-## Future Improvements
-
-Future improvements that are in development
-
-* Slippery floors
-* First person character model
-* Ladders and vertical movement
-* Climbing surfaces
-* Procedural animations using inverse kinematics
-* Swimming and floating in water
-* Non-humanoid avatars and shapes
-* Automated unit and integration testing
 
 ## Development
 
