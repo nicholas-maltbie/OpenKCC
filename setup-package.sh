@@ -177,7 +177,7 @@ git checkout HEAD -- .gitattributes
 git commit -m "Filtered for only package files"
 
 # Move files from $package_path to root folder
-git mv "$package_path/*" .
+git mv $package_path/* .
 git commit -m "Moved files from \"$package_path/*\" to root"
 
 # Push changes to repo if tag was provided
