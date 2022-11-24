@@ -140,7 +140,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     /// <summary>
     /// Create a build for the Mac platform with the Mono backend.
     /// </summary>
-    [MenuItem("Build/Main/Demo/MacOS Build")]
+    [MenuItem("Build/Netcode/Demo/MacOS Build")]
     public static void MacOSBuild_Netcode()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
