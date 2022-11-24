@@ -122,7 +122,7 @@ else
 fi
 
 # Check if there are changes
-if [ ! -s "$(git status --porcelain)" ]; then
+if [ ! -z "$(git status --porcelain)" ]; then
   echo "Found unstaged changes:"
   git status --porcelain
   echo "Will not setup package if branch has changes" 1>&2
