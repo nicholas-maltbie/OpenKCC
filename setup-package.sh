@@ -164,10 +164,14 @@ do
   git mv "$sample.meta" "$dest.meta"
   git mv "$sample/" "$dest/"
 done
+echo "git commit -m \"Moved $sample_path to $package_path/Samples\""
 git commit -m "Moved $sample_path to $package_path/Samples"
 
 # Reset all other changes
+echo "git rm -rf ."
 git rm -rf .
+
+echo "git checkout HEAD -- \"$package_path\""
 git checkout HEAD -- "$package_path"
 
 # Keep .gitattributes for lfs files
