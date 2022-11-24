@@ -11,11 +11,12 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
-  create-package:
+  create-openkcc-package:
     name: Create release/latest branch
     runs-on: ubuntu-latest
     steps:
-      - uses: nschloe/action-cached-lfs-checkout@v1
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/setvars
 
       - name: Setup Package
@@ -29,8 +30,32 @@ jobs:
           branch: release/latest
           force: true
 
-  build-and-deploy-app:
-    name: Build and Deploy for Production WebGL
+      # Restore back to original branch
+      - uses: actions/checkout@v3
+
+  create-openkcc-netcode-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/git-lfs-cache
+      - uses: ./.github/actions/setvars
+
+      - name: Setup Package
+        run: sh ./setup-package.sh -p ${{ env.NETCODE_PACKAGE_PATH }} -s ${{ env.NETCODE_SAMPLES }}
+
+      # Deploy build to release branch
+      - name: Push package
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release/latest
+          force: true
+ 
+      # Restore back to original branch
+      - uses: actions/checkout@v3
+
+  build-openkcc-app:
+    name: Build WebGL version of Project
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -49,18 +74,48 @@ jobs:
           targetPlatform: WebGL
           buildMethod: ScriptBatch.OfficialBuild_WebGL
 
-      # Deploy build to gh-pages branch
+      # save build to temp_build_openkcc_webgl
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           force_orphan: true
           publish_dir: Builds/${{ env.PROJECT_NAME }}-WebGL
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: temp_build_openkcc_webgl
+
+  build-openkcc-netcode-app:
+    name: Build WebGL netcode version of Project
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setvars
+      - uses: ./.github/actions/git-lfs-cache
+      - uses: ./.github/actions/unity-library-cache
+        with:
+          target_platform: WebGL
+
+      # Build the game deployment at build
+      - uses: game-ci/unity-builder@v2.0.4
+        with:
+          unityVersion: ${{ env.UNITY_VERSION }}
+          targetPlatform: WebGL
+          buildMethod: ScriptBatch.OfficialBuild_WebGL_Netcode
+
+      # save build to temp_build_openkcc_netcode_webgl
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          force_orphan: true
+          publish_dir: Builds/${{ env.PROJECT_NAME }}-WebGL-Netcode
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          destination_dir: netcode
+          publish_branch: temp_build_openkcc_netcode_webgl
 
   # Build the documentation
-  build-and-deploy-docs:
+  build-docs:
     runs-on: windows-latest # Required by DocFX
-    needs: build-and-deploy-app
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setvars
@@ -72,10 +127,48 @@ jobs:
       - name: Build Website
         run: .\Documentation\build.cmd
 
-      # Checkout to the previously created gh-pages branch
+      # Checkout to the temp_build_docs_webgl branch
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           publish_dir:  _site
           destination_dir: docs
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: temp_build_docs_webgl
+
+  # Deploy the built branches
+  combine-and-deploy-app:
+    runs-on: ubuntu-latest
+    needs: [build-openkcc-app, build-openkcc-netcode-app, build-docs]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: "temp_build_openkcc_webgl"
+      - uses: ./.github/actions/setvars
+      - uses: ./.github/actions/git-lfs-cache
+
+      - name: Merge networking webgl build
+        run: git merge temp_build_docs_webgl 
+        shell: bash
+
+      - name: Merge networking docs build
+        run: git merge temp_build_openkcc_netcode_webgl 
+        shell: bash
+
+      - name: Pull LFS files
+        run: git lfs pull
+        shell: bash
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_dir:  _site
+          destination_dir: docs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: temp_build_docs_webgl
+
+      - name: Cleanup temp build branches
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branches: temp_build_openkcc,temp_build_openkcc_webgl,temp_build_docs_webgl
