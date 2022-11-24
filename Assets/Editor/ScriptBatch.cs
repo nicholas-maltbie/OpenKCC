@@ -271,7 +271,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     /// <summary>
     /// Create all official builds.
     /// </summary>
-    [MenuItem("Build/Netcode/Official/Build All")]
+    [MenuItem("Build/Official/Build All")]
     public static void OfficialBuild_All()
     {
         OfficialBuild_WebGL();
