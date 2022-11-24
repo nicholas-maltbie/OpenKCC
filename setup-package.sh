@@ -161,7 +161,8 @@ do
 
   # Setup sample directory
   mkdir -p "$(dirname $dest)"
-  git mv "$sample" "$dest"
+  git mv "$sample.meta" "$dest.meta"
+  git mv "$sample/" "$dest/"
 done
 git commit -m "Moved $sample_path to $package_path/Samples"
 
@@ -176,7 +177,6 @@ git commit -m "Filtered for only package files"
 
 # Move files from _keep to root folder
 git mv $package_path/* .
-
 
 # Push changes to repo if tag was provided
 if [ ! -z "$selected_tag" ]
