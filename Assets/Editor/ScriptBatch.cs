@@ -269,6 +269,16 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     }
 
     /// <summary>
+    /// Create all official builds.
+    /// </summary>
+    [MenuItem("Build/Netcode/Official/Build All")]
+    public static void OfficialBuild_All()
+    {
+        OfficialBuild_WebGL();
+        OfficialBuild_WebGL_Netcode();
+    }
+
+    /// <summary>
     /// Create an official build for the WebGL Platform.
     /// </summary>
     [MenuItem("Build/Main/Official/WebGL Build")]
@@ -291,7 +301,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     /// <summary>
     /// Create an official build for the WebGL Platform with the netcode scenes.
     /// </summary>
-    [MenuItem("Build/Netcode/Official/WebGL Build")]
+    [MenuItem("Build/Netcode/Official/WebGL Build Netcode")]
     public static void OfficialBuild_WebGL_Netcode()
     {
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
