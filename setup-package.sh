@@ -168,10 +168,7 @@ echo "git commit -m \"Moved $sample_path to $package_path/Samples\""
 git commit -m "Moved $sample_path to $package_path/Samples"
 
 # Reset all other changes
-echo "git rm -rf ."
 git rm -rf .
-
-echo "git checkout HEAD -- \"$package_path\""
 git checkout HEAD -- "$package_path"
 
 # Keep .gitattributes for lfs files
@@ -179,8 +176,9 @@ git checkout HEAD -- .gitattributes
 
 git commit -m "Filtered for only package files"
 
-# Move files from _keep to root folder
-git mv $package_path/* .
+# Move files from $package_path to root folder
+git mv "$package_path/*" .
+git commit -m "Moved files from \"$package_path/*\" to root"
 
 # Push changes to repo if tag was provided
 if [ ! -z "$selected_tag" ]

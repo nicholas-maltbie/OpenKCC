@@ -19,7 +19,7 @@ jobs:
       - uses: ./.github/actions/setvars
 
       - name: Setup Package
-        run: sh ./setup-package.sh -p ${{ env.PACKAGE_PATH }}
+        run: sh ./setup-package.sh -p ${{ env.PACKAGE_PATH }} -s ${{ env.SAMPLES }}
 
       # Deploy build to release branch
       - name: Push package
