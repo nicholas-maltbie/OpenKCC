@@ -151,12 +151,17 @@ fi
 
 git lfs install
 
+
 # Sets up unity package samples
 for sample in "${samples_array[@]}"
 do
   sample_name=${sample#"$sample_path"}
-  echo "Moving sample at path \"$sample\" to \"$package_path/Samples/$sample_name\""
-  git mv "$sample" "$package_path/Samples/$sample_name"
+  dest="$package_path/Samples/$sample_name"
+  echo "Moving sample at path \"$sample\" to \"$dest\""
+
+  # Setup sample directory
+  mkdir -p "$(dirname $dest)"
+  git mv "$sample" "$dest"
 done
 git commit -m "Moved $sample_path to $package_path/Samples"
 
