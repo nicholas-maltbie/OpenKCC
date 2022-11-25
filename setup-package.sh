@@ -48,11 +48,6 @@ show_help () {
   echo "        folder (if any)."
 }
 
-if [[ ${#} -eq "" ]]; then
-   show_help
-   exit 0
-fi
-
 while getopts "p:t:s:h" opt; do
   case $opt in
     p) package_path=$OPTARG      ;;
@@ -95,7 +90,6 @@ then
 fi
 
 # Find the samples listed by the user
-samples_array=()
 if [ ! -z "$selected_samples" ]
 then
   IFS=',' read -ra samples_array <<< $selected_samples
