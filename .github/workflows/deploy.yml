@@ -4,8 +4,6 @@ concurrency: production-${{ github.ref }}
 
 on:
   push:
-    branches:
-      - 'main'
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -74,13 +72,11 @@ jobs:
           buildMethod: ScriptBatch.OfficialBuild_WebGL
 
       # save build to temp_build_openkcc_webgl
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
         with:
-          force_orphan: true
-          publish_dir: Builds/${{ env.PROJECT_NAME }}-WebGL
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: temp_build_openkcc_webgl
+          name: temp_build_openkcc_webgl
+          path: Builds/${{ env.PROJECT_NAME }}-WebGL
 
   build-openkcc-netcode-app:
     name: Build WebGL netcode version of Project
@@ -101,14 +97,11 @@ jobs:
           buildMethod: ScriptBatch.OfficialBuild_WebGL_Netcode
 
       # save build to temp_build_openkcc_netcode_webgl
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
         with:
-          force_orphan: true
-          publish_dir: Builds/${{ env.PROJECT_NAME }}-WebGL-Netcode
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          destination_dir: netcode
-          publish_branch: temp_build_openkcc_netcode_webgl
+          name: temp_build_openkcc_netcode_webgl
+          path: Builds/${{ env.PROJECT_NAME }}-WebGL-Netcode
 
   # Build the documentation
   build-docs:
@@ -125,15 +118,12 @@ jobs:
       - name: Build Website
         run: .\Documentation\build.cmd
 
-      # Checkout to the temp_build_docs_webgl branch
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      # Upload build to temp_build_docs_webgl
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
         with:
-          force_orphan: true
-          publish_dir:  _site
-          destination_dir: docs
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: temp_build_docs_webgl
+          name: temp_build_docs_webgl
+          path: _site
 
   # Deploy the built branches
   combine-and-deploy-app:
@@ -141,37 +131,44 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-openkcc-app, build-openkcc-netcode-app, build-docs]
     steps:
-      # Setup Variables
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setvars
-      - uses: ./.github/actions/git-lfs-cache
-
-      # Merge together builds
-      - uses: actions/checkout@v3
+      # Download previous builds
+      - name: Download WebGL Build
+        uses: actions/download-artifact@v3
         with:
-          ref: "temp_build_openkcc_webgl"
+          name: temp_build_openkcc_webgl
+          path: _site
 
-      - name: Merge together temp build branches
-        shell: bash
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git fetch origin
-          git merge origin/temp_build_docs_webgl --allow-unrelated-histories
-          git merge origin/temp_build_openkcc_netcode_webgl --allow-unrelated-histories
-          git lfs pull
+      - name: Download WebGL Netcode Build
+        uses: actions/download-artifact@v3
+        with:
+          name: temp_build_openkcc_netcode_webgl
+          path: _site/Netcode
+
+      - name: Download Docs Build
+        uses: actions/download-artifact@v3
+        with:
+          name: temp_build_docs_webgl
+          path: _site/docs
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          publish_dir:  _site
-          destination_dir: docs
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _site
           publish_branch: gh-pages
 
-      - name: Cleanup temp build branches
-        uses: dawidd6/action-delete-branch@v3
+  # Cleanup the build artifacts
+  cleanup-build-artifacts:
+    name: Cleanup the build artifacts after deploying site.
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [build-openkcc-app, build-openkcc-netcode-app, build-docs, combine-and-deploy-app]
+
+    steps:
+      - name: Cleanup temp build artifacts
+        uses: joutvhu/delete-artifact@v1
         with:
-          force_orphan: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: temp_build_openkcc_netcode_webgl,temp_build_openkcc_webgl,temp_build_docs_webgl
+          name: |
+            temp_build_openkcc_netcode_webgl
+            temp_build_openkcc_webgl
+            temp_build_docs_webgl
