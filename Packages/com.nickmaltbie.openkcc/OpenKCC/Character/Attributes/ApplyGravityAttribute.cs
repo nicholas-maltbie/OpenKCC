@@ -16,12 +16,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Unity.Netcode.Components;
+using System;
 
-namespace nickmaltbie.NetworkStateMachineUnity.ExampleAnim
+namespace nickmaltbie.OpenKCC.Character.Attributes
 {
-    public class ClientNetworkTransform : NetworkTransform
-    {
-        protected override bool OnIsServerAuthoritative() => false;
-    }
+    /// <summary>
+    /// Attribute to apply gravity to player in a given state.
+    /// </summary>
+    public class ApplyGravity : Attribute { }
 }

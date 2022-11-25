@@ -16,19 +16,11 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
-using nickmaltbie.OpenKCC.Character.Events;
-using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
-using nickmaltbie.OpenKCC.Utils;
-using nickmaltbie.TestUtilsUnity;
-using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character

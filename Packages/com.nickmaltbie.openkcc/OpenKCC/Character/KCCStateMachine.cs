@@ -17,9 +17,8 @@
 // SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using nickmaltbie.OpenKCC.Character.Action;
+using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
@@ -311,7 +310,7 @@ namespace nickmaltbie.OpenKCC.Character
 
                 if (!string.IsNullOrEmpty(overrideParam))
                 {
-                    vel = (float) this.EvaluateMember(overrideParam);
+                    vel = (float)this.EvaluateMember(overrideParam);
                 }
 
                 MovePlayer(movementDir * vel * unityService.fixedDeltaTime);
@@ -475,38 +474,7 @@ namespace nickmaltbie.OpenKCC.Character
             RaiseEvent(JumpEvent.Instance);
         }
 
-        /// <summary>
-        /// Attribute to apply gravity to player in a given state.
-        /// </summary>
-        public class ApplyGravity : Attribute { }
-
-        /// <summary>
-        /// Attribute to represent player movement settings for a given state.
-        /// </summary>
-        public class MovementSettingsAttribute : Attribute
-        {
-            /// <summary>
-            /// Allow movement by normal velocity.
-            /// </summary>
-            public bool AllowVelocity = false;
-
-            /// <summary>
-            /// Allow movement by player input movement.
-            /// </summary>
-            public bool AllowWalk = false;
-
-            /// <summary>
-            /// Should the player be snapped down after moving.
-            /// </summary>
-            public bool SnapPlayerDown = false;
-
-            /// <summary>
-            /// Function to override velocity value.
-            /// </summary>
-            public string OverrideVelocityFunction = null;
-        }
-
-#region Parse Depreciated Configurations of KCC StateMachine.
+        #region Parse Depreciated Configurations of KCC StateMachine.
         /// <summary>
         /// Persist volatile fields to serialized data before
         /// unity serializes the object.
@@ -549,11 +517,10 @@ namespace nickmaltbie.OpenKCC.Character
 #pragma warning restore CS0618 // Type or member is obsolete
             }
         }
-#endregion
+        #endregion
 
-
-#region Fields To Be Depreciated
-        private const string DepreciatedMessage = 
+        #region Fields To Be Depreciated
+        private const string DepreciatedMessage =
             "This field is no longer used and has been replaced with a" +
             "corresponding HumanoidKCCConfig config field. Please do not use" +
             "this value as it will be removed in a future update.";
@@ -694,6 +661,6 @@ namespace nickmaltbie.OpenKCC.Character
         [SerializeField]
         [Obsolete(DepreciatedMessage)]
         public float maxDefaultLaunchVelocity = 5.0f;
-#endregion
+        #endregion
     }
 }

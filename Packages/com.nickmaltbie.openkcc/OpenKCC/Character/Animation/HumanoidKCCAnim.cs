@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -15,22 +15,6 @@
 // CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
-using System;
-using System.Collections.Generic;
-using nickmaltbie.OpenKCC.Character.Action;
-using nickmaltbie.OpenKCC.Character.Config;
-using nickmaltbie.OpenKCC.Character.Events;
-using nickmaltbie.OpenKCC.Environment.MovingGround;
-using nickmaltbie.OpenKCC.Utils;
-using nickmaltbie.StateMachineUnity;
-using nickmaltbie.StateMachineUnity.Attributes;
-using nickmaltbie.StateMachineUnity.Event;
-using nickmaltbie.StateMachineUnity.Fixed;
-using UnityEngine;
-using UnityEngine.Animations;
-using UnityEngine.InputSystem;
-using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
 namespace nickmaltbie.OpenKCC.Character.Animation
 {

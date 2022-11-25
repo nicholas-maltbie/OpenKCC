@@ -16,12 +16,33 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Unity.Netcode.Components;
+using System;
 
-namespace nickmaltbie.NetworkStateMachineUnity.ExampleAnim
+namespace nickmaltbie.OpenKCC.Character.Attributes
 {
-    public class ClientNetworkTransform : NetworkTransform
+    /// <summary>
+    /// Attribute to represent player movement settings for a given state.
+    /// </summary>
+    public class MovementSettingsAttribute : Attribute
     {
-        protected override bool OnIsServerAuthoritative() => false;
+        /// <summary>
+        /// Allow movement by normal velocity.
+        /// </summary>
+        public bool AllowVelocity = false;
+
+        /// <summary>
+        /// Allow movement by player input movement.
+        /// </summary>
+        public bool AllowWalk = false;
+
+        /// <summary>
+        /// Should the player be snapped down after moving.
+        /// </summary>
+        public bool SnapPlayerDown = false;
+
+        /// <summary>
+        /// Function to override velocity value.
+        /// </summary>
+        public string OverrideVelocityFunction = null;
     }
 }

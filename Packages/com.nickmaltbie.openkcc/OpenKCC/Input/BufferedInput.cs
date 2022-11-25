@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System;
-using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
