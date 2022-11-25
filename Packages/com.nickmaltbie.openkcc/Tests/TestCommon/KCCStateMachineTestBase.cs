@@ -18,6 +18,7 @@
 
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
+using nickmaltbie.OpenKCC.Character.Animation;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.Utils;
@@ -66,14 +67,14 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
             controller.AddParameter("MoveX", AnimatorControllerParameterType.Float);
             controller.AddParameter("MoveY", AnimatorControllerParameterType.Float);
-            rootStateMachine.AddState(KCCStateMachine.IdleAnimState);
-            rootStateMachine.AddState(KCCStateMachine.JumpAnimState);
-            rootStateMachine.AddState(KCCStateMachine.LandingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.WalkingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.SlidingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.FallingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.SprintingAnimState);
-            rootStateMachine.AddState(KCCStateMachine.LongFallingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.IdleAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.JumpAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.LandingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.WalkingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.SlidingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.FallingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.SprintingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.LongFallingAnimState);
 
             Animator anim = go.AddComponent<Animator>();
             anim.runtimeAnimatorController = controller;
@@ -103,9 +104,9 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             jumpAction.jumpInput = jumpInput;
 
             kccStateMachine = go.AddComponent<KCCStateMachine>();
-            kccStateMachine.jumpAction = jumpAction;
-            kccStateMachine.moveAction = InputActionReference.Create(moveInputAction);
-            kccStateMachine.sprintAction = InputActionReference.Create(sprintInputAction);
+            kccStateMachine.config.jumpAction = jumpAction;
+            kccStateMachine.config.moveAction = InputActionReference.Create(moveInputAction);
+            kccStateMachine.config.sprintAction = InputActionReference.Create(sprintInputAction);
             kccStateMachine.Start();
 
             constraint = kccStateMachine.GetComponent<ParentConstraint>();

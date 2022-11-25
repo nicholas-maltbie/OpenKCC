@@ -31,6 +31,7 @@ using nickmaltbie.StateMachineUnity.Event;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
+using static nickmaltbie.OpenKCC.Character.Animation.HumanoidKCCAnim;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
 namespace nickmaltbie.OpenKCC.netcode
@@ -42,15 +43,6 @@ namespace nickmaltbie.OpenKCC.netcode
     [RequireComponent(typeof(Rigidbody))]
     public class KCCStateMachine : NetworkSMAnim, IKCCConfig, IJumping
     {
-        public const string IdleAnimState = "Idle";
-        public const string JumpAnimState = "Jump";
-        public const string LandingAnimState = "Landing";
-        public const string WalkingAnimState = "Walking";
-        public const string SprintingAnimState = "Sprinting";
-        public const string SlidingAnimState = "Sliding";
-        public const string FallingAnimState = "Falling";
-        public const string LongFallingAnimState = "Long Falling";
-
         [Header("Input Controls")]
 
         /// <summary>

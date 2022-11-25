@@ -136,7 +136,7 @@ namespace nickmaltbie.OpenKCC.Demo.Editor
                 Vector3 source = useGroundPosition ? hit.point : colliderCast.GetBottom(
                     transform.position, transform.rotation);
 
-                float angle = Vector3.Angle(kcc.Up, hit.normal);
+                float angle = Vector3.Angle(kcc.config.Up, hit.normal);
                 bool sliding = angle >= thresholdAngle;
 
                 Color selectedColor = sliding ? slidingColor : groundedColor;
@@ -147,9 +147,9 @@ namespace nickmaltbie.OpenKCC.Demo.Editor
 
 #if UNITY_EDITOR
                 Handles.color = selectedColor;
-                Handles.DrawWireArc(source, Vector3.Cross(hit.normal, kcc.Up), kcc.Up, -angle, debugAngleLength);
+                Handles.DrawWireArc(source, Vector3.Cross(hit.normal, kcc.config.Up), kcc.config.Up, -angle, debugAngleLength);
                 Handles.color = new Color(selectedColor.r, selectedColor.g, selectedColor.b, fillAlpha);
-                Handles.DrawSolidArc(source, Vector3.Cross(hit.normal, kcc.Up), kcc.Up, -angle, debugAngleLength);
+                Handles.DrawSolidArc(source, Vector3.Cross(hit.normal, kcc.config.Up), kcc.config.Up, -angle, debugAngleLength);
 #endif
             }
         }

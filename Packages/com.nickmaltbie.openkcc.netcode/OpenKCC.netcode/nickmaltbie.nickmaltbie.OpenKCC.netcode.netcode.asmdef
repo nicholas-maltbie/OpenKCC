@@ -1,6 +1,6 @@
 {
-    "name": "nickmaltbie.openkcc.netcode",
-    "rootNamespace": "nickmaltbie.openkcc.netcode",
+    "name": "nickmaltbie.OpenKCC.netcode",
+    "rootNamespace": "nickmaltbie.OpenKCC.netcode",
     "references": [
         "GUID:e6702df4c9912964e890f0c24d0b1e74",
         "GUID:ef35993bd7c22e243bb26a52fcfafa36",

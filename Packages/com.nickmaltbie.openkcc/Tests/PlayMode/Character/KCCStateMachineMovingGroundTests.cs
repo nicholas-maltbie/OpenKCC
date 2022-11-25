@@ -76,7 +76,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             yield return new WaitForFixedUpdate();
 
             // Wait until player is no longer overlapping with object.
-            while (kccStateMachine.groundedState.DistanceToGround <= 0)
+            while (kccStateMachine.config.groundedState.DistanceToGround <= 0)
             {
                 yield return new WaitForFixedUpdate();
             }
@@ -94,8 +94,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForFixedUpdate();
 
-                Assert.AreEqual(floor, kccStateMachine.groundedState.Floor);
-                Assert.IsTrue(kccStateMachine.groundedState.StandingOnGroundOrOverlap);
+                Assert.AreEqual(floor, kccStateMachine.config.groundedState.Floor);
+                Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGroundOrOverlap);
                 Assert.AreEqual(1, constraint.sourceCount);
                 Assert.AreEqual(floor.transform, constraint.GetSource(0).sourceTransform);
                 yield return new WaitForFixedUpdate();
@@ -127,8 +127,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
 
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForFixedUpdate();
-                Assert.AreEqual(floor, kccStateMachine.groundedState.Floor);
-                Assert.IsTrue(kccStateMachine.groundedState.StandingOnGroundOrOverlap);
+                Assert.AreEqual(floor, kccStateMachine.config.groundedState.Floor);
+                Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGroundOrOverlap);
                 Assert.AreEqual(1, constraint.sourceCount);
                 Assert.AreEqual(floor.transform, constraint.GetSource(0).sourceTransform);
 

@@ -27,7 +27,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
     /// a given kinematic character controller.
     /// </summary>
     [Serializable]
-    public class KCCGroundedState : IKCCGrounded
+    public class KCCGroundedState : IKCCGrounded, IEquatable<KCCGroundedState>
     {
         /// <summary>
         /// Distance to ground at which player is considered grounded.
@@ -129,6 +129,14 @@ namespace nickmaltbie.OpenKCC.Character.Config
             SurfaceNormal = hit.normal;
             GroundHitPosition = hit.distance > 0 ? hit.point : GroundHitPosition;
             Floor = hit.collider != null ? hit.collider.gameObject : null;
+        }
+
+        public bool Equals(KCCGroundedState other)
+        {
+            return
+                groundedDistance.Equals(other.groundedDistance) &&
+                groundCheckDistance.Equals(other.groundCheckDistance) &&
+                maxWalkAngle.Equals(other.maxWalkAngle);
         }
     }
 }
