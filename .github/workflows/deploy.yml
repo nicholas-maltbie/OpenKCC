@@ -63,8 +63,6 @@ jobs:
       - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
-        with:
-          target_platform: WebGL
 
       # Build the game deployment at build
       - uses: game-ci/unity-builder@v2.0.4
@@ -92,8 +90,6 @@ jobs:
       - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
-        with:
-          target_platform: WebGL
 
       # Build the game deployment at build
       - uses: game-ci/unity-builder@v2.0.4
@@ -152,17 +148,13 @@ jobs:
         with:
           ref: "temp_build_openkcc_webgl"
 
-      - name: Merge networking webgl build
-        run: git merge temp_build_docs_webgl 
+      - name: Merge together temp build branches
         shell: bash
-
-      - name: Merge networking docs build
-        run: git merge temp_build_openkcc_netcode_webgl 
-        shell: bash
-
-      - name: Pull LFS files
-        run: git lfs pull
-        shell: bash
+        run: |
+          git fetch origin
+          git merge origin/temp_build_docs_webgl --allow-unrelated-histories
+          git merge origin/temp_build_openkcc_netcode_webgl --allow-unrelated-histories
+          git lfs pull
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
@@ -170,7 +162,7 @@ jobs:
           publish_dir:  _site
           destination_dir: docs
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: temp_build_docs_webgl
+          publish_branch: gh-pages
 
       - name: Cleanup temp build branches
         uses: dawidd6/action-delete-branch@v3

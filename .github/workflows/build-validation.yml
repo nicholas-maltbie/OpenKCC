@@ -18,8 +18,6 @@ jobs:
       - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
-        with:
-          target_platform: WebGL
 
       - uses: game-ci/unity-builder@v2.0.4
         with:
