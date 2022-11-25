@@ -4,8 +4,6 @@ concurrency: production-${{ github.ref }}
 
 on:
   push:
-    branches:
-      - 'main'
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -144,11 +142,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-openkcc-app, build-openkcc-netcode-app, build-docs]
     steps:
+      # Setup Variables
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setvars
+      - uses: ./.github/actions/git-lfs-cache
+
+      # Merge together builds
       - uses: actions/checkout@v3
         with:
           ref: "temp_build_openkcc_webgl"
-      - uses: ./.github/actions/setvars
-      - uses: ./.github/actions/git-lfs-cache
 
       - name: Merge networking webgl build
         run: git merge temp_build_docs_webgl 
