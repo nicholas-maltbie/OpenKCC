@@ -127,6 +127,7 @@ jobs:
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
+          force_orphan: true
           publish_dir:  _site
           destination_dir: docs
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -169,5 +170,6 @@ jobs:
       - name: Cleanup temp build branches
         uses: dawidd6/action-delete-branch@v3
         with:
+          force_orphan: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branches: temp_build_openkcc_netcode_webgl,temp_build_openkcc_webgl,temp_build_docs_webgl
