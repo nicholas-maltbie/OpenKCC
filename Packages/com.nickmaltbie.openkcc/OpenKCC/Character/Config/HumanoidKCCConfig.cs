@@ -123,6 +123,14 @@ namespace nickmaltbie.OpenKCC.Character.Config
         [SerializeField]
         public float verticalSnapDown = 0.2f;
 
+        /// <summary>
+        /// Grace time in which the player can be not grounded before they
+        /// start to fall.
+        /// </summary>
+        [Tooltip("Grace time before player starts falling when not grounded.")]
+        [SerializeField]
+        public float fallingGraceTime = 0.0f;
+
         [Header("Stair and Step")]
 
         /// <summary>

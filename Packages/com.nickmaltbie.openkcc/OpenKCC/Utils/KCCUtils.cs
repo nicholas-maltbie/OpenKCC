@@ -17,7 +17,10 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
+using nickmaltbie.OpenKCC.Character.Config;
+using nickmaltbie.OpenKCC.Environment.MovingGround;
 using UnityEngine;
+using UnityEngine.Animations;
 
 namespace nickmaltbie.OpenKCC.Utils
 {
@@ -425,6 +428,74 @@ namespace nickmaltbie.OpenKCC.Utils
                 action = MovementAction.Stop,
             };
             yield break;
+        }
+
+        /// <summary>
+        /// Teleport a player from one position to another ignoring
+        /// any parent constraints attached to the player.
+        /// </summary>
+        /// <param name="transform">Transform of the player.</param>
+        /// <param name="position">Position to teleport player to.</param>
+        /// <param name="parentConstraint">Constraints attached to the player.</param>
+        public static void TeleportPlayer(Transform transform, Vector3 position, ParentConstraint parentConstraint)
+        {
+            var sources = new List<ConstraintSource>();
+            parentConstraint.GetSources(sources);
+            if (parentConstraint.sourceCount > 0)
+            {
+                parentConstraint.RemoveSource(0);
+            }
+
+            transform.position = position;
+            parentConstraint.SetSources(sources);
+        }
+
+        /// <summary>
+        /// Update the moving grounded state of a kinematic character controller.
+        /// </summary>
+        /// <param name="groundedState">Grounded state of the KCC.</param>
+        /// <param name="config">KCC Config for evaluating collisions.</param>
+        /// <param name="transform">Current position and rotation of the KCC.</param>
+        /// <param name="parentConstraint">Parent constraint for attaching the KCC
+        /// to an object.</param>
+        /// <param name="floorConstraint">Reference floor constraint for updating
+        /// the current KCC state. Passed as 'ref' to avoid allocating a
+        /// new one every frame.</param>
+        public static void UpdateMovingGround(
+            KCCGroundedState groundedState,
+            IKCCConfig config,
+            Transform transform,
+            ParentConstraint parentConstraint,
+            ref ConstraintSource floorConstraint)
+        {
+            groundedState.CheckGrounded(config, transform.position, transform.rotation);
+            parentConstraint.constraintActive = groundedState.StandingOnGround;
+            parentConstraint.translationAtRest = transform.position;
+            parentConstraint.rotationAtRest = transform.rotation.eulerAngles;
+
+            if (groundedState.StandingOnGroundOrOverlap && groundedState.Floor != null)
+            {
+                IMovingGround ground = groundedState.Floor.GetComponent<IMovingGround>();
+
+                if (ground == null || ground.ShouldAttach())
+                {
+                    Transform floorTransform = groundedState.Floor.transform;
+                    floorConstraint.sourceTransform = floorTransform;
+                    floorConstraint.weight = 1.0f;
+                    parentConstraint.AddSource(floorConstraint);
+
+                    Vector3 relativePos = transform.position - floorTransform.position;
+                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePos));
+                }
+                else
+                {
+                    transform.position += ground.GetDisplacementAtPoint(transform.position);
+                }
+            }
+            else
+            {
+                floorConstraint = default;
+            }
         }
     }
 }

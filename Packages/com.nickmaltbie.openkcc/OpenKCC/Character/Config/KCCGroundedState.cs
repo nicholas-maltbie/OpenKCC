@@ -131,6 +131,29 @@ namespace nickmaltbie.OpenKCC.Character.Config
             Floor = hit.collider != null ? hit.collider.gameObject : null;
         }
 
+        /// <summary>
+        /// Get the movement of the player projected onto the plane
+        /// they are standing on if they are not falling.
+        /// </summary>
+        /// <param name="movement">How the player is attempting to move</param>
+        /// <returns>Projected movement onto the plane the player is standing on.</returns>
+        public Vector3 GetProjectedMovement(Vector3 movement)
+        {
+            // If the player is standing on the ground, project their movement onto the ground plane
+            // This allows them to walk up gradual slopes without facing a hit in movement speed
+            if (!Falling)
+            {
+                Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, SurfaceNormal).normalized *
+                    movement.magnitude;
+                if (projectedMovement.magnitude + KCCUtils.Epsilon >= movement.magnitude)
+                {
+                    movement = projectedMovement;
+                }
+            }
+
+            return movement;
+        }
+
         public bool Equals(KCCGroundedState other)
         {
             return

@@ -307,6 +307,7 @@ MonoBehaviour:
     anglePower: 0.5
     maxPushSpeed: 10
     verticalSnapDown: 0.25
+    fallingGraceTime: 0.15
     stepUpDepth: 0.1
     verticalSnapUp: 0.35
     snapBufferTime: 0.05

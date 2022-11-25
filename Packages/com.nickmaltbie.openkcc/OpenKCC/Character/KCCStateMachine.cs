@@ -203,7 +203,7 @@ namespace nickmaltbie.OpenKCC.Character
             // Update grounded state
             UpdateGroundedState();
 
-            if (CurrentState == typeof(FallingState))
+            if (config.groundedState.Falling)
             {
                 FallingTime += unityService.fixedDeltaTime;
             }
@@ -240,7 +240,8 @@ namespace nickmaltbie.OpenKCC.Character
         {
             config.groundedState.CheckGrounded(config, transform.position, transform.rotation);
             IEvent groundedEvent;
-            if (!config.groundedState.StandingOnGround)
+            if (!config.groundedState.StandingOnGround &&
+                FallingTime >= config.fallingGraceTime)
             {
                 groundedEvent = LeaveGroundEvent.Instance;
             }
@@ -261,34 +262,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void UpdateMovingGround()
         {
-            config.groundedState.CheckGrounded(config, transform.position, transform.rotation);
-            parentConstraint.constraintActive = config.groundedState.StandingOnGround;
-            parentConstraint.translationAtRest = transform.position;
-            parentConstraint.rotationAtRest = transform.rotation.eulerAngles;
-
-            if (config.groundedState.StandingOnGroundOrOverlap && config.groundedState.Floor != null)
-            {
-                IMovingGround ground = config.groundedState.Floor.GetComponent<IMovingGround>();
-
-                if (ground == null || ground.ShouldAttach())
-                {
-                    Transform floorTransform = config.groundedState.Floor.transform;
-                    floorConstraint.sourceTransform = floorTransform;
-                    floorConstraint.weight = 1.0f;
-                    parentConstraint.AddSource(floorConstraint);
-
-                    Vector3 relativePos = transform.position - floorTransform.position;
-                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePos));
-                }
-                else
-                {
-                    transform.position += ground.GetDisplacementAtPoint(transform.position);
-                }
-            }
-            else
-            {
-                floorConstraint = default;
-            }
+            KCCUtils.UpdateMovingGround(config.groundedState, config, transform, parentConstraint, ref floorConstraint);
         }
 
         /// <summary>
@@ -463,21 +437,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// ground.</returns>
         public Vector3 GetProjectedMovement(Vector3 inputMovement)
         {
-            Vector3 movement = RotatedMovement(inputMovement);
-
-            // If the player is standing on the ground, project their movement onto the ground plane
-            // This allows them to walk up gradual slopes without facing a hit in movement speed
-            if (!config.groundedState.Falling)
-            {
-                Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, config.groundedState.SurfaceNormal).normalized *
-                    movement.magnitude;
-                if (projectedMovement.magnitude + KCCUtils.Epsilon >= movement.magnitude)
-                {
-                    movement = projectedMovement;
-                }
-            }
-
-            return movement;
+            return config.groundedState.GetProjectedMovement(RotatedMovement(inputMovement));
         }
 
         /// <summary>
@@ -499,17 +459,13 @@ namespace nickmaltbie.OpenKCC.Character
             }
         }
 
+        /// <summary>
+        /// Teleport a player to a given position.
+        /// </summary>
+        /// <param name="position">Position to teleport player to.</param>
         public void TeleportPlayer(Vector3 position)
         {
-            var sources = new List<ConstraintSource>();
-            parentConstraint.GetSources(sources);
-            if (parentConstraint.sourceCount > 0)
-            {
-                parentConstraint.RemoveSource(0);
-            }
-
-            transform.position = position;
-            parentConstraint.SetSources(sources);
+            KCCUtils.TeleportPlayer(transform, position, parentConstraint);
         }
 
         /// <inheritdoc/>
@@ -595,13 +551,19 @@ namespace nickmaltbie.OpenKCC.Character
         }
 #endregion
 
+
 #region Fields To Be Depreciated
+        private const string DepreciatedMessage = 
+            "This field is no longer used and has been replaced with a" +
+            "corresponding HumanoidKCCConfig config field. Please do not use" +
+            "this value as it will be removed in a future update.";
+
         /// <summary>
         /// Action reference for moving the player.
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public InputActionReference moveAction;
 
         /// <summary>
@@ -609,7 +571,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public InputActionReference sprintAction;
 
         /// <summary>
@@ -617,7 +579,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public JumpAction jumpAction;
 
         /// <summary>
@@ -625,7 +587,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public KCCGroundedState groundedState = new KCCGroundedState();
 
         /// <summary>
@@ -633,7 +595,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public Vector3 gravity = new Vector3(0, -9.807f, 0);
 
         /// <summary>
@@ -641,7 +603,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public float walkingSpeed = 7.5f;
 
         /// <summary>
@@ -649,7 +611,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public float sprintSpeed = 10.0f;
 
         /// <summary>
@@ -657,7 +619,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public int maxBounces = 5;
 
         /// <summary>
@@ -666,7 +628,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public float pushDecay = 0.9f;
 
         /// <summary>
@@ -677,7 +639,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public float anglePower = 0.5f;
 
         /// <summary>
@@ -685,7 +647,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public float maxPushSpeed = 1.0f;
 
         /// <summary>
@@ -693,7 +655,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public float verticalSnapDown = 0.2f;
 
         /// <summary>
@@ -702,7 +664,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public float stepUpDepth = 0.1f;
 
         /// <summary>
@@ -710,7 +672,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public float verticalSnapUp = 0.3f;
 
         /// <summary>
@@ -720,7 +682,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public float snapBufferTime = 0.05f;
 
         /// <summary>
@@ -730,7 +692,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [HideInInspector]
         [SerializeField]
-        [Obsolete("To be replaced with HumanoidKCCConfig config field")]
+        [Obsolete(DepreciatedMessage)]
         public float maxDefaultLaunchVelocity = 5.0f;
 #endregion
     }
