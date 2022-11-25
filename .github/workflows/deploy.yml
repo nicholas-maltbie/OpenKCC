@@ -32,6 +32,7 @@ jobs:
       - uses: actions/checkout@v3
 
   create-openkcc-netcode-package:
+    name: Create release/netcode/latest branch
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -46,7 +47,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/latest
+          branch: release/netcode/latest
           force: true
  
       # Restore back to original branch

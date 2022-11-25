@@ -93,7 +93,7 @@ fi
 # Find the samples listed by the user
 if [ ! -z "$selected_samples" ]
 then
-  IFS=',' read -ra samples_array <<< $selected_samples
+  IFS=',' read -ra samples_array <<< "$selected_samples"
   samples_array=("${samples_array[@]/#/$sample_path}")
 
   for sample in "${samples_array[@]}"
