@@ -4,6 +4,8 @@ concurrency: production-${{ github.ref }}
 
 on:
   push:
+    branches:
+      - 'main'
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
