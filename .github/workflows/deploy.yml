@@ -170,4 +170,4 @@ jobs:
         uses: dawidd6/action-delete-branch@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: temp_build_openkcc,temp_build_openkcc_webgl,temp_build_docs_webgl
+          branches: temp_build_openkcc_netcode_webgl,temp_build_openkcc_webgl,temp_build_docs_webgl
