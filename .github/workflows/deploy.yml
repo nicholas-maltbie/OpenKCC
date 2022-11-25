@@ -151,6 +151,8 @@ jobs:
       - name: Merge together temp build branches
         shell: bash
         run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
           git fetch origin
           git merge origin/temp_build_docs_webgl --allow-unrelated-histories
           git merge origin/temp_build_openkcc_netcode_webgl --allow-unrelated-histories
