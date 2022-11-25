@@ -11,12 +11,12 @@
 #
 # Arguments:
 #
-#   -path $package_path - Required, path to package folder of project,
+#   -p $package_path - Required, path to package folder of project,
 #       Should be something like "Packages/com.companyname.packagename"
-#   [-tag $tag] - Optional, tag version to checkout before building
+#   [-t $tag] - Optional, tag version to checkout before building
 #       package. If provided, will create a new branch with
 #       the name pattern "release/$tag"
-#   [-samples $sample1,$sample2,...] - Optional, comma separated list
+#   [-s $sample1,$sample2,...] - Optional, comma separated list
 #       of samples to copy from the "./Assets/Samples" folder. If none
 #       is provided, then will select all the samples found in the Samples
 #       folder (if any).
@@ -25,6 +25,12 @@ sample_path="./Assets/Samples/"
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 current_sha=$(git rev-parse --verify HEAD)
 previous_githooks=$(git config core.hooksPath)
+
+if [ $# -eq 0 ]
+then
+  show_help
+  exit 0
+fi
 
 show_help () {
   echo "Usage:"
