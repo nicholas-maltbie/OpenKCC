@@ -1,3 +1,4 @@
+#!/bin/bash
 # Usage: 
 #   setup-package.sh -p $package_path [-t $tag] [-s $sample1,$sample2,...]
 #
