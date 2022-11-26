@@ -420,8 +420,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConnectAddress: 127.0.0.1
   Port: 7777
-  SecureConnection: 0
-  AllowForwardedRequest: 0
+  SecureConnection: 1
+  AllowForwardedRequest: 1
   CertificateBase64String: 
 --- !u!1 &2034955135
 GameObject:
