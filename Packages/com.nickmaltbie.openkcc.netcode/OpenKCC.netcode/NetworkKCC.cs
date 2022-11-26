@@ -48,8 +48,6 @@ namespace nickmaltbie.OpenKCC.netcode
         [SerializeField]
         public HumanoidKCCConfig config = new HumanoidKCCConfig();
 
-        private float SprintSpeed => config.sprintSpeed;
-
         /// <summary>
         /// Time in which the player has been falling.
         /// </summary>
