@@ -5,7 +5,6 @@ All notable changes to this project will be documented in this file.
 ## In Progress
 
 * Added example using unity Netcode and sub package com.nickmaltbie.openkcc.netcode
-    * Added example NetworkKCC for a networked kinematic character controller.
 * Depreciated the old fields for KCCStateMachine and replaced with the
     object HumanoidKCCConfig. Also added some code to auto-convert the old
     fields into a HumanoidKCCConfig when the object is first de-serialized.
