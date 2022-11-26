@@ -65,15 +65,16 @@ a basic use case.
 
 There are many properties that configure the OpenKCC. These properties
 are also explained in depth in the @nickmaltbie.OpenKCC.Character.KCCStateMachine
-documentation page.
+documentation page. The config variables for the KCCStateMachine are
+stored in the @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig
 
 - **Input Controls** - Controls to manage character movement.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.moveAction
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.moveAction
         \- Action to move player along two axis input
         (forward back, left right)
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.sprintAction
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.sprintAction
         \- Button action to control sprinting speed
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.jumpAction
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.jumpAction
         \- Button action to start player jump configured via a
         @nickmaltbie.OpenKCC.Character.Action.JumpAction
 - **Player Jump Settings** - Settings relevant to player jumps
@@ -95,11 +96,11 @@ documentation page.
         \- Time in which the player will float before they start to
         fall when they are not grounded.
 - **Ground Checking** - Configures grounded state for player.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.gravity
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.gravity
         \- Direction and magnitude of gravity in units per second squared.
     - The rest of the values are configured via the
     @nickmaltbie.OpenKCC.Character.Config.KCCGroundedState by the
-    @nickmaltbie.OpenKCC.Character.KCCStateMachine.groundedState parameter
+    @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.groundedState parameter
     - @nickmaltbie.OpenKCC.Character.Config.KCCGroundedState.groundedDistance
         \- Distance from ground at which a player is considered standing on the ground.
     - @nickmaltbie.OpenKCC.Character.Config.KCCGroundedState.groundCheckDistance
@@ -109,33 +110,33 @@ documentation page.
 - **Motion Settings** - Settings for controlling player movement.
   Many of these settings are based on the character movement design,
   See [KCC Movement Design](kcc-design/kcc-movement.md) for more details.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.walkingSpeed
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.walkingSpeed
         \- Speed at which the player walks, in units per second.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.sprintSpeed
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.sprintSpeed
         \- Speed of player when sprinting, in units per second.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.maxBounces
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.maxBounces
         \- Maximum bounces for computing player movement.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.pushDecay
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.pushDecay
         \- Preserved momentum percentage when pushing an object. A value
         of 0 would indicate a complete stop while a value of 1 would be fully
         bouncing off an object when the player collides with it.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.anglePower
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.anglePower
         \- Angle decay rate when sliding off surfaces.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.maxPushSpeed
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.maxPushSpeed
         \- Maximum distance a player can be pushed when overlapping
         other objects in units per second. Useful for resolving collisions.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.verticalSnapDown
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.verticalSnapDown
         \- Distance at which the player can "snap down" when walking.
 - **Stair and Step** - Setting related to player stairs and steps.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.stepUpDepth
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.stepUpDepth
         \- Minimum depth required when stepping up stairs.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine. verticalSnapUp
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.verticalSnapUp
         \- Max distance the player can snap up stairs.
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.snapBufferTime
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.snapBufferTime
         \- Time in which the player can snap up or down
         steps even after starting to fall
 - **Moving Ground** - Settings relevant to attaching to moving ground
-    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.maxDefaultLaunchVelocity
+    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.maxDefaultLaunchVelocity
         \- Max velocity at which the player can be launched
         when gaining momentum from a floor object without
         an IMovingGround attached to it.

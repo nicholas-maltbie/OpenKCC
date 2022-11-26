@@ -167,7 +167,7 @@ namespace nickmaltbie.OpenKCC.Demo.Editor
                 Color orderColor = bounceColors[step % bounceColors.Length];
 
                 // Get the position of character after they would move this step
-                Vector3 target = transform.position + stepOffset * step + Epsilon * kcc.Up;
+                Vector3 target = transform.position + stepOffset * step + Epsilon * kcc.config.Up;
 
                 if (overlap)
                 {

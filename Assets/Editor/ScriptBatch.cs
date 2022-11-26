@@ -53,12 +53,19 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     public int callbackOrder => 0;
 
     /// <summary>
-    /// Gets the list of scenes in the project.
+    /// Gets the list of scenes to use in the build.
     /// </summary>
-    /// <returns></returns>
     public static string[] GameScenes => new[]
     {
         System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Scenes", "SampleScene.unity")
+    };
+
+    /// <summary>
+    /// Gets the list of scenes to use in the netcode build.
+    /// </summary>
+    public static string[] NetcodeGameScenes => new[]
+    {
+        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "NetcodeExample", "ExampleScene.unity")
     };
 
     /// <summary>
@@ -90,7 +97,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     /// <summary>
     /// Build the WebGL, MacOS, and Windows versions of the project.
     /// </summary>
-    [MenuItem("Build/Demo/Build All")]
+    [MenuItem("Build/Main/Demo/Build All")]
     public static void BuildAll()
     {
         WebGLBuild();
@@ -100,9 +107,96 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     }
 
     /// <summary>
+    /// Build the WebGL, MacOS, and Windows versions of the project for the netcode example.
+    /// </summary>
+    [MenuItem("Build/Netcode/Demo/Build All")]
+    public static void BuildAll_Netcode()
+    {
+        WebGLBuild_Netcode();
+        MacOSBuild_Netcode();
+        LinuxBuild_Netcode();
+        WindowsBuild_Netcode();
+    }
+
+    /// <summary>
     /// Create a demo build for the WebGL platform.
     /// </summary>
-    [MenuItem("Build/Demo/WebGL Build")]
+    [MenuItem("Build/Netcode/Demo/WebGL Build")]
+    public static void WebGLBuild_Netcode()
+    {
+        PlayerSettings.SetScriptingBackend(BuildTargetGroup.WebGL, ScriptingImplementation.IL2CPP);
+        PlayerSettings.WebGL.template = "PROJECT:Better2020";
+
+        // Get file path of build.
+        string appFolder = Path.Combine(
+            BuildDirectory,
+            $"{Constants.ProjectName}-WebGL-Netcode-{VersionNumber}",
+            Constants.ProjectName);
+
+        // Build player.
+        BuildPipeline.BuildPlayer(NetcodeGameScenes, appFolder, BuildTarget.WebGL, BuildOptions.Development);
+    }
+
+    /// <summary>
+    /// Create a build for the Mac platform with the Mono backend.
+    /// </summary>
+    [MenuItem("Build/Netcode/Demo/MacOS Build")]
+    public static void MacOSBuild_Netcode()
+    {
+        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+
+        // Get file path of build.
+        string path = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-MacOS-Netcode-{VersionNumber}");
+
+        string appFolder = path + $"/{AppName}.app";
+
+        // Build player.
+        BuildPipeline.BuildPlayer(NetcodeGameScenes, appFolder, BuildTarget.StandaloneOSX, BuildOptions.Development);
+    }
+
+    /// <summary>
+    /// Create a build for the Linux platform with the IL2CPP backend.
+    /// </summary>
+    [MenuItem("Build/Netcode/Demo/Linux Build")]
+    public static void LinuxBuild_Netcode()
+    {
+        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+
+        // Get file path of build.
+        string path = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-Linux-Netcode-{VersionNumber}");
+
+        // Build player.
+        BuildPipeline.BuildPlayer(NetcodeGameScenes, path + $"/{AppName}.x86_64", BuildTarget.StandaloneLinux64, BuildOptions.Development);
+    }
+
+    /// <summary>
+    /// Create a build for the windows 64 version with IL2CPP backend.
+    /// </summary>
+    [MenuItem("Build/Netcode/Demo/Windows64 Build")]
+    public static void WindowsBuild_Netcode()
+    {
+        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+
+        var options = new BuildPlayerOptions
+        {
+            scenes = NetcodeGameScenes,
+            locationPathName = Path.Combine(
+                BuildDirectory,
+                $"{Constants.ProjectName}-Win64-Netcode-{VersionNumber}",
+                $"{AppName}.exe"),
+            targetGroup = BuildTargetGroup.Standalone,
+            target = BuildTarget.StandaloneWindows64,
+            options = BuildOptions.Development
+        };
+
+        // Build player.
+        BuildPipeline.BuildPlayer(options);
+    }
+
+    /// <summary>
+    /// Create a demo build for the WebGL platform.
+    /// </summary>
+    [MenuItem("Build/Main/Demo/WebGL Build")]
     public static void WebGLBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.WebGL, ScriptingImplementation.IL2CPP);
@@ -121,7 +215,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     /// <summary>
     /// Create a build for the Mac platform with the Mono backend.
     /// </summary>
-    [MenuItem("Build/Demo/MacOS Build")]
+    [MenuItem("Build/Main/Demo/MacOS Build")]
     public static void MacOSBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
@@ -138,7 +232,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     /// <summary>
     /// Create a build for the Linux platform with the IL2CPP backend.
     /// </summary>
-    [MenuItem("Build/Demo/Linux Build")]
+    [MenuItem("Build/Main/Demo/Linux Build")]
     public static void LinuxBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
@@ -153,7 +247,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     /// <summary>
     /// Create a build for the windows 64 version with IL2CPP backend.
     /// </summary>
-    [MenuItem("Build/Demo/Windows64 Build")]
+    [MenuItem("Build/Main/Demo/Windows64 Build")]
     public static void WindowsBuild()
     {
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
@@ -175,9 +269,19 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     }
 
     /// <summary>
+    /// Create all official builds.
+    /// </summary>
+    [MenuItem("Build/Official/Build All")]
+    public static void OfficialBuild_All()
+    {
+        OfficialBuild_WebGL();
+        OfficialBuild_WebGL_Netcode();
+    }
+
+    /// <summary>
     /// Create an official build for the WebGL Platform.
     /// </summary>
-    [MenuItem("Build/Official/WebGL Build")]
+    [MenuItem("Build/Main/Official/WebGL Build")]
     public static void OfficialBuild_WebGL()
     {
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
@@ -187,6 +291,26 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         {
             scenes = GameScenes,
             locationPathName = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-WebGL"),
+            target = BuildTarget.WebGL,
+        };
+
+        // Build player.
+        BuildPipeline.BuildPlayer(options);
+    }
+
+    /// <summary>
+    /// Create an official build for the WebGL Platform with the netcode scenes.
+    /// </summary>
+    [MenuItem("Build/Netcode/Official/WebGL Build Netcode")]
+    public static void OfficialBuild_WebGL_Netcode()
+    {
+        PlayerSettings.WebGL.template = "PROJECT:Better2020";
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.decompressionFallback = true;
+        var options = new BuildPlayerOptions
+        {
+            scenes = NetcodeGameScenes,
+            locationPathName = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-WebGL-Netcode"),
             target = BuildTarget.WebGL,
         };
 

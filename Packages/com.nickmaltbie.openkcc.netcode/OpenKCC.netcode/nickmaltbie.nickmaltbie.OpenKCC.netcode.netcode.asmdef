@@ -1,0 +1,23 @@
+{
+    "name": "nickmaltbie.OpenKCC.netcode",
+    "rootNamespace": "nickmaltbie.OpenKCC.netcode",
+    "references": [
+        "GUID:e6702df4c9912964e890f0c24d0b1e74",
+        "GUID:ef35993bd7c22e243bb26a52fcfafa36",
+        "GUID:e95bf247f53845e48930d69810b90522",
+        "GUID:1491147abca9d7d4bb7105af628b223e",
+        "GUID:3b8ed52f1b5c64994af4c4e0aa4b6c4b",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:33ba47153cb20554cb9674037eacaed0",
+        "GUID:a39c454983160b74bad1ea1398c0807f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

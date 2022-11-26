@@ -20,8 +20,6 @@ jobs:
       - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/unity-library-cache
-        with:
-          target_platform: WebGL
 
       - name: Run All Tests for Unity ${{ env.UNITY_VERSION }}
         id: tests

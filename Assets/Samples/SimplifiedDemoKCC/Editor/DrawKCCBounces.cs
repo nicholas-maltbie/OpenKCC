@@ -155,12 +155,12 @@ namespace nickmaltbie.OpenKCC.Demo.Editor
                     new KCCConfig
                     {
                         maxBounces = maxBounces,
-                        pushDecay = kcc.PushDecay,
-                        verticalSnapUp = kcc.VerticalSnapUp,
-                        stepUpDepth = kcc.StepUpDepth,
-                        anglePower = kcc.AnglePower,
+                        pushDecay = kcc.config.PushDecay,
+                        verticalSnapUp = kcc.config.VerticalSnapUp,
+                        stepUpDepth = kcc.config.StepUpDepth,
+                        anglePower = kcc.config.AnglePower,
                         canSnapUp = true,
-                        up = kcc.Up,
+                        up = kcc.config.Up,
                         colliderCast = colliderCast,
                         push = null
                     }));

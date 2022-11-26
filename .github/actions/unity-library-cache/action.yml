@@ -11,6 +11,6 @@ runs:
       uses: actions/cache@v2
       with:
         path: Library
-        key: Library-${{ runner.os }}-${{ inputs.target_platform }}-${{ hashFiles('Packages/manifest.json') }}-v1.0.0
+        key: Library-${{ hashFiles('Packages/manifest.json') }}-v1.0.0
         restore-keys: |
-          Library-${{ runner.os }}-${{ inputs.target_platform }}-
+          Library-

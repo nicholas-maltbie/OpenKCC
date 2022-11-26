@@ -65,10 +65,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             kccStateMachine.Awake();
             kccStateMachine.Start();
-            kccStateMachine.groundedState = kccGroundedState;
-            kccStateMachine._cameraControls = cameraControlsMock.Object;
-            kccStateMachine._characterPush = characterPushMock.Object;
-            kccStateMachine._colliderCast = colliderCastMock.Object;
+            kccStateMachine.CameraControls = cameraControlsMock.Object;
+            kccStateMachine.config.groundedState = kccGroundedState;
+            kccStateMachine.config._characterPush = characterPushMock.Object;
+            kccStateMachine.config._colliderCast = colliderCastMock.Object;
         }
 
         [Test]
@@ -81,9 +81,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.FallingState));
-            Assert.IsFalse(kccStateMachine.groundedState.StandingOnGround);
-            Assert.IsFalse(kccStateMachine.groundedState.Sliding);
-            Assert.IsTrue(kccStateMachine.groundedState.Falling);
+            Assert.IsFalse(kccStateMachine.config.groundedState.StandingOnGround);
+            Assert.IsFalse(kccStateMachine.config.groundedState.Sliding);
+            Assert.IsTrue(kccStateMachine.config.groundedState.Falling);
         }
 
         [Test]
@@ -108,9 +108,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.SlidingState));
-            Assert.IsTrue(kccStateMachine.groundedState.StandingOnGround);
-            Assert.IsTrue(kccStateMachine.groundedState.Sliding);
-            Assert.IsFalse(kccStateMachine.groundedState.Falling);
+            Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGround);
+            Assert.IsTrue(kccStateMachine.config.groundedState.Sliding);
+            Assert.IsFalse(kccStateMachine.config.groundedState.Falling);
         }
 
         [Test]
@@ -186,7 +186,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             tracking.transform.position += direction;
             tracking.FixedUpdate();
 
-            Assert.AreEqual(movingGround, kccStateMachine.groundedState.Floor);
+            Assert.AreEqual(movingGround, kccStateMachine.config.groundedState.Floor);
             Assert.AreEqual(shouldAttach ? 1 : 0, constraint.sourceCount);
 
             if (shouldAttach)
@@ -230,7 +230,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             GameObject movingGround = CreateGameObject();
             unityServiceMock.Setup(e => e.fixedDeltaTime).Returns(1.0f);
-            kccStateMachine.maxDefaultLaunchVelocity = 10.0f;
+            kccStateMachine.config.maxDefaultLaunchVelocity = 10.0f;
             BoxCollider collider = movingGround.AddComponent<BoxCollider>();
 
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true, collider: collider);
@@ -268,9 +268,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(typeof(KCCStateMachine.WalkingState), kccStateMachine.CurrentState);
-            Assert.IsTrue(kccStateMachine.groundedState.StandingOnGround);
-            Assert.IsFalse(kccStateMachine.groundedState.Sliding);
-            Assert.IsFalse(kccStateMachine.groundedState.Falling);
+            Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGround);
+            Assert.IsFalse(kccStateMachine.config.groundedState.Sliding);
+            Assert.IsFalse(kccStateMachine.config.groundedState.Falling);
         }
 
         [Test]
@@ -297,9 +297,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
-            Assert.IsTrue(kccStateMachine.groundedState.StandingOnGround);
-            Assert.IsFalse(kccStateMachine.groundedState.Sliding);
-            Assert.IsFalse(kccStateMachine.groundedState.Falling);
+            Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGround);
+            Assert.IsFalse(kccStateMachine.config.groundedState.Sliding);
+            Assert.IsFalse(kccStateMachine.config.groundedState.Falling);
 
             PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
         }
@@ -321,17 +321,17 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             [Random(2)] float anglePower
         )
         {
-            kccStateMachine.maxBounces = maxBounces;
-            kccStateMachine.pushDecay = pushDecay;
-            kccStateMachine.verticalSnapUp = verticalSnapUp;
-            kccStateMachine.stepUpDepth = stepUpDepth;
-            kccStateMachine.anglePower = anglePower;
+            kccStateMachine.config.maxBounces = maxBounces;
+            kccStateMachine.config.pushDecay = pushDecay;
+            kccStateMachine.config.verticalSnapUp = verticalSnapUp;
+            kccStateMachine.config.stepUpDepth = stepUpDepth;
+            kccStateMachine.config.anglePower = anglePower;
 
-            Assert.AreEqual(kccStateMachine.MaxBounces, kccStateMachine.maxBounces);
-            Assert.AreEqual(kccStateMachine.PushDecay, kccStateMachine.pushDecay);
-            Assert.AreEqual(kccStateMachine.VerticalSnapUp, kccStateMachine.verticalSnapUp);
-            Assert.AreEqual(kccStateMachine.StepUpDepth, kccStateMachine.stepUpDepth);
-            Assert.AreEqual(kccStateMachine.AnglePower, kccStateMachine.anglePower);
+            Assert.AreEqual(kccStateMachine.config.MaxBounces, maxBounces);
+            Assert.AreEqual(kccStateMachine.config.PushDecay, pushDecay);
+            Assert.AreEqual(kccStateMachine.config.VerticalSnapUp, verticalSnapUp);
+            Assert.AreEqual(kccStateMachine.config.StepUpDepth, stepUpDepth);
+            Assert.AreEqual(kccStateMachine.config.AnglePower, anglePower);
         }
     }
 }
