@@ -117,8 +117,9 @@ of the project manifest.
 
 ```json
   "testables": [
-    "com.unity.inputsystem",
-    "com.nickmaltbie.openkcc"
+    "com.nickmaltbie.openkcc",
+    "com.nickmaltbie.testutilsunity",
+    "com.unity.inputsystem"
   ]
 ```
 
@@ -148,6 +149,15 @@ Using [Unity's netcode package](https://docs-multiplayer.unity3d.com/netcode/cur
 I created another example package called `com.nickmaltbie.openkcc.netcode`
 with a sample `NetcodeExample` for an example of
 setting up the OpenKCC as a networked character controller.
+
+To add the netcode example to your project, you can download it from
+one of the release branches under the pattern `release/netcode/version`
+or from the npm repo with the name `com.nickmaltbie.openkcc.netcode`.
+It contains some useful utility classes in addition to the sample.
+
+The sample is hosted online at [https://nickmaltbie.com/OpenKCC/Netcode/](https://nickmaltbie.com/OpenKCC/Netcode/)
+but you will need to host a server on a windows/linux/mac machine as the
+WebGL build for unity does not support opening a server socket within WebGL.
 
 ## Documentation
 
