@@ -13,5 +13,10 @@
     - name: Physics for Character Controllers
       href: kcc-design/physics-notes.md
 
+- name: Netcode
+  items:
+    - name: Certificate Setup
+      href: netcode/certificate-setup.md
+
 - name: Test Design
   href: test-design.md
