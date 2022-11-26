@@ -6,7 +6,17 @@ ModelImporter:
   - first:
       74: -203655887218126122
     second: t-pose
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Alpha_Body_MAT
+    second: {fileID: 2100000, guid: c264cb4b7f884924bbdfe824c18f6c4d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Alpha_Joints_MAT
+    second: {fileID: 2100000, guid: 304ec4316a7141f49923f2fefe102471, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -17,10 +17,9 @@
 // SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using nickmaltbie.NetworkStateMachineUnity;
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Character.Action;
+using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
@@ -28,9 +27,9 @@ using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
 using nickmaltbie.StateMachineUnity.Event;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Animations;
-using UnityEngine.InputSystem;
 using static nickmaltbie.OpenKCC.Character.Animation.HumanoidKCCAnim;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
@@ -41,192 +40,30 @@ namespace nickmaltbie.OpenKCC.netcode
     /// </summary>
     [RequireComponent(typeof(ParentConstraint))]
     [RequireComponent(typeof(Rigidbody))]
-    public class KCCStateMachine : NetworkSMAnim, IKCCConfig, IJumping
+    public class NetworkKCC : NetworkSMAnim, IJumping
     {
-        [Header("Input Controls")]
-
         /// <summary>
-        /// Action reference for moving the player.
-        /// </summary>
-        [Tooltip("Action reference for moving the player")]
-        [SerializeField]
-        public InputActionReference moveAction;
-
-        /// <summary>
-        /// Action reference for sprinting.
-        /// </summary>
-        [Tooltip("Action reference for moving the player")]
-        [SerializeField]
-        public InputActionReference sprintAction;
-
-        /// <summary>
-        /// Action reference for jumping.
-        /// </summary>
-        [Tooltip("Action reference for jumping")]
-        [SerializeField]
-        public JumpAction jumpAction;
-
-        [Header("Ground Checking")]
-
-        /// <summary>
-        /// Current grounded state and configuration of the player.
+        /// Values for configuring and managing KCC Config.
         /// </summary>
         [SerializeField]
-        public KCCGroundedState groundedState = new KCCGroundedState();
+        public HumanoidKCCConfig config = new HumanoidKCCConfig();
 
-        /// <summary>
-        /// Direction and strength of gravity
-        /// </summary>
-        [Tooltip("Direction and strength of gravity in units per second squared")]
-        [SerializeField]
-        public Vector3 gravity = new Vector3(0, -9.807f, 0);
-
-        [Header("Motion Settings")]
-
-        /// <summary>
-        /// Speed of player movement when walking.
-        /// </summary>
-        [Tooltip("Speed of player when walking")]
-        [SerializeField]
-        public float walkingSpeed = 7.5f;
-
-        /// <summary>
-        /// Speed of player when sprinting.
-        /// </summary>
-        [Tooltip("Speed of player when sprinting")]
-        [SerializeField]
-        public float sprintSpeed = 10.0f;
-
-        /// <summary>
-        /// Maximum number of time player can bounce of walls/floors/objects during an update.
-        /// </summary>
-        [Tooltip("Maximum number of bounces when a player is moving")]
-        [SerializeField]
-        [Range(1, 10)]
-        public int maxBounces = 5;
-
-        /// <summary>
-        /// Decay value of momentum when hitting another object.
-        /// Should be between [0, 1].
-        /// </summary>
-        [Tooltip("Decay in momentum when hitting another object")]
-        [SerializeField]
-        [Range(0, 1)]
-        public float pushDecay = 0.9f;
-
-        /// <summary>
-        /// Decrease in momentum factor due to angle change when walking.
-        /// Should be a positive float value. It's an exponential applied to 
-        /// values between [0, 1] so values smaller than 1 create a positive
-        /// curve and grater than 1 for a negative curve.
-        /// </summary>
-        [Tooltip("Decrease in momentum when walking into objects (such as walls) at an angle as an exponential." +
-        "Values between [0, 1] so values smaller than 1 create a positive curve and grater than 1 for a negative curve")]
-        [SerializeField]
-        public float anglePower = 0.5f;
-
-        /// <summary>
-        /// Maximum distance the player can be pushed out of overlapping objects in units per second.
-        /// </summary>
-        [Tooltip("Maximum distance a player can be pushed when overlapping other objects in units per second")]
-        [SerializeField]
-        public float maxPushSpeed = 1.0f;
-
-        /// <summary>
-        /// Distance that the character can "snap down" vertical steps.
-        /// </summary>
-        [Tooltip("Snap down distance when snapping onto the floor")]
-        [SerializeField]
-        public float verticalSnapDown = 0.2f;
-
-        [Header("Stair and Step")]
-
-        /// <summary>
-        /// Minimum depth of a stair for a user to climb up
-        /// (thinner steps than this value will not let the player climb).
-        /// </summary>
-        [Tooltip("Minimum depth of stairs when climbing up steps")]
-        [SerializeField]
-        public float stepUpDepth = 0.1f;
-
-        /// <summary>
-        /// Distance that the player can snap up when moving up stairs or vertical steps in terrain.
-        /// </summary>
-        [Tooltip("Maximum height of step the player can step up")]
-        [SerializeField]
-        public float verticalSnapUp = 0.3f;
-
-        /// <summary>
-        /// Time in which the player can snap up or down steps even after starting to fall.
-        /// This property is useful to reduce the jerky stopping and moving effects when
-        /// going up or down cliffs.
-        /// </summary>
-        [Tooltip("Time in which the player can snap up or down steps even after starting to fall")]
-        [SerializeField]
-        public float snapBufferTime = 0.05f;
-
-        [Header("Moving Ground")]
-
-        /// <summary>
-        /// Max velocity at which the player can be launched
-        /// when gaining momentum from a floor object without
-        /// an IMovingGround attached to it.
-        /// </summary>
-        [Tooltip("Max velocity for launch without a rigidbody attached.")]
-        [SerializeField]
-        public float maxDefaultLaunchVelocity = 5.0f;
-
-        /// <inheritdoc/>
-        public int MaxBounces => maxBounces;
-
-        /// <inheritdoc/>
-        public float PushDecay => pushDecay;
-
-        /// <inheritdoc/>
-        public float VerticalSnapUp => verticalSnapUp;
-
-        /// <inheritdoc/>
-        public float StepUpDepth => stepUpDepth;
-
-        /// <inheritdoc/>
-        public float AnglePower => anglePower;
-
-        /// <inheritdoc/>
-        public bool CanSnapUp => !groundedState.Falling;
+        private float SprintSpeed => config.sprintSpeed;
 
         /// <summary>
         /// Time in which the player has been falling.
         /// </summary>
         public float FallingTime { get; private set; }
 
-        /// <inheritdoc/>
-        public Vector3 Up => Vector3.up;
-
-        /// <summary>
-        /// Collider cast associated with the character.
-        /// </summary>
-        internal IColliderCast _colliderCast;
-
-        /// <inheritdoc/>
-        public IColliderCast ColliderCast => _colliderCast;
-
-        /// <summary>
-        /// Character push associated with the player.
-        /// </summary>
-        internal ICharacterPush _characterPush;
-
-        /// <inheritdoc/>
-        public ICharacterPush Push => _characterPush;
-
         /// <summary>
         /// Camera controls associated with the player.
         /// </summary>
-        internal ICameraControls _cameraControls;
+        protected ICameraControls _cameraControls;
 
         /// <summary>
         /// Get the camera controls associated with the state machine.
         /// </summary>
-        public ICameraControls CameraControls => _cameraControls;
+        public ICameraControls CameraControls { get => _cameraControls; internal set => _cameraControls = value; }
 
         /// <summary>
         /// Rotation of the plane the player is viewing
@@ -238,11 +75,6 @@ namespace nickmaltbie.OpenKCC.netcode
         /// </summary>
         /// <param name="inputMovement">Input movement vector of the player</param>
         public Vector3 RotatedMovement(Vector3 inputMovement) => HorizPlaneView * inputMovement;
-
-        /// <summary>
-        /// Downward direction for the player.
-        /// </summary>
-        public Vector3 Down => -Up;
 
         /// <summary>
         /// Player velocity in world space.
@@ -273,6 +105,13 @@ namespace nickmaltbie.OpenKCC.netcode
         /// Velocity of the player from the previous frame.
         /// </summary>
         private Vector3 previousVelocity;
+
+        /// <summary>
+        /// Animation movement for the player
+        /// </summary>
+        private NetworkVariable<Vector2> animationMove = new NetworkVariable<Vector2>(
+            readPerm: NetworkVariableReadPermission.Everyone,
+            writePerm: NetworkVariableWritePermission.Owner);
 
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
@@ -315,7 +154,7 @@ namespace nickmaltbie.OpenKCC.netcode
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(StopSprintEvent), typeof(WalkingState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true, OverrideVelocityFunction = nameof(sprintSpeed))]
+        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true, OverrideVelocityFunction = nameof(config.sprintSpeed))]
         public class SprintingState : State { }
 
         [ApplyGravity]
@@ -345,6 +184,11 @@ namespace nickmaltbie.OpenKCC.netcode
         /// <inheritdoc/>
         public override void FixedUpdate()
         {
+            if (!IsOwner)
+            {
+                return;
+            }
+
             // Compute displacement without player movement
             Vector3 start = transform.position;
 
@@ -359,7 +203,7 @@ namespace nickmaltbie.OpenKCC.netcode
             // Update grounded state
             UpdateGroundedState();
 
-            if (CurrentState == typeof(FallingState))
+            if (config.groundedState.Falling)
             {
                 FallingTime += unityService.fixedDeltaTime;
             }
@@ -371,10 +215,10 @@ namespace nickmaltbie.OpenKCC.netcode
             // Apply gravity if needed
             if (Attribute.GetCustomAttribute(CurrentState, typeof(ApplyGravity)) is ApplyGravity)
             {
-                Velocity += gravity * unityService.fixedDeltaTime;
+                Velocity += config.gravity * unityService.fixedDeltaTime;
             }
 
-            jumpAction.ApplyJumpIfPossible();
+            config.jumpAction.ApplyJumpIfPossible();
             ApplyMovement();
 
             base.FixedUpdate();
@@ -394,13 +238,13 @@ namespace nickmaltbie.OpenKCC.netcode
         /// </summary>
         public void UpdateGroundedState()
         {
-            groundedState.CheckGrounded(this, transform.position, transform.rotation);
+            config.groundedState.CheckGrounded(config, transform.position, transform.rotation);
             IEvent groundedEvent;
-            if (!groundedState.StandingOnGround)
+            if (!config.groundedState.StandingOnGround)
             {
                 groundedEvent = LeaveGroundEvent.Instance;
             }
-            else if (groundedState.Sliding)
+            else if (config.groundedState.Sliding)
             {
                 groundedEvent = SteepSlopeEvent.Instance;
             }
@@ -417,34 +261,7 @@ namespace nickmaltbie.OpenKCC.netcode
         /// </summary>
         public void UpdateMovingGround()
         {
-            groundedState.CheckGrounded(this, transform.position, transform.rotation);
-            parentConstraint.constraintActive = groundedState.StandingOnGround;
-            parentConstraint.translationAtRest = transform.position;
-            parentConstraint.rotationAtRest = transform.rotation.eulerAngles;
-
-            if (groundedState.StandingOnGroundOrOverlap && groundedState.Floor != null)
-            {
-                IMovingGround ground = groundedState.Floor.GetComponent<IMovingGround>();
-
-                if (ground == null || ground.ShouldAttach())
-                {
-                    Transform floorTransform = groundedState.Floor.transform;
-                    floorConstraint.sourceTransform = floorTransform;
-                    floorConstraint.weight = 1.0f;
-                    parentConstraint.AddSource(floorConstraint);
-
-                    Vector3 relativePos = transform.position - floorTransform.position;
-                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePos));
-                }
-                else
-                {
-                    transform.position += ground.GetDisplacementAtPoint(transform.position);
-                }
-            }
-            else
-            {
-                floorConstraint = default;
-            }
+            KCCUtils.UpdateMovingGround(config.groundedState, config, transform, parentConstraint, ref floorConstraint);
         }
 
         /// <summary>
@@ -454,21 +271,21 @@ namespace nickmaltbie.OpenKCC.netcode
         public Vector3 GetGroundVelocity()
         {
             Vector3 groundVelocity = Vector3.zero;
-            IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();
+            IMovingGround movingGround = config.groundedState.Floor?.GetComponent<IMovingGround>();
             if (movingGround != null && !movingGround.AvoidTransferMomentum())
             {
                 // Weight movement of ground by ground movement weight
                 float velocityWeight =
-                    movingGround.GetMovementWeight(groundedState.GroundHitPosition, Velocity);
+                    movingGround.GetMovementWeight(config.groundedState.GroundHitPosition, Velocity);
                 float transferWeight =
-                    movingGround.GetTransferMomentumWeight(groundedState.GroundHitPosition, Velocity);
-                groundVelocity = movingGround.GetVelocityAtPoint(groundedState.GroundHitPosition);
+                    movingGround.GetTransferMomentumWeight(config.groundedState.GroundHitPosition, Velocity);
+                groundVelocity = movingGround.GetVelocityAtPoint(config.groundedState.GroundHitPosition);
                 groundVelocity *= velocityWeight;
                 groundVelocity *= transferWeight;
             }
-            else if (groundedState.StandingOnGround)
+            else if (config.groundedState.StandingOnGround)
             {
-                float velocity = Mathf.Min(previousVelocity.magnitude, maxDefaultLaunchVelocity);
+                float velocity = Mathf.Min(previousVelocity.magnitude, config.maxDefaultLaunchVelocity);
                 groundVelocity = previousVelocity.normalized * velocity;
             }
 
@@ -487,13 +304,13 @@ namespace nickmaltbie.OpenKCC.netcode
             if (moveSettings?.AllowWalk ?? false)
             {
                 Vector3 movementDir = GetProjectedMovement();
-                float vel = walkingSpeed;
+                float vel = config.walkingSpeed;
 
                 string overrideParam = moveSettings.OverrideVelocityFunction;
 
                 if (!string.IsNullOrEmpty(overrideParam))
                 {
-                    vel = (float)GetType().GetField(overrideParam).GetValue(this);
+                    vel = (float)config.EvaluateMember(overrideParam);
                 }
 
                 MovePlayer(movementDir * vel * unityService.fixedDeltaTime);
@@ -524,16 +341,18 @@ namespace nickmaltbie.OpenKCC.netcode
             transform.position = KCCUtils.SnapPlayerDown(
                 transform.position,
                 transform.rotation,
-                Down,
-                verticalSnapDown,
-                ColliderCast);
+                config.Down,
+                config.verticalSnapDown,
+                config.ColliderCast);
         }
 
         /// <summary>
         /// Configure kcc state machine operations.
         /// </summary>
-        public void Awake()
+        public override void Start()
         {
+            base.Start();
+
             parentConstraint = GetComponent<ParentConstraint>();
             parentConstraint.constraintActive = false;
             parentConstraint.translationAxis = Axis.X | Axis.Y | Axis.Z;
@@ -542,50 +361,50 @@ namespace nickmaltbie.OpenKCC.netcode
             GetComponent<Rigidbody>().isKinematic = true;
 
             _cameraControls = GetComponent<ICameraControls>();
-            _characterPush = GetComponent<ICharacterPush>();
-            _colliderCast = GetComponent<IColliderCast>();
-        }
+            config._characterPush = GetComponent<ICharacterPush>();
+            config._colliderCast = GetComponent<IColliderCast>();
 
-        /// <summary>
-        /// Setup KCC StateMachine inputs.
-        /// </summary>
-        public override void Start()
-        {
-            base.Start();
-
-            jumpAction.Setup(groundedState, this, this);
-            moveAction.action.Enable();
+            if (IsOwner)
+            {
+                config.jumpAction.Setup(config.groundedState, config, this);
+                config.moveAction.action.Enable();
+            }
         }
 
         /// <inheritdoc/>
         public override void Update()
         {
-            bool denyMovement = PlayerInputUtils.playerMovementState == PlayerInputState.Deny;
-            Vector2 moveVector = denyMovement ? Vector3.zero : moveAction.action.ReadValue<Vector2>();
-            InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
-            bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
-            RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
-
-            if (moving)
+            if (IsOwner)
             {
-                if (sprintAction.action.IsPressed())
+                bool denyMovement = PlayerInputUtils.playerMovementState == PlayerInputState.Deny;
+                Vector2 moveVector = denyMovement ? Vector3.zero : config.moveAction.action.ReadValue<Vector2>();
+                InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
+                bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
+                RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
+
+                if (moving)
                 {
-                    RaiseEvent(StartSprintEvent.Instance);
+                    if (config.sprintAction.action.IsPressed())
+                    {
+                        RaiseEvent(StartSprintEvent.Instance);
+                    }
+                    else
+                    {
+                        RaiseEvent(StopSprintEvent.Instance);
+                    }
                 }
-                else
-                {
-                    RaiseEvent(StopSprintEvent.Instance);
-                }
+
+                float moveX = AttachedAnimator.GetFloat("MoveX");
+                float moveY = AttachedAnimator.GetFloat("MoveY");
+                moveX = Mathf.Lerp(moveX, moveVector.x, 4 * unityService.deltaTime);
+                moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
+                animationMove.Value = new Vector2(moveX, moveY);
+
+                config.jumpAction.Update();
             }
 
-            float moveX = AttachedAnimator.GetFloat("MoveX");
-            float moveY = AttachedAnimator.GetFloat("MoveY");
-            moveX = Mathf.Lerp(moveX, moveVector.x, 4 * unityService.deltaTime);
-            moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
-            AttachedAnimator.SetFloat("MoveX", moveX);
-            AttachedAnimator.SetFloat("MoveY", moveY);
-
-            jumpAction.Update();
+            AttachedAnimator.SetFloat("MoveX", animationMove.Value.x);
+            AttachedAnimator.SetFloat("MoveY", animationMove.Value.y);
             base.Update();
         }
 
@@ -594,10 +413,7 @@ namespace nickmaltbie.OpenKCC.netcode
         /// </summary>
         /// <returns>Vector of player movement based on input velocity rotated by player view and projected onto the
         /// ground.</returns>
-        public Vector3 GetProjectedMovement()
-        {
-            return GetProjectedMovement(InputMovement);
-        }
+        public Vector3 GetProjectedMovement() => GetProjectedMovement(InputMovement);
 
         /// <summary>
         /// Push the player out of any overlapping objects. This will constrain movement to only 
@@ -608,10 +424,10 @@ namespace nickmaltbie.OpenKCC.netcode
         public Vector3 PushOutOverlapping()
         {
             float fixedDeltaTime = Time.fixedDeltaTime;
-            return ColliderCast.PushOutOverlapping(
+            return config.ColliderCast.PushOutOverlapping(
                 transform.position,
                 transform.rotation,
-                maxPushSpeed * fixedDeltaTime);
+                config.maxPushSpeed * fixedDeltaTime);
         }
 
         /// <summary>
@@ -622,21 +438,7 @@ namespace nickmaltbie.OpenKCC.netcode
         /// ground.</returns>
         public Vector3 GetProjectedMovement(Vector3 inputMovement)
         {
-            Vector3 movement = RotatedMovement(inputMovement);
-
-            // If the player is standing on the ground, project their movement onto the ground plane
-            // This allows them to walk up gradual slopes without facing a hit in movement speed
-            if (!groundedState.Falling)
-            {
-                Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, groundedState.SurfaceNormal).normalized *
-                    movement.magnitude;
-                if (projectedMovement.magnitude + KCCUtils.Epsilon >= movement.magnitude)
-                {
-                    movement = projectedMovement;
-                }
-            }
-
-            return movement;
+            return config.groundedState.GetProjectedMovement(RotatedMovement(inputMovement));
         }
 
         /// <summary>
@@ -649,7 +451,7 @@ namespace nickmaltbie.OpenKCC.netcode
                 transform.position,
                 movement,
                 transform.rotation,
-                this))
+                config))
             {
                 if (bounce.action == MovementAction.Stop)
                 {
@@ -658,55 +460,26 @@ namespace nickmaltbie.OpenKCC.netcode
             }
         }
 
+        /// <summary>
+        /// Teleport a player to a given position.
+        /// </summary>
+        /// <param name="position">Position to teleport player to.</param>
         public void TeleportPlayer(Vector3 position)
         {
-            var sources = new List<ConstraintSource>();
-            parentConstraint.GetSources(sources);
-            if (parentConstraint.sourceCount > 0)
+            if (IsOwner)
             {
-                parentConstraint.RemoveSource(0);
+                KCCUtils.TeleportPlayer(transform, position, parentConstraint);
             }
-
-            transform.position = position;
-            parentConstraint.SetSources(sources);
         }
 
         /// <inheritdoc/>
         public void ApplyJump(Vector3 velocity)
         {
-            Velocity = velocity + GetGroundVelocity();
-            RaiseEvent(JumpEvent.Instance);
-        }
-
-        /// <summary>
-        /// Attribute to apply gravity to player in a given state.
-        /// </summary>
-        public class ApplyGravity : Attribute { }
-
-        /// <summary>
-        /// Attribute to represent player movement settings for a given state.
-        /// </summary>
-        public class MovementSettingsAttribute : Attribute
-        {
-            /// <summary>
-            /// Allow movement by normal velocity.
-            /// </summary>
-            public bool AllowVelocity = false;
-
-            /// <summary>
-            /// Allow movement by player input movement.
-            /// </summary>
-            public bool AllowWalk = false;
-
-            /// <summary>
-            /// Should the player be snapped down after moving.
-            /// </summary>
-            public bool SnapPlayerDown = false;
-
-            /// <summary>
-            /// Function to override velocity value.
-            /// </summary>
-            public string OverrideVelocityFunction = null;
+            if (IsOwner)
+            {
+                Velocity = velocity + GetGroundVelocity();
+                RaiseEvent(JumpEvent.Instance);
+            }
         }
     }
 }

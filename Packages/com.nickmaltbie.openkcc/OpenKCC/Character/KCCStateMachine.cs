@@ -69,12 +69,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Camera controls associated with the player.
         /// </summary>
-        internal ICameraControls _cameraControls;
+        protected ICameraControls _cameraControls;
 
         /// <summary>
         /// Get the camera controls associated with the state machine.
         /// </summary>
-        public ICameraControls CameraControls => _cameraControls;
+        public ICameraControls CameraControls { get => _cameraControls; internal set => _cameraControls = value; }
 
         /// <summary>
         /// Rotation of the plane the player is viewing
@@ -171,6 +171,7 @@ namespace nickmaltbie.OpenKCC.Character
 
         [ApplyGravity]
         [Animation(FallingAnimState, 0.1f, true)]
+        [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
@@ -239,8 +240,7 @@ namespace nickmaltbie.OpenKCC.Character
         {
             config.groundedState.CheckGrounded(config, transform.position, transform.rotation);
             IEvent groundedEvent;
-            if (!config.groundedState.StandingOnGround &&
-                FallingTime >= config.fallingGraceTime)
+            if (!config.groundedState.StandingOnGround)
             {
                 groundedEvent = LeaveGroundEvent.Instance;
             }
@@ -310,7 +310,7 @@ namespace nickmaltbie.OpenKCC.Character
 
                 if (!string.IsNullOrEmpty(overrideParam))
                 {
-                    vel = (float)this.EvaluateMember(overrideParam);
+                    vel = (float)config.EvaluateMember(overrideParam);
                 }
 
                 MovePlayer(movementDir * vel * unityService.fixedDeltaTime);

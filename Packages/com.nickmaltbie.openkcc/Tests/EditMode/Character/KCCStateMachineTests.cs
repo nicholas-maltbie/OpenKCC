@@ -65,7 +65,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             kccStateMachine.Awake();
             kccStateMachine.Start();
-            kccStateMachine._cameraControls = cameraControlsMock.Object;
+            kccStateMachine.CameraControls = cameraControlsMock.Object;
             kccStateMachine.config.groundedState = kccGroundedState;
             kccStateMachine.config._characterPush = characterPushMock.Object;
             kccStateMachine.config._colliderCast = colliderCastMock.Object;

@@ -123,14 +123,6 @@ namespace nickmaltbie.OpenKCC.Character.Config
         [SerializeField]
         public float verticalSnapDown = 0.2f;
 
-        /// <summary>
-        /// Grace time in which the player can be not grounded before they
-        /// start to fall.
-        /// </summary>
-        [Tooltip("Grace time before player starts falling when not grounded.")]
-        [SerializeField]
-        public float fallingGraceTime = 0.0f;
-
         [Header("Stair and Step")]
 
         /// <summary>
@@ -203,12 +195,12 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// <summary>
         /// Collider cast associated with the character.
         /// </summary>
-        internal IColliderCast _colliderCast;
+        public IColliderCast _colliderCast;
 
         /// <summary>
         /// Character push associated with the player.
         /// </summary>
-        internal ICharacterPush _characterPush;
+        public ICharacterPush _characterPush;
 
         /// <summary>
         /// Check if two kcc configs have equivalent values.
