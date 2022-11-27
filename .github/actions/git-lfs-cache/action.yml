@@ -8,7 +8,7 @@ runs:
     shell: bash
 
   - name: Cache git lfs
-    uses: actions/cache@v2
+    uses: actions/cache@v3
     with:
       path: .git/lfs
       key: lfs-format-${{ hashFiles('.lfs-assets-id') }}-v1.0.0

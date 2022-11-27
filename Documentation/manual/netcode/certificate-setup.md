@@ -55,3 +55,22 @@ into the cert field of the websocket transport.
 Note, this is the public part of the key so it's ok to share with other users.
 Sharing the public key is required for authentication, sharing the private
 part of the key is a security risk.
+
+## Exporting Existing Certs
+
+```PowerShell
+> cd Cert:\LocalMachine\My
+> dir
+Thumbprint                                Subject
+----------                                -------
+{CertThumbprint}                          CN=localhost
+
+> $thumbprint = "{CertThumbprint}"
+> $certname = "{certificateName}"
+> Export-Certificate -Type Cert -NoClobber `
+    -FilePath C:\Users\admin\Desktop\$certname.cer -Cert $thumbprint
+
+# Get the base 64 encoding
+> certutil -encode "C:\Users\admin\Desktop\$certname.cer"
+    "C:\Users\admin\Desktop\base64_$certname.cer"
+```

@@ -14,6 +14,7 @@
       href: kcc-design/physics-notes.md
 
 - name: Netcode
+  href: netcode/hosting-netcode.md
   items:
     - name: Certificate Setup
       href: netcode/certificate-setup.md
