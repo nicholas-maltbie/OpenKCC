@@ -16,7 +16,11 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using Netcode.Transports.WebSocket;
 using nickmaltbie.ScreenManager;
 using TMPro;
@@ -34,11 +38,17 @@ namespace nickmaltbie.NetworkStateMachineUnity.ExampleAnim
         public TMP_InputField serverAddress;
         public TMP_InputField serverPort;
         public TMP_Text debugMessage;
+        public TMP_InputField certPassword;
+        public TMP_InputField certificatePath;
+        public Toggle secureConnection;
 
         public string onlineScreen;
         public string offlineScreen;
 
         private bool previousConnected;
+        private Dictionary<string, CancellationTokenSource> dnsCancellationToken = new Dictionary<string, CancellationTokenSource>();
+        private CancellationTokenSource previousCancellationToken;
+        private IAsyncResult dnsLookupAction;
 
         public enum NMActionType
         {
@@ -58,6 +68,8 @@ namespace nickmaltbie.NetworkStateMachineUnity.ExampleAnim
             {
                 hostButton.gameObject.SetActive(false);
                 serverButton.gameObject.SetActive(false);
+                certPassword.gameObject.SetActive(false);
+                certificatePath.gameObject.SetActive(false);
             }
 
             hostButton.onClick.AddListener(() => StartNetworkManager(NMActionType.Host));
@@ -72,10 +84,51 @@ namespace nickmaltbie.NetworkStateMachineUnity.ExampleAnim
                 {
                     networkTransport.ConnectAddress = address;
                     debugMessage.text = $"Valid Server IP Address!";
+                    if (dnsLookupAction != null && !dnsLookupAction.IsCompleted)
+                    {
+                        previousCancellationToken?.Cancel();
+                    }
+
+                    previousCancellationToken = null;
+                    dnsLookupAction = null;
                 }
                 else
                 {
-                    debugMessage.text = $"Invalid IP Address string: {address}";
+                    debugMessage.text = $"Attempting to resolve hostname {address}";
+                    if (dnsLookupAction != null && !dnsLookupAction.IsCompleted)
+                    {
+                        previousCancellationToken?.Cancel();
+                    }
+
+                    previousCancellationToken = dnsCancellationToken[address] = new CancellationTokenSource();
+                    dnsLookupAction = Dns.BeginGetHostEntry(
+                        address,
+                        (IAsyncResult result) =>
+                        {
+                            if (!dnsCancellationToken.TryGetValue(address, out CancellationTokenSource token))
+                            {
+                                return;
+                            }
+
+                            bool cancellationRequested = token.IsCancellationRequested;
+                            dnsCancellationToken.Remove(address);
+                            token.Dispose();
+                            if (cancellationRequested)
+                            {
+                                return;
+                            }
+
+                            IPHostEntry ie = Dns.EndGetHostEntry(result);
+                            if (ie.AddressList.Length > 0)
+                            {
+                                debugMessage.text = $"Valid address {address} resolved to {ie.AddressList[0]}!";
+                            }
+                            else
+                            {
+                                debugMessage.text = $"Could not resolve hostname {address}";
+                            }
+                        },
+                        $"Resolving host entry {address}");
                 }
             });
             serverPort.onValueChanged.AddListener(port =>
@@ -118,21 +171,18 @@ namespace nickmaltbie.NetworkStateMachineUnity.ExampleAnim
             previousConnected = connectedState;
         }
 
-        public bool ValidIPAddressAndPort()
+        private void SetupCert(WebSocketTransport transport)
         {
-            bool validPort = ushort.TryParse(serverPort.text, out ushort _);
-            bool validAddress = IPAddress.TryParse(serverAddress.text, out _);
-            return validPort && validAddress;
+            if (!string.IsNullOrEmpty(certificatePath.text))
+            {
+                var cert = new X509Certificate2(certificatePath.text, certPassword.text);
+                transport.SecureConnection = true;
+                transport.CertificateBase64String = Convert.ToBase64String(cert.Export(X509ContentType.Pkcs12, string.Empty));
+            }
         }
 
         public void StartNetworkManager(NMActionType action)
         {
-            if (!ValidIPAddressAndPort())
-            {
-                debugMessage.text = $"Won't start server, invalid address \"{serverAddress.text}\" or port \"{serverPort.text}\"";
-                return;
-            }
-
             if (GetConnectedState())
             {
                 debugMessage.text = $"Already setup as a client or server, please disconnect before trying again";
@@ -142,16 +192,21 @@ namespace nickmaltbie.NetworkStateMachineUnity.ExampleAnim
             var networkTransport = NetworkManager.Singleton.NetworkConfig.NetworkTransport as WebSocketTransport;
             networkTransport.ConnectAddress = serverAddress.text;
             networkTransport.Port = ushort.Parse(serverPort.text);
+            networkTransport.SecureConnection = secureConnection.isOn;
 
             switch (action)
             {
                 case NMActionType.Host:
+                    // Setup the cert if one is provided
+                    SetupCert(networkTransport);
                     NetworkManager.Singleton.StartHost();
                     break;
                 case NMActionType.Client:
                     NetworkManager.Singleton.StartClient();
                     break;
                 case NMActionType.Server:
+                    // Setup the cert if one is provided
+                    SetupCert(networkTransport);
                     NetworkManager.Singleton.StartServer();
                     break;
             }

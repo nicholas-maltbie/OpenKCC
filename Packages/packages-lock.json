@@ -5,7 +5,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "ba86a6269ca44ca4cc83daa882d5fb7105b65d2f"
+      "hash": "16e5c169f16d618bfbbe25525bacc4107e55b318"
     },
     "com.nickmaltbie.networkstatemachineunity": {
       "version": "1.0.0",
@@ -42,6 +42,7 @@
         "com.nickmaltbie.networkstatemachineunity": "1.0.0",
         "com.nickmaltbie.testutilsunity": "0.0.2",
         "com.unity.inputsystem": "1.0.0",
+        "com.unity.netcode.gameobjects": "1.1.0",
         "com.unity.textmeshpro": "3.0.0"
       }
     },

@@ -18,18 +18,18 @@ PrefabInstance:
     - target: {fileID: -8235221732075971616, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
       propertyPath: screenPrefabs.Array.data[1]
       value: 
-      objectReference: {fileID: 486149923664253863, guid: a6b724ce986920c46859b833b6f1bc83, type: 3}
+      objectReference: {fileID: 7000847131833854331, guid: f95633d2f1ed8c4478b03c59178708e6, type: 3}
     - target: {fileID: -8235221732075971616, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
       propertyPath: screenPrefabs.Array.data[2]
       value: 
-      objectReference: {fileID: 3127225395034414389, guid: 77f3d4674d5aa254aba6cd0ff623b5c3, type: 3}
+      objectReference: {fileID: -1115252214597416267, guid: de594f0ca0c7e164fbcaade84840570f, type: 3}
     - target: {fileID: -8235221732075971616, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
       propertyPath: screenPrefabs.Array.data[3]
       value: 
-      objectReference: {fileID: -1115252214597416267, guid: de594f0ca0c7e164fbcaade84840570f, type: 3}
+      objectReference: {fileID: 7721720131060799492, guid: 096f31d0428114a43afc88bce9356f6b, type: 3}
     - target: {fileID: 576314974741431287, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
       propertyPath: m_Name
-      value: UIManager Variant
+      value: UIManagerNetcode
       objectReference: {fileID: 0}
     - target: {fileID: 4198621346667254445, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
       propertyPath: m_Pivot.x
