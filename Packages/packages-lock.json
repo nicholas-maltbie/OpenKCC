@@ -1,10 +1,11 @@
 {
   "dependencies": {
     "com.community.netcode.transport.websocket": {
-      "version": "file:D:/Projects/multiplayer-community-contributions/Transports/com.community.netcode.transport.websocket",
+      "version": "git+https://github.com/nicholas-maltbie/multiplayer-community-contributions?path=/Transports/com.community.netcode.transport.websocket#webgl-patch",
       "depth": 0,
-      "source": "local",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {},
+      "hash": "16e5c169f16d618bfbbe25525bacc4107e55b318"
     },
     "com.nickmaltbie.networkstatemachineunity": {
       "version": "1.0.0",
