@@ -179,6 +179,11 @@ namespace nickmaltbie.NetworkStateMachineUnity.ExampleAnim
                 transport.SecureConnection = true;
                 transport.CertificateBase64String = Convert.ToBase64String(cert.Export(X509ContentType.Pkcs12, string.Empty));
             }
+            else
+            {
+                transport.SecureConnection = false;
+                transport.CertificateBase64String = string.Empty;
+            }
         }
 
         public void StartNetworkManager(NMActionType action)
