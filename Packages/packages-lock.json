@@ -1,11 +1,10 @@
 {
   "dependencies": {
     "com.community.netcode.transport.websocket": {
-      "version": "git+https://github.com/nicholas-maltbie/multiplayer-community-contributions?path=/Transports/com.community.netcode.transport.websocket#webgl-patch",
+      "version": "file:D:/Projects/multiplayer-community-contributions/Transports/com.community.netcode.transport.websocket",
       "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "ba86a6269ca44ca4cc83daa882d5fb7105b65d2f"
+      "source": "local",
+      "dependencies": {}
     },
     "com.nickmaltbie.networkstatemachineunity": {
       "version": "1.0.0",
@@ -42,6 +41,7 @@
         "com.nickmaltbie.networkstatemachineunity": "1.0.0",
         "com.nickmaltbie.testutilsunity": "0.0.2",
         "com.unity.inputsystem": "1.0.0",
+        "com.unity.netcode.gameobjects": "1.1.0",
         "com.unity.textmeshpro": "3.0.0"
       }
     },

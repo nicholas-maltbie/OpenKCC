@@ -33,6 +33,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -130,8 +131,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   m_PointAction: {fileID: 3367101946890717985, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   m_MoveAction: {fileID: -307424754437218563, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
@@ -145,6 +148,7 @@ MonoBehaviour:
   m_TrackedDeviceOrientationAction: {fileID: -8822090747999447430, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
 --- !u!114 &-8235221732075971616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,8 +163,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screenPrefabs:
   - {fileID: 486149923664253863, guid: a6b724ce986920c46859b833b6f1bc83, type: 3}
-  - {fileID: 3127225395034414389, guid: 77f3d4674d5aa254aba6cd0ff623b5c3, type: 3}
   - {fileID: -1115252214597416267, guid: de594f0ca0c7e164fbcaade84840570f, type: 3}
+  - {fileID: 3127225395034414389, guid: 77f3d4674d5aa254aba6cd0ff623b5c3, type: 3}
   initialScreen: 0
   inputActions: {fileID: -944628639613478452, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   maxScreenHistory: 100

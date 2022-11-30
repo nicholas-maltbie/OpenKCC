@@ -25,52 +25,37 @@ $cert = New-SelfSignedCertificate -Subject "CN=$certname" `
 
 # Export it to a .cer file.
 Export-Certificate -Cert $cert -FilePath "C:\Users\admin\Desktop\$certname.cer"
+
+# Export the private key to a pfx file
+$mypwd = ConvertTo-SecureString -String "1234" -Force -AsPlainText
+
+Get-ChildItem `
+    -Path "Cert:\CurrentUser\My\$($cert.Thumbprint)" `
+    | Export-PfxCertificate -FilePath "C:\Users\admin\Desktop\$certname.pfx" `
+        -Password $mypwd
 ```
 
-This will create a key with two parts, a public and private part. The public
-part of the key is what you can give to other people to prove you signed
-something (think like your signature). The private part of the key is saved
-on your machine and should not be shared. The "cert" we created is a
-way to share the public key with others.
+## Connecting via HTTPS and SSL
 
-However, this export certificate is not encoded as base64. To convert it,
-you can use a program like `CertUtil`
+If you want to connect to your server from an `https:` you must use the
+`Secure Connection` option and provide a valid certificate `.pfx` file and
+a password for that certificate when setting up the server.
 
-```PowerShell
-certutil -encode "C:\Users\admin\Desktop\$certname.cer"
-    "C:\Users\admin\Desktop\base64_$certname.cer"
-```
+This can be configured in the GUI for the client on the StartMenu screen.
 
-This file will look something like this:
+When connecting from https, you must add the certificate to the list
+of trusted certificates for your machine. This can be done if the
+cert has a valid signature, but if you are configuring the cert
+locally and just want to do some debug testing, you can add the
+cert manually by navigating to the address
 
 ```txt
------BEGIN CERTIFICATE-----
-<lots of data encoded as base64>
------END CERTIFICATE-----
+https://<server-address>:<port>/netcode
 ```
 
-Take the data between the begin and end certificate blocks and copy it
-into the cert field of the websocket transport.
+The default for this is [https://127.0.0.1:34182/netcode](https://127.0.0.1:34182/netcode)
+and your browser will prompt you if you want to trust the cert.
 
-Note, this is the public part of the key so it's ok to share with other users.
-Sharing the public key is required for authentication, sharing the private
-part of the key is a security risk.
-
-## Exporting Existing Certs
-
-```PowerShell
-> cd Cert:\LocalMachine\My
-> dir
-Thumbprint                                Subject
-----------                                -------
-{CertThumbprint}                          CN=localhost
-
-> $thumbprint = "{CertThumbprint}"
-> $certname = "{certificateName}"
-> Export-Certificate -Type Cert -NoClobber `
-    -FilePath C:\Users\admin\Desktop\$certname.cer -Cert $thumbprint
-
-# Get the base 64 encoding
-> certutil -encode "C:\Users\admin\Desktop\$certname.cer"
-    "C:\Users\admin\Desktop\base64_$certname.cer"
-```
+If the cert is signed by an external trusted source you don't need to worry
+about running into this error. Also, if you test without https or just
+for localhost/127.0.0.1, you don't need to worry about this error either.
