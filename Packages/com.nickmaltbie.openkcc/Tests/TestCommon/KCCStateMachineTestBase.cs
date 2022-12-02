@@ -55,6 +55,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         public override void Setup()
         {
             base.Setup();
+
             GameObject go = CreateGameObject();
             CapsuleCollider capsuleCollider = go.AddComponent<CapsuleCollider>();
             go.AddComponent<CapsuleColliderCast>();
@@ -67,6 +68,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
             controller.AddParameter("MoveX", AnimatorControllerParameterType.Float);
             controller.AddParameter("MoveY", AnimatorControllerParameterType.Float);
+
             rootStateMachine.AddState(HumanoidKCCAnim.IdleAnimState);
             rootStateMachine.AddState(HumanoidKCCAnim.JumpAnimState);
             rootStateMachine.AddState(HumanoidKCCAnim.LandingAnimState);

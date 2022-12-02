@@ -94,14 +94,14 @@ namespace nickmaltbie.OpenKCC.Character.Action
             this.actor = actor;
             JumpedWhileSliding = false;
 
-            jumpInput.inputAction.action.Enable();
+            jumpInput?.inputAction?.action?.Enable();
         }
 
         /// <inheritdoc/>
         public override void Update()
         {
             base.Update();
-            jumpInput.Update();
+            jumpInput?.Update();
 
             if (kccGrounded.StandingOnGround && !kccGrounded.Sliding)
             {

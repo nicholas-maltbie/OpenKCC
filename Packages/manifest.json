@@ -12,8 +12,8 @@
     "com.community.netcode.transport.websocket": "git+https://github.com/nicholas-maltbie/multiplayer-community-contributions?path=/Transports/com.community.netcode.transport.websocket#webgl-patch",
     "com.nickmaltbie.screenmanager": "3.1.0",
     "com.nickmaltbie.statemachineunity": "1.1.2",
-    "com.nickmaltbie.testutilsunity": "0.0.2",
-    "com.unity.collab-proxy": "1.17.6",
+    "com.nickmaltbie.testutilsunity": "0.1.0",
+    "com.unity.collab-proxy": "1.17.7",
     "com.unity.ide.rider": "3.0.16",
     "com.unity.ide.visualstudio": "2.0.16",
     "com.unity.ide.vscode": "1.2.5",
@@ -28,7 +28,7 @@
     "com.unity.testtools.codecoverage": "1.0.1",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.6.4",
-    "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.2",
+    "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.3",
     "com.unity.ugui": "1.0.0",
     "com.unity.visualscripting": "1.7.8",
     "com.veriorpies.parrelsync": "https://github.com/VeriorPies/ParrelSync.git?path=/ParrelSync",
@@ -66,6 +66,7 @@
   },
   "testables": [
     "com.nickmaltbie.testutilsunity",
-    "com.unity.inputsystem"
+    "com.unity.inputsystem",
+    "com.unity.netcode.gameobjects"
   ]
 }

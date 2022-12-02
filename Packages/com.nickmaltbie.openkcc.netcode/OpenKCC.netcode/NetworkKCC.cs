@@ -361,11 +361,18 @@ namespace nickmaltbie.OpenKCC.netcode
             _cameraControls = GetComponent<ICameraControls>();
             config._characterPush = GetComponent<ICharacterPush>();
             config._colliderCast = GetComponent<IColliderCast>();
+            SetupInputs();
+        }
 
+        /// <summary>
+        /// Setup inputs for the networked KCC
+        /// </summary>
+        public void SetupInputs()
+        {
             if (IsOwner)
             {
-                config.jumpAction.Setup(config.groundedState, config, this);
-                config.moveAction.action.Enable();
+                config?.jumpAction?.Setup(config?.groundedState, config, this);
+                config?.moveAction?.action.Enable();
             }
         }
 
@@ -375,7 +382,7 @@ namespace nickmaltbie.OpenKCC.netcode
             if (IsOwner)
             {
                 bool denyMovement = PlayerInputUtils.playerMovementState == PlayerInputState.Deny;
-                Vector2 moveVector = denyMovement ? Vector3.zero : config.moveAction.action.ReadValue<Vector2>();
+                Vector2 moveVector = denyMovement ? Vector2.zero : config.moveAction?.action.ReadValue<Vector2>() ?? Vector2.zero;
                 InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
                 bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
                 RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
@@ -398,7 +405,7 @@ namespace nickmaltbie.OpenKCC.netcode
                 moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
                 animationMove.Value = new Vector2(moveX, moveY);
 
-                config.jumpAction.Update();
+                config.jumpAction?.Update();
             }
 
             AttachedAnimator.SetFloat("MoveX", animationMove.Value.x);
