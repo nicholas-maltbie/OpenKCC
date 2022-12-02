@@ -20,6 +20,7 @@ using System;
 using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace nickmaltbie.OpenKCC.Input
 {
@@ -40,8 +41,23 @@ namespace nickmaltbie.OpenKCC.Input
         /// Action associated with this input.
         /// </summary>
         [SerializeField]
+        [FormerlySerializedAs("inputAction")]
         [Tooltip("Input action to control this buffered input.")]
-        public InputActionReference inputAction;
+        public InputActionReference inputActionReference;
+
+        /// <summary>
+        /// Override input action for testing.
+        /// </summary>
+        public InputAction overrideInputAction;
+
+        /// <summary>
+        /// Gets the input action associated with this buffered input.
+        /// </summary>
+        public InputAction InputAction
+        {
+            get => overrideInputAction ?? inputActionReference;
+            set => overrideInputAction = value;
+        }
 
         /// <summary>
         /// Buffer time for configuring the player input.
@@ -81,7 +97,7 @@ namespace nickmaltbie.OpenKCC.Input
             elapsedSincePressed += unityService.deltaTime;
             elapsedSinceReset += unityService.deltaTime;
 
-            if (inputAction?.action.ReadValue<float>() == 1.0f)
+            if (InputAction.ReadValue<float>() == 1.0f)
             {
                 elapsedSincePressed = 0.0f;
             }

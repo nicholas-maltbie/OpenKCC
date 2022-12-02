@@ -18,14 +18,12 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.netcode;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity;
-using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using Unity.Netcode;
 using Unity.Netcode.Components;
@@ -34,8 +32,8 @@ using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.TestTools;
+using static nickmaltbie.OpenKCC.netcode.NetworkKCC;
 
 namespace nickmaltbie.openkcc.netcode.Tests.Runtime
 {
@@ -56,12 +54,6 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
         public static int CurrentlySpawning = 0;
         public IUnityService unityService;
 
-        public StickControl moveStick;
-        public ButtonControl jumpButton;
-        public ButtonControl sprintButton;
-
-        public Gamepad gamepad;
-        public InputActionMap actionMap;
         public InputAction moveInputAction;
         public InputAction jumpInputAction;
         public InputAction sprintInputAction;
@@ -70,7 +62,7 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
         public KCCGroundedState kccGroundedState;
         public ParentConstraint constraint;
 
-        public void Awake()
+        public void Start()
         {
             // Get the components to update and modify.
             Animator anim = GetComponent<Animator>();
@@ -90,27 +82,16 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
 
             // Setup animation controller.
             anim.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath(AnimControllerPath, typeof(AnimatorController)) as AnimatorController;
-
-            SetupInputs(InputSystem.AddDevice<Gamepad>());
         }
 
-        public void SetupInputs(Gamepad gamepad)
+        public Gamepad SetupInputs()
         {
+            Gamepad gamepad = InputSystem.AddDevice<Gamepad>();
+
             NetworkKCC networkKCC = GetComponent<NetworkKCC>();
-            PlayerInput playerInput = GetComponent<PlayerInput>();
-
-            inputActionAsset = ScriptableObject.CreateInstance<InputActionAsset>();
-            actionMap = inputActionAsset.AddActionMap("testMap");
-            playerInput.actions = inputActionAsset;
-            playerInput.currentActionMap = actionMap;
-
-            jumpButton = gamepad.aButton;
-            sprintButton = gamepad.bButton;
-            moveStick = gamepad.leftStick;
-
-            jumpInputAction = actionMap.AddAction("jumpAction", InputActionType.Button, jumpButton.path);
-            moveInputAction = actionMap.AddAction("moveAction", InputActionType.Value, moveStick.path);
-            sprintInputAction = actionMap.AddAction("sprintAction", InputActionType.Value, sprintButton.path);
+            jumpInputAction = new InputAction("jumpAction", InputActionType.Button, gamepad.aButton.path);
+            sprintInputAction = new InputAction("sprintAction", InputActionType.Value, gamepad.bButton.path);
+            moveInputAction = new InputAction("moveAction", InputActionType.Value, gamepad.leftStick.path);
 
             // Enable inputs
             jumpInputAction.Enable();
@@ -119,7 +100,7 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
 
             // Configure jump action
             var jumpInput = new BufferedInput();
-            jumpInput.inputAction = InputActionReference.Create(jumpInputAction);
+            jumpInput.InputAction = jumpInputAction;
             jumpInput.cooldown = 1.0f;
             jumpInput.bufferTime = 3.0f;
             jumpAction = new JumpAction();
@@ -127,10 +108,10 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
 
             // Setup actions
             networkKCC.config.jumpAction = jumpAction;
-            networkKCC.config.moveAction = InputActionReference.Create(moveInputAction);
-            networkKCC.config.sprintAction = InputActionReference.Create(sprintInputAction);
+            networkKCC.config.MoveAction = moveInputAction;
+            networkKCC.config.SprintAction = sprintInputAction;
 
-            networkKCC.SetupInputs();
+            return gamepad;
         }
 
         public override void OnNetworkSpawn()
@@ -153,7 +134,6 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
         protected override void OnServerAndClientsCreated()
         {
             m_PrefabToSpawn = CreateNetworkObjectPrefab("TestableNetworkKCC");
-            m_PrefabToSpawn.AddComponent<PlayerInput>();
             m_PrefabToSpawn.AddComponent<ParentConstraint>();
             m_PrefabToSpawn.AddComponent<CapsuleCollider>();
             m_PrefabToSpawn.AddComponent<CapsuleColliderCast>();
@@ -169,19 +149,30 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
             base.OneTimeSetup();
         }
 
+        [SetUp]
+        public override void SetUp()
+        {
+            base.SetUp();
+        }
+
+        [TearDown]
+        public override void TearDown()
+        {
+            base.TearDown();
+        }
+
         [UnityTearDown]
         public override IEnumerator UnityTearDown()
         {
-            base.TearDown();
             yield return base.UnityTearDown();
-            GameObject.Destroy(floor);
+            Object.Destroy(floor);
         }
 
         [UnitySetUp]
         public override IEnumerator UnitySetUp()
         {
-            base.SetUp();
             yield return base.UnitySetUp();
+
 
             // Spawn a floor below the players.
             floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -201,7 +192,7 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
                 GameObject go = SpawnObject(m_PrefabToSpawn, ownerManager);
 
                 // Move to a position depending on index
-                go.transform.position = Vector3.right * objectIndex * 2 + Vector3.up;
+                go.transform.position = Vector3.right * objectIndex * 2 + Vector3.up * 0.1f;
 
                 // wait for each object to spawn on each client
                 for (int clientIndex = 0; clientIndex < 3; clientIndex++)
@@ -218,19 +209,20 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
         public IEnumerator Validate_KCCStateMachine_Move_Transition()
         {
             TestableNetworkKCC demo = TestableNetworkKCC.Objects[(0, 0)];
-            Gamepad gamepad = InputSystem.AddDevice<Gamepad>();
-
             NetworkKCC networkKCC = demo.GetComponent<NetworkKCC>();
-            input.Move(gamepad.leftStick, Vector2.up);
-            Debug.Log("Move input action value: " + demo.moveInputAction.ReadValue<Vector2>());
-            
-            while (typeof(KCCStateMachine.WalkingState) != networkKCC.CurrentState)
+            Gamepad gamepad = demo.SetupInputs();
+
+            float time = 0.0f;
+            while (typeof(IdleState) != networkKCC.CurrentState && time < 3.0f)
             {
-                Debug.Log("Current state: " + networkKCC.CurrentState);
-                yield return null;
+                yield return new WaitForFixedUpdate();
+                time += Time.deltaTime;
             }
-            
-            Assert.AreEqual(typeof(KCCStateMachine.WalkingState), networkKCC.CurrentState);
+
+            input.Set(gamepad.leftStick, Vector2.up);
+            yield return null;
+
+            Assert.AreEqual(typeof(WalkingState), networkKCC.CurrentState);
             Assert.IsTrue(networkKCC.config.groundedState.StandingOnGround);
             Assert.IsFalse(networkKCC.config.groundedState.Sliding);
             Assert.IsFalse(networkKCC.config.groundedState.Falling);

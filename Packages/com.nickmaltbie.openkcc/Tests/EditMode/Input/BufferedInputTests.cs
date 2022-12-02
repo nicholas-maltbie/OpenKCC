@@ -47,7 +47,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
             mockUnityService = new Mock<IUnityService>();
             mockUnityService.Setup(e => e.deltaTime).Returns(1.0f);
             bufferedInput.unityService = mockUnityService.Object;
-            bufferedInput.inputAction = InputActionReference.Create(testAction);
+            bufferedInput.inputActionReference = InputActionReference.Create(testAction);
 
             bufferedInput.cooldown = 1.0f;
             bufferedInput.bufferTime = 3.0f;
@@ -59,7 +59,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
         public override void TearDown()
         {
             base.TearDown();
-            InputActionReference.DestroyImmediate(bufferedInput.inputAction);
+            InputActionReference.DestroyImmediate(bufferedInput.inputActionReference);
         }
 
         [Test]

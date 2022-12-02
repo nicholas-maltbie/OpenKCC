@@ -65,7 +65,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
 
             var bufferedInput = new BufferedInput();
             bufferedInput.unityService = unityServiceMock.Object;
-            bufferedInput.inputAction = InputActionReference.Create(testAction);
+            bufferedInput.inputActionReference = InputActionReference.Create(testAction);
             bufferedInput.cooldown = 1.0f;
             bufferedInput.bufferTime = 3.0f;
 

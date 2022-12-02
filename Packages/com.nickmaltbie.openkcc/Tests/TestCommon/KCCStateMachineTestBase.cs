@@ -99,7 +99,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             moveInputAction.Enable();
             sprintInputAction.Enable();
 
-            jumpInput.inputAction = InputActionReference.Create(jumpInputAction);
+            jumpInput.inputActionReference = InputActionReference.Create(jumpInputAction);
             jumpInput.cooldown = 1.0f;
             jumpInput.bufferTime = 3.0f;
             jumpAction = new JumpAction();
@@ -107,8 +107,8 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
 
             kccStateMachine = go.AddComponent<KCCStateMachine>();
             kccStateMachine.config.jumpAction = jumpAction;
-            kccStateMachine.config.moveAction = InputActionReference.Create(moveInputAction);
-            kccStateMachine.config.sprintAction = InputActionReference.Create(sprintInputAction);
+            kccStateMachine.config.moveActionReference = InputActionReference.Create(moveInputAction);
+            kccStateMachine.config.sprintActionReference = InputActionReference.Create(sprintInputAction);
             kccStateMachine.Start();
 
             constraint = kccStateMachine.GetComponent<ParentConstraint>();

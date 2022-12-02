@@ -94,7 +94,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
             this.actor = actor;
             JumpedWhileSliding = false;
 
-            jumpInput?.inputAction?.action?.Enable();
+            jumpInput.InputAction?.Enable();
         }
 
         /// <inheritdoc/>
@@ -103,7 +103,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
             base.Update();
             jumpInput?.Update();
 
-            if (kccGrounded.StandingOnGround && !kccGrounded.Sliding)
+            if (kccGrounded != null && kccGrounded.StandingOnGround && !kccGrounded.Sliding)
             {
                 JumpedWhileSliding = false;
             }

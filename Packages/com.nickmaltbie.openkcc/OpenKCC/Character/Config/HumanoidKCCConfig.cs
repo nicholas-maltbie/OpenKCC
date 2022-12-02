@@ -21,6 +21,7 @@ using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace nickmaltbie.OpenKCC.Character.Config
 {
@@ -33,15 +34,45 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// Action reference for moving the player.
         /// </summary>
         [Tooltip("Action reference for moving the player")]
+        [FormerlySerializedAs("moveAction")]
         [SerializeField]
-        public InputActionReference moveAction;
+        public InputActionReference moveActionReference;
 
         /// <summary>
         /// Action reference for sprinting.
         /// </summary>
         [Tooltip("Action reference for moving the player")]
+        [FormerlySerializedAs("sprintAction")]
         [SerializeField]
-        public InputActionReference sprintAction;
+        public InputActionReference sprintActionReference;
+
+        /// <summary>
+        /// Override move action for testing.
+        /// </summary>
+        private InputAction overrideMoveAction;
+
+        /// <summary>
+        /// Override move action for testing.
+        /// </summary>
+        private InputAction overrideSprintAction;
+
+        /// <summary>
+        /// Gets the move action associated with this humaoid kcc config.
+        /// </summary>
+        public InputAction MoveAction
+        {
+            get => overrideMoveAction ?? moveActionReference?.action;
+            set => overrideMoveAction = value;
+        }
+
+        /// <summary>
+        /// Gets the move action associated with this humaoid kcc config.
+        /// </summary>
+        public InputAction SprintAction
+        {
+            get => overrideSprintAction ?? sprintActionReference?.action;
+            set => overrideSprintAction = value;
+        }
 
         /// <summary>
         /// Action reference for jumping.
@@ -210,8 +241,8 @@ namespace nickmaltbie.OpenKCC.Character.Config
         public bool Equals(HumanoidKCCConfig other)
         {
             return
-                other.moveAction.EqualOrNull(moveAction) &&
-                other.sprintAction.EqualOrNull(sprintAction) &&
+                other.moveActionReference.EqualOrNull(moveActionReference) &&
+                other.moveActionReference.EqualOrNull(sprintActionReference) &&
                 other.jumpAction.EqualOrNull(jumpAction) &&
                 other.groundedState.Equals(groundedState) &&
                 other.gravity.Equals(gravity) &&

@@ -371,8 +371,8 @@ namespace nickmaltbie.OpenKCC.netcode
         {
             if (IsOwner)
             {
-                config?.jumpAction?.Setup(config?.groundedState, config, this);
-                config?.moveAction?.action.Enable();
+                config.jumpAction?.Setup(config.groundedState, config, this);
+                config.MoveAction?.Enable();
             }
         }
 
@@ -382,14 +382,14 @@ namespace nickmaltbie.OpenKCC.netcode
             if (IsOwner)
             {
                 bool denyMovement = PlayerInputUtils.playerMovementState == PlayerInputState.Deny;
-                Vector2 moveVector = denyMovement ? Vector2.zero : config.moveAction?.action.ReadValue<Vector2>() ?? Vector2.zero;
+                Vector2 moveVector = denyMovement ? Vector2.zero : config.MoveAction?.ReadValue<Vector2>() ?? Vector2.zero;
                 InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
                 bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
                 RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
 
                 if (moving)
                 {
-                    if (config.sprintAction.action.IsPressed())
+                    if (config.SprintAction?.IsPressed() ?? false)
                     {
                         RaiseEvent(StartSprintEvent.Instance);
                     }
