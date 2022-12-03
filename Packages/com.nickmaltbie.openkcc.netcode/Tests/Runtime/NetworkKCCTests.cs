@@ -16,14 +16,17 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.netcode;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using Unity.Netcode;
 using Unity.Netcode.Components;
@@ -32,6 +35,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.TestTools;
 using static nickmaltbie.OpenKCC.netcode.NetworkKCC;
 
@@ -62,6 +66,10 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
         public KCCGroundedState kccGroundedState;
         public ParentConstraint constraint;
 
+        public StickControl moveStick;
+        public ButtonControl jumpButton;
+        public ButtonControl sprintButton;
+
         public void Start()
         {
             // Get the components to update and modify.
@@ -89,9 +97,14 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
             Gamepad gamepad = InputSystem.AddDevice<Gamepad>();
 
             NetworkKCC networkKCC = GetComponent<NetworkKCC>();
-            jumpInputAction = new InputAction("jumpAction", InputActionType.Button, gamepad.aButton.path);
-            sprintInputAction = new InputAction("sprintAction", InputActionType.Value, gamepad.bButton.path);
-            moveInputAction = new InputAction("moveAction", InputActionType.Value, gamepad.leftStick.path);
+
+            moveStick = gamepad.leftStick;
+            jumpButton = gamepad.aButton;
+            sprintButton = gamepad.bButton;
+
+            jumpInputAction = new InputAction("jumpAction", InputActionType.Button, jumpButton.path);
+            sprintInputAction = new InputAction("sprintAction", InputActionType.Value, sprintButton.path);
+            moveInputAction = new InputAction("moveAction", InputActionType.Value, moveStick.path);
 
             // Enable inputs
             jumpInputAction.Enable();
@@ -165,7 +178,7 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
         public override IEnumerator UnityTearDown()
         {
             yield return base.UnityTearDown();
-            Object.Destroy(floor);
+            UnityEngine.Object.Destroy(floor);
         }
 
         [UnitySetUp]
@@ -205,6 +218,12 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
             }
         }
 
+        public static bool ForAllPlayers(int index, Func<NetworkKCC, bool> verify)
+        {
+            return Enumerable.Range(0, 3).All(i =>
+                verify(TestableNetworkKCC.Objects[(index, i)].GetComponent<NetworkKCC>()));
+        }
+
         [UnityTest]
         public IEnumerator Validate_KCCStateMachine_Move_Transition()
         {
@@ -212,17 +231,12 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
             NetworkKCC networkKCC = demo.GetComponent<NetworkKCC>();
             Gamepad gamepad = demo.SetupInputs();
 
-            float time = 0.0f;
-            while (typeof(IdleState) != networkKCC.CurrentState && time < 3.0f)
-            {
-                yield return new WaitForFixedUpdate();
-                time += Time.deltaTime;
-            }
+            // Wait for player to fall to ground
+            yield return TestUtils.WaitUntil(() => ForAllPlayers(0, player => typeof(IdleState) != player.CurrentState));
 
-            input.Set(gamepad.leftStick, Vector2.up);
-            yield return null;
+            input.Set(demo.moveStick, Vector2.up);
 
-            Assert.AreEqual(typeof(WalkingState), networkKCC.CurrentState);
+            yield return TestUtils.WaitUntil(() => ForAllPlayers(0, player => typeof(IdleState) != player.CurrentState));
             Assert.IsTrue(networkKCC.config.groundedState.StandingOnGround);
             Assert.IsFalse(networkKCC.config.groundedState.Sliding);
             Assert.IsFalse(networkKCC.config.groundedState.Falling);

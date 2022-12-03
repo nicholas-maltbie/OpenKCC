@@ -67,7 +67,7 @@
       "url": "https://registry.npmjs.org"
     },
     "com.nickmaltbie.testutilsunity": {
-      "version": "0.1.0",
+      "version": "1.0.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
