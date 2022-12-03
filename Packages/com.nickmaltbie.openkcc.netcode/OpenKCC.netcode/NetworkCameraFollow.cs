@@ -19,7 +19,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Character
+namespace nickmaltbie.OpenKCC.netcode
 {
     /// <summary>
     /// Script to move main camera to follow the local player

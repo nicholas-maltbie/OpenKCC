@@ -24,7 +24,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace nickmaltbie.OpenKCC.Character
+namespace nickmaltbie.OpenKCC.netcode
 {
     /// <summary>
     /// Basic hybrid first and third person camera controller.

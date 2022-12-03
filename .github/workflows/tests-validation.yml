@@ -30,7 +30,7 @@ jobs:
           unityVersion: ${{ env.UNITY_VERSION }}
           testMode: All
           checkName: All Test Results
-          customParameters: -testFilter "nickmaltbie.OpenKCC.*"
+          customParameters: -testFilter "nickmaltbie.OpenKCC.Tests.*" -nographics
           coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC,+nickmaltbie.OpenKCC.netcode'
 
       - name: Copy Coverage Results
