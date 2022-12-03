@@ -43,11 +43,11 @@ Install the latest version of the project by importing a project via git
 at this URL:
 `https://github.com/nicholas-maltbie/OpenKCC.git#release/latest`
 
-If you want to reference a specific tag of the project such as version `v1.0.0`,
-add a `#release/v1.0.0` to the end of the git URL to download the package
-from th auto-generated branch for that release. An example of importing `v1.0.0`
+If you want to reference a specific tag of the project such as version `v1.0.1`,
+add a `#release/v1.0.1` to the end of the git URL to download the package
+from th auto-generated branch for that release. An example of importing `v1.0.1`
 would look like this:
-`https://github.com/nicholas-maltbie/openkcc.git#release/v1.0.0`.
+`https://github.com/nicholas-maltbie/openkcc.git#release/v1.0.1`.
 
 To use the latest release, simply reference:
 
