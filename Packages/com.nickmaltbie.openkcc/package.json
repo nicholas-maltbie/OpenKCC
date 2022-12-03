@@ -31,7 +31,7 @@
   "dependencies": {
     "com.nickmaltbie.screenmanager": "3.0.0",
     "com.nickmaltbie.statemachineunity": "1.1.0",
-    "com.nickmaltbie.testutilsunity": "0.0.2",
+    "com.nickmaltbie.testutilsunity": "1.0.0",
     "com.unity.inputsystem": "1.0.0",
     "com.unity.textmeshpro": "3.0.0"
   },
