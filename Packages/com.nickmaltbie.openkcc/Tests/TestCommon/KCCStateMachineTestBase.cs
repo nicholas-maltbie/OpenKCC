@@ -55,6 +55,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         public override void Setup()
         {
             base.Setup();
+
             GameObject go = CreateGameObject();
             CapsuleCollider capsuleCollider = go.AddComponent<CapsuleCollider>();
             go.AddComponent<CapsuleColliderCast>();
@@ -67,6 +68,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
             controller.AddParameter("MoveX", AnimatorControllerParameterType.Float);
             controller.AddParameter("MoveY", AnimatorControllerParameterType.Float);
+
             rootStateMachine.AddState(HumanoidKCCAnim.IdleAnimState);
             rootStateMachine.AddState(HumanoidKCCAnim.JumpAnimState);
             rootStateMachine.AddState(HumanoidKCCAnim.LandingAnimState);
@@ -97,7 +99,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             moveInputAction.Enable();
             sprintInputAction.Enable();
 
-            jumpInput.inputAction = InputActionReference.Create(jumpInputAction);
+            jumpInput.inputActionReference = InputActionReference.Create(jumpInputAction);
             jumpInput.cooldown = 1.0f;
             jumpInput.bufferTime = 3.0f;
             jumpAction = new JumpAction();
@@ -105,8 +107,8 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
 
             kccStateMachine = go.AddComponent<KCCStateMachine>();
             kccStateMachine.config.jumpAction = jumpAction;
-            kccStateMachine.config.moveAction = InputActionReference.Create(moveInputAction);
-            kccStateMachine.config.sprintAction = InputActionReference.Create(sprintInputAction);
+            kccStateMachine.config.moveActionReference = InputActionReference.Create(moveInputAction);
+            kccStateMachine.config.sprintActionReference = InputActionReference.Create(sprintInputAction);
             kccStateMachine.Start();
 
             constraint = kccStateMachine.GetComponent<ParentConstraint>();

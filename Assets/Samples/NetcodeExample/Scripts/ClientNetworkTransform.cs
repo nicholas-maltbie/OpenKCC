@@ -18,7 +18,7 @@
 
 using Unity.Netcode.Components;
 
-namespace nickmaltbie.NetworkStateMachineUnity.ExampleAnim
+namespace nickmaltbie.OpenKCC.NetcodeExample
 {
     public class ClientNetworkTransform : NetworkTransform
     {

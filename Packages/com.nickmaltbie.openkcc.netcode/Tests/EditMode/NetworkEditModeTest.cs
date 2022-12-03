@@ -16,29 +16,25 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Unity.Netcode;
+using nickmaltbie.OpenKCC.netcode;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
+using NUnit.Framework;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.netcode
+namespace nickmaltbie.openkcc.Tests.netcode.Runtime
 {
     /// <summary>
-    /// Script to move main camera to follow the local player
+    /// Simple tests meant to be run in EditMode
     /// </summary>
-    [RequireComponent(typeof(NetworkCameraController))]
-    public class NetworkCameraFollow : NetworkBehaviour
+    [TestFixture]
+    public class NetworkEditModeTest : TestBase
     {
-        public void LateUpdate()
+        [Test]
+        public void EmptyTest()
         {
-            // Do nothing if there is no main camera
-            if (Camera.main == null || !IsOwner)
-            {
-                return;
-            }
-
-            // Set main camera's parent to be this and set it's relative position and rotation to be zero
-            GameObject mainCamera = Camera.main.gameObject;
-            mainCamera.transform.rotation = GetComponent<NetworkCameraController>().cameraTransform.rotation;
-            mainCamera.transform.position = GetComponent<NetworkCameraController>().cameraTransform.position;
+            GameObject go = CreateGameObject();
+            NetworkKCC networkKcc = go.AddComponent<NetworkKCC>();
+            networkKcc.Start();
         }
     }
 }

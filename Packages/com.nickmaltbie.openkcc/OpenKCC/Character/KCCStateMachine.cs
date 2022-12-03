@@ -371,21 +371,21 @@ namespace nickmaltbie.OpenKCC.Character
         public void Start()
         {
             config.jumpAction.Setup(config.groundedState, config, this);
-            config.moveAction.action.Enable();
+            config.MoveAction.Enable();
         }
 
         /// <inheritdoc/>
         public override void Update()
         {
             bool denyMovement = PlayerInputUtils.playerMovementState == PlayerInputState.Deny;
-            Vector2 moveVector = denyMovement ? Vector3.zero : config.moveAction.action.ReadValue<Vector2>();
+            Vector2 moveVector = denyMovement ? Vector3.zero : config.MoveAction.ReadValue<Vector2>();
             InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
             bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
             RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
 
             if (moving)
             {
-                if (config.sprintAction.action.IsPressed())
+                if (config.SprintAction.IsPressed())
                 {
                     RaiseEvent(StartSprintEvent.Instance);
                 }
@@ -497,8 +497,8 @@ namespace nickmaltbie.OpenKCC.Character
                 // Disabling warnings because this method is to convert from obsolete
                 // fields to current structure.
 #pragma warning disable CS0618 // Type or member is obsolete
-                config.moveAction = moveAction;
-                config.sprintAction = sprintAction;
+                config.moveActionReference = moveAction;
+                config.sprintActionReference = sprintAction;
                 config.jumpAction = jumpAction;
                 config.groundedState = groundedState;
                 config.gravity = gravity;

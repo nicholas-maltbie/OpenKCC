@@ -9,6 +9,12 @@
                     ]
                 },
                 {
+                    "src": "../Packages/com.nickmaltbie.openkcc.netcode",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                },
+                {
                     "src": "../Assets/Samples",
                     "files": [
                         "**/*.cs"
@@ -75,6 +81,12 @@
         "overwrite": [
             {
                 "src": "../Packages/com.nickmaltbie.openkcc",
+                "files": [
+                    "**/*.cs"
+                ]
+            },
+            {
+                "src": "../Packages/com.nickmaltbie.openkcc.netcode",
                 "files": [
                     "**/*.cs"
                 ]

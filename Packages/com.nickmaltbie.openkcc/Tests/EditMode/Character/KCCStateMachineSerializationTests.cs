@@ -70,8 +70,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Assert.IsFalse(new HumanoidKCCConfig().Equals(kcc.config));
 
 #pragma warning disable CS0618 // Type or member is obsolete
-            Assert.AreEqual(kcc.moveAction, kcc.config.moveAction);
-            Assert.AreEqual(kcc.sprintAction, kcc.config.sprintAction);
+            Assert.AreEqual(kcc.moveAction, kcc.config.moveActionReference);
+            Assert.AreEqual(kcc.sprintAction, kcc.config.sprintActionReference);
             Assert.AreEqual(kcc.jumpAction, kcc.config.jumpAction);
             Assert.AreEqual(kcc.groundedState, kcc.config.groundedState);
             Assert.AreEqual(kcc.gravity, kcc.config.gravity);
