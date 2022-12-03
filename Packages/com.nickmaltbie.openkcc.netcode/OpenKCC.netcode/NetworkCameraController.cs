@@ -17,7 +17,7 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-
+using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity;
 using Unity.Netcode;
