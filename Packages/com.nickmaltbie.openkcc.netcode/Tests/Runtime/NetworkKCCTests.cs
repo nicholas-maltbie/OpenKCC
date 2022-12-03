@@ -76,7 +76,6 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
             Animator anim = GetComponent<Animator>();
             NetworkKCC networkKCC = GetComponent<NetworkKCC>();
             CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
-
             GetComponent<CapsuleCollider>().enabled = false;
 
             // Setup the basic unity service for the network kcc.
@@ -94,8 +93,7 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
 
         public Gamepad SetupInputs()
         {
-            Gamepad gamepad = InputSystem.AddDevice<Gamepad>();
-
+            Gamepad gamepad = InputSystem.AddDevice<Gamepad>($"Gamepad#{OwnerClientId}");
             NetworkKCC networkKCC = GetComponent<NetworkKCC>();
 
             moveStick = gamepad.leftStick;
@@ -123,6 +121,8 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
             networkKCC.config.jumpAction = jumpAction;
             networkKCC.config.MoveAction = moveInputAction;
             networkKCC.config.SprintAction = sprintInputAction;
+
+            networkKCC.SetupInputs();
 
             return gamepad;
         }
@@ -179,13 +179,13 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
         {
             yield return base.UnityTearDown();
             UnityEngine.Object.Destroy(floor);
+            TestableNetworkKCC.Objects.Clear();
         }
 
         [UnitySetUp]
         public override IEnumerator UnitySetUp()
         {
             yield return base.UnitySetUp();
-
 
             // Spawn a floor below the players.
             floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -208,7 +208,7 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
                 go.transform.position = Vector3.right * objectIndex * 2 + Vector3.up * 0.1f;
 
                 // wait for each object to spawn on each client
-                for (int clientIndex = 0; clientIndex < 3; clientIndex++)
+                for (int clientIndex = 0; clientIndex <= NumberOfClients; clientIndex++)
                 {
                     while (!TestableNetworkKCC.Objects.ContainsKey((objectIndex, clientIndex)))
                     {
@@ -218,28 +218,54 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
             }
         }
 
-        public static bool ForAllPlayers(int index, Func<NetworkKCC, bool> verify)
+        public bool ForAllPlayers(int index, Func<NetworkKCC, bool> verify)
         {
-            return Enumerable.Range(0, 3).All(i =>
+            return Enumerable.Range(0, NumberOfClients + 1).All(i =>
                 verify(TestableNetworkKCC.Objects[(index, i)].GetComponent<NetworkKCC>()));
         }
 
         [UnityTest]
         public IEnumerator Validate_KCCStateMachine_Move_Transition()
         {
-            TestableNetworkKCC demo = TestableNetworkKCC.Objects[(0, 0)];
-            NetworkKCC networkKCC = demo.GetComponent<NetworkKCC>();
-            Gamepad gamepad = demo.SetupInputs();
+            for (int i = 0; i <= NumberOfClients; i++)
+            {
+                Debug.Log($"Validating client #{i}");
+                TestableNetworkKCC demo = TestableNetworkKCC.Objects[(i, i)];
+                NetworkKCC networkKCC = demo.GetComponent<NetworkKCC>();
+                demo.SetupInputs();
 
-            // Wait for player to fall to ground
-            yield return TestUtils.WaitUntil(() => ForAllPlayers(0, player => typeof(IdleState) != player.CurrentState));
+                // Move to a position depending on index
+                demo.transform.position = Vector3.right * i * 2 + Vector3.up * 0.0025f;
 
-            input.Set(demo.moveStick, Vector2.up);
+                // Wait for player to fall to ground
+                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState));
+                input.Set(demo.moveStick, Vector2.up);
+                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(WalkingState) == player.CurrentState));
+                input.Set(demo.sprintButton, 1.0f);
+                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(SprintingState) == player.CurrentState));
+                input.Set(demo.moveStick, Vector2.zero);
+                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState));
+            }
+        }
 
-            yield return TestUtils.WaitUntil(() => ForAllPlayers(0, player => typeof(IdleState) != player.CurrentState));
-            Assert.IsTrue(networkKCC.config.groundedState.StandingOnGround);
-            Assert.IsFalse(networkKCC.config.groundedState.Sliding);
-            Assert.IsFalse(networkKCC.config.groundedState.Falling);
+        [UnityTest]
+        public IEnumerator Validate_KCCStateMachine_Jump_Transition()
+        {
+            for (int i = 0; i <= NumberOfClients; i++)
+            {
+                Debug.Log($"Validating client #{i}");
+                TestableNetworkKCC demo = TestableNetworkKCC.Objects[(i, i)];
+                NetworkKCC networkKCC = demo.GetComponent<NetworkKCC>();
+                demo.SetupInputs();
+
+                // Move to a position depending on index
+                demo.transform.position = Vector3.right * i * 2 + Vector3.up * 0.0025f;
+
+                // Wait for player to fall to ground
+                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState));
+                input.Set(demo.jumpButton, 1.0f);
+                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(JumpState) == player.CurrentState));
+            }
         }
     }
 }

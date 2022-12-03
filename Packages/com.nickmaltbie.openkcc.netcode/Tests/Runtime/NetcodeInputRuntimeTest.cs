@@ -119,6 +119,12 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
         [OneTimeSetUp]
         public virtual void OneTimeSetup()
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                UnityEngine.SceneManagement.Scene scene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.EmptyScene, UnityEditor.SceneManagement.NewSceneMode.Single);
+            }
+#endif
             netcodeHelper.OneTimeSetup();
         }
 
