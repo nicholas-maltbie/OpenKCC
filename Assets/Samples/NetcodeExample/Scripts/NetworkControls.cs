@@ -28,7 +28,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace nickmaltbie.NetworkStateMachineUnity.ExampleAnim
+namespace nickmaltbie.OpenKCC.NetcodeExample
 {
     public class NetworkControls : MonoBehaviour
     {

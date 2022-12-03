@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using nickmaltbie.openkcc.Tests.netcode.TestCommon;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Input;
@@ -39,7 +40,7 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine.TestTools;
 using static nickmaltbie.OpenKCC.netcode.NetworkKCC;
 
-namespace nickmaltbie.openkcc.netcode.Tests.Runtime
+namespace nickmaltbie.openkcc.Tests.netcode.Runtime
 {
     public class ClientNetworkTransform : NetworkTransform
     {

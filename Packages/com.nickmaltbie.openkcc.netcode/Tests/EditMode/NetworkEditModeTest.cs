@@ -16,12 +16,25 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Unity.Netcode.Components;
+using nickmaltbie.OpenKCC.netcode;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
+using NUnit.Framework;
+using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.NetcodeExample
+namespace nickmaltbie.openkcc.Tests.netcode.Runtime
 {
-    public class ClientNetworkTransform : NetworkTransform
+    /// <summary>
+    /// Simple tests meant to be run in EditMode
+    /// </summary>
+    [TestFixture]
+    public class NetworkEditModeTest : TestBase
     {
-        protected override bool OnIsServerAuthoritative() => false;
+        [Test]
+        public void EmptyTest()
+        {
+            GameObject go = CreateGameObject();
+            NetworkKCC networkKcc = go.AddComponent<NetworkKCC>();
+            networkKcc.Start();
+        }
     }
 }

@@ -1,6 +1,6 @@
 {
-	"name": "nickmaltbie.OpenKCC.Tests.netcode.Runtime",
-    "rootNamespace": "nickmaltbie.OpenKCC.Tests.netcode.Runtime",
+	"name": "nickmaltbie.OpenKCC.Tests.netcode.EditMode",
+    "rootNamespace": "nickmaltbie.OpenKCC.Tests.netcode.EditMode",
     "references": [
 		"nickmaltbie.NetworkStateMachineUnity",
 		"nickmaltbie.OpenKCC",
@@ -24,7 +24,9 @@
     "optionalUnityReferences": [
         "TestAssemblies"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+		"Editor"
+	],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

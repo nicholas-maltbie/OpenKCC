@@ -25,7 +25,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TestTools;
 
-namespace nickmaltbie.openkcc.netcode.Tests.Runtime
+namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
 {
     public abstract class NetcodeInputRuntimeTest
     {
