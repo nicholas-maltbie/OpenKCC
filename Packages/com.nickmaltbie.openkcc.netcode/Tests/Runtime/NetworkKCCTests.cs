@@ -54,7 +54,7 @@ namespace nickmaltbie.openkcc.netcode.Tests.Runtime
     {
         public const string AnimControllerPath = "Packages/com.nickmaltbie.openkcc/Common/Animations/CharacterAnimationController.controller";
 
-        public static Dictionary<(int, int), TestableNetworkKCC> Objects = new ();
+        public static Dictionary<(int, int), TestableNetworkKCC> Objects = new();
         public static int CurrentlySpawning = 0;
         public IUnityService unityService;
 
