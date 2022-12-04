@@ -28,6 +28,22 @@ the `Test Runner` window (See [Workflow: How to run a test](https://docs.unity3d
 The tests are also run as part of a GitHub action as part of every
 PR and with every build of the project.
 
+If you wish to include the testing code for this project, make sure to add
+the `com.unity.inputsystem` and `com.nickmaltbie.openkcc` to the testables
+of the project manifest.
+
+```json
+  "testables": [
+    "com.nickmaltbie.openkcc",
+    "com.nickmaltbie.testutilsunity",
+    "com.unity.inputsystem"
+  ]
+```
+
+Additionally, some of the testing code uses pro builder's api, so make
+sure to import [com.unity.probuilder](https://docs.unity3d.com/Packages/com.unity.probuilder@5.0/manual/index.html)
+version 5.0 or newer as well.
+
 In order to run the tests, you will need to import the [Moq](https://github.com/moq/moq)
 library. My favorite way to import the `Moq.dll` in Unity is by using
 [NuGet for Unity](https://github.com/GlitchEnzo/NuGetForUnity).
