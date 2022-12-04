@@ -41,18 +41,18 @@ projects to your project.
 
 Install the latest version of the project by importing a project via git
 at this URL:
-`https://github.com/nicholas-maltbie/OpenKCC.git#release/latest`
+`git+https://github.com/nicholas-maltbie/OpenKCC.git#release/latest`
 
 If you want to reference a specific tag of the project such as version `v1.0.1`,
 add a `#release/v1.0.1` to the end of the git URL to download the package
 from th auto-generated branch for that release. An example of importing `v1.0.1`
 would look like this:
-`https://github.com/nicholas-maltbie/openkcc.git#release/v1.0.1`.
+`git+https://github.com/nicholas-maltbie/openkcc.git#release/v1.0.1`.
 
 To use the latest release, simply reference:
 
 ```text
-https://github.com/nicholas-maltbie/openkcc.git#release/latest
+git+https://github.com/nicholas-maltbie/openkcc.git#release/latest
 ```
 
 For a full list of all tags, check the [OpenKCC Tags](https://github.com/nicholas-maltbie/ScreenManager/tags)
@@ -103,7 +103,7 @@ manager will be able to download it from the registry at
   "com.nickmaltbie.openkcc": "1.0.1",
   "com.nickmaltbie.screenmanager": "3.0.0",
   "com.nickmaltbie.statemachineunity": "1.1.0",
-  "com.nickmaltbie.testutilsunity": "0.0.2",
+  "com.nickmaltbie.testutilsunity": "1.0.0",
   "com.unity.inputsystem": "1.0.0",
   "com.unity.textmeshpro": "3.0.0"
 }

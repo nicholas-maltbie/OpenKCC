@@ -25,7 +25,7 @@
     "com.unity.recorder": "3.0.3",
     "com.unity.render-pipelines.universal": "12.1.7",
     "com.unity.test-framework": "2.0.1-pre.18",
-    "com.unity.testtools.codecoverage": "1.0.1",
+    "com.unity.testtools.codecoverage": "1.2.2",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.6.4",
     "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.3",
