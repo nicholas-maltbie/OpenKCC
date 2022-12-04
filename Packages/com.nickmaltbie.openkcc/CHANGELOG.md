@@ -4,18 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Reorganized camera controller code to be more reusable between the main
+    and netcode projects.
+* Moved camera control code to the `nickmaltbie.OpenKCC.CameraControls`
+    namespace within the openkcc project.
 * Added example using unity Netcode and sub package com.nickmaltbie.openkcc.netcode
-* Depreciated the old fields for KCCStateMachine and replaced with the
-    object HumanoidKCCConfig. Also added some code to auto-convert the old
-    fields into a HumanoidKCCConfig when the object is first de-serialized.
-    Tagged this version with a string property and called this first version
-    v1.0.0 and will use a semantic versioning system to update the value.
-    Whenever possible, I will include an auto-translation to the new format
-    to avoid having to save and manually copy values between version upgrades.
 * Reformatted some code in the KCCStateMachine to reduce the amount of copied
     code between netcode character controller and basic character controller.
 * Modified github actions workflows to deploy netcode example to the site
     under the directory Netcode.
+* Depreciated old fields for objects that were duplicated in
+    the netcode version of the openkcc.
+    Whenever possible, I will include an auto-translation to the new format
+    to avoid having to save and manually copy values between version upgrades.
+    * Depreciated the old fields for KCCStateMachine and replaced with the
+        object HumanoidKCCConfig. Also added some code to auto-convert the old
+        fields into a HumanoidKCCConfig when the object is first de-serialized.
+        Tagged this version with a string property and called this first version
+        v1.0.0 and will use a semantic versioning system to update the value.
+    * Depreciated the old fields for CameraController and replaced with the
+        object CameraConfig. Also added some code to auto-convert th e old
+        fields into a CameraConfig when the object is first de-serialized.
+        Tagged this version with a string property and called this first version
+        v1.0.0 and will use a semantic versioning system to update the value.
+
 
 ## [1.0.1] 2022-11-22
 

@@ -18,6 +18,7 @@
 
 using System.Collections;
 using Moq;
+using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.TestUtilsUnity;
@@ -52,7 +53,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             GameObject go = CreateGameObject();
             cameraController = go.AddComponent<CameraController>();
             unityServiceMock = new Mock<IUnityService>();
-            cameraController.cameraTransform = cameraController.transform;
+            cameraController.config.cameraTransform = cameraController.transform;
             cameraController.unityService = unityServiceMock.Object;
             unityServiceMock.Setup(e => e.deltaTime).Returns(0.1f);
 
@@ -64,8 +65,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             zoomInputAction = actionMap.AddAction("zoomAction", InputActionType.Value, zoomAction.path);
             lookInputAction = actionMap.AddAction("lookAction", InputActionType.Value, lookAction.path);
 
-            cameraController.zoomAction = InputActionReference.Create(zoomInputAction);
-            cameraController.lookAction = InputActionReference.Create(lookInputAction);
+            cameraController.config.zoomActionReference = InputActionReference.Create(zoomInputAction);
+            cameraController.config.lookActionReference = InputActionReference.Create(lookInputAction);
 
             lookInputAction.Enable();
             zoomInputAction.Enable();
@@ -73,8 +74,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
 
-            cameraController.minCameraDistance = 0.0f;
-            cameraController.maxCameraDistance = 10.0f;
+            cameraController.config.minCameraDistance = 0.0f;
+            cameraController.config.maxCameraDistance = 10.0f;
         }
 
         [UnitySetUp]
@@ -115,14 +116,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Set(lookAction, Vector3.up);
             cameraController.Update();
 
-            Assert.AreEqual(-cameraController.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
+            Assert.AreEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
             Assert.AreEqual(0, cameraController.Yaw);
 
             Set(lookAction, Vector3.left);
             cameraController.Update();
 
-            Assert.AreEqual(-cameraController.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
-            Assert.AreEqual(-cameraController.rotationRate * 0.1f * 0.25f, cameraController.Yaw);
+            Assert.AreEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
+            Assert.AreEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Yaw);
         }
 
         [Test]
@@ -131,12 +132,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         )
         {
             cameraController.transform.position = Vector3.forward * dist;
-            cameraController.currentDistance = dist;
-            cameraController.AddIgnoreObject(box);
+            cameraController.config.currentDistance = dist;
+            cameraController.config.AddIgnoreObject(box);
             cameraController.Update();
 
-            TestUtils.AssertInBounds(cameraController.CameraDistance, dist);
-            cameraController.RemoveIgnoreObject(box);
+            TestUtils.AssertInBounds(cameraController.config.CameraDistance, dist);
+            cameraController.config.RemoveIgnoreObject(box);
         }
 
         [Test]
@@ -145,11 +146,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         )
         {
             cameraController.transform.position = Vector3.forward * dist;
-            cameraController.currentDistance = dist;
-            UnityEngine.Debug.DrawRay(cameraController.transform.position, -cameraController.transform.forward * cameraController.currentDistance);
+            cameraController.config.currentDistance = dist;
+            Debug.DrawRay(cameraController.transform.position, -cameraController.transform.forward * cameraController.config.currentDistance);
             cameraController.Update();
 
-            TestUtils.AssertInBounds(cameraController.CameraDistance, dist - 0.5f, 0.25f);
+            TestUtils.AssertInBounds(cameraController.config.CameraDistance, dist - 0.5f, 0.25f);
         }
 
         [Test]
@@ -158,8 +159,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         )
         {
             cameraController.transform.position = Vector3.forward * dist;
-            cameraController.currentDistance = dist;
-            cameraController.thirdPersonCharacterBase = cameraController.gameObject;
+            cameraController.config.currentDistance = dist;
+            cameraController.config.thirdPersonCharacterBase = cameraController.gameObject;
 
             cameraController.Update();
         }
@@ -170,8 +171,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         )
         {
             cameraController.transform.position = Vector3.forward * (0.5f + dist);
-            cameraController.currentDistance = 2.0f;
-            cameraController.thirdPersonCharacterBase = cameraController.gameObject;
+            cameraController.config.currentDistance = 2.0f;
+            cameraController.config.thirdPersonCharacterBase = cameraController.gameObject;
 
             cameraController.Update();
         }

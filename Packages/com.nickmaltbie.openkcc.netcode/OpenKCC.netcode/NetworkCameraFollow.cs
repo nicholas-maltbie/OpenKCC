@@ -37,8 +37,8 @@ namespace nickmaltbie.OpenKCC.netcode
 
             // Set main camera's parent to be this and set it's relative position and rotation to be zero
             GameObject mainCamera = Camera.main.gameObject;
-            mainCamera.transform.rotation = GetComponent<NetworkCameraController>().cameraTransform.rotation;
-            mainCamera.transform.position = GetComponent<NetworkCameraController>().cameraTransform.position;
+            mainCamera.transform.rotation = GetComponent<NetworkCameraController>().config.cameraTransform.rotation;
+            mainCamera.transform.position = GetComponent<NetworkCameraController>().config.cameraTransform.position;
         }
     }
 }

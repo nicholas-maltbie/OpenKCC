@@ -18,7 +18,7 @@
 
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Character
+namespace nickmaltbie.OpenKCC.CameraControls
 {
     /// <summary>
     /// Script to move main camera to follow the local player
@@ -44,6 +44,16 @@ namespace nickmaltbie.OpenKCC.Character
 
         public void LateUpdate()
         {
+            CameraFollow.MoveCamera(cameraController.transform, audioListener);
+        }
+
+        /// <summary>
+        /// Move the main camera to follow a given transform.
+        /// </summary>
+        /// <param name="targetCameraPos">Position to move the camera to.</param>
+        /// <param name="audioListener">Audio listener associated with the camera to move as well.</param>
+        public static void MoveCamera(Transform targetCameraPos, AudioListener audioListener = null)
+        {
             // Do nothing if there is no main camera
             if (Camera.main == null)
             {
@@ -52,15 +62,15 @@ namespace nickmaltbie.OpenKCC.Character
 
             // Set main camera's parent to be this and set it's relative position and rotation to be zero
             GameObject mainCamera = Camera.main.gameObject;
-            mainCamera.transform.rotation = cameraController.cameraTransform.rotation;
-            mainCamera.transform.position = cameraController.cameraTransform.position;
+            mainCamera.transform.position = targetCameraPos.position;
+            mainCamera.transform.rotation = targetCameraPos.rotation;
 
             // If the camera has an audio listener, make sure to move that as well to the character's base 
             //  camera position (simulate sound coming from the character's head, not the camera position)
             if (audioListener != null)
             {
-                audioListener.transform.position = cameraController.CameraSource;
-                audioListener.transform.rotation = cameraController.cameraTransform.rotation;
+                audioListener.transform.position = targetCameraPos.position;
+                audioListener.transform.rotation = targetCameraPos.rotation;
             }
         }
     }

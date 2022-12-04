@@ -48,7 +48,7 @@ namespace nickmaltbie.OpenKCC.Input
         /// <summary>
         /// Override input action for testing.
         /// </summary>
-        public InputAction overrideInputAction;
+        private InputAction overrideInputAction;
 
         /// <summary>
         /// Gets the input action associated with this buffered input.
@@ -97,7 +97,7 @@ namespace nickmaltbie.OpenKCC.Input
             elapsedSincePressed += unityService.deltaTime;
             elapsedSinceReset += unityService.deltaTime;
 
-            if (InputAction.ReadValue<float>() == 1.0f)
+            if (InputAction?.ReadValue<float>() == 1.0f)
             {
                 elapsedSincePressed = 0.0f;
             }

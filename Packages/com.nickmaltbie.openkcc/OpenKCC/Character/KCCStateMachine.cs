@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using System;
+using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;
