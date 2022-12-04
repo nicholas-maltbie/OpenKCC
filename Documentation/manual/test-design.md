@@ -28,6 +28,10 @@ the `Test Runner` window (See [Workflow: How to run a test](https://docs.unity3d
 The tests are also run as part of a GitHub action as part of every
 PR and with every build of the project.
 
+In order to run the tests, you will need to import the [Moq](https://github.com/moq/moq)
+library. My favorite way to import the `Moq.dll` in Unity is by using
+[NuGet for Unity](https://github.com/GlitchEnzo/NuGetForUnity).
+
 ## Goals
 
 There are few main goals for adding the tests to the project.
