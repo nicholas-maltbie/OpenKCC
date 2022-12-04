@@ -127,6 +127,10 @@ Additionally, some of the testing code uses pro builder's api, so make
 sure to import [com.unity.probuilder](https://docs.unity3d.com/Packages/com.unity.probuilder@5.0/manual/index.html)
 version 5.0 or newer as well.
 
+In order to run the tests, you will need to import the [Moq](https://github.com/moq/moq)
+library. My favorite way to import the `Moq.dll` in Unity is by using
+[NuGet for Unity](https://github.com/GlitchEnzo/NuGetForUnity).
+
 ## Samples
 
 In order to run the samples from the project, you must import the following
