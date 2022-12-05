@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using nickmaltbie.OpenKCC.CameraControls.Config;
 using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
@@ -191,28 +192,17 @@ namespace nickmaltbie.OpenKCC.CameraControls
         /// Get the current distance of the camera from the player camera location
         /// </summary>
         [Obsolete(ObselteMessage)]
-        public float CameraDistance { get; internal set; }
+        [ExcludeFromCodeCoverage]
+        public float CameraDistance { get; }
 
         /// <summary>
         /// Source camera position in real world space, this is where the head of 
         /// the player would be, where the camera zooms out from
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [ExcludeFromCodeCoverage]
         public Vector3 CameraSource => baseCameraOffset + transform.position;
 
-        /// <summary>
-        /// Add an object to the ignore list when raycasting camera position
-        /// </summary>
-        /// <param name="go"></param>
-        [Obsolete(ObselteMessage)]
-        public void AddIgnoreObject(GameObject go) => ignoreObjects.Add(go);
-
-        /// <summary>
-        /// Remove an object to the ignore list when raycasting camera position
-        /// </summary>
-        /// <param name="go"></param>
-        [Obsolete(ObselteMessage)]
-        public bool RemoveIgnoreObject(GameObject go) => ignoreObjects.Remove(go);
         #endregion Obsolete fields
 
         #region Parse Depreciated Configurations of KCC StateMachine.

@@ -42,7 +42,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             audioListener = CreateGameObject().AddComponent<AudioListener>();
             cameraFollow = followGo.AddComponent<CameraFollow>();
-            cameraController.cameraTransform = cameraController.transform;
+            cameraController.config.cameraTransform = cameraController.transform;
 
             camera = cameraGo.AddComponent<Camera>();
             camera.tag = "MainCamera";

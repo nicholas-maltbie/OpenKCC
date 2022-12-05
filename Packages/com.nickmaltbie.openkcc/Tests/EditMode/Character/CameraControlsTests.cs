@@ -19,6 +19,7 @@
 using System.Collections;
 using Moq;
 using nickmaltbie.OpenKCC.CameraControls;
+using nickmaltbie.OpenKCC.CameraControls.Config;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.TestUtilsUnity;
@@ -65,8 +66,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             zoomInputAction = actionMap.AddAction("zoomAction", InputActionType.Value, zoomAction.path);
             lookInputAction = actionMap.AddAction("lookAction", InputActionType.Value, lookAction.path);
 
-            cameraController.config.zoomActionReference = InputActionReference.Create(zoomInputAction);
-            cameraController.config.lookActionReference = InputActionReference.Create(lookInputAction);
+            cameraController.config.ZoomAction = InputActionReference.Create(zoomInputAction);
+            cameraController.config.LookAction = InputActionReference.Create(lookInputAction);
 
             lookInputAction.Enable();
             zoomInputAction.Enable();
@@ -175,6 +176,55 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             cameraController.config.thirdPersonCharacterBase = cameraController.gameObject;
 
             cameraController.Update();
+        }
+
+        [Test]
+        public void Validate_CameraController_UpdateSerializationVersion()
+        {
+#pragma warning disable CS0618 // Type or member is obsolete
+            cameraController.config = new CameraConfig();
+            cameraController.zoomAction = InputActionReference.Create(zoomInputAction);
+            cameraController.lookAction = InputActionReference.Create(lookInputAction);
+            cameraController.maxPitch = -1;
+            cameraController.minPitch = -1;
+            cameraController.rotationRate = 1000;
+            cameraController.cameraTransform = CreateGameObject().transform;
+            cameraController.baseCameraOffset = Vector3.forward * 100;
+            cameraController.minCameraDistance = 10;
+            cameraController.maxCameraDistance = 100;
+            cameraController.currentDistance = 69;
+            cameraController.zoomSpeed = 10;
+            cameraController.cameraRaycastMask = 0b111111;
+            cameraController.shadowOnlyDistance = 0.5f;
+            cameraController.ditherDistance = 1.5f;
+            cameraController.thirdPersonCharacterBase = CreateGameObject();
+            cameraController.transitionTime = 10.0f;
+            cameraController.serializationVersion = "";
+
+            cameraController.OnBeforeSerialize();
+            cameraController.OnAfterDeserialize();
+
+            Assert.AreEqual(cameraController.config.zoomActionReference, cameraController.zoomAction);
+            Assert.AreEqual(cameraController.config.lookActionReference, cameraController.lookAction);
+            Assert.AreEqual(cameraController.config.maxPitch, cameraController.maxPitch);
+            Assert.AreEqual(cameraController.config.minPitch, cameraController.minPitch);
+            Assert.AreEqual(cameraController.config.rotationRate, cameraController.rotationRate);
+            Assert.AreEqual(cameraController.config.cameraTransform, cameraController.cameraTransform);
+            Assert.AreEqual(cameraController.config.baseCameraOffset, cameraController.baseCameraOffset);
+            Assert.AreEqual(cameraController.config.minCameraDistance, cameraController.minCameraDistance);
+            Assert.AreEqual(cameraController.config.maxCameraDistance, cameraController.maxCameraDistance);
+            Assert.AreEqual(cameraController.config.currentDistance, cameraController.currentDistance);
+            Assert.AreEqual(cameraController.config.zoomSpeed, cameraController.zoomSpeed);
+            Assert.AreEqual(cameraController.config.cameraRaycastMask, cameraController.cameraRaycastMask);
+            Assert.AreEqual(cameraController.config.shadowOnlyDistance, cameraController.shadowOnlyDistance);
+            Assert.AreEqual(cameraController.config.ditherDistance, cameraController.ditherDistance);
+            Assert.AreEqual(cameraController.config.thirdPersonCharacterBase, cameraController.thirdPersonCharacterBase);
+            Assert.AreEqual(cameraController.config.transitionTime, cameraController.transitionTime);
+            Assert.AreEqual(cameraController.serializationVersion, CameraController.CurrentSerializationVersion);
+
+            Assert.AreEqual(cameraController.CameraDistance, cameraController.config.CameraDistance);
+            Assert.AreEqual(cameraController.CameraSource, cameraController.config.CameraSource(cameraController.transform));
+#pragma warning restore CS0618 // Type or member is obsolete
         }
     }
 }
