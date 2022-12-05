@@ -85,6 +85,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
         /// </summary>
         [Tooltip("Player look action to rotate camera.")]
         [SerializeField]
+        [HideInInspector]
         [Obsolete(ObselteMessage)]
         public InputActionReference lookAction;
 
@@ -93,6 +94,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
         /// </summary>
         [Tooltip("Player zoom action with camera.")]
         [SerializeField]
+        [HideInInspector]
         [Obsolete(ObselteMessage)]
         public InputActionReference zoomAction;
 
@@ -102,6 +104,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
         /// Maximum pitch for rotating character camera in degrees
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public float maxPitch = 90;
 
         /// <summary>
@@ -114,78 +117,91 @@ namespace nickmaltbie.OpenKCC.CameraControls
         /// Rotation rate of camera in degrees per second per one unit of axis movement
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public float rotationRate = 180;
 
         /// <summary>
         /// Transform holding camera position and rotation data
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public Transform cameraTransform;
 
         /// <summary>
         /// Camera offset from character center
         /// </summary>   
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public Vector3 baseCameraOffset;
 
         /// <summary>
         /// Minimum distance (closest zoom) of player camera
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public float minCameraDistance = 0.0f;
 
         /// <summary>
         /// Maximum distance (farthest zoom) of player camera
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public float maxCameraDistance = 4.0f;
 
         /// <summary>
         /// Current distance of the camera from the player position
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public float currentDistance;
 
         /// <summary>
         /// Zoom distance change in units per second
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public float zoomSpeed = 1.0f;
 
         /// <summary>
         /// What can the camera collide with
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public LayerMask cameraRaycastMask = ~0;
 
         /// <summary>
         /// Distance in which the third person character will be completely transparent and only cast shadows
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public float shadowOnlyDistance = 0.5f;
 
         /// <summary>
         /// Distance where the player object will dither but still be visible
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public float ditherDistance = 1.0f;
 
         /// <summary>
         /// Base object where all the third person character is stored.
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public GameObject thirdPersonCharacterBase;
 
         /// <summary>
         /// Time in seconds it takes to transition between opacity states
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         public float transitionTime = 0.1f;
 
         /// <summary>
         /// Objects to ignore when drawing raycast for camera
         /// </summary>
         [Obsolete(ObselteMessage)]
+        [HideInInspector]
         private List<GameObject> ignoreObjects = new List<GameObject>();
 
         /// <summary>
@@ -229,6 +245,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
                 // fields to current structure.
 #pragma warning disable CS0618 // Type or member is obsolete
                 config.lookActionReference = lookAction;
+                config.zoomActionReference = zoomAction;
                 config.maxPitch = maxPitch;
                 config.minPitch = minPitch;
                 config.rotationRate = rotationRate;

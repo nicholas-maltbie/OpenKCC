@@ -56,7 +56,10 @@ namespace nickmaltbie.OpenKCC.netcode
 
         public void Update()
         {
-            CameraUtils.UpdateCameraController(config, gameObject, this, unityService.deltaTime);
+            if (IsOwner)
+            {
+                CameraUtils.UpdateCameraController(config, gameObject, this, unityService.deltaTime);
+            }
         }
     }
 }

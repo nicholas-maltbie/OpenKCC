@@ -47,7 +47,7 @@ namespace nickmaltbie.OpenKCC.CameraControls.Config
         /// </summary>
         public InputAction LookAction
         {
-            get => overrideLookAction ?? lookActionReference.action;
+            get => overrideLookAction ?? lookActionReference?.action;
             set => overrideLookAction = value;
         }
 
@@ -69,7 +69,7 @@ namespace nickmaltbie.OpenKCC.CameraControls.Config
         /// </summary>
         public InputAction ZoomAction
         {
-            get => overrideZoomAction ?? zoomActionReference.action;
+            get => overrideZoomAction ?? zoomActionReference?.action;
             set => overrideZoomAction = value;
         }
 

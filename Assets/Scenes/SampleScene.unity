@@ -70295,6 +70295,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1928389238801210314, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
+      propertyPath: config.zoomActionReference
+      value: 
+      objectReference: {fileID: -4928028233122485438, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
     - target: {fileID: 6826506219202058344, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
       propertyPath: m_Camera
       value: 

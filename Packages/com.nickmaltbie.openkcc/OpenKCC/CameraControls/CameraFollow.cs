@@ -44,7 +44,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
 
         public void LateUpdate()
         {
-            CameraFollow.MoveCamera(cameraController.transform, audioListener);
+            CameraFollow.MoveCamera(cameraController.config.cameraTransform, audioListener);
         }
 
         /// <summary>
