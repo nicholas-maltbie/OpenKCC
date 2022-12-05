@@ -16,6 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.OpenKCC.CameraControls;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -27,18 +28,28 @@ namespace nickmaltbie.OpenKCC.netcode
     [RequireComponent(typeof(NetworkCameraController))]
     public class NetworkCameraFollow : NetworkBehaviour
     {
+        /// <summary>
+        /// Position and rotation to control camera position and movement
+        /// </summary>
+        private NetworkCameraController cameraController;
+
+        /// <summary>
+        /// AudioListener for moving listening position
+        /// </summary>
+        private AudioListener audioListener;
+
+        public void Start()
+        {
+            cameraController = GetComponent<NetworkCameraController>();
+            audioListener = GameObject.FindObjectOfType<AudioListener>();
+        }
+
         public void LateUpdate()
         {
-            // Do nothing if there is no main camera
-            if (Camera.main == null || !IsOwner)
+            if (IsOwner)
             {
-                return;
+                CameraFollow.MoveCamera(cameraController.config.cameraTransform, audioListener);
             }
-
-            // Set main camera's parent to be this and set it's relative position and rotation to be zero
-            GameObject mainCamera = Camera.main.gameObject;
-            mainCamera.transform.rotation = GetComponent<NetworkCameraController>().cameraTransform.rotation;
-            mainCamera.transform.position = GetComponent<NetworkCameraController>().cameraTransform.position;
         }
     }
 }

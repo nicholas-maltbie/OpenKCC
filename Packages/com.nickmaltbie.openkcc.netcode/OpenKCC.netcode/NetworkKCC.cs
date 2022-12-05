@@ -18,6 +18,7 @@
 
 using System;
 using nickmaltbie.NetworkStateMachineUnity;
+using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;

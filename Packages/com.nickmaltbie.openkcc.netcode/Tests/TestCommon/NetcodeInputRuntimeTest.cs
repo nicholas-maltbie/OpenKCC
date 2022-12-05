@@ -16,8 +16,10 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Unity.Netcode;
 using Unity.Netcode.TestHelpers.Runtime;
@@ -27,6 +29,154 @@ using UnityEngine.TestTools;
 
 namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
 {
+    public abstract class NetcodeInputRuntimeTest<E> : NetcodeInputRuntimeTest where E : Component
+    {
+        protected GameObject m_PrefabToSpawn;
+
+        public virtual void SetupClient(E e, int objectIdx, int clientIdx) { }
+        public abstract void SetupInputs(Gamepad gamepad, TestableNetworkBehaviour b, E e);
+        public abstract void SetupPrefab(GameObject go);
+
+        protected GameObject GetObject(int objectIdx, int clientIdx) =>
+            TestableNetworkBehaviour.Objects[(typeof(E), objectIdx, clientIdx)].gameObject;
+        protected TestableNetworkBehaviour GetTestableNetworkBehaviour(int objectIdx, int clientIdx) =>
+            TestableNetworkBehaviour.Objects[(typeof(E), objectIdx, clientIdx)];
+        protected E GetAttachedNetworkBehaviour(int objectIdx, int clientIdx) =>
+            TestableNetworkBehaviour.Objects[(typeof(E), objectIdx, clientIdx)].GetComponent<E>();
+        protected bool HasClient(int objectIdx, int clientIdx) =>
+            TestableNetworkBehaviour.Objects.ContainsKey((typeof(E), objectIdx, clientIdx));
+
+        [OneTimeSetUp]
+        public override void OneTimeSetup()
+        {
+            base.OneTimeSetup();
+        }
+
+        [UnitySetUp]
+        public override void SetUp()
+        {
+            base.SetUp();
+        }
+
+        [TearDown]
+        public override void TearDown()
+        {
+            base.TearDown();
+        }
+
+        [UnityTearDown]
+        public override IEnumerator UnityTearDown()
+        {
+            yield return base.UnityTearDown();
+            TestableNetworkBehaviour.Objects.Clear();
+        }
+
+        protected override void OnServerAndClientsCreated()
+        {
+            m_PrefabToSpawn = CreateNetworkObjectPrefab($"Testable{typeof(E).Name}");
+            m_PrefabToSpawn.AddComponent<TestableNetworkBehaviour>();
+            m_PrefabToSpawn.AddComponent<E>();
+            SetupPrefab(m_PrefabToSpawn);
+        }
+
+        protected void SetupInputs()
+        {
+            for (int i = 0; i <= NumberOfClients; i++)
+            {
+                Gamepad gamepad = InputSystem.AddDevice<Gamepad>($"Gamepad#{i}");
+                TestableNetworkBehaviour demo = TestableNetworkBehaviour.Objects[(typeof(E), i, i)];
+                SetupInputs(gamepad, demo, demo.GetComponent<E>());
+            }
+        }
+
+        [UnitySetUp]
+        public override IEnumerator UnitySetUp()
+        {
+            TestableNetworkBehaviour.CurrentlyTesting = typeof(E);
+            yield return base.UnitySetUp();
+
+            // create a player for each character
+            for (int objectIndex = 0; objectIndex <= NumberOfClients; objectIndex++)
+            {
+                TestableNetworkBehaviour.CurrentlySpawning = objectIndex;
+
+                NetworkManager ownerManager = ServerNetworkManager;
+                if (objectIndex != 0)
+                {
+                    ownerManager = ClientNetworkManagers[objectIndex - 1];
+                }
+
+                SpawnObject(m_PrefabToSpawn, ownerManager);
+
+                // wait for each object to spawn on each client
+                for (int clientIndex = 0; clientIndex <= NumberOfClients; clientIndex++)
+                {
+                    while (!HasClient(objectIndex, clientIndex))
+                    {
+                        yield return new WaitForSeconds(0.0f);
+                    }
+
+                    SetupClient(GetAttachedNetworkBehaviour(objectIndex, clientIndex), objectIndex, clientIndex);
+                }
+            }
+        }
+
+        public void ForEachTestableOwner(Action<TestableNetworkBehaviour, int> apply)
+        {
+            for (int i = 0; i <= NumberOfClients; i++)
+            {
+                apply(GetTestableNetworkBehaviour(i, i), i);
+            }
+        }
+
+        public void ForEachOwner(Action<E, int> apply)
+        {
+            for (int i = 0; i <= NumberOfClients; i++)
+            {
+                apply(GetAttachedNetworkBehaviour(i, i), i);
+            }
+        }
+
+        public bool ForAllPlayers(Func<E, bool> verify)
+        {
+            return Enumerable.Range(0, NumberOfClients + 1).All(i => ForAllPlayers(i, verify));
+        }
+
+        public bool ForAllPlayers(int index, Func<E, bool> verify)
+        {
+            return Enumerable.Range(0, NumberOfClients + 1).All(i =>
+                HasClient(index, i) && verify(GetAttachedNetworkBehaviour(index, i)));
+        }
+    }
+
+    public class TestableNetworkBehaviour : NetworkBehaviour
+    {
+        public static Dictionary<(Type, int, int), TestableNetworkBehaviour> Objects = new Dictionary<(Type, int, int), TestableNetworkBehaviour>();
+        public static int CurrentlySpawning = 0;
+        public static Type CurrentlyTesting = typeof(NetworkBehaviour);
+        private Dictionary<string, InputControl> inputControls = new();
+
+        public override void OnNetworkSpawn()
+        {
+            Objects[(CurrentlyTesting, CurrentlySpawning, (int)NetworkManager.LocalClientId)] = this;
+        }
+
+        public void SetupControl(string name, InputControl inputControl)
+        {
+            inputControls[name] = inputControl;
+        }
+
+        public InputControl GetControl(string name)
+        {
+            return inputControls[name];
+        }
+
+        public E GetControl<E>(string name) where E : InputControl
+        {
+            return GetControl(name) as E;
+        }
+    }
+
     public abstract class NetcodeInputRuntimeTest
     {
         protected abstract int NumberOfClients { get; }

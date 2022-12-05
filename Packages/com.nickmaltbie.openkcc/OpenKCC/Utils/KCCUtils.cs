@@ -447,7 +447,6 @@ namespace nickmaltbie.OpenKCC.Utils
             }
 
             transform.position = position;
-            parentConstraint.SetSources(sources);
         }
 
         /// <summary>

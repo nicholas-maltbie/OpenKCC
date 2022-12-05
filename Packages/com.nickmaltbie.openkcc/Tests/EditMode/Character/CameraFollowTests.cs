@@ -16,7 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
@@ -24,7 +24,7 @@ using UnityEngine;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
     /// <summary>
-    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.CameraFollow"/> in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.CameraControls.CameraFollow"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class CameraFollowTests : TestBase
@@ -42,7 +42,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             audioListener = CreateGameObject().AddComponent<AudioListener>();
             cameraFollow = followGo.AddComponent<CameraFollow>();
-            cameraController.cameraTransform = cameraController.transform;
+            cameraController.config.cameraTransform = cameraController.transform;
 
             camera = cameraGo.AddComponent<Camera>();
             camera.tag = "MainCamera";
