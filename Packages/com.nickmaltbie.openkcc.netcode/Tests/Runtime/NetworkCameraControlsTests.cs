@@ -16,14 +16,10 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
 using nickmaltbie.OpenKCC.netcode;
 using NUnit.Framework;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -31,4 +27,64 @@ using UnityEngine.TestTools;
 
 namespace nickmaltbie.openkcc.Tests.netcode.Runtime
 {
+    /// <summary>
+    /// Simple tests for NetworkCameraController.
+    /// </summary>
+    [TestFixture]
+    public class NetworkCameraControlsTests : NetcodeInputRuntimeTest<NetworkCameraController>
+    {
+        public const string ZoomActionName = "Zoom";
+        public const string LookActionName = "Look";
+
+        protected override int NumberOfClients => 2;
+
+        public override void SetupInputs(Gamepad gamepad, TestableNetworkBehaviour b, NetworkCameraController e)
+        {
+            b.SetupControl(ZoomActionName, gamepad.leftStick);
+            b.SetupControl(LookActionName, gamepad.rightStick);
+
+            new InputAction("zoom", InputActionType.Button, b.GetControl(ZoomActionName).path).Enable();
+            new InputAction("look", InputActionType.Value, b.GetControl(LookActionName).path).Enable();
+        }
+
+        public override void SetupPrefab(GameObject go)
+        {
+            NetworkCameraController cc = go.GetComponent<NetworkCameraController>();
+            cc.config.cameraTransform = go.transform;
+        }
+
+        public override void SetupClient(NetworkCameraController e, int objectIdx, int clientIdx)
+        {
+            e.transform.position = Vector3.right * clientIdx * 2;
+        }
+
+        [UnityTest]
+        public IEnumerator Verify_NetworkCameraController_Move()
+        {
+            SetupInputs();
+            for (int i = 0; i <= NumberOfClients; i++)
+            {
+                var cameraController = GetAttachedNetworkBehaviour(i, i);
+                var testable = GetTestableNetworkBehaviour(i, i);
+
+                cameraController.PreviousOpacity = 0.0f;
+                Assert.AreEqual(cameraController.PreviousOpacity, 0.0f);
+
+                Assert.AreEqual(0, cameraController.Pitch);
+                Assert.AreEqual(0, cameraController.Yaw);
+
+                input.Set(testable.GetControl<StickControl>(LookActionName), Vector3.up);
+                yield return null;
+
+                Assert.LessOrEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
+                Assert.AreEqual(0, cameraController.Yaw);
+
+                input.Set(testable.GetControl<StickControl>(LookActionName), Vector3.left);
+                yield return null;
+
+                Assert.LessOrEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
+                Assert.LessOrEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Yaw);
+            }
+        }
+    }
 }

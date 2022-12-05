@@ -121,7 +121,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
             floor.transform.localScale = new Vector3(10, 1, 10);
         }
 
-        public override void SetupClient(NetworkKCC e, int clientIdx)
+        public override void SetupClient(NetworkKCC e, int objectIdx, int clientIdx)
         {
             e.transform.position = Vector3.right * clientIdx * 2 + Vector3.up * 0.1f;
         }
@@ -134,11 +134,11 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
             {
                 // Wait for player to fall to ground
                 yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState));
-                input.Set(GetTetableNetworkBehaviour(i, i).GetControl<StickControl>(MoveControlName), Vector2.up);
+                input.Set(GetTestableNetworkBehaviour(i, i).GetControl<StickControl>(MoveControlName), Vector2.up);
                 yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(WalkingState) == player.CurrentState));
-                input.Set(GetTetableNetworkBehaviour(i, i).GetControl<ButtonControl>(SprintControlName), 1.0f);
+                input.Set(GetTestableNetworkBehaviour(i, i).GetControl<ButtonControl>(SprintControlName), 1.0f);
                 yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(SprintingState) == player.CurrentState));
-                input.Set(GetTetableNetworkBehaviour(i, i).GetControl<StickControl>(MoveControlName), Vector2.zero);
+                input.Set(GetTestableNetworkBehaviour(i, i).GetControl<StickControl>(MoveControlName), Vector2.zero);
                 yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState));
             }
         }
@@ -210,7 +210,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
 
                 // Wait for player to fall to ground
                 yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState));
-                input.Set(GetTetableNetworkBehaviour(i, i).GetControl<ButtonControl>(JumpControlName), 1.0f);
+                input.Set(GetTestableNetworkBehaviour(i, i).GetControl<ButtonControl>(JumpControlName), 1.0f);
                 yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(JumpState) == player.CurrentState));
             }
         }

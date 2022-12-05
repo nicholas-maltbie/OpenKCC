@@ -42,11 +42,12 @@ namespace nickmaltbie.OpenKCC.CameraControls
             ICameraControls cameraControls,
             float deltaTime)
         {
-            Vector2 look = config.LookAction.ReadValue<Vector2>();
+            Vector2 look = config.LookAction?.ReadValue<Vector2>() ?? Vector2.zero;
             look *= PlayerInputUtils.mouseSensitivity;
-            float zoomAxis = config.ZoomAction.ReadValue<Vector2>().y;
             float yawChange = look.x;
             float pitchChange = look.y;
+
+            float zoomAxis = config.ZoomAction?.ReadValue<Vector2>().y ?? 0;
 
             // bound pitch between -180 and 180
             float zoomChange = 0;
@@ -68,32 +69,35 @@ namespace nickmaltbie.OpenKCC.CameraControls
             // Bound the current distance between minimum and maximum
             config.currentDistance = Mathf.Clamp(config.currentDistance + zoomChange, config.minCameraDistance, config.maxCameraDistance);
 
-            // Set the player's rotation to be that of the camera's yaw
-            // transform.rotation = Quaternion.Euler(0, yaw, 0);
-            // Set pitch to be camera's rotation
-            config.cameraTransform.rotation = Quaternion.Euler(cameraControls.Pitch, cameraControls.Yaw, 0);
-
-            // Set the local position of the camera to be the current rotation projected
-            //   backwards by the current distance of the camera from the player
-            Vector3 cameraDirection = -config.cameraTransform.forward * config.currentDistance;
-            Vector3 cameraSource = config.CameraSource(go.transform);
-
-            // Draw a line from our camera source in the camera direction. If the line hits anything that isn't us
-            // Limit the distance by how far away that object is
-            // If we hit something
-            if (PhysicsUtils.SphereCastFirstHitIgnore(config.IgnoreObjects, cameraSource, 0.01f, cameraDirection, cameraDirection.magnitude,
-                config.cameraRaycastMask, QueryTriggerInteraction.Ignore, out RaycastHit hit))
+            if (config.cameraTransform != null)
             {
-                // limit the movement by that hit
-                cameraDirection = cameraDirection.normalized * hit.distance;
-            }
+                // Set the player's rotation to be that of the camera's yaw
+                // transform.rotation = Quaternion.Euler(0, yaw, 0);
+                // Set pitch to be camera's rotation
+                config.cameraTransform.rotation = Quaternion.Euler(cameraControls.Pitch, cameraControls.Yaw, 0);
 
-            config.CameraDistance = cameraDirection.magnitude;
-            config.cameraTransform.position = cameraSource + cameraDirection;
+                // Set the local position of the camera to be the current rotation projected
+                //   backwards by the current distance of the camera from the player
+                Vector3 cameraDirection = -config.cameraTransform.forward * config.currentDistance;
+                Vector3 cameraSource = config.CameraSource(go.transform);
 
-            if (config.thirdPersonCharacterBase != null)
-            {
-                CameraUtils.UpdateThirdPersonCameraBase(cameraDirection, config, go, cameraControls, deltaTime);
+                // Draw a line from our camera source in the camera direction. If the line hits anything that isn't us
+                // Limit the distance by how far away that object is
+                // If we hit something
+                if (PhysicsUtils.SphereCastFirstHitIgnore(config.IgnoreObjects, cameraSource, 0.01f, cameraDirection, cameraDirection.magnitude,
+                    config.cameraRaycastMask, QueryTriggerInteraction.Ignore, out RaycastHit hit))
+                {
+                    // limit the movement by that hit
+                    cameraDirection = cameraDirection.normalized * hit.distance;
+                }
+
+                config.CameraDistance = cameraDirection.magnitude;
+                config.cameraTransform.position = cameraSource + cameraDirection;
+
+                if (config.thirdPersonCharacterBase != null)
+                {
+                    CameraUtils.UpdateThirdPersonCameraBase(cameraDirection, config, go, cameraControls, deltaTime);
+                }
             }
 
             cameraControls.Yaw %= 360;

@@ -184,7 +184,7 @@ namespace nickmaltbie.OpenKCC.CameraControls.Config
         /// <param name="go">Game object with attached collider.</param>
         public void Setup(GameObject go)
         {
-            baseCameraOffset = cameraTransform.localPosition;
+            baseCameraOffset = cameraTransform == null ? Vector3.zero : cameraTransform.localPosition;
             currentDistance = Mathf.Clamp(currentDistance, minCameraDistance, maxCameraDistance);
             ignoreObjects.Add(go);
         }

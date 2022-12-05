@@ -33,13 +33,13 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
     {
         protected GameObject m_PrefabToSpawn;
 
-        public virtual void SetupClient(E e, int client) { }
+        public virtual void SetupClient(E e, int objectIdx, int clientIdx) { }
         public abstract void SetupInputs(Gamepad gamepad, TestableNetworkBehaviour b, E e);
         public abstract void SetupPrefab(GameObject go);
 
         protected GameObject GetObject(int objectIdx, int clientIdx) =>
             TestableNetworkBehaviour.Objects[(typeof(E), objectIdx, clientIdx)].gameObject;
-        protected TestableNetworkBehaviour GetTetableNetworkBehaviour(int objectIdx, int clientIdx) =>
+        protected TestableNetworkBehaviour GetTestableNetworkBehaviour(int objectIdx, int clientIdx) =>
             TestableNetworkBehaviour.Objects[(typeof(E), objectIdx, clientIdx)];
         protected E GetAttachedNetworkBehaviour(int objectIdx, int clientIdx) =>
             TestableNetworkBehaviour.Objects[(typeof(E), objectIdx, clientIdx)].GetComponent<E>();
@@ -116,10 +116,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
                         yield return new WaitForSeconds(0.0f);
                     }
 
-                    if (clientIndex == objectIndex)
-                    {
-                        SetupClient(GetAttachedNetworkBehaviour(objectIndex, clientIndex), clientIndex);
-                    }
+                    SetupClient(GetAttachedNetworkBehaviour(objectIndex, clientIndex), objectIndex, clientIndex);
                 }
             }
         }
@@ -128,7 +125,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
         {
             for (int i = 0; i <= NumberOfClients; i++)
             {
-                apply(GetTetableNetworkBehaviour(i, i), i);
+                apply(GetTestableNetworkBehaviour(i, i), i);
             }
         }
 
