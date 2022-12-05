@@ -250,7 +250,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
         {
             go.AddComponent<CapsuleColliderCast>();
             go.AddComponent<ClientNetworkTransform>();
-            
+
             // Setup animation controller.
             Animator anim = go.AddComponent<Animator>();
             anim.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath(AnimControllerPath, typeof(AnimatorController)) as AnimatorController;

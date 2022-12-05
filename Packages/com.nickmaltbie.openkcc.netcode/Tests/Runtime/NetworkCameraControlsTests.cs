@@ -64,8 +64,8 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
             SetupInputs();
             for (int i = 0; i <= NumberOfClients; i++)
             {
-                var cameraController = GetAttachedNetworkBehaviour(i, i);
-                var testable = GetTestableNetworkBehaviour(i, i);
+                NetworkCameraController cameraController = GetAttachedNetworkBehaviour(i, i);
+                TestableNetworkBehaviour testable = GetTestableNetworkBehaviour(i, i);
 
                 cameraController.PreviousOpacity = 0.0f;
                 Assert.AreEqual(cameraController.PreviousOpacity, 0.0f);

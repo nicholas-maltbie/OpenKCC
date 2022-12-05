@@ -7,7 +7,7 @@ Mono Behaviour. This example character controller allows you to configure
 a character controller with a unique camera controller and collider cast.
 
 The default example in the samples has a character controller that
-uses the @nickmaltbie.OpenKCC.Character.CameraController
+uses the @nickmaltbie.OpenKCC.CameraControls.CameraController
 and a @nickmaltbie.OpenKCC.Utils.CapsuleColliderCast.
 
 - This creates a character with a hybrid first and third person camera
@@ -56,7 +56,7 @@ a basic use case.
     via the @nickmaltbie.OpenKCC.Utils.CapsuleColliderCast
     but there are plans to expand this to include all primitives as well
     as composited colliders of multiple primitives together.
-1. @nickmaltbie.OpenKCC.Character.ICameraControls -
+1. @nickmaltbie.OpenKCC.CameraControls.ICameraControls -
     This controls the direction the character is looking at and which direction
     they should move when the player inputs a forward, left, or right
     input.

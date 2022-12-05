@@ -24,7 +24,7 @@ using UnityEngine;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
     /// <summary>
-    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.CameraFollow"/> in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.CameraControls.CameraFollow"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class CameraFollowTests : TestBase

@@ -33,7 +33,7 @@ using UnityEngine.TestTools;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
     /// <summary>
-    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.CameraController"/> in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.CameraControls.CameraController"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class CameraControlsTests : TestBase

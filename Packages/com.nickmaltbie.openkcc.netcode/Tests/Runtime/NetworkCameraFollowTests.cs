@@ -23,7 +23,6 @@ using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.TestTools;
 
 namespace nickmaltbie.openkcc.Tests.netcode.Runtime
