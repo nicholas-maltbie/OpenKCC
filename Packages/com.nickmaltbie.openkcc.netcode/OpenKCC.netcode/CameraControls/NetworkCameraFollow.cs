@@ -17,48 +17,38 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.CameraControls;
-using nickmaltbie.OpenKCC.CameraControls.Config;
-using nickmaltbie.TestUtilsUnity;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.netcode
+namespace nickmaltbie.OpenKCC.netcode.CameraControls
 {
     /// <summary>
-    /// Basic hybrid first and third person camera controller.
+    /// Script to move main camera to follow the local player
     /// </summary>
-    public class NetworkCameraController : NetworkBehaviour, ICameraControls
+    [RequireComponent(typeof(NetworkCameraController))]
+    public class NetworkCameraFollow : NetworkBehaviour
     {
         /// <summary>
-        /// Unity service associated with this game object for testing.
+        /// Position and rotation to control camera position and movement
         /// </summary>
-        public IUnityService unityService = UnityService.Instance;
+        private NetworkCameraController cameraController;
 
         /// <summary>
-        /// Camera config associated wit this camera controller.
+        /// AudioListener for moving listening position
         /// </summary>
-        [SerializeField]
-        public CameraConfig config = new CameraConfig();
-
-        /// <inheritdoc/>
-        public float PreviousOpacity { get; set; }
-
-        /// <inheritdoc/>
-        public float Pitch { get; set; }
-
-        /// <inheritdoc/>
-        public float Yaw { get; set; }
+        private AudioListener audioListener;
 
         public void Start()
         {
-            config.Setup(gameObject);
+            cameraController = GetComponent<NetworkCameraController>();
+            audioListener = GameObject.FindObjectOfType<AudioListener>();
         }
 
-        public void Update()
+        public void LateUpdate()
         {
             if (IsOwner)
             {
-                CameraUtils.UpdateCameraController(config, gameObject, this, unityService.deltaTime);
+                CameraFollow.MoveCamera(cameraController.config.cameraTransform, audioListener);
             }
         }
     }

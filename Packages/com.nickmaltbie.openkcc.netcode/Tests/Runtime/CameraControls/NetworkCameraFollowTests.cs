@@ -18,14 +18,14 @@
 
 using System.Collections;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
-using nickmaltbie.OpenKCC.netcode;
+using nickmaltbie.OpenKCC.netcode.CameraControls;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TestTools;
 
-namespace nickmaltbie.openkcc.Tests.netcode.Runtime
+namespace nickmaltbie.openkcc.Tests.netcode.Runtime.CameraControls
 {
     /// <summary>
     /// Simple tests for NetworkCameraFollow.
@@ -88,7 +88,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
                 {
                     try
                     {
-                        TestUtils.AssertInBounds(Camera.main.transform.position, cameraFollow.transform.position);
+                        TestUtils.AssertInBounds(Camera.main.transform.position, cameraFollow.GetComponent<NetworkCameraController>().config.cameraTransform.position);
                         return true;
                     }
                     catch

@@ -18,20 +18,29 @@
 
 using System.Collections.Generic;
 using nickmaltbie.TestUtilsUnity;
+using Unity.Netcode;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Environment
+namespace nickmaltbie.OpenKCC.netcode.Environment
 {
-    /// <summary>
-    /// Script to translate a rigidbody object between two positions.
-    /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    public class MovingPlatform : MonoBehaviour
+    public class NetworkMovingPlatform : NetworkBehaviour
     {
+        /// <summary>
+        /// Moving platform with network configuration.
+        /// </summary>
+        private NetworkVariable<int> _currentTarget = new NetworkVariable<int>(
+            readPerm: NetworkVariableReadPermission.Everyone,
+            writePerm: NetworkVariableWritePermission.Server);
+
         /// <summary>
         /// Current target the platform is heading for.
         /// </summary>
-        public int currentTargetIndex { get; private set; } = 0;
+        public int CurrentTargetIdx
+        {
+            get => _currentTarget.Value;
+            private set => _currentTarget.Value = value;
+        }
 
         /// <summary>
         /// Unity service for managing time.
@@ -62,7 +71,7 @@ namespace nickmaltbie.OpenKCC.Environment
         /// <summary>
         /// Gets the current target we're moving towards.
         /// </summary>
-        public Transform CurrentTarget => ValidTarget ? targetsList[currentTargetIndex] : null;
+        public Transform CurrentTarget => ValidTarget ? targetsList[CurrentTargetIdx] : null;
 
         /// <summary>
         /// Does the moving platform have a valid target.
@@ -71,7 +80,7 @@ namespace nickmaltbie.OpenKCC.Environment
 
         public void FixedUpdate()
         {
-            if (!ValidTarget)
+            if (!ValidTarget || !IsServer)
             {
                 return;
             }
@@ -85,7 +94,7 @@ namespace nickmaltbie.OpenKCC.Environment
             if (direction == Vector3.zero || distanceToTarget < displacement.magnitude)
             {
                 displacement = CurrentTarget.position - rb.position;
-                currentTargetIndex = (currentTargetIndex + 1) % targetsList.Count;
+                CurrentTargetIdx = (CurrentTargetIdx + 1) % targetsList.Count;
             }
 
             if (isContinuous)

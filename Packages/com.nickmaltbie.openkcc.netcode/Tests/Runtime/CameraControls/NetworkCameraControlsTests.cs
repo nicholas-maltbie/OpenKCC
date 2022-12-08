@@ -18,14 +18,14 @@
 
 using System.Collections;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
-using nickmaltbie.OpenKCC.netcode;
+using nickmaltbie.OpenKCC.netcode.CameraControls;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.TestTools;
 
-namespace nickmaltbie.openkcc.Tests.netcode.Runtime
+namespace nickmaltbie.openkcc.Tests.netcode.Runtime.CameraControls
 {
     /// <summary>
     /// Simple tests for NetworkCameraController.

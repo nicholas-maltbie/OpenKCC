@@ -22,7 +22,7 @@ using nickmaltbie.openkcc.Tests.netcode.TestCommon;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Input;
-using nickmaltbie.OpenKCC.netcode;
+using nickmaltbie.OpenKCC.netcode.Character;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
@@ -33,9 +33,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.TestTools;
-using static nickmaltbie.OpenKCC.netcode.NetworkKCC;
+using static nickmaltbie.OpenKCC.netcode.Character.NetworkKCC;
 
-namespace nickmaltbie.openkcc.Tests.netcode.Runtime
+namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
 {
     public class MovingGroundConveyer : MonoBehaviour, IMovingGround
     {
@@ -129,11 +129,12 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_Move_Transition()
         {
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
             SetupInputs();
             for (int i = 0; i <= NumberOfClients; i++)
             {
                 // Wait for player to fall to ground
-                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState));
+                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState || typeof(LandingState) == player.CurrentState));
                 input.Set(GetTestableNetworkBehaviour(i, i).GetControl<StickControl>(MoveControlName), Vector2.up);
                 yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(WalkingState) == player.CurrentState));
                 input.Set(GetTestableNetworkBehaviour(i, i).GetControl<ButtonControl>(SprintControlName), 1.0f);
@@ -146,6 +147,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_MovingGround()
         {
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
             floor.transform.localScale = Vector3.one;
             SetupInputs();
 
@@ -187,6 +189,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_Sliding()
         {
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(IdleState) == player.CurrentState));
 
             floor.transform.rotation = Quaternion.Euler(61, 0, 0);
@@ -201,6 +204,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_Jump_Transition()
         {
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
             SetupInputs();
             for (int i = 0; i <= NumberOfClients; i++)
             {

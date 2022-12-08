@@ -17,38 +17,48 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.CameraControls;
+using nickmaltbie.OpenKCC.CameraControls.Config;
+using nickmaltbie.TestUtilsUnity;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.netcode
+namespace nickmaltbie.OpenKCC.netcode.CameraControls
 {
     /// <summary>
-    /// Script to move main camera to follow the local player
+    /// Basic hybrid first and third person camera controller.
     /// </summary>
-    [RequireComponent(typeof(NetworkCameraController))]
-    public class NetworkCameraFollow : NetworkBehaviour
+    public class NetworkCameraController : NetworkBehaviour, ICameraControls
     {
         /// <summary>
-        /// Position and rotation to control camera position and movement
+        /// Unity service associated with this game object for testing.
         /// </summary>
-        private NetworkCameraController cameraController;
+        public IUnityService unityService = UnityService.Instance;
 
         /// <summary>
-        /// AudioListener for moving listening position
+        /// Camera config associated wit this camera controller.
         /// </summary>
-        private AudioListener audioListener;
+        [SerializeField]
+        public CameraConfig config = new CameraConfig();
+
+        /// <inheritdoc/>
+        public float PreviousOpacity { get; set; }
+
+        /// <inheritdoc/>
+        public float Pitch { get; set; }
+
+        /// <inheritdoc/>
+        public float Yaw { get; set; }
 
         public void Start()
         {
-            cameraController = GetComponent<NetworkCameraController>();
-            audioListener = GameObject.FindObjectOfType<AudioListener>();
+            config.Setup(gameObject);
         }
 
-        public void LateUpdate()
+        public void Update()
         {
             if (IsOwner)
             {
-                CameraFollow.MoveCamera(cameraController.config.cameraTransform, audioListener);
+                CameraUtils.UpdateCameraController(config, gameObject, this, unityService.deltaTime);
             }
         }
     }

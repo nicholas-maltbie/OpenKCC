@@ -31,10 +31,11 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
 {
     public abstract class NetcodeInputRuntimeTest<E> : NetcodeInputRuntimeTest where E : Component
     {
+        protected virtual int SpawnCount => NumberOfClients + 1;
         protected GameObject m_PrefabToSpawn;
 
         public virtual void SetupClient(E e, int objectIdx, int clientIdx) { }
-        public abstract void SetupInputs(Gamepad gamepad, TestableNetworkBehaviour b, E e);
+        public virtual void SetupInputs(Gamepad gamepad, TestableNetworkBehaviour b, E e) { }
         public abstract void SetupPrefab(GameObject go);
 
         protected GameObject GetObject(int objectIdx, int clientIdx) =>
@@ -81,7 +82,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
 
         protected void SetupInputs()
         {
-            for (int i = 0; i <= NumberOfClients; i++)
+            for (int i = 0; i <= SpawnCount; i++)
             {
                 Gamepad gamepad = InputSystem.AddDevice<Gamepad>($"Gamepad#{i}");
                 TestableNetworkBehaviour demo = TestableNetworkBehaviour.Objects[(typeof(E), i, i)];
@@ -96,7 +97,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
             yield return base.UnitySetUp();
 
             // create a player for each character
-            for (int objectIndex = 0; objectIndex <= NumberOfClients; objectIndex++)
+            for (int objectIndex = 0; objectIndex < SpawnCount; objectIndex++)
             {
                 TestableNetworkBehaviour.CurrentlySpawning = objectIndex;
 
@@ -123,7 +124,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
 
         public void ForEachTestableOwner(Action<TestableNetworkBehaviour, int> apply)
         {
-            for (int i = 0; i <= NumberOfClients; i++)
+            for (int i = 0; i < SpawnCount; i++)
             {
                 apply(GetTestableNetworkBehaviour(i, i), i);
             }
@@ -131,7 +132,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
 
         public void ForEachOwner(Action<E, int> apply)
         {
-            for (int i = 0; i <= NumberOfClients; i++)
+            for (int i = 0; i < SpawnCount; i++)
             {
                 apply(GetAttachedNetworkBehaviour(i, i), i);
             }
@@ -139,12 +140,12 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
 
         public bool ForAllPlayers(Func<E, bool> verify)
         {
-            return Enumerable.Range(0, NumberOfClients + 1).All(i => ForAllPlayers(i, verify));
+            return Enumerable.Range(0, SpawnCount).All(i => ForAllPlayers(i, verify));
         }
 
         public bool ForAllPlayers(int index, Func<E, bool> verify)
         {
-            return Enumerable.Range(0, NumberOfClients + 1).All(i =>
+            return Enumerable.Range(0, SpawnCount).All(i =>
                 HasClient(index, i) && verify(GetAttachedNetworkBehaviour(index, i)));
         }
     }

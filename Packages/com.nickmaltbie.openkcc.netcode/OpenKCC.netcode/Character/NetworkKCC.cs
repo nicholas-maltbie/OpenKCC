@@ -34,7 +34,7 @@ using UnityEngine.Animations;
 using static nickmaltbie.OpenKCC.Character.Animation.HumanoidKCCAnim;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
-namespace nickmaltbie.OpenKCC.netcode
+namespace nickmaltbie.OpenKCC.netcode.Character
 {
     /// <summary>
     /// Have a character controller push any dynamic rigidbody it hits
