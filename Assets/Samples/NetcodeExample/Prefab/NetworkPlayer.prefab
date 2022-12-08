@@ -286,7 +286,7 @@ MonoBehaviour:
     maxBounces: 5
     pushDecay: 0.9
     anglePower: 0.5
-    maxPushSpeed: 1
+    maxPushSpeed: 100
     verticalSnapDown: 0.2
     stepUpDepth: 0.1
     verticalSnapUp: 0.3
