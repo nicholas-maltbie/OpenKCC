@@ -21,7 +21,9 @@ using System.Collections.Generic;
 using System.Linq;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
 using nickmaltbie.OpenKCC.netcode.Environment;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -37,35 +39,66 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Envionment
         protected override int SpawnCount => 1;
         protected List<GameObject> positions;
 
-        public override void SetupPrefab(GameObject go)
+        [UnitySetUp]
+        public override IEnumerator UnitySetUp()
         {
-            NetworkMovingPlatform platform = go.GetComponent<NetworkMovingPlatform>();
             positions = new List<GameObject>();
             positions.Add(new GameObject());
             positions.Add(new GameObject());
 
+            positions[0].name = "pos0";
             positions[0].transform.position = Vector3.zero;
-            positions[1].transform.position = Vector3.left * 10;
 
-            platform.targetsList = positions.Select(v => v.transform).ToList();
+            positions[1].name = "pos1";
+            positions[1].transform.position = Vector3.left * 100;
+
+            yield return base.UnitySetUp();
         }
 
         [UnityTearDown]
         public override IEnumerator UnityTearDown()
         {
-            yield return UnityTearDown();
-            
+            yield return base.UnityTearDown();
             while (positions.Count > 0)
             {
                 GameObject.Destroy(positions[0]);
                 positions.RemoveAt(0);
             }
+
+            yield return null;
         }
 
         [UnityTest]
-        public IEnumerator Verify_NetworkMovingPlatform_Move()
+        public IEnumerator Verify_NetworkMovingPlatform_Move(
+            [Values] bool isContinuous)
         {
-            yield return null;
+            GetAttachedNetworkBehaviour(0, 0).IsContinuous = isContinuous;
+            yield return TestUtils.WaitUntil(() => ForServerObject(platform => platform.IsContinuous));
+
+            // When the platform moves on the server, assert that it moves on the clients as well
+            // Assert that after a second, the platform has moved towards the first target
+            Vector3 start = Vector3.zero;
+            Vector3 dir = (positions[1].transform.position - positions[0].transform.position).normalized;
+
+            yield return new WaitForSeconds(1.0f);
+            yield return TestUtils.WaitUntil(() => ForServerObject(
+                    movingPlatform =>
+                    {
+                        Vector3 pos = movingPlatform.transform.position;
+                        float delta = Vector3.Dot(Vector3.Project(pos - start, dir), dir);
+                        return delta >= movingPlatform.linearSpeed;
+                    }));
+        }
+
+        public override void SetupPrefab(GameObject go)
+        {
+            NetworkMovingPlatform movingPlatofrm = go.GetComponent<NetworkMovingPlatform>();
+            go.AddComponent<NetworkTransform>();
+            movingPlatofrm.targetsList = positions.Select(v => v.transform).ToList();
+
+            Rigidbody rb = go.GetComponent<Rigidbody>();
+            rb.isKinematic = true;
+            rb.useGravity = false;
         }
     }
 }

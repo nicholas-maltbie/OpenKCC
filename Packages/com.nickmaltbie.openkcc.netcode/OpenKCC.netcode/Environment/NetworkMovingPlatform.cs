@@ -30,6 +30,15 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// Moving platform with network configuration.
         /// </summary>
         private NetworkVariable<int> _currentTarget = new NetworkVariable<int>(
+            value: 0,
+            readPerm: NetworkVariableReadPermission.Everyone,
+            writePerm: NetworkVariableWritePermission.Server);
+
+        /// <summary>
+        /// Is continous variable with network configuration.
+        /// </summary>
+        private NetworkVariable<bool> _isContinuous = new NetworkVariable<bool>(
+            value: true,
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Server);
 
@@ -52,7 +61,11 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// or discrete steps. uses the MovePosition and MoveRotation api
         /// for continuous movement otherwise.
         /// </summary>
-        internal bool isContinuous = true;
+        internal bool IsContinuous
+        {
+            get => _isContinuous.Value;
+            set => _isContinuous.Value = value;
+        }
 
         /// <summary>
         /// Velocity at which this platform should move.
@@ -66,7 +79,7 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// </summary>
         [SerializeField]
         [Tooltip("List of targets to move between.")]
-        internal List<Transform> targetsList;
+        internal List<Transform> targetsList = new List<Transform>();
 
         /// <summary>
         /// Gets the current target we're moving towards.
@@ -97,7 +110,7 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
                 CurrentTargetIdx = (CurrentTargetIdx + 1) % targetsList.Count;
             }
 
-            if (isContinuous)
+            if (IsContinuous)
             {
                 rb.MovePosition(rb.position + displacement);
             }
