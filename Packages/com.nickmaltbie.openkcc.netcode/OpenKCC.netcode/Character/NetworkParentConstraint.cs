@@ -34,11 +34,21 @@ namespace nickmaltbie.OpenKCC.netcode.Character
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
+            bool previousActive = active;
+            ulong previousRef = parentTransform.NetworkObjectId;
+            Vector3 previousRelativePos = relativePosition;
+            Vector3 previousTranslationAtRest = translationAtRest;
             serializer.SerializeValue(ref active);
             serializer.SerializeValue(ref parentTransform);
             serializer.SerializeValue(ref relativePosition);
             serializer.SerializeValue(ref translationAtRest);
             serializer.SerializeValue(ref rotationAtRest);
+
+            if (previousActive && active && previousRef == parentTransform.NetworkObjectId)
+            {
+                relativePosition = Vector3.Lerp(previousRelativePos, relativePosition, 0.1f * Time.deltaTime);
+                previousTranslationAtRest = Vector3.Lerp(previousTranslationAtRest, relativePosition, 0.1f * Time.deltaTime);
+            }
         }
     }
 }

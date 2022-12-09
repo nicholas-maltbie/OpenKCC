@@ -422,11 +422,10 @@ namespace nickmaltbie.OpenKCC.Character
         /// <returns>Total distance player was pushed.</returns>
         public Vector3 PushOutOverlapping()
         {
-            float fixedDeltaTime = Time.fixedDeltaTime;
             return config.ColliderCast.PushOutOverlapping(
                 transform.position,
                 transform.rotation,
-                config.maxPushSpeed * fixedDeltaTime);
+                config.maxPushSpeed * unityService.fixedDeltaTime);
         }
 
         /// <summary>
