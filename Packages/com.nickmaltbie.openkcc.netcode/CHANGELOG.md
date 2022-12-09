@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Added a basic NetworkMovingPlatform class.
 * Added tests for basic network behaviours and test framework.
 * Setup class for managing netcode tests `NetcodeInputRuntimeTest`
 * Added basic tests for the `NetworkKCC`

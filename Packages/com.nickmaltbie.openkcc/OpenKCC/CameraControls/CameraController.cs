@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using nickmaltbie.OpenKCC.CameraControls.Config;
 using nickmaltbie.TestUtilsUnity;
@@ -196,13 +195,6 @@ namespace nickmaltbie.OpenKCC.CameraControls
         [Obsolete(ObselteMessage)]
         [HideInInspector]
         public float transitionTime = 0.1f;
-
-        /// <summary>
-        /// Objects to ignore when drawing raycast for camera
-        /// </summary>
-        [Obsolete(ObselteMessage)]
-        [HideInInspector]
-        private List<GameObject> ignoreObjects = new List<GameObject>();
 
         /// <summary>
         /// Get the current distance of the camera from the player camera location

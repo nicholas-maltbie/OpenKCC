@@ -16,25 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.netcode.Character;
-using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
-using NUnit.Framework;
-using UnityEngine;
+using System.Runtime.CompilerServices;
 
-namespace nickmaltbie.openkcc.Tests.netcode.Runtime
-{
-    /// <summary>
-    /// Simple tests meant to be run in EditMode
-    /// </summary>
-    [TestFixture]
-    public class NetworkEditModeTest : TestBase
-    {
-        [Test]
-        public void EmptyTest()
-        {
-            GameObject go = CreateGameObject();
-            NetworkKCC networkKcc = go.AddComponent<NetworkKCC>();
-            networkKcc.Start();
-        }
-    }
-}
+[assembly: InternalsVisibleTo("nickmaltbie.OpenKCC.Tests.netcode.Runtime")]
+

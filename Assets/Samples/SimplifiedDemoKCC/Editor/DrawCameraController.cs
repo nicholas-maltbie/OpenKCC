@@ -116,7 +116,7 @@ namespace nickmaltbie.OpenKCC.Demo.Editor
                 selfCollider = new List<GameObject>(new[] { gameObject });
             }
 
-            Vector3 cameraSource = transform.position + cameraController.baseCameraOffset;
+            Vector3 cameraSource = transform.position + cameraController.config.baseCameraOffset;
 
             if (drawOffset)
             {
@@ -125,9 +125,9 @@ namespace nickmaltbie.OpenKCC.Demo.Editor
             }
 
             var rotation = Quaternion.Euler(cameraController.Pitch, cameraController.Yaw, 0);
-            _ = cameraController.currentDistance;
+            _ = cameraController.config.currentDistance;
 
-            Vector3 cameraDirection = rotation * Vector3.back * cameraController.currentDistance;
+            Vector3 cameraDirection = rotation * Vector3.back * cameraController.config.currentDistance;
 
             // Draw a line from our camera source in the camera direction. If the line hits anything that isn't us
             // Limit the distance by how far away that object is
@@ -153,7 +153,7 @@ namespace nickmaltbie.OpenKCC.Demo.Editor
                 if (showRaycastOverlap)
                 {
                     Gizmos.color = overlapColor;
-                    Vector3 overlap = (rotation * Vector3.back * cameraController.currentDistance) - cameraDirection;
+                    Vector3 overlap = (rotation * Vector3.back * cameraController.config.currentDistance) - cameraDirection;
                     Gizmos.DrawRay(cameraPos, overlap);
                 }
             }
