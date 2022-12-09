@@ -129,8 +129,8 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_Move_Transition()
         {
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
-            SetupInputs();
+            yield return SetupPlayersInIdleState();
+
             for (int i = 0; i <= NumberOfClients; i++)
             {
                 // Wait for player to fall to ground
@@ -147,12 +147,8 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_MovingGround()
         {
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
             floor.transform.localScale = Vector3.one;
-            SetupInputs();
-
-            // Wait until all players are standing on the ground.
-            yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(IdleState) == player.CurrentState));
+            yield return SetupPlayersInIdleState();
 
             // Attach a moving ground conveyer to the ground
             MovingGroundConveyer conveyer = floor.AddComponent<MovingGroundConveyer>();
@@ -189,8 +185,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_Sliding()
         {
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
-            yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(IdleState) == player.CurrentState));
+            SetupPlayersInIdleState();
 
             floor.transform.rotation = Quaternion.Euler(61, 0, 0);
             floor.transform.position += Vector3.back * 10 + Vector3.down * 5;
@@ -204,19 +199,25 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_Jump_Transition()
         {
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
-            SetupInputs();
+            yield return SetupPlayersInIdleState();
             for (int i = 0; i <= NumberOfClients; i++)
             {
-                Debug.Log($"Validating clientIdx #{i}");
-                NetworkKCC networkKCC = GetAttachedNetworkBehaviour(i, i);
-                GetAttachedNetworkBehaviour(i, i).TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f);
-
                 // Wait for player to fall to ground
                 yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState));
                 input.Set(GetTestableNetworkBehaviour(i, i).GetControl<ButtonControl>(JumpControlName), 1.0f);
                 yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(JumpState) == player.CurrentState));
             }
+        }
+
+        protected IEnumerator SetupPlayersInIdleState()
+        {
+            ForEachOwner((player, i) =>
+            {
+                player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f);
+                player.SetStateQuiet(typeof(IdleState));
+            });
+            SetupInputs();
+            yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(IdleState) == player.CurrentState));
         }
 
         public override void SetupInputs(Gamepad gamepad, TestableNetworkBehaviour b, NetworkKCC networkKCC)
