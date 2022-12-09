@@ -29,6 +29,7 @@ using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
 using nickmaltbie.StateMachineUnity.Event;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.Animations;
 using static nickmaltbie.OpenKCC.Character.Animation.HumanoidKCCAnim;
@@ -109,6 +110,13 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// Animation movement for the player
         /// </summary>
         private NetworkVariable<Vector2> animationMove = new NetworkVariable<Vector2>(
+            readPerm: NetworkVariableReadPermission.Everyone,
+            writePerm: NetworkVariableWritePermission.Owner);
+
+        /// <summary>
+        /// Relative position to parent.
+        /// </summary>
+        private NetworkVariable<NetworkParentConstraint> relativeParent = new NetworkVariable<NetworkParentConstraint>(
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Owner);
 
@@ -261,6 +269,36 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public void UpdateMovingGround()
         {
             KCCUtils.UpdateMovingGround(config.groundedState, config, transform, parentConstraint, ref floorConstraint);
+
+            // Update the network sync if the floor has a network transform
+            NetworkTransform netTransform = GetComponent<NetworkTransform>();
+            NetworkTransform floor = config.groundedState.Floor?.GetComponent<NetworkTransform>();
+            NetworkObject networkObject = config.groundedState.Floor?.GetComponent<NetworkObject>();
+            if (floor != null)
+            {
+                // Update the relative parent
+                Vector3 relativePos = transform.position - config.groundedState.Floor.transform.position;
+                relativeParent.Value = new NetworkParentConstraint
+                {
+                    active = true,
+                    parentTransform = networkObject,
+                    relativePosition = relativePos,
+                    translationAtRest = parentConstraint.translationAtRest,
+                    rotationAtRest = parentConstraint.rotationAtRest,
+                };
+            }
+            else if (relativeParent.Value.active)
+            {
+                // Check if it is currently active, if so, set to not active
+                relativeParent.Value = new NetworkParentConstraint { active = false, };
+            }
+            
+            GetComponent<NetworkTransform>().SyncPositionX = relativeParent.Value.active;
+            GetComponent<NetworkTransform>().SyncPositionY = relativeParent.Value.active;
+            GetComponent<NetworkTransform>().SyncPositionZ = relativeParent.Value.active;
+            GetComponent<NetworkTransform>().SyncRotAngleX = relativeParent.Value.active;
+            GetComponent<NetworkTransform>().SyncRotAngleY = relativeParent.Value.active;
+            GetComponent<NetworkTransform>().SyncRotAngleZ = relativeParent.Value.active;
         }
 
         /// <summary>
@@ -407,6 +445,40 @@ namespace nickmaltbie.OpenKCC.netcode.Character
                 animationMove.Value = new Vector2(moveX, moveY);
 
                 config.jumpAction?.Update();
+            }
+            else
+            {
+                // If not owner, update the player based on the current
+                // relative parent configuration
+                NetworkParentConstraint parent = relativeParent.Value;
+                bool validParent = parent.parentTransform.TryGet(out NetworkObject targetObject);
+                bool sync = !parent.active && validParent;
+                GetComponent<NetworkTransform>().SyncPositionX = sync;
+                GetComponent<NetworkTransform>().SyncPositionY = sync;
+                GetComponent<NetworkTransform>().SyncPositionZ = sync;
+                GetComponent<NetworkTransform>().SyncRotAngleX = sync;
+                GetComponent<NetworkTransform>().SyncRotAngleY = sync;
+                GetComponent<NetworkTransform>().SyncRotAngleZ = sync;
+
+                if (sync)
+                {
+                    parentConstraint.translationAtRest = parent.translationAtRest;
+                    parentConstraint.rotationAtRest = parent.rotationAtRest;
+
+                    Transform floorTransform = targetObject.transform;
+                    floorConstraint.sourceTransform = floorTransform;
+                    floorConstraint.weight = 1.0f;
+                    parentConstraint.AddSource(floorConstraint);
+
+                    Vector3 relativePos = parent.translationAtRest - floorTransform.position;
+                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePos));
+                    parentConstraint.constraintActive = true;
+                }
+                else
+                {
+                    parentConstraint.RemoveSource(0);
+                    parentConstraint.constraintActive = false;
+                }
             }
 
             AttachedAnimator.SetFloat("MoveX", animationMove.Value.x);
