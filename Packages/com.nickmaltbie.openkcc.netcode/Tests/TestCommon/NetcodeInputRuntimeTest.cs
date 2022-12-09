@@ -25,6 +25,7 @@ using Unity.Netcode;
 using Unity.Netcode.TestHelpers.Runtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
@@ -279,6 +280,10 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
             if (!Application.isPlaying)
             {
                 UnityEngine.SceneManagement.Scene scene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.EmptyScene, UnityEditor.SceneManagement.NewSceneMode.Single);
+            }
+            else
+            {
+                UnityEngine.SceneManagement.Scene scene = SceneManager.CreateScene("EmptyTestScene");
             }
 #endif
             netcodeHelper.OneTimeSetup();
