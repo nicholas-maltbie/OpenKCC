@@ -22,6 +22,7 @@ using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
@@ -112,8 +113,10 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
         )
         {
             kccStateMachine.TeleportPlayer(relativePos);
+
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
+            yield return null;
 
             // Move the box forward and wait a fixed update, the player should
             // move along with the box
@@ -127,6 +130,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
 
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForFixedUpdate();
+                yield return null;
                 Assert.AreEqual(floor, kccStateMachine.config.groundedState.Floor);
                 Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGroundOrOverlap);
                 Assert.AreEqual(1, constraint.sourceCount);
