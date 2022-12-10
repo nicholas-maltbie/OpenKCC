@@ -24,6 +24,7 @@ using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
+using nickmaltbie.OpenKCC.netcode.Utils;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
@@ -110,13 +111,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// Animation movement for the player
         /// </summary>
         private NetworkVariable<Vector2> animationMove = new NetworkVariable<Vector2>(
-            readPerm: NetworkVariableReadPermission.Everyone,
-            writePerm: NetworkVariableWritePermission.Owner);
-
-        /// <summary>
-        /// Relative position to parent.
-        /// </summary>
-        public NetworkVariable<NetworkParentConstraint> relativeParent = new NetworkVariable<NetworkParentConstraint>(
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Owner);
 
@@ -413,77 +407,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
                 animationMove.Value = new Vector2(moveX, moveY);
 
                 config.jumpAction?.Update();
-            }
-            else
-            {
-                // If not owner, update the player based on the current
-                // relative parent configuration
-                NetworkParentConstraint parent = relativeParent.Value;
-                NetworkObject targetObject = null;
-                bool validParent = parent.active && parent.parentTransform.TryGet(out targetObject);
-
-                if (parentConstraint.sourceCount > 0)
-                {
-                    parentConstraint.RemoveSource(0);
-                }
-
-                NetworkTransform netTransform = GetComponent<NetworkTransform>();
-                netTransform.SyncPositionX = !validParent;
-                netTransform.SyncPositionY = !validParent;
-                netTransform.SyncPositionZ = !validParent;
-
-                if (validParent)
-                {
-                    parentConstraint.translationAtRest = parent.translationAtRest;
-                    parentConstraint.rotationAtRest = parent.rotationAtRest;
-
-                    Transform floorTransform = targetObject.transform;
-                    floorConstraint.sourceTransform = floorTransform;
-                    floorConstraint.weight = 1.0f;
-                    parentConstraint.AddSource(floorConstraint);
-                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(parent.relativePosition));
-                    parentConstraint.constraintActive = true;
-                }
-                else
-                {
-                    GetComponent<NetworkTransform>().enabled = true;
-                    parentConstraint.constraintActive = false;
-                }
+                GetComponent<NetworkParentConstarint>().Floor = config.groundedState.Floor?.GetComponent<NetworkObject>();
             }
 
             AttachedAnimator.SetFloat("MoveX", animationMove.Value.x);
             AttachedAnimator.SetFloat("MoveY", animationMove.Value.y);
-
-            // Update the network sync if the floor has a network transform
-            if (IsOwner)
-            {
-                NetworkObject networkObject = config.groundedState.Floor?.GetComponent<NetworkObject>();
-
-                bool enableNetworkParent = networkObject != null && parentConstraint.constraintActive;
-                NetworkTransform netTransform = GetComponent<NetworkTransform>();
-                netTransform.SyncPositionX = !enableNetworkParent;
-                netTransform.SyncPositionY = !enableNetworkParent;
-                netTransform.SyncPositionZ = !enableNetworkParent;
-
-                if (enableNetworkParent)
-                {
-                    // Update the relative parent
-                    Vector3 relativePos = transform.position - config.groundedState.Floor.transform.position;
-                    relativeParent.Value = new NetworkParentConstraint
-                    {
-                        active = true,
-                        parentTransform = networkObject,
-                        relativePosition = relativePos,
-                        translationAtRest = parentConstraint.translationAtRest,
-                        rotationAtRest = parentConstraint.rotationAtRest,
-                    };
-                }
-                else if (relativeParent.Value.active)
-                {
-                    // Check if it is currently active, if so, set to not active
-                    relativeParent.Value = new NetworkParentConstraint { active = false, };
-                }
-            }
 
             base.Update();
         }

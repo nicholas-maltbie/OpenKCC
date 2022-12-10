@@ -40,6 +40,11 @@ namespace nickmaltbie.OpenKCC.netcode.CameraControls
         [SerializeField]
         public CameraConfig config = new CameraConfig();
 
+        private NetworkVariable<float> playerYaw = new NetworkVariable<float>(
+            readPerm: NetworkVariableReadPermission.Everyone,
+            writePerm: NetworkVariableWritePermission.Owner
+        );
+
         /// <inheritdoc/>
         public float PreviousOpacity { get; set; }
 
@@ -47,7 +52,11 @@ namespace nickmaltbie.OpenKCC.netcode.CameraControls
         public float Pitch { get; set; }
 
         /// <inheritdoc/>
-        public float Yaw { get; set; }
+        public float Yaw
+        {
+            get => playerYaw.Value;
+            set => playerYaw.Value = value;
+        }
 
         public void Start()
         {
@@ -59,6 +68,11 @@ namespace nickmaltbie.OpenKCC.netcode.CameraControls
             if (IsOwner)
             {
                 CameraUtils.UpdateCameraController(config, gameObject, this, unityService.deltaTime);
+            }
+            else if (config.thirdPersonCharacterBase != null)
+            {
+                config.thirdPersonCharacterBase.transform.localRotation =
+                    Quaternion.Euler(0, Yaw, 0);
             }
         }
     }

@@ -18,7 +18,7 @@
 
 using Unity.Netcode.Components;
 
-namespace nickmaltbie.OpenKCC.NetcodeExample
+namespace nickmaltbie.OpenKCC.netcode.Packages.com.nickmaltbie.openkcc.netcode.OpenKCC.netcode.Utils
 {
     public class ClientNetworkTransform : NetworkTransform
     {
