@@ -25,37 +25,20 @@ using UnityEngine.Animations;
 namespace nickmaltbie.OpenKCC.netcode.Utils
 {
     [RequireComponent(typeof(ParentConstraint))]
-    [RequireComponent(typeof(NetworkTransform))]
     public class NetworkParentConstarint : NetworkBehaviour
     {
         public IUnityService unityService = UnityService.Instance;
         public float smoothRate = 0.1f;
 
         protected ParentConstraint parentConstraint;
-        protected Vector3 worldPosition;
         protected Vector3 relativePos;
         protected ulong previousParent;
         protected bool previousActive;
 
-        protected NetworkVariable<bool> active = new NetworkVariable<bool>(
-            writePerm: NetworkVariableWritePermission.Owner,
-            readPerm: NetworkVariableReadPermission.Everyone);
-
-        protected NetworkVariable<NetworkObjectReference> parentTransform = new NetworkVariable<NetworkObjectReference>(
-            writePerm: NetworkVariableWritePermission.Owner,
-            readPerm: NetworkVariableReadPermission.Everyone);
-
-        protected NetworkVariable<Vector3> relativePosition = new NetworkVariable<Vector3>(
-            writePerm: NetworkVariableWritePermission.Owner,
-            readPerm: NetworkVariableReadPermission.Everyone);
-
-        protected NetworkVariable<Vector3> translationAtRest = new NetworkVariable<Vector3>(
-            writePerm: NetworkVariableWritePermission.Owner,
-            readPerm: NetworkVariableReadPermission.Everyone);
-
-        protected NetworkVariable<Vector3> rotationAtRest = new NetworkVariable<Vector3>(
-            writePerm: NetworkVariableWritePermission.Owner,
-            readPerm: NetworkVariableReadPermission.Everyone);
+        protected NetworkVariable<NetworkConstraintSource> networkConstarint =
+            new NetworkVariable<NetworkConstraintSource>(
+                writePerm: NetworkVariableWritePermission.Owner,
+                readPerm: NetworkVariableReadPermission.Everyone);
 
         public NetworkObject Floor { get; set; }
 
@@ -94,30 +77,42 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                 {
                     // Update the relative parent
                     Vector3 relativePos = transform.position - Floor.transform.position;
-                    active.Value = true;
-                    parentTransform.Value = Floor;
-                    relativePosition.Value = relativePos;
-                    translationAtRest.Value = parentConstraint.translationAtRest;
-                    rotationAtRest.Value = parentConstraint.rotationAtRest;
+                    networkConstarint.Value = new NetworkConstraintSource
+                    {
+                        active = true,
+                        parentTransform = Floor,
+                        relativePosition = relativePos,
+                        translationAtRest = parentConstraint.translationAtRest,
+                        rotationAtRest = parentConstraint.rotationAtRest,
+                    };
                 }
-                else if (active.Value)
+                else
                 {
                     // Check if it is currently active, if so, set to not active
-                    active.Value = false;
+                    networkConstarint.Value = new NetworkConstraintSource
+                    {
+                        active = false,
+                        parentTransform = default,
+                        relativePosition = Vector3.zero,
+                        translationAtRest = transform.position,
+                        rotationAtRest = transform.rotation.eulerAngles,
+                    };
                 }
             }
             else
             {
+                NetworkConstraintSource source = networkConstarint.Value;
+
                 // Smooth relative position to avoid jitter
-                if (previousActive && active.Value && previousParent == parentTransform.Value.NetworkObjectId)
+                if (previousActive && source.active && previousParent == source.parentTransform.NetworkObjectId)
                 {
-                    relativePos = Vector3.Lerp(relativePos, relativePosition.Value, this.smoothRate * unityService.deltaTime);
+                    relativePos = Vector3.Lerp(relativePos, source.relativePosition, smoothRate * unityService.deltaTime);
                 }
 
                 // If not owner, update the player based on the current
                 // relative parent configuration
                 NetworkObject targetObject = null;
-                bool validParent = active.Value && parentTransform.Value.TryGet(out targetObject);
+                bool validParent = source.active && source.parentTransform.TryGet(out targetObject);
                 SetSyncMode(!validParent);
 
                 if (parentConstraint.sourceCount > 0)
@@ -134,19 +129,19 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
 
                 if (validParent)
                 {
-                    parentConstraint.translationAtRest = translationAtRest.Value;
-                    parentConstraint.rotationAtRest = rotationAtRest.Value;
+                    parentConstraint.translationAtRest = source.translationAtRest;
+                    parentConstraint.rotationAtRest = source.rotationAtRest;
 
                     Transform floorTransform = targetObject.transform;
                     floorConstraint.sourceTransform = floorTransform;
                     floorConstraint.weight = 1.0f;
                     parentConstraint.AddSource(floorConstraint);
-                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePosition.Value));
+                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(source.relativePosition));
                     parentConstraint.constraintActive = true;
                 }
 
                 parentConstraint.constraintActive = validParent;
-                previousParent = parentTransform.Value.NetworkObjectId;
+                previousParent = source.parentTransform.NetworkObjectId;
                 previousActive = validParent;
             }
         }

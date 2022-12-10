@@ -16,12 +16,17 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Unity.Netcode.Components;
+using Unity.Netcode;
+using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.netcode.Utils
 {
-    public class ClientNetworkTransform : NetworkTransform
+    public struct NetworkConstraintSource
     {
-        protected override bool OnIsServerAuthoritative() => false;
+        public bool active;
+        public NetworkObjectReference parentTransform;
+        public Vector3 relativePosition;
+        public Vector3 translationAtRest;
+        public Vector3 rotationAtRest;
     }
 }
