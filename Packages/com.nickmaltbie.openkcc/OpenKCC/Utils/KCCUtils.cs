@@ -323,6 +323,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 deltaBounce = remainingMomentum * fraction;
             deltaBounce = deltaBounce.normalized * Mathf.Max(0, deltaBounce.magnitude - Epsilon);
             position += deltaBounce;
+
             // Decrease remaining momentum by fraction of movement remaining
             remainingMomentum *= (1 - Mathf.Max(0, deltaBounce.magnitude / distance));
 
@@ -440,14 +441,19 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 groundVelocity = Vector3.zero;
             IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();
             Rigidbody rb = groundedState.Floor?.GetComponent<Rigidbody>();
-            if (movingGround != null && !movingGround.AvoidTransferMomentum())
+            if (movingGround != null)
             {
+                if (movingGround.AvoidTransferMomentum())
+                {
+                    return Vector3.zero;
+                }
+
                 // Weight movement of ground by ground movement weight
-                float velocityWeight =
-                    movingGround.GetMovementWeight(groundedState.GroundHitPosition, playerVel);
-                float transferWeight =
-                    movingGround.GetTransferMomentumWeight(groundedState.GroundHitPosition, playerVel);
                 groundVelocity = movingGround.GetVelocityAtPoint(groundedState.GroundHitPosition);
+                float velocityWeight =
+                    movingGround.GetMovementWeight(groundedState.GroundHitPosition, groundVelocity);
+                float transferWeight =
+                    movingGround.GetTransferMomentumWeight(groundedState.GroundHitPosition, groundVelocity);
                 groundVelocity *= velocityWeight;
                 groundVelocity *= transferWeight;
             }
@@ -511,14 +517,13 @@ namespace nickmaltbie.OpenKCC.Utils
         {
             groundedState.CheckGrounded(config, worldPosition, worldRotation);
             parentConstraint.constraintActive = groundedState.StandingOnGround;
+            IMovingGround ground = groundedState.Floor?.GetComponent<IMovingGround>();
 
             if (groundedState.StandingOnGround && groundedState.Floor != null)
             {
-                IMovingGround ground = groundedState.Floor.GetComponent<IMovingGround>();
-
                 if (ground == null || ground.ShouldAttach())
                 {
-                    Transform previousTransfrom = floorConstraint.sourceTransform;
+                    Transform previousTransform = floorConstraint.sourceTransform;
                     Transform floorTransform = groundedState.Floor.transform;
                     floorConstraint = new ConstraintSource
                     {
@@ -526,7 +531,7 @@ namespace nickmaltbie.OpenKCC.Utils
                         weight = 1.0f,
                     };
 
-                    if (previousTransfrom != floorTransform)
+                    if (previousTransform != floorTransform)
                     {
                         parentConstraint.SetSource(0, floorConstraint);
 
@@ -543,6 +548,13 @@ namespace nickmaltbie.OpenKCC.Utils
                 else
                 {
                     worldPosition += ground.GetDisplacementAtPoint(worldPosition);
+                    floorConstraint = new ConstraintSource
+                    {
+                        sourceTransform = null,
+                        weight = 0,
+                    };
+                    parentConstraint.constraintActive = false;
+                    parentConstraint.SetSource(0, floorConstraint);
                 }
             }
             else

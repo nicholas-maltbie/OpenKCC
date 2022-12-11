@@ -244,17 +244,19 @@ namespace nickmaltbie.OpenKCC.Character
             // Move the player if they are allowed to walk
             if (moveSettings?.AllowWalk ?? false)
             {
-                Vector3 movementDir = GetProjectedMovement();
-                float vel = config.walkingSpeed;
+                Vector3 move = GetProjectedMovement();
+                float speed = config.walkingSpeed;
 
                 string overrideParam = moveSettings.OverrideVelocityFunction;
 
                 if (!string.IsNullOrEmpty(overrideParam))
                 {
-                    vel = (float)config.EvaluateMember(overrideParam);
+                    speed = (float)config.EvaluateMember(overrideParam);
                 }
 
-                delta += MovePlayer(movementDir * vel * unityService.deltaTime);
+                Debug.Log($"speed:{speed}");
+
+                delta += MovePlayer(move * speed * unityService.deltaTime);
             }
 
             // Apply velocity if allowed to move via velocity
@@ -314,7 +316,7 @@ namespace nickmaltbie.OpenKCC.Character
         }
 
         /// <summary>
-        /// Setup inputs for the networked KCC
+        /// Setup inputs for the KCC
         /// </summary>
         public void SetupInputs()
         {
@@ -333,6 +335,8 @@ namespace nickmaltbie.OpenKCC.Character
             float moveY = AttachedAnimator.GetFloat("MoveY");
             moveX = Mathf.Lerp(moveX, moveVector.x, 4 * unityService.deltaTime);
             moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
+            AttachedAnimator.SetFloat("MoveX", moveX);
+            AttachedAnimator.SetFloat("MoveY", moveY);
 
             bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
             RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
@@ -360,7 +364,10 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             // Compute displacement without player movement
-            Vector3 start = transform.position;
+            Vector3 disp = transform.position - previousPosition;
+            Vector3 vel = disp / deltaTime;
+
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 0.5f);
 
             // Push player out of overlapping objects
             Vector3 move = PushOutOverlapping();
@@ -386,10 +393,6 @@ namespace nickmaltbie.OpenKCC.Character
             UpdateMovingGround(move);
             UpdateGroundedState();
 
-            Vector3 disp = start - previousPosition;
-            Vector3 vel = disp / deltaTime;
-
-            previousVelocity = Vector3.Lerp(previousVelocity, vel, 0.5f);
             previousPosition = transform.position;
         }
 
@@ -468,7 +471,19 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public void ApplyJump(Vector3 velocity)
         {
-            Velocity = velocity + KCCUtils.GetGroundVelocity(config.groundedState, config, previousVelocity);
+            Vector3 groundVel = KCCUtils.GetGroundVelocity(config.groundedState, config, previousVelocity);
+            UnityEngine.Debug.Log($"groundVel:{groundVel} speed:{velocity}");
+
+            Velocity = velocity + groundVel;
+
+            // Detach parent constraints
+            floorConstraint = new ConstraintSource
+            {
+                sourceTransform = null,
+                weight = 0,
+            };
+            parentConstraint.SetSource(0, floorConstraint);
+
             RaiseEvent(JumpEvent.Instance);
         }
 

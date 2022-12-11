@@ -87,7 +87,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   config:
     lookActionReference: {fileID: -157715672235557779, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-    zoomActionReference: {fileID: 0}
+    zoomActionReference: {fileID: -4928028233122485438, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
     maxPitch: 90
     minPitch: -90
     rotationRate: 180
@@ -324,7 +324,7 @@ MonoBehaviour:
     maxBounces: 5
     pushDecay: 0.9
     anglePower: 0.5
-    maxPushSpeed: 10
+    maxPushSpeed: 100
     verticalSnapDown: 0.25
     stepUpDepth: 0.1
     verticalSnapUp: 0.35
