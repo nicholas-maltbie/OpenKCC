@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.Character.Config;
+using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;

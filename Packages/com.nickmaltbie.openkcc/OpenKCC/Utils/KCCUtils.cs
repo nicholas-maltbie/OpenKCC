@@ -430,6 +430,42 @@ namespace nickmaltbie.OpenKCC.Utils
             yield break;
         }
 
+
+        /// <summary>
+        /// Gets the velocity of the ground the player is standing on where the player is currently
+        /// </summary>
+        /// <returns>The velocity of the ground at the point the player is standing on</returns>
+        public static Vector3 GetGroundVelocity(KCCGroundedState groundedState, IKCCConfig kccConfig, Vector3 playerVel)
+        {
+            Vector3 groundVelocity = Vector3.zero;
+            IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();
+            Rigidbody rb = groundedState.Floor?.GetComponent<Rigidbody>();
+            if (movingGround != null && !movingGround.AvoidTransferMomentum())
+            {
+                // Weight movement of ground by ground movement weight
+                float velocityWeight =
+                    movingGround.GetMovementWeight(groundedState.GroundHitPosition, playerVel);
+                float transferWeight =
+                    movingGround.GetTransferMomentumWeight(groundedState.GroundHitPosition, playerVel);
+                groundVelocity = movingGround.GetVelocityAtPoint(groundedState.GroundHitPosition);
+                groundVelocity *= velocityWeight;
+                groundVelocity *= transferWeight;
+            }
+            else if (rb != null)
+            {
+                Vector3 groundVel = rb.GetPointVelocity(groundedState.GroundHitPosition);
+                float velocity = Mathf.Min(groundVel.magnitude, kccConfig.MaxDefaultLaunchVelocity);
+                groundVelocity = groundVel.normalized * velocity;
+            }
+            else if (groundedState.StandingOnGround)
+            {
+                float velocity = Mathf.Min(playerVel.magnitude, kccConfig.MaxDefaultLaunchVelocity);
+                groundVelocity = playerVel.normalized * velocity;
+            }
+
+            return groundVelocity;
+        }
+
         /// <summary>
         /// Teleport a player from one position to another ignoring
         /// any parent constraints attached to the player.
@@ -447,6 +483,8 @@ namespace nickmaltbie.OpenKCC.Utils
             }
 
             transform.position = position;
+
+            parentConstraint.SetSources(sources);
         }
 
         /// <summary>
@@ -454,47 +492,70 @@ namespace nickmaltbie.OpenKCC.Utils
         /// </summary>
         /// <param name="groundedState">Grounded state of the KCC.</param>
         /// <param name="config">KCC Config for evaluating collisions.</param>
-        /// <param name="transform">Current position and rotation of the KCC.</param>
+        /// <param name="worldPosition">Current position of the KCC.</param
+        /// <param name="worldRotation">Current rotation of the KCC.</param>
         /// <param name="parentConstraint">Parent constraint for attaching the KCC
         /// to an object.</param>
+        /// <param name="desiredMove">How the player would like to move this frame.</param>
         /// <param name="floorConstraint">Reference floor constraint for updating
         /// the current KCC state. Passed as 'ref' to avoid allocating a
         /// new one every frame.</param>
-        public static void UpdateMovingGround(
+        public static Vector3 UpdateMovingGround(
             KCCGroundedState groundedState,
             IKCCConfig config,
-            Transform transform,
+            Vector3 worldPosition,
+            Quaternion worldRotation,
             ParentConstraint parentConstraint,
+            Vector3 desiredMove,
             ref ConstraintSource floorConstraint)
         {
-            groundedState.CheckGrounded(config, transform.position, transform.rotation);
+            groundedState.CheckGrounded(config, worldPosition, worldRotation);
             parentConstraint.constraintActive = groundedState.StandingOnGround;
-            parentConstraint.translationAtRest = transform.position;
-            parentConstraint.rotationAtRest = transform.rotation.eulerAngles;
 
-            if (groundedState.StandingOnGroundOrOverlap && groundedState.Floor != null)
+            if (groundedState.StandingOnGround && groundedState.Floor != null)
             {
                 IMovingGround ground = groundedState.Floor.GetComponent<IMovingGround>();
 
                 if (ground == null || ground.ShouldAttach())
                 {
+                    Transform previousTransfrom = floorConstraint.sourceTransform;
                     Transform floorTransform = groundedState.Floor.transform;
-                    floorConstraint.sourceTransform = floorTransform;
-                    floorConstraint.weight = 1.0f;
-                    parentConstraint.AddSource(floorConstraint);
+                    floorConstraint = new ConstraintSource
+                    {
+                        sourceTransform = floorTransform,
+                        weight = 1.0f,
+                    };
 
-                    Vector3 relativePos = transform.position - floorTransform.position;
-                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePos));
+                    if (previousTransfrom != floorTransform)
+                    {
+                        parentConstraint.SetSource(0, floorConstraint);
+
+                        Vector3 relativePos = worldPosition - floorTransform.position;
+                        parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePos));
+                    }
+                    else
+                    {
+                        Vector3 relativePos = parentConstraint.GetTranslationOffset(0);
+                        relativePos += floorTransform.InverseTransformDirection(desiredMove);
+                        parentConstraint.SetTranslationOffset(0, relativePos);
+                    }
                 }
                 else
                 {
-                    transform.position += ground.GetDisplacementAtPoint(transform.position);
+                    worldPosition += ground.GetDisplacementAtPoint(worldPosition);
                 }
             }
             else
             {
-                floorConstraint = default;
+                floorConstraint = new ConstraintSource
+                {
+                    sourceTransform = null,
+                    weight = 0,
+                };
+                parentConstraint.SetSource(0, floorConstraint);
             }
+
+            return worldPosition;
         }
     }
 }

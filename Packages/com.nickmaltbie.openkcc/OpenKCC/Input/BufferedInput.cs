@@ -97,7 +97,7 @@ namespace nickmaltbie.OpenKCC.Input
             elapsedSincePressed += unityService.deltaTime;
             elapsedSinceReset += unityService.deltaTime;
 
-            if (InputAction?.ReadValue<float>() == 1.0f)
+            if (InputAction?.IsPressed() ?? false)
             {
                 elapsedSincePressed = 0.0f;
             }

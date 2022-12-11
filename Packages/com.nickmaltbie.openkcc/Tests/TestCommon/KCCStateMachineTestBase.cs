@@ -109,7 +109,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             kccStateMachine.config.jumpAction = jumpAction;
             kccStateMachine.config.moveActionReference = InputActionReference.Create(moveInputAction);
             kccStateMachine.config.sprintActionReference = InputActionReference.Create(sprintInputAction);
-            kccStateMachine.Start();
+            kccStateMachine.Awake();
 
             constraint = kccStateMachine.GetComponent<ParentConstraint>();
         }

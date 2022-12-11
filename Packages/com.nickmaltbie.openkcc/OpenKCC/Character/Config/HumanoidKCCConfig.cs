@@ -204,6 +204,9 @@ namespace nickmaltbie.OpenKCC.Character.Config
         public float StepUpDepth => stepUpDepth;
 
         /// <inheritdoc/>
+        public float MaxDefaultLaunchVelocity => maxDefaultLaunchVelocity;
+
+        /// <inheritdoc/>
         public float AnglePower => anglePower;
 
         /// <inheritdoc/>
