@@ -28,9 +28,10 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
     public class NetworkParentConstarint : NetworkBehaviour
     {
         public IUnityService unityService = UnityService.Instance;
-        public float smoothRate = 0.1f;
+        public float smoothRate = 4;
 
         protected ParentConstraint parentConstraint;
+        protected Vector3 worldPosition;
         protected Vector3 relativePos;
         protected ulong previousParent;
         protected bool previousActive;
@@ -47,22 +48,9 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
         /// </summary>
         private ConstraintSource floorConstraint;
 
-        /// <summary>
-        /// Netowrk transform associated with the player
-        /// </summary>
-        private NetworkTransform netTransform;
-
         public void Awake()
         {
             parentConstraint = GetComponent<ParentConstraint>();
-            netTransform = GetComponent<NetworkTransform>();
-        }
-
-        public void SetSyncMode(bool mode)
-        {
-            netTransform.SyncPositionX = mode;
-            netTransform.SyncPositionY = mode;
-            netTransform.SyncPositionZ = mode;
         }
 
         public void Update()
@@ -71,7 +59,6 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
             if (IsOwner)
             {
                 bool enableNetworkParent = Floor != null && parentConstraint.constraintActive;
-                SetSyncMode(!enableNetworkParent);
 
                 if (enableNetworkParent)
                 {
@@ -103,32 +90,33 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
             {
                 NetworkConstraintSource source = networkConstarint.Value;
 
-                // Smooth relative position to avoid jitter
-                if (previousActive && source.active && previousParent == source.parentTransform.NetworkObjectId)
-                {
-                    relativePos = Vector3.Lerp(relativePos, source.relativePosition, smoothRate * unityService.deltaTime);
-                }
-
                 // If not owner, update the player based on the current
                 // relative parent configuration
                 NetworkObject targetObject = null;
                 bool validParent = source.active && source.parentTransform.TryGet(out targetObject);
-                SetSyncMode(!validParent);
 
                 if (parentConstraint.sourceCount > 0)
                 {
                     parentConstraint.RemoveSource(0);
                 }
 
-                // Avoid jitter by setting initial relative position
-                // to current offset from parent
                 if (!previousActive && validParent)
                 {
-                    relativePos = transform.position - targetObject.transform.position;
+                    // Avoid jitter by setting initial relative position
+                    // to current offset from parent
+                    relativePos = targetObject.transform.InverseTransformDirection(transform.position);
+                }
+                else if (previousActive && !validParent)
+                {
+                    // Avoid jitter by setting world pos to current position
+                    worldPosition = transform.position;
                 }
 
                 if (validParent)
                 {
+                    // Smooth relative position to avoid jitter
+                    relativePos = Vector3.Lerp(relativePos, source.relativePosition, smoothRate * unityService.deltaTime);
+
                     parentConstraint.translationAtRest = source.translationAtRest;
                     parentConstraint.rotationAtRest = source.rotationAtRest;
 
@@ -138,6 +126,12 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                     parentConstraint.AddSource(floorConstraint);
                     parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(source.relativePosition));
                     parentConstraint.constraintActive = true;
+                }
+                else
+                {
+                    // Smooth relative position to avoid jitter
+                    worldPosition = Vector3.Lerp(worldPosition, source.translationAtRest, smoothRate * unityService.deltaTime);
+                    transform.position = worldPosition;
                 }
 
                 parentConstraint.constraintActive = validParent;

@@ -21,12 +21,21 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.netcode.Utils
 {
-    public struct NetworkConstraintSource
+    public struct NetworkConstraintSource : INetworkSerializable
     {
         public bool active;
         public NetworkObjectReference parentTransform;
         public Vector3 relativePosition;
         public Vector3 translationAtRest;
         public Vector3 rotationAtRest;
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref active);
+            serializer.SerializeValue(ref parentTransform);
+            serializer.SerializeValue(ref relativePosition);
+            serializer.SerializeValue(ref translationAtRest);
+            serializer.SerializeValue(ref rotationAtRest);
+        }
     }
 }
