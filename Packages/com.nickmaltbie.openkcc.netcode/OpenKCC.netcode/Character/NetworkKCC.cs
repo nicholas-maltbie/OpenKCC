@@ -24,6 +24,7 @@ using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
+using nickmaltbie.OpenKCC.netcode.Utils;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
@@ -112,6 +113,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Owner);
 
+        /// <summary>
+        /// Config for attaching to parent constraint.
+        /// </summary>
+        private RelativeParentConfig parentConfig;
+
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
         [Transition(typeof(StartMoveInput), typeof(WalkingState))]
@@ -166,6 +172,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
 
         [ApplyGravity]
         [Animation(FallingAnimState, 0.1f, true)]
+        [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
@@ -201,6 +208,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
 
             RaiseEvent(groundedEvent);
+            GetComponent<NetworkParentConstraint>().Floor = config.groundedState.Floor?.GetComponent<NetworkObject>();
         }
 
         /// <summary>
@@ -208,7 +216,17 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// </summary>
         public void UpdateMovingGround(Vector3 desiredMove)
         {
+            parentConfig.previousParent = parentConstraint.GetSource(0).sourceTransform;
+
             transform.position = KCCUtils.UpdateMovingGround(config.groundedState, config, transform.position, transform.rotation, parentConstraint, desiredMove, ref floorConstraint);
+            if (parentConstraint.constraintActive)
+            {
+                parentConfig.relativePos = config.groundedState.Floor.transform.InverseTransformPoint(transform.position);
+            }
+            else
+            {
+                parentConfig.relativePos = Vector3.zero;
+            }
         }
 
         /// <summary>
@@ -223,23 +241,23 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             // Move the player if they are allowed to walk
             if (moveSettings?.AllowWalk ?? false)
             {
-                Vector3 movementDir = GetProjectedMovement();
-                float vel = config.walkingSpeed;
+                Vector3 move = GetProjectedMovement();
+                float speed = config.walkingSpeed;
 
                 string overrideParam = moveSettings.OverrideVelocityFunction;
 
                 if (!string.IsNullOrEmpty(overrideParam))
                 {
-                    vel = (float)config.EvaluateMember(overrideParam);
+                    speed = (float)config.EvaluateMember(overrideParam);
                 }
 
-                delta += MovePlayer(movementDir * vel * unityService.deltaTime);
+                delta += MovePlayerInternal(move * speed * unityService.deltaTime);
             }
 
             // Apply velocity if allowed to move via velocity
             if (moveSettings?.AllowVelocity ?? false)
             {
-                delta += MovePlayer(Velocity * unityService.deltaTime);
+                delta += MovePlayerInternal(Velocity * unityService.deltaTime);
             }
             else
             {
@@ -253,22 +271,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
 
             return delta;
-        }
-
-        /// <summary>
-        /// Snap the player down based on their current position.
-        /// </summary>
-        public Vector3 SnapPlayerDown()
-        {
-            Vector3 start = transform.position;
-            Vector3 dest = KCCUtils.SnapPlayerDown(
-                transform.position,
-                transform.rotation,
-                config.Down,
-                config.verticalSnapDown,
-                config.ColliderCast);
-            transform.position = dest;
-            return dest - start;
         }
 
         /// <summary>
@@ -293,7 +295,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         }
 
         /// <summary>
-        /// Setup inputs for the networked KCC
+        /// Setup inputs for the KCC
         /// </summary>
         public void SetupInputs()
         {
@@ -304,50 +306,133 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
         }
 
-        public void ReadPlayerMovement()
+        /// <inheritdoc/>
+        public override void Update()
         {
             if (IsOwner)
             {
-                bool denyMovement = PlayerInputUtils.playerMovementState == PlayerInputState.Deny;
-                Vector2 moveVector = denyMovement ? Vector2.zero : config.MoveAction?.ReadValue<Vector2>() ?? Vector2.zero;
-                InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
-                config.jumpAction.Update();
-
-                float moveX = AttachedAnimator.GetFloat("MoveX");
-                float moveY = AttachedAnimator.GetFloat("MoveY");
-                moveX = Mathf.Lerp(moveX, moveVector.x, 4 * unityService.deltaTime);
-                moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
-                animationMove.Value = new Vector2(moveX, moveY);
-                
-                bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
-                RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
-
-                if (moving)
-                {
-                    if (config.SprintAction?.IsPressed() ?? false)
-                    {
-                        RaiseEvent(StartSprintEvent.Instance);
-                    }
-                    else
-                    {
-                        RaiseEvent(StopSprintEvent.Instance);
-                    }
-                }
+                ReadPlayerMovement();
+                ApplyMovement(unityService.deltaTime);
             }
 
             AttachedAnimator.SetFloat("MoveX", animationMove.Value.x);
             AttachedAnimator.SetFloat("MoveY", animationMove.Value.y);
+
+            base.Update();
         }
 
-        public void ApplyMovement(float deltaTime)
+        /// <summary>
+        /// Teleport a player to a given position.
+        /// </summary>
+        /// <param name="position">Position to teleport player to.</param>
+        public void TeleportPlayer(Vector3 position)
         {
-            // Compute displacement without player movement
+            KCCUtils.TeleportPlayer(transform, position, parentConstraint);
+        }
+
+        /// <inheritdoc/>
+        public void ApplyJump(Vector3 velocity)
+        {
+            if (IsOwner)
+            {
+                Vector3 groundVel = KCCUtils.GetGroundVelocity(config.groundedState, config, previousVelocity);
+                Velocity = velocity + groundVel;
+
+                // Detach parent constraints
+                floorConstraint = new ConstraintSource
+                {
+                    sourceTransform = null,
+                    weight = 0,
+                };
+                parentConstraint.SetSource(0, floorConstraint);
+
+                RaiseEvent(JumpEvent.Instance);
+            }
+        }
+
+        /// <summary>
+        /// Get a vector of the projected movement onto the plane the player is standing on.
+        /// </summary>
+        /// <returns>Vector of player movement based on input velocity rotated by player view and projected onto the
+        /// ground.</returns>
+        public Vector3 GetProjectedMovement() => GetProjectedMovement(InputMovement);
+
+        /// <summary>
+        /// The the player's projected movement onto the ground based on some input movement vector.
+        /// </summary>
+        /// <param name="inputMovement">Input movement of the player.</param>
+        /// <returns>Vector of player movement based on input velocity rotated by player view and projected onto the
+        /// ground.</returns>
+        public Vector3 GetProjectedMovement(Vector3 inputMovement)
+        {
+            return config.groundedState.GetProjectedMovement(RotatedMovement(inputMovement));
+        }
+
+        /// <summary>
+        /// Read the current player input values.
+        /// </summary>
+        public void ReadPlayerMovement()
+        {
+            bool denyMovement = PlayerInputUtils.playerMovementState == PlayerInputState.Deny;
+            Vector2 moveVector = denyMovement ? Vector2.zero : config.MoveAction?.ReadValue<Vector2>() ?? Vector2.zero;
+            InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
+            config.jumpAction.Update();
+
+            float moveX = AttachedAnimator.GetFloat("MoveX");
+            float moveY = AttachedAnimator.GetFloat("MoveY");
+            moveX = Mathf.Lerp(moveX, moveVector.x, 4 * unityService.deltaTime);
+            moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
+            animationMove.Value = new Vector2(moveX, moveY);
+
+            bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
+            RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
+
+            if (moving)
+            {
+                if (config.SprintAction?.IsPressed() ?? false)
+                {
+                    RaiseEvent(StartSprintEvent.Instance);
+                }
+                else
+                {
+                    RaiseEvent(StopSprintEvent.Instance);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Snap the player down based on their current position.
+        /// </summary>
+        protected Vector3 SnapPlayerDown()
+        {
             Vector3 start = transform.position;
-            Vector3 move = Vector3.zero;
+            Vector3 dest = KCCUtils.SnapPlayerDown(
+                transform.position,
+                transform.rotation,
+                config.Down,
+                config.verticalSnapDown,
+                config.ColliderCast);
+            transform.position = dest;
+            return dest - start;
+        }
+
+        /// <summary>
+        /// Apply player movement for a given delta time
+        /// including velcoity and input movement based on configuration.
+        /// </summary>
+        /// <param name="deltaTime">Delta time to move player.</param>
+        protected void ApplyMovement(float deltaTime)
+        {
+            ResetRelativeToGround(floorConstraint, parentConfig, config.groundedState, transform);
+
+            // Compute displacement without player movement
+            Vector3 disp = transform.position - previousPosition;
+            Vector3 vel = disp / deltaTime;
+
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 0.5f);
 
             // Push player out of overlapping objects
-            move += PushOutOverlapping();
-            UpdateGroundedState();
+            Vector3 move = PushOutOverlapping();
 
             if (config.groundedState.Falling)
             {
@@ -367,32 +452,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             config.jumpAction.ApplyJumpIfPossible();
             move += MovePlayer();
 
-            PushOutOverlapping();
             UpdateMovingGround(move);
             UpdateGroundedState();
 
-            Vector3 disp = start - previousPosition;
-            Vector3 vel = disp / unityService.deltaTime;
-
-            previousVelocity = Vector3.Lerp(previousVelocity, vel, 4 * unityService.deltaTime);
             previousPosition = transform.position;
         }
-
-        /// <inheritdoc/>
-        public override void Update()
-        {
-            ReadPlayerMovement();
-            ApplyMovement(unityService.deltaTime);
-
-            base.Update();
-        }
-
-        /// <summary>
-        /// Get a vector of the projected movement onto the plane the player is standing on.
-        /// </summary>
-        /// <returns>Vector of player movement based on input velocity rotated by player view and projected onto the
-        /// ground.</returns>
-        public Vector3 GetProjectedMovement() => GetProjectedMovement(InputMovement);
 
         /// <summary>
         /// Push the player out of any overlapping objects. This will constrain movement to only 
@@ -400,7 +464,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// the player when they overlap with another object.
         /// </summary>
         /// <returns>Total distance player was pushed.</returns>
-        public Vector3 PushOutOverlapping()
+        protected Vector3 PushOutOverlapping()
         {
             return config.ColliderCast.PushOutOverlapping(
                 transform.position,
@@ -409,21 +473,10 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         }
 
         /// <summary>
-        /// The the player's projected movement onto the ground based on some input movement vector.
-        /// </summary>
-        /// <param name="inputMovement">Input movement of the player.</param>
-        /// <returns>Vector of player movement based on input velocity rotated by player view and projected onto the
-        /// ground.</returns>
-        public Vector3 GetProjectedMovement(Vector3 inputMovement)
-        {
-            return config.groundedState.GetProjectedMovement(RotatedMovement(inputMovement));
-        }
-
-        /// <summary>
         /// Move the player based on some vector of desired movement.
         /// </summary>
         /// <param name="movement">Movement in world space in which the player model should be moved.</param>
-        public Vector3 MovePlayer(Vector3 movement)
+        protected Vector3 MovePlayerInternal(Vector3 movement)
         {
             Vector3 start = transform.position;
             foreach (KCCBounce bounce in KCCUtils.GetBounces(
@@ -439,28 +492,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
 
             return transform.position - start;
-        }
-
-        /// <summary>
-        /// Teleport a player to a given position.
-        /// </summary>
-        /// <param name="position">Position to teleport player to.</param>
-        public void TeleportPlayer(Vector3 position)
-        {
-            if (IsOwner)
-            {
-                KCCUtils.TeleportPlayer(transform, position, parentConstraint);
-            }
-        }
-
-        /// <inheritdoc/>
-        public void ApplyJump(Vector3 velocity)
-        {
-            if (IsOwner)
-            {
-                Velocity = velocity + KCCUtils.GetGroundVelocity(config.groundedState, config, previousVelocity);
-                RaiseEvent(JumpEvent.Instance);
-            }
         }
     }
 }

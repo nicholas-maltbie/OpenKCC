@@ -25,7 +25,7 @@ using UnityEngine.Animations;
 namespace nickmaltbie.OpenKCC.netcode.Utils
 {
     [RequireComponent(typeof(ParentConstraint))]
-    public class NetworkParentConstarint : NetworkBehaviour
+    public class NetworkParentConstraint : NetworkBehaviour
     {
         public IUnityService unityService = UnityService.Instance;
         public float smoothRate = 4;

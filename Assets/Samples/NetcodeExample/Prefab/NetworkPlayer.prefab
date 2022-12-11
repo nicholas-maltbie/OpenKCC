@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: 1302586632800550119}
   - component: {fileID: 6287251619445628944}
   - component: {fileID: 927829132273873527}
-  - component: {fileID: 5088864552818356704}
+  - component: {fileID: 852239248129915719}
   m_Layer: 0
   m_Name: NetworkPlayer
   m_TagString: Untagged
@@ -350,7 +350,7 @@ MonoBehaviour:
     ditherDistance: 1
     thirdPersonCharacterBase: {fileID: 2540648659797885176}
     transitionTime: 0.1
---- !u!114 &5088864552818356704
+--- !u!114 &852239248129915719
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -359,7 +359,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1928389238801210305}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d5e38e674dc8474e81a188f1654c765, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f263759f3d9b3446ab3d0b82f8eb03d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   smoothRate: 10

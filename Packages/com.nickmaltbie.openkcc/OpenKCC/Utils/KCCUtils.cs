@@ -493,6 +493,21 @@ namespace nickmaltbie.OpenKCC.Utils
             parentConstraint.SetSources(sources);
         }
 
+        public static void ResetRelativeToGround(
+            ConstraintSource floorConstraint,
+            RelativeParentConfig relativeParentConfig,
+            KCCGroundedState groundedState,
+            Transform transform
+        )
+        {
+            // Update the player position to follow parent constraint
+            if (floorConstraint.sourceTransform != null && relativeParentConfig.previousParent == floorConstraint.sourceTransform)
+            {
+                Transform floorTransform = groundedState.Floor.transform;
+                transform.position = floorTransform.TransformPoint(relativeParentConfig.relativePos);
+            }
+        }
+
         /// <summary>
         /// Update the moving grounded state of a kinematic character controller.
         /// </summary>
@@ -536,7 +551,8 @@ namespace nickmaltbie.OpenKCC.Utils
                         parentConstraint.SetSource(0, floorConstraint);
 
                         Vector3 relativePos = worldPosition - floorTransform.position;
-                        parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePos));
+                        relativePos = floorTransform.InverseTransformDirection(relativePos);
+                        parentConstraint.SetTranslationOffset(0, relativePos);
                     }
                     else
                     {
