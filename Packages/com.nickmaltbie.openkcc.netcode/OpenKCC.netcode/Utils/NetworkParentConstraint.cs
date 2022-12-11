@@ -36,7 +36,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
         protected ulong previousParent;
         protected bool previousActive;
 
-        protected NetworkVariable<NetworkConstraintSource> networkConstarint =
+        protected NetworkVariable<NetworkConstraintSource> networkConstraint =
             new NetworkVariable<NetworkConstraintSource>(
                 writePerm: NetworkVariableWritePermission.Owner,
                 readPerm: NetworkVariableReadPermission.Everyone);
@@ -64,7 +64,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                 {
                     // Update the relative parent
                     Vector3 relativePos = transform.position - Floor.transform.position;
-                    networkConstarint.Value = new NetworkConstraintSource
+                    networkConstraint.Value = new NetworkConstraintSource
                     {
                         active = true,
                         parentTransform = Floor,
@@ -76,7 +76,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                 else
                 {
                     // Check if it is currently active, if so, set to not active
-                    networkConstarint.Value = new NetworkConstraintSource
+                    networkConstraint.Value = new NetworkConstraintSource
                     {
                         active = false,
                         parentTransform = default,
@@ -88,7 +88,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
             }
             else
             {
-                NetworkConstraintSource source = networkConstarint.Value;
+                NetworkConstraintSource source = networkConstraint.Value;
 
                 // If not owner, update the player based on the current
                 // relative parent configuration
@@ -104,7 +104,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                 {
                     // Avoid jitter by setting initial relative position
                     // to current offset from parent
-                    relativePos = targetObject.transform.InverseTransformDirection(transform.position);
+                    relativePos = transform.position - targetObject.transform.position;
                 }
                 else if (previousActive && !validParent)
                 {
@@ -124,7 +124,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                     floorConstraint.sourceTransform = floorTransform;
                     floorConstraint.weight = 1.0f;
                     parentConstraint.AddSource(floorConstraint);
-                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(source.relativePosition));
+                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePos));
                     parentConstraint.constraintActive = true;
                 }
                 else

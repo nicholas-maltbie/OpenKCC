@@ -423,7 +423,7 @@ namespace nickmaltbie.OpenKCC.Character
             Vector3 disp = transform.position - previousPosition;
             Vector3 vel = disp / deltaTime;
 
-            previousVelocity = Vector3.Lerp(previousVelocity, vel, 0.5f);
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 4 * Time.deltaTime);
 
             // Push player out of overlapping objects
             Vector3 move = PushOutOverlapping();

@@ -35,12 +35,9 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
             writePerm: NetworkVariableWritePermission.Server);
 
         /// <summary>
-        /// Is continous variable with network configuration.
+        /// Is the movement for this rigidbody continuous.
         /// </summary>
-        private NetworkVariable<bool> _isContinuous = new NetworkVariable<bool>(
-            value: true,
-            readPerm: NetworkVariableReadPermission.Everyone,
-            writePerm: NetworkVariableWritePermission.Server);
+        public bool isContinuous = true;
 
         /// <summary>
         /// Current target the platform is heading for.
@@ -55,17 +52,6 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// Unity service for managing time.
         /// </summary>
         internal IUnityService untiyService = UnityService.Instance;
-
-        /// <summary>
-        /// Should continuous movement be used to move the object
-        /// or discrete steps. uses the MovePosition and MoveRotation api
-        /// for continuous movement otherwise.
-        /// </summary>
-        internal bool IsContinuous
-        {
-            get => _isContinuous.Value;
-            set => _isContinuous.Value = value;
-        }
 
         /// <summary>
         /// Velocity at which this platform should move.
@@ -91,6 +77,11 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// </summary>
         public bool ValidTarget => targetsList != null && targetsList.Count > 0;
 
+        public override void OnNetworkSpawn()
+        {
+            GetComponent<Rigidbody>().isKinematic = true;
+        }
+
         public void FixedUpdate()
         {
             if (!ValidTarget || !IsServer)
@@ -110,7 +101,7 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
                 CurrentTargetIdx = (CurrentTargetIdx + 1) % targetsList.Count;
             }
 
-            if (IsContinuous)
+            if (isContinuous)
             {
                 rb.MovePosition(rb.position + displacement);
             }
