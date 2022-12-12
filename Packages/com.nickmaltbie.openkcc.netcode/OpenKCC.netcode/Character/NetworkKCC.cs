@@ -298,10 +298,9 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// <inheritdoc/>
         public override void Update()
         {
-            UnityEngine.Debug.Log($"previous:{previousPosition.ToString("F3")} pos:{transform.position.ToString("F3")}");
             Vector3 delta = transform.position - previousPosition;
             Vector3 vel = delta / unityService.deltaTime;
-            previousVelocity = Vector3.Lerp(previousVelocity, vel, 4 * unityService.deltaTime);
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 10 * unityService.deltaTime);
 
             if (IsOwner)
             {
@@ -320,8 +319,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         {
             if (IsOwner)
             {
-                Vector3 groundVel = KCCUtils.GetGroundVelocity(config.groundedState, config, previousVelocity);
-                UnityEngine.Debug.Log($"groundVel{groundVel.ToString("F3")}");
+                Vector3 groundVel = GetGroundVelocity(config.groundedState, config, previousVelocity);
                 Velocity = velocity + groundVel;
                 RaiseEvent(JumpEvent.Instance);
             }

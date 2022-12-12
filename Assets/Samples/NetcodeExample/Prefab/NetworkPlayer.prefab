@@ -272,7 +272,7 @@ MonoBehaviour:
         inputActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
         bufferTime: 0
         cooldown: 0
-      jumpVelocity: 5
+      jumpVelocity: 6.5
       maxJumpAngle: 85
       jumpAngleWeightFactor: 0
     groundedState:
