@@ -23,7 +23,6 @@ using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
-using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.netcode.Utils;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.StateMachineUnity;
@@ -42,7 +41,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
     /// </summary>
     [RequireComponent(typeof(ParentConstraint))]
     [RequireComponent(typeof(Rigidbody))]
-    [DefaultExecutionOrder(100)]
+    [DefaultExecutionOrder(-100)]
     public class NetworkKCC : NetworkSMAnim, IJumping
     {
         /// <summary>
@@ -98,7 +97,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         private ConstraintSource floorConstraint;
 
         /// <summary>
-        /// Position of the player previous frame.
+        /// Position of the platform player is standing on.
         /// </summary>
         private Vector3 previousPosition;
 
@@ -188,21 +187,20 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public void UpdateGroundedState(Vector3 position, Quaternion rotation)
         {
             config.groundedState.CheckGrounded(config, position, rotation);
-            IEvent groundedEvent;
+
             if (!config.groundedState.StandingOnGroundOrOverlap)
             {
-                groundedEvent = LeaveGroundEvent.Instance;
+                RaiseEvent(LeaveGroundEvent.Instance);
             }
             else if (config.groundedState.Sliding)
             {
-                groundedEvent = SteepSlopeEvent.Instance;
+                RaiseEvent(SteepSlopeEvent.Instance);
             }
             else
             {
-                groundedEvent = GroundedEvent.Instance;
+                RaiseEvent(GroundedEvent.Instance);
             }
 
-            RaiseEvent(groundedEvent);
             GetComponent<NetworkParentConstraint>().Floor = config.groundedState.Floor?.GetComponent<NetworkObject>();
         }
 
@@ -258,6 +256,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             {
                 Vector3 snapDelta = GetSnapDelta(position, rotation, config.Down, config.verticalSnapDown, config.ColliderCast);
                 delta += snapDelta;
+                position += snapDelta;
             }
 
             return delta;
@@ -299,7 +298,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// <inheritdoc/>
         public override void Update()
         {
-            UnityEngine.Debug.Log($"currentState:{CurrentState.ToString()}");
+            UnityEngine.Debug.Log($"previous:{previousPosition.ToString("F3")} pos:{transform.position.ToString("F3")}");
+            Vector3 delta = transform.position - previousPosition;
+            Vector3 vel = delta / unityService.deltaTime;
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 4 * unityService.deltaTime);
+
             if (IsOwner)
             {
                 ReadPlayerMovement();
@@ -318,6 +321,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             if (IsOwner)
             {
                 Vector3 groundVel = KCCUtils.GetGroundVelocity(config.groundedState, config, previousVelocity);
+                UnityEngine.Debug.Log($"groundVel{groundVel.ToString("F3")}");
                 Velocity = velocity + groundVel;
                 RaiseEvent(JumpEvent.Instance);
             }
@@ -378,8 +382,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             Vector3 start = transform.position;
             Vector3 pos = start;
 
-            UpdateGroundedState(start, transform.rotation);
-
             // Push player out of overlapping objects
             Vector3 overlapPush = config.ColliderCast.PushOutOverlapping(pos, transform.rotation, config.maxPushSpeed * unityService.deltaTime);
             pos += overlapPush;
@@ -412,8 +414,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
 
             // Update the grounded state;
             config.groundedState.CheckGrounded(config, pos, transform.rotation);
-
-            bool constarintActive = config.groundedState.StandingOnGroundOrOverlap;
+            bool constarintActive = config.groundedState.StandingOnGround;
             parentConstraint.constraintActive = constarintActive;
             if (constarintActive)
             {
@@ -450,8 +451,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
                     weight = 0.0f,
                 };
                 parentConstraint.SetSource(0, floorConstraint);
-                transform.position = pos;
             }
+
+            transform.position = pos;
+            previousPosition = pos;
+            UpdateGroundedState(pos, transform.rotation);
         }
     }
 }
