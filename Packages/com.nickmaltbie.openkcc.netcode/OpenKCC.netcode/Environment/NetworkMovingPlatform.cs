@@ -23,7 +23,6 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.netcode.Environment
 {
-    [RequireComponent(typeof(Rigidbody))]
     public class NetworkMovingPlatform : NetworkBehaviour
     {
         /// <summary>
@@ -77,38 +76,24 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// </summary>
         public bool ValidTarget => targetsList != null && targetsList.Count > 0;
 
-        public override void OnNetworkSpawn()
-        {
-            GetComponent<Rigidbody>().isKinematic = true;
-        }
-
-        public void FixedUpdate()
+        public void Update()
         {
             if (!ValidTarget || !IsServer)
             {
                 return;
             }
 
-            Rigidbody rb = GetComponent<Rigidbody>();
-
-            Vector3 direction = (CurrentTarget.position - rb.position).normalized;
-            Vector3 displacement = direction * untiyService.fixedDeltaTime * linearSpeed;
-            float distanceToTarget = Vector3.Distance(rb.position, CurrentTarget.position);
+            Vector3 direction = (CurrentTarget.position - transform.position).normalized;
+            Vector3 displacement = direction * untiyService.deltaTime * linearSpeed;
+            float distanceToTarget = Vector3.Distance(transform.position, CurrentTarget.position);
 
             if (direction == Vector3.zero || distanceToTarget < displacement.magnitude)
             {
-                displacement = CurrentTarget.position - rb.position;
+                displacement = CurrentTarget.position - transform.position;
                 CurrentTargetIdx = (CurrentTargetIdx + 1) % targetsList.Count;
             }
 
-            if (isContinuous)
-            {
-                rb.MovePosition(rb.position + displacement);
-            }
-            else
-            {
-                rb.position += displacement;
-            }
+            transform.position += displacement;
         }
     }
 }
