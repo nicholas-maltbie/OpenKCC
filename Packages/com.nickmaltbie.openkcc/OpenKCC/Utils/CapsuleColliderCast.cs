@@ -118,13 +118,13 @@ namespace nickmaltbie.OpenKCC.Utils
             foreach (Collider overlap in GetOverlapping(position, rotation))
             {
                 Physics.ComputePenetration(
-                    CapsuleCollider, transform.position, transform.rotation,
+                    CapsuleCollider, position, rotation,
                     overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
                     out Vector3 direction, out float distance
                 );
                 float distPush = Mathf.Min(maxDistance, distance + KCCUtils.Epsilon);
                 Vector3 push = direction.normalized * distPush;
-                transform.position += push;
+                position += push;
                 pushed += push;
             }
 

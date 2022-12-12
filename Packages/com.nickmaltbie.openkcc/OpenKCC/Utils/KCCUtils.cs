@@ -372,6 +372,31 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="rotation">Rotation of the player during movement.</param>
         /// <param name="config">Configuration settings for player movement.</param>
         /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
+        public static Vector3 GetMovement(
+            Vector3 position,
+            Vector3 movement,
+            Quaternion rotation,
+            IKCCConfig config)
+        {
+            foreach (KCCBounce bounce in GetBounces(position, movement, rotation, config))
+            {
+                if (bounce.action == MovementAction.Stop)
+                {
+                    return bounce.finalPosition - position;
+                }
+            }
+
+            return Vector3.zero;
+        }
+
+        /// <summary>
+        /// Get the bounces for a KCC Utils movement action with a set default behaviour.
+        /// </summary>
+        /// <param name="position">Position to start player movement from.</param>
+        /// <param name="movement">Movement to move the player.</param>
+        /// <param name="rotation">Rotation of the player during movement.</param>
+        /// <param name="config">Configuration settings for player movement.</param>
+        /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
         public static IEnumerable<KCCBounce> GetBounces(
             Vector3 position,
             Vector3 movement,
@@ -504,7 +529,7 @@ namespace nickmaltbie.OpenKCC.Utils
             if (floorConstraint.sourceTransform != null && relativeParentConfig.previousParent == floorConstraint.sourceTransform)
             {
                 Transform floorTransform = groundedState.Floor.transform;
-                transform.position = floorTransform.TransformPoint(relativeParentConfig.relativePos);
+                transform.position = floorTransform.position + floorTransform.rotation * relativeParentConfig.relativePos;
             }
         }
 
@@ -550,14 +575,14 @@ namespace nickmaltbie.OpenKCC.Utils
                     {
                         parentConstraint.SetSource(0, floorConstraint);
 
-                        Vector3 relativePos = worldPosition - floorTransform.position;
-                        relativePos = floorTransform.InverseTransformDirection(relativePos);
+                        Vector3 relativePos = worldPosition + desiredMove - floorTransform.position;
+                        relativePos = Quaternion.Inverse(floorTransform.rotation) * relativePos;
                         parentConstraint.SetTranslationOffset(0, relativePos);
                     }
                     else
                     {
                         Vector3 relativePos = parentConstraint.GetTranslationOffset(0);
-                        relativePos += floorTransform.InverseTransformDirection(desiredMove);
+                        relativePos += Quaternion.Inverse(floorTransform.rotation) * desiredMove;
                         parentConstraint.SetTranslationOffset(0, relativePos);
                     }
                 }

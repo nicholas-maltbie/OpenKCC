@@ -191,7 +191,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             floor.transform.position += Vector3.back * 10 + Vector3.down * 5;
 
             // Teleport players back to their original positions
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
+            ForEachOwner((player, i) => player.transform.position = (Vector3.right * i * 2 + Vector3.up * 0.0025f));
 
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(SlidingState) == player.CurrentState));
         }
@@ -213,7 +213,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         {
             ForEachOwner((player, i) =>
             {
-                player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f);
+                player.transform.position = (Vector3.right * i * 2 + Vector3.up * 0.0025f);
                 player.SetStateQuiet(typeof(IdleState));
             });
             SetupInputs();
