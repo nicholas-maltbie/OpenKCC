@@ -108,7 +108,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="dist">Maximum distance the kcc can snap.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
         /// <returns></returns>
-        public static Vector3 SnapPlayerDown(
+        public static Vector3 GetSnapDelta(
             Vector3 position,
             Quaternion rotation,
             Vector3 dir,
@@ -124,10 +124,29 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didHit && hit.distance > 0)
             {
-                return position + dir * (hit.distance - KCCUtils.Epsilon * 2);
+                return dir * Mathf.Max(0, hit.distance - 0.1f);
             }
 
-            return position;
+            return Vector3.zero;
+        }
+
+        /// <summary>
+        /// Snap the player down onto the ground
+        /// </summary>
+        /// <param name="position">Position of the kcc</param>
+        /// <param name="rotation">Rotation of the kcc.</param>
+        /// <param name="dir">Direction to snap the kcc down.</param>
+        /// <param name="dist">Maximum distance the kcc can snap.</param>
+        /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
+        /// <returns></returns>
+        public static Vector3 SnapPlayerDown(
+            Vector3 position,
+            Quaternion rotation,
+            Vector3 dir,
+            float dist,
+            IColliderCast colliderCast)
+        {
+            return position + GetSnapDelta(position, rotation, dir, dist, colliderCast);
         }
 
         /// <summary>

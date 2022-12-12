@@ -42,6 +42,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
     /// </summary>
     [RequireComponent(typeof(ParentConstraint))]
     [RequireComponent(typeof(Rigidbody))]
+    [DefaultExecutionOrder(100)]
     public class NetworkKCC : NetworkSMAnim, IJumping
     {
         /// <summary>
@@ -134,7 +135,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [TransitionOnAnimationComplete(typeof(IdleState), 0.25f, true)]
         [AnimationTransition(typeof(StartMoveInput), typeof(WalkingState), 0.35f, true)]
         [AnimationTransition(typeof(JumpEvent), typeof(JumpState), 0.35f, true)]
-        [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true)]
         public class LandingState : State { }
@@ -189,7 +189,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         {
             config.groundedState.CheckGrounded(config, position, rotation);
             IEvent groundedEvent;
-            if (!config.groundedState.StandingOnGround)
+            if (!config.groundedState.StandingOnGroundOrOverlap)
             {
                 groundedEvent = LeaveGroundEvent.Instance;
             }
@@ -236,13 +236,17 @@ namespace nickmaltbie.OpenKCC.netcode.Character
                     speed = (float)config.EvaluateMember(overrideParam);
                 }
 
-                delta += GetMovement(position + delta, move * speed * unityService.deltaTime, rotation, config);
+                Vector3 moveDelta = GetMovement(position, move * speed * unityService.deltaTime, rotation, config);
+                delta += moveDelta;
+                position += moveDelta;
             }
 
             // Apply velocity if allowed to move via velocity
             if (moveSettings?.AllowVelocity ?? false)
             {
-                delta += GetMovement(position + delta, Velocity * unityService.deltaTime, rotation, config);
+                Vector3 velDelta = GetMovement(position, Velocity * unityService.deltaTime, rotation, config);
+                delta += velDelta;
+                position += velDelta;
             }
             else
             {
@@ -252,8 +256,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             // Snap player down if requested
             if (moveSettings?.SnapPlayerDown ?? false)
             {
-                Vector3 snapPos = SnapPlayerDown(position + delta, rotation, config.Down, config.verticalSnapDown, config.ColliderCast);
-                Vector3 snapDelta = snapPos - (position + delta);
+                Vector3 snapDelta = GetSnapDelta(position, rotation, config.Down, config.verticalSnapDown, config.ColliderCast);
                 delta += snapDelta;
             }
 
@@ -296,6 +299,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// <inheritdoc/>
         public override void Update()
         {
+            UnityEngine.Debug.Log($"currentState:{CurrentState.ToString()}");
             if (IsOwner)
             {
                 ReadPlayerMovement();
@@ -374,9 +378,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             Vector3 start = transform.position;
             Vector3 pos = start;
 
+            UpdateGroundedState(start, transform.rotation);
+
             // Push player out of overlapping objects
-            pos += config.ColliderCast.PushOutOverlapping(pos, transform.rotation, config.maxPushSpeed * unityService.deltaTime);
-            UnityEngine.Debug.Log($"Pos after PushOutOverlapping: {pos.ToString("F3")}");
+            Vector3 overlapPush = config.ColliderCast.PushOutOverlapping(pos, transform.rotation, config.maxPushSpeed * unityService.deltaTime);
+            pos += overlapPush;
 
             // Check if player is falling
             if (config.groundedState.Falling)
@@ -398,14 +404,54 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             config.jumpAction.ApplyJumpIfPossible();
 
             // Allow player to move
-            pos += MovePlayer(pos, transform.rotation);
-            UnityEngine.Debug.Log($"Pos after MovePlayer: {pos.ToString("F3")}");
+            Vector3 playerMove = MovePlayer(pos, transform.rotation);
+            pos += playerMove;
 
-            // Update the grounded state
-            UpdateGroundedState(pos, transform.rotation);
+            // Compute player parentConstarint state based on final pos
+            Vector3 delta = pos - start;
 
-            // Update player position
-            transform.position = pos;
+            // Update the grounded state;
+            config.groundedState.CheckGrounded(config, pos, transform.rotation);
+
+            bool constarintActive = config.groundedState.StandingOnGroundOrOverlap;
+            parentConstraint.constraintActive = constarintActive;
+            if (constarintActive)
+            {
+                Transform previousParent = floorConstraint.sourceTransform;
+                floorConstraint = new ConstraintSource
+                {
+                    sourceTransform = config.groundedState.Floor.transform,
+                    weight = 1.0f,
+                };
+                parentConstraint.SetSource(0, floorConstraint);
+
+                // Set translation at rest
+                parentConstraint.translationAtRest = pos;
+                var inverseQuat = Quaternion.Inverse(floorConstraint.sourceTransform.rotation);
+
+                if (previousParent != floorConstraint.sourceTransform)
+                {
+                    // Update parent constarint relative pos
+                    Vector3 relativePos = pos - floorConstraint.sourceTransform.position;
+                    parentConstraint.SetTranslationOffset(0, inverseQuat * relativePos);
+                }
+                else
+                {
+                    // use previous relative pos and only add the delta.
+                    Vector3 relativePos = parentConstraint.GetTranslationOffset(0);
+                    parentConstraint.SetTranslationOffset(0, relativePos + inverseQuat * delta);
+                }
+            }
+            else
+            {
+                floorConstraint = new ConstraintSource
+                {
+                    sourceTransform = null,
+                    weight = 0.0f,
+                };
+                parentConstraint.SetSource(0, floorConstraint);
+                transform.position = pos;
+            }
         }
     }
 }
