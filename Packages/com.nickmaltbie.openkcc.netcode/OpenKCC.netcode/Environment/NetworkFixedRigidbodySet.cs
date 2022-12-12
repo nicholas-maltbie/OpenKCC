@@ -18,7 +18,6 @@
 
 using nickmaltbie.TestUtilsUnity;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Environment
@@ -26,21 +25,12 @@ namespace nickmaltbie.OpenKCC.Environment
     /// <summary>
     /// Set parameters for a kinematic rigidbody
     /// </summary>
-    [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(NetworkRigidbody))]
     public class NetworkFixedRigidbodySet : NetworkBehaviour
     {
         /// <summary>
         /// Reference to unity service for getting basic unity functions.
         /// </summary>
         internal IUnityService unityService = UnityService.Instance;
-
-        /// <summary>
-        /// Should continuous movement be used to move the object
-        /// or discrete steps. uses the MovePosition and MoveRotation api
-        /// for continuous movement otherwise.
-        /// </summary>
-        internal bool isContinuous = true;
 
         /// <summary>
         /// Angular velocity of object in degrees per second for each Euclidean axis
@@ -72,22 +62,7 @@ namespace nickmaltbie.OpenKCC.Environment
         [Tooltip("Does this translation work in local or world space.")]
         internal bool localTranslation;
 
-        /// <summary>
-        /// Rigidbody for this object
-        /// </summary>
-        protected new Rigidbody rigidbody;
-
-        public void Start()
-        {
-            rigidbody = GetComponent<Rigidbody>();
-        }
-
-        public override void OnNetworkSpawn()
-        {
-            rigidbody.isKinematic = true;
-        }
-
-        public void FixedUpdate()
+        public void Update()
         {
             if (!IsServer)
             {
@@ -97,37 +72,23 @@ namespace nickmaltbie.OpenKCC.Environment
             if (linearVelocity.magnitude > 0)
             {
                 // move object by velocity
-                Vector3 deltaPos = unityService.fixedDeltaTime * linearVelocity;
+                Vector3 deltaPos = unityService.deltaTime * linearVelocity;
                 Vector3 targetPos = (localTranslation && transform.parent != null) ?
                     transform.parent.position + transform.localPosition + deltaPos :
                     transform.position + deltaPos;
 
-                if (isContinuous)
-                {
-                    rigidbody.MovePosition(targetPos);
-                }
-                else
-                {
-                    rigidbody.position = targetPos;
-                }
+                transform.position = targetPos;
             }
 
             if (angularVelocity.magnitude > 0)
             {
                 // rotate object by rotation
-                var deltaRotation = Quaternion.Euler(unityService.fixedDeltaTime * angularVelocity);
+                var deltaRotation = Quaternion.Euler(unityService.deltaTime * angularVelocity);
                 Quaternion targetRot = (localRotation && transform.parent != null) ?
                     transform.parent.rotation * transform.localRotation * deltaRotation :
                     transform.rotation * deltaRotation;
 
-                if (isContinuous)
-                {
-                    rigidbody.MoveRotation(targetRot);
-                }
-                else
-                {
-                    rigidbody.rotation = targetRot;
-                }
+                transform.rotation = targetRot;
             }
         }
     }

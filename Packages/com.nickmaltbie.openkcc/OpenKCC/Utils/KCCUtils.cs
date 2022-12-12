@@ -124,7 +124,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didHit && hit.distance > 0)
             {
-                return dir * Mathf.Max(0, hit.distance - 0.1f);
+                return dir * Mathf.Max(0, hit.distance - Epsilon);
             }
 
             return Vector3.zero;
@@ -474,7 +474,6 @@ namespace nickmaltbie.OpenKCC.Utils
             };
             yield break;
         }
-
 
         /// <summary>
         /// Gets the velocity of the ground the player is standing on where the player is currently

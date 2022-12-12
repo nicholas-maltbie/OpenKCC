@@ -168,7 +168,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Animation(FallingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
+        [Transition(typeof(GroundedEvent), typeof(LandingState))]
         [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class FallingState : State { }
@@ -177,7 +177,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Animation(LongFallingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 1.0f)]
+        [Transition(typeof(GroundedEvent), typeof(LandingState))]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class LongFallingState : State { }
 
@@ -187,16 +187,15 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public void UpdateGroundedState(Vector3 position, Quaternion rotation)
         {
             config.groundedState.CheckGrounded(config, position, rotation);
-
-            if (!config.groundedState.StandingOnGroundOrOverlap)
-            {
-                RaiseEvent(LeaveGroundEvent.Instance);
-            }
-            else if (config.groundedState.Sliding)
+            if (config.groundedState.Sliding)
             {
                 RaiseEvent(SteepSlopeEvent.Instance);
             }
-            else
+            else if (config.groundedState.Falling && FallingTime > config.fallingThresholdTime)
+            {
+                RaiseEvent(LeaveGroundEvent.Instance);
+            }
+            else if (config.groundedState.StandingOnGround)
             {
                 RaiseEvent(GroundedEvent.Instance);
             }
@@ -244,19 +243,10 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             {
                 Vector3 velDelta = GetMovement(position, Velocity * unityService.deltaTime, rotation, config);
                 delta += velDelta;
-                position += velDelta;
             }
             else
             {
                 Velocity = Vector3.zero;
-            }
-
-            // Snap player down if requested
-            if (moveSettings?.SnapPlayerDown ?? false)
-            {
-                Vector3 snapDelta = GetSnapDelta(position, rotation, config.Down, config.verticalSnapDown, config.ColliderCast);
-                delta += snapDelta;
-                position += snapDelta;
             }
 
             return delta;
@@ -384,10 +374,12 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             Vector3 overlapPush = config.ColliderCast.PushOutOverlapping(pos, transform.rotation, config.maxPushSpeed * unityService.deltaTime);
             pos += overlapPush;
 
+            UpdateGroundedState(pos, transform.rotation);
+
             // Check if player is falling
             if (config.groundedState.Falling)
             {
-                FallingTime += unityService.fixedDeltaTime;
+                FallingTime += unityService.deltaTime;
             }
             else
             {
@@ -412,7 +404,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
 
             // Update the grounded state;
             config.groundedState.CheckGrounded(config, pos, transform.rotation);
-            bool constarintActive = config.groundedState.StandingOnGround;
+            bool constarintActive = config.groundedState.StandingOnGroundOrOverlap;
             parentConstraint.constraintActive = constarintActive;
             if (constarintActive)
             {
@@ -453,7 +445,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
 
             transform.position = pos;
             previousPosition = pos;
-            UpdateGroundedState(pos, transform.rotation);
         }
     }
 }

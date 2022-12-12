@@ -276,7 +276,7 @@ MonoBehaviour:
       maxJumpAngle: 85
       jumpAngleWeightFactor: 0
     groundedState:
-      groundedDistance: 0.1
+      groundedDistance: 0.05
       groundCheckDistance: 0.25
       maxWalkAngle: 60
     gravity: {x: 0, y: -20, z: 0}
@@ -291,6 +291,7 @@ MonoBehaviour:
     verticalSnapUp: 0.3
     snapBufferTime: 0.05
     maxDefaultLaunchVelocity: 5
+    fallingThresholdTime: 0.05
 --- !u!114 &1302586632800550119
 MonoBehaviour:
   m_ObjectHideFlags: 0
