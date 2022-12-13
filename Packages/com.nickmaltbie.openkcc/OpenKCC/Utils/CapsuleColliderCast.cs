@@ -55,10 +55,10 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="position">Position of the object.</param>
         /// <param name="rotation">Rotation of the object.</param>
         /// <returns>The top, bottom, radius, and height of the capsule collider</returns>
-        public (Vector3, Vector3, float, float) GetParams(Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
+        public (Vector3, Vector3, float, float) GetParams(Vector3 position, Quaternion rotation)
         {
             Vector3 center = rotation * CapsuleCollider.center + position;
-            float radius = CapsuleCollider.radius + radiusMod;
+            float radius = CapsuleCollider.radius;
             float height = CapsuleCollider.height;
 
             Vector3 bottom = center + rotation * Vector3.down * (height / 2 - radius);
@@ -79,7 +79,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <inheritdoc/>
         public IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance)
         {
-            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation, -0.1f);
+            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation);
             return Physics.CapsuleCastAll(top, bottom, radius, direction, distance, ~0, QueryTriggerInteraction.Ignore)
                 .Where(hit => hit.collider.transform != transform);
         }
@@ -122,8 +122,10 @@ namespace nickmaltbie.OpenKCC.Utils
                     overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
                     out Vector3 direction, out float distance
                 );
+
                 float distPush = Mathf.Min(maxDistance, distance + KCCUtils.Epsilon);
                 Vector3 push = direction.normalized * distPush;
+                position += push;
                 pushed += push;
             }
 

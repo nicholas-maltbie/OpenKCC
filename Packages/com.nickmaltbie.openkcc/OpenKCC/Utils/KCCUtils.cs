@@ -106,6 +106,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="rotation">Rotation of the kcc.</param>
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
+        /// <param name="minSnapThreshold">Minimum snap threshold for snapping down.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
         /// <returns></returns>
         public static Vector3 GetSnapDelta(
@@ -113,6 +114,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Quaternion rotation,
             Vector3 dir,
             float dist,
+            float minSnapThreshold,
             IColliderCast colliderCast)
         {
             bool didHit = colliderCast.CastSelf(
@@ -122,12 +124,63 @@ namespace nickmaltbie.OpenKCC.Utils
                 dist,
                 out IRaycastHit hit);
 
-            if (didHit && hit.distance > 0)
+            if (didHit && hit.distance > minSnapThreshold)
             {
-                return dir * Mathf.Max(0, hit.distance - Epsilon);
+                return dir * (hit.distance - Epsilon * 2);
             }
 
             return Vector3.zero;
+        }
+
+        public static void UpdateMovingGround(
+            Vector3 position,
+            Vector3 desiredMove,
+            Quaternion rotation,
+            KCCGroundedState groundedState,
+            IKCCConfig config,
+            ParentConstraint parentConstraint,
+            ref ConstraintSource floorConstraint)
+        {
+            // Update the grounded state;
+            groundedState.CheckGrounded(config, position, rotation);
+            bool constarintActive = groundedState.StandingOnGroundOrOverlap;
+            parentConstraint.constraintActive = constarintActive;
+            if (constarintActive)
+            {
+                Transform previousParent = floorConstraint.sourceTransform;
+                floorConstraint = new ConstraintSource
+                {
+                    sourceTransform = groundedState.Floor.transform,
+                    weight = 1.0f,
+                };
+                parentConstraint.SetSource(0, floorConstraint);
+
+                // Set translation at rest
+                parentConstraint.translationAtRest = position;
+                var inverseQuat = Quaternion.Inverse(floorConstraint.sourceTransform.rotation);
+
+                if (previousParent != floorConstraint.sourceTransform)
+                {
+                    // Update parent constarint relative pos
+                    Vector3 relativePos = position - floorConstraint.sourceTransform.position;
+                    parentConstraint.SetTranslationOffset(0, inverseQuat * relativePos);
+                }
+                else
+                {
+                    // use previous relative pos and only add the delta.
+                    Vector3 relativePos = parentConstraint.GetTranslationOffset(0);
+                    parentConstraint.SetTranslationOffset(0, relativePos + inverseQuat * desiredMove);
+                }
+            }
+            else
+            {
+                floorConstraint = new ConstraintSource
+                {
+                    sourceTransform = null,
+                    weight = 0.0f,
+                };
+                parentConstraint.SetSource(0, floorConstraint);
+            }
         }
 
         /// <summary>
@@ -137,6 +190,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="rotation">Rotation of the kcc.</param>
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
+        /// <param name="minSnapThreshold">Minimum snap threshold for snapping down.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
         /// <returns></returns>
         public static Vector3 SnapPlayerDown(
@@ -144,9 +198,10 @@ namespace nickmaltbie.OpenKCC.Utils
             Quaternion rotation,
             Vector3 dir,
             float dist,
+            float minSnapThreshold,
             IColliderCast colliderCast)
         {
-            return position + GetSnapDelta(position, rotation, dir, dist, colliderCast);
+            return position + GetSnapDelta(position, rotation, dir, dist, minSnapThreshold, colliderCast);
         }
 
         /// <summary>
@@ -460,7 +515,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didSnapUp)
             {
-                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp + KCCUtils.Epsilon * 2, config.ColliderCast);
+                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp + KCCUtils.Epsilon * 2, Epsilon, config.ColliderCast);
             }
 
             // We're done, player was moved as part of loop

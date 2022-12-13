@@ -27,7 +27,6 @@ using nickmaltbie.OpenKCC.netcode.Utils;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
-using nickmaltbie.StateMachineUnity.Event;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -187,13 +186,16 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public void UpdateGroundedState(Vector3 position, Quaternion rotation)
         {
             config.groundedState.CheckGrounded(config, position, rotation);
-            if (config.groundedState.Sliding)
+            if (config.groundedState.Falling)
+            {
+                if (FallingTime > config.fallingThresholdTime)
+                {
+                    RaiseEvent(LeaveGroundEvent.Instance);
+                }
+            }
+            else if (config.groundedState.Sliding)
             {
                 RaiseEvent(SteepSlopeEvent.Instance);
-            }
-            else if (config.groundedState.Falling && FallingTime > config.fallingThresholdTime)
-            {
-                RaiseEvent(LeaveGroundEvent.Instance);
             }
             else if (config.groundedState.StandingOnGround)
             {
@@ -204,17 +206,9 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         }
 
         /// <summary>
-        /// Update the moving ground state of the KCC State machine.
-        /// </summary>
-        public void UpdateMovingGround(Vector3 desiredMove, Vector3 position, Quaternion rotation)
-        {
-            KCCUtils.UpdateMovingGround(config.groundedState, config, position, rotation, parentConstraint, desiredMove, ref floorConstraint);
-        }
-
-        /// <summary>
         /// Apply player movement if allowed.
         /// </summary>
-        private Vector3 MovePlayer(Vector3 position, Quaternion rotation)
+        public Vector3 MovePlayer(Vector3 position, Quaternion rotation)
         {
             // Move the player based on movement settings
             var moveSettings = Attribute.GetCustomAttribute(CurrentState, typeof(MovementSettingsAttribute)) as MovementSettingsAttribute;
@@ -239,10 +233,20 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
 
             // Apply velocity if allowed to move via velocity
+            // Only snap down if the player is not currently grounded
+            if (config.groundedState.StandingOnGround && (moveSettings?.SnapPlayerDown ?? false))
+            {
+                Vector3 snapDelta = GetSnapDelta(position, transform.rotation, config.Down, config.verticalSnapDown, config.groundedState.groundedDistance, config.ColliderCast);
+                delta += snapDelta;
+                position += snapDelta;
+            }
+
+            // Apply velocity if allowed to move via velocity
             if (moveSettings?.AllowVelocity ?? false)
             {
                 Vector3 velDelta = GetMovement(position, Velocity * unityService.deltaTime, rotation, config);
                 delta += velDelta;
+                position += delta;
             }
             else
             {
@@ -399,49 +403,9 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             Vector3 playerMove = MovePlayer(pos, transform.rotation);
             pos += playerMove;
 
-            // Compute player parentConstarint state based on final pos
+            // Compute player parentConstraint state based on final pos
             Vector3 delta = pos - start;
-
-            // Update the grounded state;
-            config.groundedState.CheckGrounded(config, pos, transform.rotation);
-            bool constarintActive = config.groundedState.StandingOnGroundOrOverlap;
-            parentConstraint.constraintActive = constarintActive;
-            if (constarintActive)
-            {
-                Transform previousParent = floorConstraint.sourceTransform;
-                floorConstraint = new ConstraintSource
-                {
-                    sourceTransform = config.groundedState.Floor.transform,
-                    weight = 1.0f,
-                };
-                parentConstraint.SetSource(0, floorConstraint);
-
-                // Set translation at rest
-                parentConstraint.translationAtRest = pos;
-                var inverseQuat = Quaternion.Inverse(floorConstraint.sourceTransform.rotation);
-
-                if (previousParent != floorConstraint.sourceTransform)
-                {
-                    // Update parent constarint relative pos
-                    Vector3 relativePos = pos - floorConstraint.sourceTransform.position;
-                    parentConstraint.SetTranslationOffset(0, inverseQuat * relativePos);
-                }
-                else
-                {
-                    // use previous relative pos and only add the delta.
-                    Vector3 relativePos = parentConstraint.GetTranslationOffset(0);
-                    parentConstraint.SetTranslationOffset(0, relativePos + inverseQuat * delta);
-                }
-            }
-            else
-            {
-                floorConstraint = new ConstraintSource
-                {
-                    sourceTransform = null,
-                    weight = 0.0f,
-                };
-                parentConstraint.SetSource(0, floorConstraint);
-            }
+            UpdateMovingGround(pos, delta, transform.rotation, config.groundedState, config, parentConstraint, ref floorConstraint);
 
             transform.position = pos;
             previousPosition = pos;

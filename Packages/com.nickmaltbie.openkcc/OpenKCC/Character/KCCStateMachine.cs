@@ -405,6 +405,7 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.rotation,
                 config.Down,
                 config.verticalSnapDown,
+                config.groundedState.groundedDistance,
                 config.ColliderCast);
             transform.position = dest;
             return dest - start;
