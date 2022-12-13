@@ -206,8 +206,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         }
 
         /// <summary>
-        /// Apply player movement if allowed.
+        /// Apply movement of a player based on current state.
         /// </summary>
+        /// <param name="position">Current position of the player.</param>
+        /// <param name="rotation">Current rotation of the player.</param>
+        /// <returns>Delta in position due to player movement.</returns>
         public Vector3 MovePlayer(Vector3 position, Quaternion rotation)
         {
             // Move the player based on movement settings
@@ -246,7 +249,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             {
                 Vector3 velDelta = GetMovement(position, Velocity * unityService.deltaTime, rotation, config);
                 delta += velDelta;
-                position += delta;
             }
             else
             {
@@ -369,6 +371,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
         }
 
+        /// <summary>
+        /// Appies player movement based on current state.
+        /// Incldes pushing out overlappign objects, updating grounded state, jumping,
+        /// moving the player, and updating the groudned state.
+        /// </summary>
         protected void ApplyMovement()
         {
             Vector3 start = transform.position;

@@ -132,6 +132,16 @@ namespace nickmaltbie.OpenKCC.Utils
             return Vector3.zero;
         }
 
+        /// <summary>
+        /// Update the moving ground state of a kinematic character controller.
+        /// </summary>
+        /// <param name="position">Current position of the player.</param>
+        /// <param name="desiredMove">How the player is moving this current update.</param>
+        /// <param name="rotation">Rotation of the player for the current frame.</param>
+        /// <param name="groundedState">Grounded state of the player.</param>
+        /// <param name="config">Kinematic character controller config for the player.</param>
+        /// <param name="parentConstraint">Parent constarints to attach player to moving objects.</param>
+        /// <param name="floorConstraint">Current floor constarint of the player.</param>
         public static void UpdateMovingGround(
             Vector3 position,
             Vector3 desiredMove,
