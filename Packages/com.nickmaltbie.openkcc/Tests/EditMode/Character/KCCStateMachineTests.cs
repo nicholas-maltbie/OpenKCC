@@ -76,11 +76,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, didHit: false);
 
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
+            Assert.AreEqual(typeof(KCCStateMachine.IdleState), kccStateMachine.CurrentState);
+            unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
 
-            kccStateMachine.FixedUpdate();
+            kccStateMachine.Update();
+            kccStateMachine.Update();
 
-            Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.FallingState));
+            Assert.AreEqual(typeof(KCCStateMachine.FallingState), kccStateMachine.CurrentState);
             Assert.IsFalse(kccStateMachine.config.groundedState.StandingOnGround);
             Assert.IsFalse(kccStateMachine.config.groundedState.Sliding);
             Assert.IsTrue(kccStateMachine.config.groundedState.Falling);
@@ -126,14 +128,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             Assert.AreEqual(constraint.sourceCount, 1);
 
-            kccStateMachine.TeleportPlayer(Vector3.forward * 10);
+            kccStateMachine.transform.position = Vector3.forward * 10;
             Assert.AreEqual(kccStateMachine.transform.position, Vector3.forward * 10);
 
             KCCTestUtils.SetupCastSelf(colliderCastMock, didHit: false);
             kccStateMachine.FixedUpdate();
             Assert.AreEqual(constraint.sourceCount, 0);
 
-            kccStateMachine.TeleportPlayer(Vector3.back * 10);
+            kccStateMachine.transform.position = Vector3.back * 10;
             Assert.AreEqual(kccStateMachine.transform.position, Vector3.back * 10);
         }
 
@@ -179,8 +181,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             // Update the moving ground object and assert
             // that the player is attached to the moving ground
-            Assert.AreEqual(Vector3.zero, kccStateMachine.transform.position);
-            kccStateMachine.UpdateMovingGround(Vector3.zero);
+            kccStateMachine.Update();
 
             tracking.FixedUpdate();
             tracking.transform.position += direction;

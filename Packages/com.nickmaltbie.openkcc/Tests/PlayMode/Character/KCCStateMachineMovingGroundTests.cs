@@ -72,7 +72,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             [ValueSource(nameof(DirectionsOnFlatPlane))] Vector3 relativePos
         )
         {
-            kccStateMachine.TeleportPlayer(relativePos);
+            kccStateMachine.transform.position = relativePos;
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
 
@@ -112,7 +112,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             [ValueSource(nameof(DirectionsOnFlatPlane))] Vector3 relativePos
         )
         {
-            kccStateMachine.TeleportPlayer(relativePos);
+            kccStateMachine.transform.position = relativePos;
 
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();

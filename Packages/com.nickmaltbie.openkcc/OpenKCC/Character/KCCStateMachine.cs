@@ -192,52 +192,36 @@ namespace nickmaltbie.OpenKCC.Character
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 1.0f)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class LongFallingState : State { }
-
         /// <summary>
         /// Update the grounded state of the kinematic character controller.
         /// </summary>
-        public void UpdateGroundedState()
+        public void UpdateGroundedState(Vector3 position, Quaternion rotation)
         {
-            config.groundedState.CheckGrounded(config, transform.position, transform.rotation);
-            IEvent groundedEvent;
-            if (!config.groundedState.StandingOnGround)
+            config.groundedState.CheckGrounded(config, position, rotation);
+            if (config.groundedState.Falling)
             {
-                groundedEvent = LeaveGroundEvent.Instance;
+                if (FallingTime > config.fallingThresholdTime)
+                {
+                    RaiseEvent(LeaveGroundEvent.Instance);
+                }
             }
             else if (config.groundedState.Sliding)
             {
-                groundedEvent = SteepSlopeEvent.Instance;
+                RaiseEvent(SteepSlopeEvent.Instance);
             }
-            else
+            else if (config.groundedState.StandingOnGround)
             {
-                groundedEvent = GroundedEvent.Instance;
-            }
-
-            RaiseEvent(groundedEvent);
-        }
-
-        /// <summary>
-        /// Update the moving ground state of the KCC State machine.
-        /// </summary>
-        public void UpdateMovingGround(Vector3 desiredMove)
-        {
-            parentConfig.previousParent = parentConstraint.GetSource(0).sourceTransform;
-
-            transform.position = KCCUtils.UpdateMovingGround(config.groundedState, config, transform.position, transform.rotation, parentConstraint, desiredMove, ref floorConstraint);
-            if (parentConstraint.constraintActive)
-            {
-                parentConfig.relativePos = config.groundedState.Floor.transform.InverseTransformPoint(transform.position);
-            }
-            else
-            {
-                parentConfig.relativePos = Vector3.zero;
+                RaiseEvent(GroundedEvent.Instance);
             }
         }
 
         /// <summary>
-        /// Apply player movement if allowed.
+        /// Apply movement of a player based on current state.
         /// </summary>
-        private Vector3 MovePlayer()
+        /// <param name="position">Current position of the player.</param>
+        /// <param name="rotation">Current rotation of the player.</param>
+        /// <returns>Delta in position due to player movement.</returns>
+        public Vector3 MovePlayer(Vector3 position, Quaternion rotation)
         {
             // Move the player based on movement settings
             var moveSettings = Attribute.GetCustomAttribute(CurrentState, typeof(MovementSettingsAttribute)) as MovementSettingsAttribute;
@@ -256,23 +240,35 @@ namespace nickmaltbie.OpenKCC.Character
                     speed = (float)config.EvaluateMember(overrideParam);
                 }
 
-                delta += MovePlayerInternal(move * speed * unityService.deltaTime);
+                Vector3 moveDelta = GetMovement(position, move * speed * unityService.deltaTime, rotation, config);
+                delta += moveDelta;
+                position += moveDelta;
+            }
+
+            // Apply velocity if allowed to move via velocity
+            // Only snap down if the player is not currently grounded
+            if (config.groundedState.StandingOnGround && (moveSettings?.SnapPlayerDown ?? false))
+            {
+                Vector3 snapDelta = GetSnapDelta(
+                    position,
+                    transform.rotation,
+                    config.Down,
+                    config.verticalSnapDown,
+                    config.groundedState.groundedDistance + previousVelocity.magnitude * unityService.deltaTime,
+                    config.ColliderCast);
+                delta += snapDelta;
+                position += snapDelta;
             }
 
             // Apply velocity if allowed to move via velocity
             if (moveSettings?.AllowVelocity ?? false)
             {
-                delta += MovePlayerInternal(Velocity * unityService.deltaTime);
+                Vector3 velDelta = GetMovement(position, Velocity * unityService.deltaTime, rotation, config);
+                delta += velDelta;
             }
             else
             {
                 Velocity = Vector3.zero;
-            }
-
-            // Snap player down if requested
-            if (moveSettings?.SnapPlayerDown ?? false)
-            {
-                delta += SnapPlayerDown();
             }
 
             return delta;
@@ -311,35 +307,21 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public override void Update()
         {
+            Vector3 delta = transform.position - previousPosition;
+            Vector3 vel = delta / unityService.deltaTime;
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 10 * unityService.deltaTime);
+
             ReadPlayerMovement();
-            ApplyMovement(unityService.deltaTime);
+            ApplyMovement();
 
             base.Update();
-        }
-
-        /// <summary>
-        /// Teleport a player to a given position.
-        /// </summary>
-        /// <param name="position">Position to teleport player to.</param>
-        public void TeleportPlayer(Vector3 position)
-        {
-            KCCUtils.TeleportPlayer(transform, position, parentConstraint);
         }
 
         /// <inheritdoc/>
         public void ApplyJump(Vector3 velocity)
         {
-            Vector3 groundVel = KCCUtils.GetGroundVelocity(config.groundedState, config, previousVelocity);
+            Vector3 groundVel = GetGroundVelocity(config.groundedState, config, previousVelocity);
             Velocity = velocity + groundVel;
-
-            // Detach parent constraints
-            floorConstraint = new ConstraintSource
-            {
-                sourceTransform = null,
-                weight = 0,
-            };
-            parentConstraint.SetSource(0, floorConstraint);
-
             RaiseEvent(JumpEvent.Instance);
         }
 
@@ -395,43 +377,25 @@ namespace nickmaltbie.OpenKCC.Character
         }
 
         /// <summary>
-        /// Snap the player down based on their current position.
+        /// Appies player movement based on current state.
+        /// Incldes pushing out overlappign objects, updating grounded state, jumping,
+        /// moving the player, and updating the groudned state.
         /// </summary>
-        protected Vector3 SnapPlayerDown()
+        protected void ApplyMovement()
         {
             Vector3 start = transform.position;
-            Vector3 dest = KCCUtils.SnapPlayerDown(
-                transform.position,
-                transform.rotation,
-                config.Down,
-                config.verticalSnapDown,
-                config.groundedState.groundedDistance,
-                config.ColliderCast);
-            transform.position = dest;
-            return dest - start;
-        }
-
-        /// <summary>
-        /// Apply player movement for a given delta time
-        /// including velcoity and input movement based on configuration.
-        /// </summary>
-        /// <param name="deltaTime">Delta time to move player.</param>
-        protected void ApplyMovement(float deltaTime)
-        {
-            ResetRelativeToGround(floorConstraint, parentConfig, config.groundedState, transform);
-
-            // Compute displacement without player movement
-            Vector3 disp = transform.position - previousPosition;
-            Vector3 vel = disp / deltaTime;
-
-            previousVelocity = Vector3.Lerp(previousVelocity, vel, 4 * Time.deltaTime);
+            Vector3 pos = start;
 
             // Push player out of overlapping objects
-            Vector3 move = PushOutOverlapping();
+            Vector3 overlapPush = config.ColliderCast.PushOutOverlapping(pos, transform.rotation, config.maxPushSpeed * unityService.deltaTime);
+            pos += overlapPush;
 
+            UpdateGroundedState(pos, transform.rotation);
+
+            // Check if player is falling
             if (config.groundedState.Falling)
             {
-                FallingTime += deltaTime;
+                FallingTime += unityService.deltaTime;
             }
             else
             {
@@ -441,52 +405,22 @@ namespace nickmaltbie.OpenKCC.Character
             // Apply gravity if needed
             if (Attribute.GetCustomAttribute(CurrentState, typeof(ApplyGravity)) is ApplyGravity)
             {
-                Velocity += config.gravity * deltaTime;
+                Velocity += config.gravity * unityService.deltaTime;
             }
 
+            // Allow player to attempt to jump
             config.jumpAction.ApplyJumpIfPossible();
-            move += MovePlayer();
 
-            UpdateMovingGround(move);
-            UpdateGroundedState();
+            // Allow player to move
+            Vector3 playerMove = MovePlayer(pos, transform.rotation);
+            pos += playerMove;
 
-            previousPosition = transform.position;
-        }
+            // Compute player parentConstraint state based on final pos
+            Vector3 delta = pos - start;
+            UpdateMovingGround(pos, delta, transform.rotation, config.groundedState, config, parentConstraint, ref floorConstraint);
 
-        /// <summary>
-        /// Push the player out of any overlapping objects. This will constrain movement to only 
-        /// pushing the player at maxPushSpeed out of overlapping objects as to not violently teleport
-        /// the player when they overlap with another object.
-        /// </summary>
-        /// <returns>Total distance player was pushed.</returns>
-        protected Vector3 PushOutOverlapping()
-        {
-            return config.ColliderCast.PushOutOverlapping(
-                transform.position,
-                transform.rotation,
-                config.maxPushSpeed * unityService.deltaTime);
-        }
-
-        /// <summary>
-        /// Move the player based on some vector of desired movement.
-        /// </summary>
-        /// <param name="movement">Movement in world space in which the player model should be moved.</param>
-        protected Vector3 MovePlayerInternal(Vector3 movement)
-        {
-            Vector3 start = transform.position;
-            foreach (KCCBounce bounce in KCCUtils.GetBounces(
-                transform.position,
-                movement,
-                transform.rotation,
-                config))
-            {
-                if (bounce.action == MovementAction.Stop)
-                {
-                    transform.position = bounce.finalPosition;
-                }
-            }
-
-            return transform.position - start;
+            transform.position = pos;
+            previousPosition = pos;
         }
 
         #region Parse Depreciated Configurations of KCC StateMachine.

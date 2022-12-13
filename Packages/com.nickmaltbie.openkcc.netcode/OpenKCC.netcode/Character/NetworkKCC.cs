@@ -239,7 +239,13 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             // Only snap down if the player is not currently grounded
             if (config.groundedState.StandingOnGround && (moveSettings?.SnapPlayerDown ?? false))
             {
-                Vector3 snapDelta = GetSnapDelta(position, transform.rotation, config.Down, config.verticalSnapDown, config.groundedState.groundedDistance, config.ColliderCast);
+                Vector3 snapDelta = GetSnapDelta(
+                    position,
+                    transform.rotation,
+                    config.Down,
+                    config.verticalSnapDown,
+                    config.groundedState.groundedDistance + previousVelocity.magnitude * unityService.deltaTime,
+                    config.ColliderCast);
                 delta += snapDelta;
                 position += snapDelta;
             }
