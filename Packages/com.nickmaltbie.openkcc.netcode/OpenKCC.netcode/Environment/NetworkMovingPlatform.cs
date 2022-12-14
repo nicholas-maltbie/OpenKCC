@@ -19,10 +19,13 @@
 using System.Collections.Generic;
 using nickmaltbie.TestUtilsUnity;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.netcode.Environment
 {
+    [RequireComponent(typeof(Rigidbody))]
+    [DisallowMultipleComponent]
     public class NetworkMovingPlatform : NetworkBehaviour
     {
         /// <summary>
@@ -34,9 +37,12 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
             writePerm: NetworkVariableWritePermission.Server);
 
         /// <summary>
-        /// Is the movement for this rigidbody continuous.
+        /// Is continous variable with network configuration.
         /// </summary>
-        public bool isContinuous = true;
+        private NetworkVariable<bool> _isContinuous = new NetworkVariable<bool>(
+            value: true,
+            readPerm: NetworkVariableReadPermission.Everyone,
+            writePerm: NetworkVariableWritePermission.Server);
 
         /// <summary>
         /// Current target the platform is heading for.
@@ -51,6 +57,17 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// Unity service for managing time.
         /// </summary>
         internal IUnityService untiyService = UnityService.Instance;
+
+        /// <summary>
+        /// Should continuous movement be used to move the object
+        /// or discrete steps. uses the MovePosition and MoveRotation api
+        /// for continuous movement otherwise.
+        /// </summary>
+        internal bool IsContinuous
+        {
+            get => _isContinuous.Value;
+            set => _isContinuous.Value = value;
+        }
 
         /// <summary>
         /// Velocity at which this platform should move.
@@ -76,24 +93,44 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// </summary>
         public bool ValidTarget => targetsList != null && targetsList.Count > 0;
 
-        public void Update()
+        /// <summary>
+        /// Rigidbody for managing player movement.
+        /// </summary>
+        private Rigidbody rb;
+
+        public void Awake()
+        {
+            rb = GetComponent<Rigidbody>();
+            rb.isKinematic = true;
+        }
+
+        public void FixedUpdate()
         {
             if (!ValidTarget || !IsServer)
             {
                 return;
             }
 
-            Vector3 direction = (CurrentTarget.position - transform.position).normalized;
-            Vector3 displacement = direction * untiyService.deltaTime * linearSpeed;
-            float distanceToTarget = Vector3.Distance(transform.position, CurrentTarget.position);
+            rb.isKinematic = true;
+
+            Vector3 direction = (CurrentTarget.position - rb.position).normalized;
+            Vector3 displacement = direction * untiyService.fixedDeltaTime * linearSpeed;
+            float distanceToTarget = Vector3.Distance(rb.position, CurrentTarget.position);
 
             if (direction == Vector3.zero || distanceToTarget < displacement.magnitude)
             {
-                displacement = CurrentTarget.position - transform.position;
+                displacement = CurrentTarget.position - rb.position;
                 CurrentTargetIdx = (CurrentTargetIdx + 1) % targetsList.Count;
             }
 
-            transform.position += displacement;
+            if (IsContinuous)
+            {
+                rb.MovePosition(rb.position + displacement);
+            }
+            else
+            {
+                rb.position += displacement;
+            }
         }
     }
 }

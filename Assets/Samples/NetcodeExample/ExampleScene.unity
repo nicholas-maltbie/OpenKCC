@@ -129,7 +129,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh31158
+  m_Name: pb_Mesh91846
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -432,11 +432,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8752817440950304479, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_LocalScale.x
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8752817440950304479, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_LocalScale.z
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8752817441032410576, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_Name
@@ -488,7 +488,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8752817442538182207, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8752817442538182207, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_LocalPosition.z
@@ -984,6 +984,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8752817442538182207, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
 --- !u!4 &787859572 stripped
@@ -991,27 +995,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8752817441032410577, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
   m_PrefabInstance: {fileID: 787859571}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &787859573 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8752817440950304478, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
-  m_PrefabInstance: {fileID: 787859571}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &787859585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 787859573}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb776fd9c787c844aa3260fec2c866bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  angularVelocity: {x: 0, y: 30, z: 0}
-  localRotation: 0
-  linearVelocity: {x: 0, y: 0, z: 0}
-  localTranslation: 0
 --- !u!1 &865836982
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,11 +1400,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8752817442538182207, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8752817442538182207, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
@@ -4079,7 +4062,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8752817442538182207, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
@@ -4093,7 +4076,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8752817440950304478, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
   m_PrefabInstance: {fileID: 1357701539}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1357701542
+--- !u!114 &1357701552
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4102,10 +4085,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1357701541}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb776fd9c787c844aa3260fec2c866bb, type: 3}
+  m_Script: {fileID: 11500000, guid: 1dff7400d8431c0428b5c46fc49a3454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  angularVelocity: {x: 0, y: -90, z: 0}
+  isContinuous: 1
+  angularVelocity: {x: 0, y: 30, z: 0}
   localRotation: 0
   linearVelocity: {x: 0, y: 0, z: 0}
   localTranslation: 0

@@ -48,6 +48,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public HumanoidKCCConfig config = new HumanoidKCCConfig();
 
         /// <summary>
+        /// Grace time before player starts falling.
+        /// </summary>
+        public float fallingGraceTime = 0.1f;
+
+        /// <summary>
         /// Time in which the player has been falling.
         /// </summary>
         public float FallingTime { get; private set; }
@@ -103,7 +108,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// <summary>
         /// Relative position to parent configuration.
         /// </summary>
-        private RelativeParentConfig parentConfig;
+        private RelativeParentConfig relativeParentConfig;
 
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
@@ -126,6 +131,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [TransitionOnAnimationComplete(typeof(IdleState), 0.25f, true)]
         [AnimationTransition(typeof(StartMoveInput), typeof(WalkingState), 0.35f, true)]
         [AnimationTransition(typeof(JumpEvent), typeof(JumpState), 0.35f, true)]
+        [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true)]
         public class LandingState : State { }
@@ -160,7 +166,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Animation(FallingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [Transition(typeof(GroundedEvent), typeof(LandingState))]
+        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class FallingState : State { }
@@ -169,7 +175,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Animation(LongFallingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [Transition(typeof(GroundedEvent), typeof(LandingState))]
+        [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 1.0f)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class LongFallingState : State { }
 
@@ -181,7 +187,8 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             config.groundedState.CheckGrounded(config, position, rotation);
             var upwardVelocity = Vector3.Project(Velocity, config.Up);
             bool movingUp = Vector3.Dot(upwardVelocity, config.Up) > 0;
-            if (config.groundedState.Falling)
+
+            if (config.groundedState.Falling && FallingTime >= fallingGraceTime)
             {
                 RaiseEvent(LeaveGroundEvent.Instance);
             }
@@ -201,7 +208,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// <param name="position">Current position of the player.</param>
         /// <param name="rotation">Current rotation of the player.</param>
         /// <returns>Delta in position due to player movement.</returns>
-        public Vector3 MovePlayer(Vector3 position, Quaternion rotation)
+        public Vector3 MovePlayer(Vector3 position, Quaternion rotation, float deltaTime)
         {
             // Move the player based on movement settings
             var moveSettings = Attribute.GetCustomAttribute(CurrentState, typeof(MovementSettingsAttribute)) as MovementSettingsAttribute;
@@ -220,13 +227,13 @@ namespace nickmaltbie.OpenKCC.netcode.Character
                     speed = (float)config.EvaluateMember(overrideParam);
                 }
 
-                Vector3 moveDelta = GetMovement(position, move * speed * unityService.deltaTime, rotation, config);
+                Vector3 moveDelta = GetMovement(position, move * speed * deltaTime, rotation, config);
                 delta += moveDelta;
                 position += moveDelta;
             }
 
             // Apply velocity if allowed to move via velocity
-            // Only snap down if the player is not currently grounded
+            // Only snap down if the player is currently grounded
             if (config.groundedState.StandingOnGround && (moveSettings?.SnapPlayerDown ?? false))
             {
                 Vector3 snapDelta = GetSnapDelta(
@@ -234,15 +241,17 @@ namespace nickmaltbie.OpenKCC.netcode.Character
                     transform.rotation,
                     config.Down,
                     config.verticalSnapDown,
+                    config.minSnapThreshold,
                     config.ColliderCast);
                 delta += snapDelta;
+                delta += config.Up * config.minSnapThreshold;
                 position += snapDelta;
             }
 
             // Apply velocity if allowed to move via velocity
             if (moveSettings?.AllowVelocity ?? false)
             {
-                Vector3 velDelta = GetMovement(position, Velocity * unityService.deltaTime, rotation, config);
+                Vector3 velDelta = GetMovement(position, Velocity * deltaTime, rotation, config);
                 delta += velDelta;
             }
             else
@@ -283,14 +292,12 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// <inheritdoc/>
         public override void Update()
         {
-            Vector3 delta = transform.position - previousPosition;
-            Vector3 vel = delta / unityService.deltaTime;
-            previousVelocity = Vector3.Lerp(previousVelocity, vel, 10 * unityService.deltaTime);
+            GetComponent<Rigidbody>().isKinematic = true;
 
             if (IsOwner)
             {
                 ReadPlayerMovement();
-                ApplyMovement();
+                ApplyMovement(unityService.deltaTime);
             }
 
             AttachedAnimator.SetFloat("MoveX", animationMove.Value.x);
@@ -306,6 +313,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             {
                 Vector3 groundVel = GetGroundVelocity(config.groundedState, config, previousVelocity);
                 Velocity = velocity + groundVel;
+                relativeParentConfig.Reset();
                 RaiseEvent(JumpEvent.Instance);
             }
         }
@@ -342,7 +350,8 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             float moveY = AttachedAnimator.GetFloat("MoveY");
             moveX = Mathf.Lerp(moveX, moveVector.x, 4 * unityService.deltaTime);
             moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
-            animationMove.Value = new Vector2(moveX, moveY);
+            AttachedAnimator.SetFloat("MoveX", moveX);
+            AttachedAnimator.SetFloat("MoveY", moveY);
 
             bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
             RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
@@ -365,23 +374,23 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// Incldes pushing out overlappign objects, updating grounded state, jumping,
         /// moving the player, and updating the groudned state.
         /// </summary>
-        protected void ApplyMovement()
+        protected void ApplyMovement(float deltaTime)
         {
-            parentConfig.FollowGround(transform);
+            relativeParentConfig.FollowGround(transform);
+            Vector3 vel = (transform.position - previousPosition) / deltaTime;
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 100 * deltaTime);
 
             Vector3 start = transform.position;
             Vector3 pos = start;
 
             // Push player out of overlapping objects
-            Vector3 overlapPush = config.ColliderCast.PushOutOverlapping(pos, transform.rotation, config.maxPushSpeed * unityService.deltaTime);
+            Vector3 overlapPush = config.ColliderCast.PushOutOverlapping(pos, transform.rotation, config.maxPushSpeed * deltaTime);
             pos += overlapPush;
-
-            UpdateGroundedState(pos, transform.rotation);
 
             // Check if player is falling
             if (config.groundedState.Falling)
             {
-                FallingTime += unityService.deltaTime;
+                FallingTime += deltaTime;
             }
             else
             {
@@ -391,20 +400,22 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             // Apply gravity if needed
             if (Attribute.GetCustomAttribute(CurrentState, typeof(ApplyGravity)) is ApplyGravity)
             {
-                Velocity += config.gravity * unityService.deltaTime;
+                Velocity += config.gravity * deltaTime;
             }
 
             // Allow player to attempt to jump
             config.jumpAction.ApplyJumpIfPossible();
 
             // Allow player to move
-            Vector3 playerMove = MovePlayer(pos, transform.rotation);
+            Vector3 playerMove = MovePlayer(pos, transform.rotation, deltaTime);
             pos += playerMove;
 
-            // Compute player parentConstraint state based on final pos
+            UpdateGroundedState(pos, transform.rotation);
+
+            // Compute player relative movement state based on final pos
             Vector3 delta = pos - start;
-            parentConfig.UpdateMovingGround(transform, config.groundedState, delta);
-            GetComponent<NetworkRelativeTransform>().UpdateState(parentConfig);
+            relativeParentConfig.UpdateMovingGround(transform, config.groundedState, delta);
+            GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
 
             transform.position = pos;
             previousPosition = pos;

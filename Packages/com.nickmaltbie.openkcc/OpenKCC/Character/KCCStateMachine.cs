@@ -240,8 +240,10 @@ namespace nickmaltbie.OpenKCC.Character
                     transform.rotation,
                     config.Down,
                     config.verticalSnapDown,
+                    config.minSnapThreshold,
                     config.ColliderCast);
                 delta += snapDelta;
+                delta += config.Up * config.minSnapThreshold;
                 position += snapDelta;
             }
 
@@ -286,10 +288,6 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public override void Update()
         {
-            Vector3 delta = transform.position - previousPosition;
-            Vector3 vel = delta / unityService.deltaTime;
-            previousVelocity = Vector3.Lerp(previousVelocity, vel, 10 * unityService.deltaTime);
-
             ReadPlayerMovement();
             ApplyMovement();
 
@@ -364,6 +362,8 @@ namespace nickmaltbie.OpenKCC.Character
         protected void ApplyMovement()
         {
             relativeParentConfig.FollowGround(transform);
+            Vector3 vel = (transform.position - previousPosition) / unityService.deltaTime;
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 10 * unityService.deltaTime);
 
             Vector3 start = transform.position;
             Vector3 pos = start;

@@ -45,12 +45,11 @@ GameObject:
   - component: {fileID: 1014123492234295141}
   - component: {fileID: 6826506219202058344}
   - component: {fileID: 609951634059087576}
-  - component: {fileID: 304317461983122140}
   - component: {fileID: 2198399490605762283}
   - component: {fileID: 1302586632800550119}
   - component: {fileID: 6287251619445628944}
   - component: {fileID: 927829132273873527}
-  - component: {fileID: 852239248129915719}
+  - component: {fileID: 3057974211939587652}
   m_Layer: 0
   m_Name: NetworkPlayer
   m_TagString: Untagged
@@ -87,7 +86,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -228,28 +227,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c42e37a994cc4d43a30612e8d4227e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1773428102 &304317461983122140
-ParentConstraint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928389238801210305}
-  m_Enabled: 1
-  m_Weight: 1
-  m_TranslationAtRest: {x: 0, y: 0, z: 0}
-  m_RotationAtRest: {x: 0, y: 0, z: 0}
-  m_TranslationOffsets: []
-  m_RotationOffsets: []
-  m_AffectTranslationX: 1
-  m_AffectTranslationY: 1
-  m_AffectTranslationZ: 1
-  m_AffectRotationX: 1
-  m_AffectRotationY: 1
-  m_AffectRotationZ: 1
-  m_IsContraintActive: 0
-  m_IsLocked: 0
-  m_Sources: []
 --- !u!114 &2198399490605762283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,11 +264,12 @@ MonoBehaviour:
     anglePower: 0.5
     maxPushSpeed: 100
     verticalSnapDown: 0.2
+    minSnapThreshold: 0.01
     stepUpDepth: 0.1
     verticalSnapUp: 0.3
     snapBufferTime: 0.05
     maxDefaultLaunchVelocity: 5
-    fallingThresholdTime: 0.1
+  fallingGraceTime: 0.1
 --- !u!114 &1302586632800550119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,7 +329,7 @@ MonoBehaviour:
     ditherDistance: 1
     thirdPersonCharacterBase: {fileID: 2540648659797885176}
     transitionTime: 0.1
---- !u!114 &852239248129915719
+--- !u!114 &3057974211939587652
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -363,7 +341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f263759f3d9b3446ab3d0b82f8eb03d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothRate: 10
+  smoothRate: 20
 --- !u!1001 &3423680949552840105
 PrefabInstance:
   m_ObjectHideFlags: 0

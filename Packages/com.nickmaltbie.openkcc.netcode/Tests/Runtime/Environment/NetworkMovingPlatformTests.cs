@@ -72,7 +72,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Envionment
         public IEnumerator Verify_NetworkMovingPlatform_Move(
             [Values] bool isContinuous)
         {
-            GetAttachedNetworkBehaviour(0, 0).isContinuous = isContinuous;
+            GetAttachedNetworkBehaviour(0, 0).IsContinuous = isContinuous;
 
             // When the platform moves on the server, assert that it moves on the clients as well
             // Assert that after a second, the platform has moved towards the first target

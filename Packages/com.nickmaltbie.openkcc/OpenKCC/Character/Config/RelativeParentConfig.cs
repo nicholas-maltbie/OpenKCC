@@ -43,7 +43,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
 
         public void UpdateMovingGround(Transform transform, KCCGroundedState groundedState, Vector3 delta)
         {
-            if (groundedState.StandingOnGround)
+            if (groundedState.StandingOnGroundOrOverlap)
             {
                 Transform parent = groundedState.Floor?.transform;
 

@@ -45,7 +45,8 @@ GameObject:
   - component: {fileID: 3338652869938218646}
   - component: {fileID: 598309288828770141}
   - component: {fileID: 598309288828770140}
-  - component: {fileID: 598309288828770142}
+  - component: {fileID: 1443305687508323539}
+  - component: {fileID: 972201087248349095}
   m_Layer: 0
   m_Name: Block
   m_TagString: Untagged
@@ -143,7 +144,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90aeeb615eabd594da4cbbc1a8e0999e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isContinuous: 1
   linearSpeed: 1
   targetsList:
   - {fileID: 3338652869850866857}
@@ -164,7 +164,23 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &598309288828770142
+--- !u!54 &1443305687508323539
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338652869938218644}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &972201087248349095
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -173,23 +189,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3338652869938218644}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: 8b558e5605018514a891772f1d47d9a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 0
-  SyncScaleY: 0
-  SyncScaleZ: 0
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  InLocalSpace: 0
-  Interpolate: 1
+  smoothRate: 10
 --- !u!1 &3338652870361394586
 GameObject:
   m_ObjectHideFlags: 0

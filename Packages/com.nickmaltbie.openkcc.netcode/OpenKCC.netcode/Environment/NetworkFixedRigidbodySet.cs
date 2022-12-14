@@ -30,14 +30,21 @@ namespace nickmaltbie.OpenKCC.Environment
         /// <summary>
         /// Reference to unity service for getting basic unity functions.
         /// </summary>
-        internal IUnityService unityService = UnityService.Instance;
+        public IUnityService unityService = UnityService.Instance;
+
+        /// <summary>
+        /// Should continuous movement be used to move the object
+        /// or discrete steps. uses the MovePosition and MoveRotation api
+        /// for continus movement otherwise.
+        /// </summary>
+        public bool isContinuous = true;
 
         /// <summary>
         /// Angular velocity of object in degrees per second for each Euclidean axis
         /// </summary>
         [SerializeField]
         [Tooltip("Angular velocity of object in degrees per second for each Euclidean axis")]
-        internal Vector3 angularVelocity;
+        public Vector3 angularVelocity;
 
         /// <summary>
         /// Does this rotation work in local or world space. If true, will rotate in local space.
@@ -45,14 +52,14 @@ namespace nickmaltbie.OpenKCC.Environment
         /// </summary>
         [SerializeField]
         [Tooltip("Does this rotation work in local or world space")]
-        internal bool localRotation;
+        public bool localRotation;
 
         /// <summary>
         /// Linear velocity of object in units per second for each axis
         /// </summary>
         [SerializeField]
         [Tooltip("Linear velocity of object in units per second for each axis")]
-        internal Vector3 linearVelocity;
+        public Vector3 linearVelocity;
 
         /// <summary>
         /// Does this velocity work in local or world space. If true, will translate in local space.
@@ -60,7 +67,18 @@ namespace nickmaltbie.OpenKCC.Environment
         /// </summary>
         [SerializeField]
         [Tooltip("Does this translation work in local or world space.")]
-        internal bool localTranslation;
+        public bool localTranslation;
+
+        /// <summary>
+        /// Rigidbody for this object
+        /// </summary>
+        protected new Rigidbody rigidbody;
+
+        public void Start()
+        {
+            rigidbody = GetComponent<Rigidbody>();
+            rigidbody.isKinematic = true;
+        }
 
         public void Update()
         {
@@ -72,23 +90,37 @@ namespace nickmaltbie.OpenKCC.Environment
             if (linearVelocity.magnitude > 0)
             {
                 // move object by velocity
-                Vector3 deltaPos = unityService.deltaTime * linearVelocity;
+                Vector3 deltaPos = unityService.fixedDeltaTime * linearVelocity;
                 Vector3 targetPos = (localTranslation && transform.parent != null) ?
                     transform.parent.position + transform.localPosition + deltaPos :
                     transform.position + deltaPos;
 
-                transform.position = targetPos;
+                if (isContinuous)
+                {
+                    rigidbody.MovePosition(targetPos);
+                }
+                else
+                {
+                    rigidbody.position = targetPos;
+                }
             }
 
             if (angularVelocity.magnitude > 0)
             {
                 // rotate object by rotation
-                var deltaRotation = Quaternion.Euler(unityService.deltaTime * angularVelocity);
+                var deltaRotation = Quaternion.Euler(unityService.fixedDeltaTime * angularVelocity);
                 Quaternion targetRot = (localRotation && transform.parent != null) ?
                     transform.parent.rotation * transform.localRotation * deltaRotation :
                     transform.rotation * deltaRotation;
 
-                transform.rotation = targetRot;
+                if (isContinuous)
+                {
+                    rigidbody.MoveRotation(targetRot);
+                }
+                else
+                {
+                    rigidbody.rotation = targetRot;
+                }
             }
         }
     }

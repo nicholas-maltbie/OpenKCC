@@ -45,8 +45,19 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
             Floor = config.previousParent?.GetComponent<NetworkObject>();
         }
 
+        public void Awake()
+        {
+            worldPosition = transform.position;
+            previousActive = false;
+        }
+
         public void Update()
         {
+            if (!IsSpawned)
+            {
+                return;
+            }
+
             // Update the network sync if the floor has a network transform
             if (IsOwner)
             {
@@ -54,7 +65,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                 if (enableNetworkParent)
                 {
                     // Update the relative parent
-                    Vector3 relativePos = transform.position - Floor.transform.position;
+                    Vector3 relativePos = Quaternion.Inverse(Floor.transform.rotation) * (transform.position - Floor.transform.position);
                     networkConstraint.Value = new NetworkRelativeParent
                     {
                         active = true,

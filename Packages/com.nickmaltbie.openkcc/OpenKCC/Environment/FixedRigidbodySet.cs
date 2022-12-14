@@ -30,21 +30,21 @@ namespace nickmaltbie.OpenKCC.Environment
         /// <summary>
         /// Reference to unity service for getting basic unity functions.
         /// </summary>
-        internal IUnityService unityService = UnityService.Instance;
+        public IUnityService unityService = UnityService.Instance;
 
         /// <summary>
         /// Should continuous movement be used to move the object
         /// or discrete steps. uses the MovePosition and MoveRotation api
         /// for continus movement otherwise.
         /// </summary>
-        internal bool isContinuous = true;
+        public bool isContinuous = true;
 
         /// <summary>
         /// Angular velocity of object in degrees per second for each Euclidean axis
         /// </summary>
         [SerializeField]
         [Tooltip("Angular velocity of object in degrees per second for each Euclidean axis")]
-        internal Vector3 angularVelocity;
+        public Vector3 angularVelocity;
 
         /// <summary>
         /// Does this rotation work in local or world space. If true, will rotate in local space.
@@ -52,14 +52,14 @@ namespace nickmaltbie.OpenKCC.Environment
         /// </summary>
         [SerializeField]
         [Tooltip("Does this rotation work in local or world space")]
-        internal bool localRotation;
+        public bool localRotation;
 
         /// <summary>
         /// Linear velocity of object in units per second for each axis
         /// </summary>
         [SerializeField]
         [Tooltip("Linear velocity of object in units per second for each axis")]
-        internal Vector3 linearVelocity;
+        public Vector3 linearVelocity;
 
         /// <summary>
         /// Does this velocity work in local or world space. If true, will translate in local space.
@@ -67,7 +67,7 @@ namespace nickmaltbie.OpenKCC.Environment
         /// </summary>
         [SerializeField]
         [Tooltip("Does this translation work in local or world space.")]
-        internal bool localTranslation;
+        public bool localTranslation;
 
         /// <summary>
         /// Rigidbody for this object
