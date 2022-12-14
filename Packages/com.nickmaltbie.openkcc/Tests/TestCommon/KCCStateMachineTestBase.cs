@@ -49,7 +49,6 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         protected JumpAction jumpAction;
         protected KCCGroundedState kccGroundedState;
         protected KCCStateMachine kccStateMachine;
-        protected ParentConstraint constraint;
 
         [SetUp]
         public override void Setup()
@@ -110,8 +109,6 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             kccStateMachine.config.moveActionReference = InputActionReference.Create(moveInputAction);
             kccStateMachine.config.sprintActionReference = InputActionReference.Create(sprintInputAction);
             kccStateMachine.Awake();
-
-            constraint = kccStateMachine.GetComponent<ParentConstraint>();
         }
 
         [TearDown]
