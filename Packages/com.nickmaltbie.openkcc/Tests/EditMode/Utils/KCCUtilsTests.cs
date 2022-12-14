@@ -220,7 +220,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         {
             SetupColliderCast(true, KCCTestUtils.SetupRaycastHitMock(null, Vector3.zero, Vector3.up, 0.01f));
 
-            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, KCCUtils.Epsilon, colliderCastMock.Object);
+            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, colliderCastMock.Object);
 
             Assert.IsTrue(displacement.magnitude > 0.0f, $"Expected displacement to have a magnitude grater than zero but instead found {displacement.ToString("F3")}");
         }

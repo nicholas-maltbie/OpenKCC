@@ -22,14 +22,11 @@ using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
-using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
-using nickmaltbie.StateMachineUnity.Event;
 using nickmaltbie.StateMachineUnity.Fixed;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using static nickmaltbie.OpenKCC.Character.Animation.HumanoidKCCAnim;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
@@ -39,7 +36,6 @@ namespace nickmaltbie.OpenKCC.Character
     /// <summary>
     /// Have a character controller push any dynamic rigidbody it hits
     /// </summary>
-    [RequireComponent(typeof(ParentConstraint))]
     [RequireComponent(typeof(Rigidbody))]
     [DefaultExecutionOrder(1000)]
     public class KCCStateMachine : FixedSMAnim, IJumping, ISerializationCallbackReceiver
@@ -100,16 +96,6 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 InputMovement { get; private set; }
 
         /// <summary>
-        /// Parent constraints to attach position to floor.
-        /// </summary>
-        private ParentConstraint parentConstraint;
-
-        /// <summary>
-        /// Floor Constraint used for parent constraint to move with ground/
-        /// </summary>
-        private ConstraintSource floorConstraint;
-
-        /// <summary>
         /// Position of the player previous frame.
         /// </summary>
         private Vector3 previousPosition;
@@ -120,9 +106,9 @@ namespace nickmaltbie.OpenKCC.Character
         private Vector3 previousVelocity;
 
         /// <summary>
-        /// Config for attaching to parent constraint.
+        /// Relative parent confirugation for following the ground.
         /// </summary>
-        private RelativeParentConfig parentConfig;
+        private RelativeParentConfig relativeParentConfig;
 
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
@@ -192,24 +178,24 @@ namespace nickmaltbie.OpenKCC.Character
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 1.0f)]
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class LongFallingState : State { }
+
         /// <summary>
         /// Update the grounded state of the kinematic character controller.
         /// </summary>
         public void UpdateGroundedState(Vector3 position, Quaternion rotation)
         {
             config.groundedState.CheckGrounded(config, position, rotation);
+            var upwardVelocity = Vector3.Project(Velocity, config.Up);
+            bool movingUp = Vector3.Dot(upwardVelocity, config.Up) > 0;
             if (config.groundedState.Falling)
             {
-                if (FallingTime > config.fallingThresholdTime)
-                {
-                    RaiseEvent(LeaveGroundEvent.Instance);
-                }
+                RaiseEvent(LeaveGroundEvent.Instance);
             }
             else if (config.groundedState.Sliding)
             {
                 RaiseEvent(SteepSlopeEvent.Instance);
             }
-            else if (config.groundedState.StandingOnGround)
+            else if (config.groundedState.StandingOnGround && !movingUp)
             {
                 RaiseEvent(GroundedEvent.Instance);
             }
@@ -254,7 +240,6 @@ namespace nickmaltbie.OpenKCC.Character
                     transform.rotation,
                     config.Down,
                     config.verticalSnapDown,
-                    config.groundedState.groundedDistance + previousVelocity.magnitude * unityService.deltaTime,
                     config.ColliderCast);
                 delta += snapDelta;
                 position += snapDelta;
@@ -280,12 +265,6 @@ namespace nickmaltbie.OpenKCC.Character
         public override void Awake()
         {
             base.Awake();
-
-            parentConstraint = GetComponent<ParentConstraint>();
-            parentConstraint.constraintActive = false;
-            parentConstraint.translationAxis = Axis.X | Axis.Y | Axis.Z;
-            parentConstraint.rotationAxis = Axis.None;
-            parentConstraint.AddSource(floorConstraint);
 
             GetComponent<Rigidbody>().isKinematic = true;
 
@@ -322,6 +301,7 @@ namespace nickmaltbie.OpenKCC.Character
         {
             Vector3 groundVel = GetGroundVelocity(config.groundedState, config, previousVelocity);
             Velocity = velocity + groundVel;
+            relativeParentConfig.Reset();
             RaiseEvent(JumpEvent.Instance);
         }
 
@@ -383,14 +363,14 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         protected void ApplyMovement()
         {
+            relativeParentConfig.FollowGround(transform);
+
             Vector3 start = transform.position;
             Vector3 pos = start;
 
             // Push player out of overlapping objects
             Vector3 overlapPush = config.ColliderCast.PushOutOverlapping(pos, transform.rotation, config.maxPushSpeed * unityService.deltaTime);
             pos += overlapPush;
-
-            UpdateGroundedState(pos, transform.rotation);
 
             // Check if player is falling
             if (config.groundedState.Falling)
@@ -415,9 +395,11 @@ namespace nickmaltbie.OpenKCC.Character
             Vector3 playerMove = MovePlayer(pos, transform.rotation);
             pos += playerMove;
 
-            // Compute player parentConstraint state based on final pos
+            UpdateGroundedState(pos, transform.rotation);
+
+            // Compute player relative movement state based on final pos
             Vector3 delta = pos - start;
-            UpdateMovingGround(pos, delta, transform.rotation, config.groundedState, config, parentConstraint, ref floorConstraint);
+            relativeParentConfig.UpdateMovingGround(transform, config.groundedState, delta);
 
             transform.position = pos;
             previousPosition = pos;

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,11 +17,7 @@
 // SOFTWARE.
 
 using System;
-using nickmaltbie.OpenKCC.Character.Action;
-using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 namespace nickmaltbie.OpenKCC.Character.Config
 {
@@ -30,5 +26,43 @@ namespace nickmaltbie.OpenKCC.Character.Config
     {
         public Vector3 relativePos;
         public Transform previousParent;
+
+        public void Reset()
+        {
+            relativePos = Vector3.zero;
+            previousParent = null;
+        }
+
+        public void FollowGround(Transform transform)
+        {
+            if (previousParent != null)
+            {
+                transform.position = previousParent.position + previousParent.rotation * relativePos;
+            }
+        }
+
+        public void UpdateMovingGround(Transform transform, KCCGroundedState groundedState, Vector3 delta)
+        {
+            if (groundedState.StandingOnGround)
+            {
+                Transform parent = groundedState.Floor?.transform;
+
+                if (parent != previousParent)
+                {
+                    relativePos = transform.position + delta - parent.position;
+                    relativePos = Quaternion.Inverse(parent.rotation) * relativePos;
+                }
+                else
+                {
+                    relativePos += Quaternion.Inverse(parent.rotation) * delta;
+                }
+
+                previousParent = parent;
+            }
+            else
+            {
+                Reset();
+            }
+        }
     }
 }

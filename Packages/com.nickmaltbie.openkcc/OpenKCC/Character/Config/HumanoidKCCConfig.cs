@@ -191,14 +191,6 @@ namespace nickmaltbie.OpenKCC.Character.Config
         [SerializeField]
         public float maxDefaultLaunchVelocity = 5.0f;
 
-        /// <summary>
-        /// Small threshold time of a few frames to avoid player
-        /// quickly transitioning between idle and falling state.
-        /// </summary>
-        [Tooltip("Small threshold time of a few frames to avoid player quickly transitioning between idle and falling state.")]
-        [SerializeField]
-        public float fallingThresholdTime = 0.05f;
-
         /// <inheritdoc/>
         public int MaxBounces => maxBounces;
 

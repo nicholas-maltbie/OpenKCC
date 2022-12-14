@@ -22,7 +22,6 @@ using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character

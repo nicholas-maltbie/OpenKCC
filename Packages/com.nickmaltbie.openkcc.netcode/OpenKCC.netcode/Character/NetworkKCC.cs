@@ -29,7 +29,6 @@ using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Animations;
 using static nickmaltbie.OpenKCC.Character.Animation.HumanoidKCCAnim;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
@@ -38,9 +37,8 @@ namespace nickmaltbie.OpenKCC.netcode.Character
     /// <summary>
     /// Have a character controller push any dynamic rigidbody it hits
     /// </summary>
-    [RequireComponent(typeof(ParentConstraint))]
     [RequireComponent(typeof(Rigidbody))]
-    [DefaultExecutionOrder(-100)]
+    [DefaultExecutionOrder(1000)]
     public class NetworkKCC : NetworkSMAnim, IJumping
     {
         /// <summary>
@@ -86,16 +84,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public Vector3 InputMovement { get; private set; }
 
         /// <summary>
-        /// Parent constraints to attach position to floor.
-        /// </summary>
-        private ParentConstraint parentConstraint;
-
-        /// <summary>
-        /// Floor Constraint used for parent constraint to move with ground/
-        /// </summary>
-        private ConstraintSource floorConstraint;
-
-        /// <summary>
         /// Position of the platform player is standing on.
         /// </summary>
         private Vector3 previousPosition;
@@ -111,6 +99,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         private NetworkVariable<Vector2> animationMove = new NetworkVariable<Vector2>(
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Owner);
+
+        /// <summary>
+        /// Relative position to parent configuration.
+        /// </summary>
+        private RelativeParentConfig parentConfig;
 
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
@@ -186,23 +179,20 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public void UpdateGroundedState(Vector3 position, Quaternion rotation)
         {
             config.groundedState.CheckGrounded(config, position, rotation);
+            var upwardVelocity = Vector3.Project(Velocity, config.Up);
+            bool movingUp = Vector3.Dot(upwardVelocity, config.Up) > 0;
             if (config.groundedState.Falling)
             {
-                if (FallingTime > config.fallingThresholdTime)
-                {
-                    RaiseEvent(LeaveGroundEvent.Instance);
-                }
+                RaiseEvent(LeaveGroundEvent.Instance);
             }
             else if (config.groundedState.Sliding)
             {
                 RaiseEvent(SteepSlopeEvent.Instance);
             }
-            else if (config.groundedState.StandingOnGround)
+            else if (config.groundedState.StandingOnGround && !movingUp)
             {
                 RaiseEvent(GroundedEvent.Instance);
             }
-
-            GetComponent<NetworkParentConstraint>().Floor = config.groundedState.Floor?.GetComponent<NetworkObject>();
         }
 
         /// <summary>
@@ -244,7 +234,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
                     transform.rotation,
                     config.Down,
                     config.verticalSnapDown,
-                    config.groundedState.groundedDistance + previousVelocity.magnitude * unityService.deltaTime,
                     config.ColliderCast);
                 delta += snapDelta;
                 position += snapDelta;
@@ -270,12 +259,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public override void Start()
         {
             base.Start();
-
-            parentConstraint = GetComponent<ParentConstraint>();
-            parentConstraint.constraintActive = false;
-            parentConstraint.translationAxis = Axis.X | Axis.Y | Axis.Z;
-            parentConstraint.rotationAxis = Axis.None;
-            parentConstraint.AddSource(floorConstraint);
 
             GetComponent<Rigidbody>().isKinematic = true;
 
@@ -384,6 +367,8 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// </summary>
         protected void ApplyMovement()
         {
+            parentConfig.FollowGround(transform);
+
             Vector3 start = transform.position;
             Vector3 pos = start;
 
@@ -418,7 +403,8 @@ namespace nickmaltbie.OpenKCC.netcode.Character
 
             // Compute player parentConstraint state based on final pos
             Vector3 delta = pos - start;
-            UpdateMovingGround(pos, delta, transform.rotation, config.groundedState, config, parentConstraint, ref floorConstraint);
+            parentConfig.UpdateMovingGround(transform, config.groundedState, delta);
+            GetComponent<NetworkRelativeTransform>().UpdateState(parentConfig);
 
             transform.position = pos;
             previousPosition = pos;
