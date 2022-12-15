@@ -369,6 +369,13 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
         }
 
+        /// <inheritdoc/>
+        public override void LateUpdate()
+        {
+            base.LateUpdate();
+            relativeParentConfig.FollowGround(transform);
+        }
+
         /// <summary>
         /// Appies player movement based on current state.
         /// Incldes pushing out overlappign objects, updating grounded state, jumping,
