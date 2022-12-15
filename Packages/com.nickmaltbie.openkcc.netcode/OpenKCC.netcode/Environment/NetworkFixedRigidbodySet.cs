@@ -74,14 +74,19 @@ namespace nickmaltbie.OpenKCC.Environment
         /// </summary>
         protected new Rigidbody rigidbody;
 
-        public void Start()
+        public void Awake()
         {
             rigidbody = GetComponent<Rigidbody>();
+        }
+
+        public void Start()
+        {
             rigidbody.isKinematic = true;
         }
 
-        public void Update()
+        public void FixedUpdate()
         {
+            rigidbody.isKinematic = true;
             if (!IsServer)
             {
                 return;
