@@ -106,12 +106,21 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
 
         public void FixedUpdate()
         {
-            if (!ValidTarget || !IsServer)
+            rb.isKinematic = true;
+
+            if (!IsServer)
+            {
+                rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                rb.interpolation = RigidbodyInterpolation.Interpolate;
+                return;
+            }
+
+            if (!ValidTarget)
             {
                 return;
             }
 
-            rb.isKinematic = true;
+            rb.interpolation = RigidbodyInterpolation.None;
 
             Vector3 direction = (CurrentTarget.position - rb.position).normalized;
             Vector3 displacement = direction * untiyService.fixedDeltaTime * linearSpeed;

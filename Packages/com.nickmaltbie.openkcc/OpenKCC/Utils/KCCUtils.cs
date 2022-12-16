@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using UnityEngine;
-using UnityEngine.Animations;
 
 namespace nickmaltbie.OpenKCC.Utils
 {

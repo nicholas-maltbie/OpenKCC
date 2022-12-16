@@ -399,9 +399,9 @@ namespace nickmaltbie.OpenKCC.Character
 
             // Compute player relative movement state based on final pos
             Vector3 delta = pos - start;
-            relativeParentConfig.UpdateMovingGround(transform, config.groundedState, delta);
+            relativeParentConfig.UpdateMovingGround(transform, config.groundedState, delta, unityService.deltaTime);
 
-            transform.position = pos;
+            transform.position += delta;
             previousPosition = pos;
         }
 

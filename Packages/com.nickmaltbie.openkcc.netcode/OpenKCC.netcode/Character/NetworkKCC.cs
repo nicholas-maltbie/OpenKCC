@@ -290,7 +290,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         }
 
         /// <inheritdoc/>
-        public override void Update()
+        public override void LateUpdate()
         {
             GetComponent<Rigidbody>().isKinematic = true;
 
@@ -303,7 +303,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             AttachedAnimator.SetFloat("MoveX", animationMove.Value.x);
             AttachedAnimator.SetFloat("MoveY", animationMove.Value.y);
 
-            base.Update();
+            base.LateUpdate();
         }
 
         /// <inheritdoc/>
@@ -337,6 +337,16 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         }
 
         /// <summary>
+        /// Teleport player to a given position.
+        /// </summary>
+        /// <param name="position">Position to teleport player to.</param>
+        public void TeleportPlayer(Vector3 position)
+        {
+            relativeParentConfig.Reset();
+            transform.position = position;
+        }
+
+        /// <summary>
         /// Read the current player input values.
         /// </summary>
         public void ReadPlayerMovement()
@@ -367,13 +377,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
                     RaiseEvent(StopSprintEvent.Instance);
                 }
             }
-        }
-
-        /// <inheritdoc/>
-        public override void LateUpdate()
-        {
-            base.LateUpdate();
-            relativeParentConfig.FollowGround(transform);
         }
 
         /// <summary>
@@ -421,10 +424,10 @@ namespace nickmaltbie.OpenKCC.netcode.Character
 
             // Compute player relative movement state based on final pos
             Vector3 delta = pos - start;
-            relativeParentConfig.UpdateMovingGround(transform, config.groundedState, delta);
+            relativeParentConfig.UpdateMovingGround(transform, config.groundedState, delta, deltaTime);
             GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
 
-            transform.position = pos;
+            transform.position += delta;
             previousPosition = pos;
         }
     }

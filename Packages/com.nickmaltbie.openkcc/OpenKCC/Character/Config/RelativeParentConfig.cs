@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using System;
+using nickmaltbie.OpenKCC.Environment.MovingGround;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character.Config
@@ -41,23 +42,33 @@ namespace nickmaltbie.OpenKCC.Character.Config
             }
         }
 
-        public void UpdateMovingGround(Transform transform, KCCGroundedState groundedState, Vector3 delta)
+        public void UpdateMovingGround(Transform transform, KCCGroundedState groundedState, Vector3 delta, float deltaTime)
         {
             if (groundedState.Floor != null)
             {
                 Transform parent = groundedState.Floor?.transform;
+                IMovingGround ground = parent.GetComponent<IMovingGround>();
 
-                if (parent != previousParent)
+                if (ground == null || ground.ShouldAttach())
                 {
-                    relativePos = transform.position + delta - parent.position;
-                    relativePos = Quaternion.Inverse(parent.rotation) * relativePos;
+
+                    if (parent != previousParent)
+                    {
+                        relativePos = transform.position + delta - parent.position;
+                        relativePos = Quaternion.Inverse(parent.rotation) * relativePos;
+                    }
+                    else
+                    {
+                        relativePos += Quaternion.Inverse(parent.rotation) * delta;
+                    }
+
+                    previousParent = parent;
                 }
                 else
                 {
-                    relativePos += Quaternion.Inverse(parent.rotation) * delta;
+                    transform.position += ground.GetVelocityAtPoint(groundedState.GroundHitPosition) * deltaTime;
+                    previousParent = null;
                 }
-
-                previousParent = parent;
             }
             else
             {

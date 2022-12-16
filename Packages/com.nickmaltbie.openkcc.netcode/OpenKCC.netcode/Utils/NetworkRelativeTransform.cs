@@ -71,7 +71,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                         active = true,
                         parentTransform = Floor,
                         relativePosition = relativePos,
-                        worldPos = default,
+                        worldPos = transform.position,
                         rotation = transform.rotation,
                     };
                 }
@@ -97,7 +97,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                 NetworkObject targetObject = null;
                 bool validParent = source.active && source.parentTransform.TryGet(out targetObject);
 
-                if (!previousActive && validParent)
+                if (validParent && (!previousActive || previousParent != source.parentTransform.NetworkObjectId))
                 {
                     // Avoid jitter by setting initial relative position
                     // to current offset from parent
@@ -108,8 +108,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                     // Avoid jitter by setting world pos to current position
                     worldPosition = transform.position;
                 }
-
-                if (validParent)
+                else if (validParent)
                 {
                     // Smooth relative position to avoid jitter
                     relativePos = Vector3.Lerp(relativePos, source.relativePosition, smoothRate * unityService.deltaTime);

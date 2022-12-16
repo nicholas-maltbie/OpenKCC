@@ -248,11 +248,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
             Vector3 deltaRotation = (changeAttitude * relativePosition) - relativePosition;
             Vector3 expectedDisplacement = expectedDisp ?? move + deltaRotation;
 
-            TestUtils.AssertInBounds(
-                movingGround.GetDisplacementAtPoint(behaviour.transform.position + relativePosition),
-                expectedDisplacement,
-                0.001f);
-
             if (verifyVelocity)
             {
                 TestUtils.AssertInBounds(

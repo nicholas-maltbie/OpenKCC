@@ -26,6 +26,7 @@ namespace nickmaltbie.OpenKCC.netcode.CameraControls
     /// Script to move main camera to follow the local player
     /// </summary>
     [RequireComponent(typeof(NetworkCameraController))]
+    [DefaultExecutionOrder(10000)]
     public class NetworkCameraFollow : NetworkBehaviour
     {
         /// <summary>

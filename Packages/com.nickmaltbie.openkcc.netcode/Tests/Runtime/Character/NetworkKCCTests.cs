@@ -48,7 +48,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
 
         public Vector3 GetDisplacementAtPoint(Vector3 point)
         {
-            return push * Time.fixedDeltaTime;
+            return push * Time.deltaTime;
         }
 
         public float GetMovementWeight(Vector3 point, Vector3 playerVelocity)
@@ -123,7 +123,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
 
         public override void SetupClient(NetworkKCC e, int objectIdx, int clientIdx)
         {
-            e.transform.position = Vector3.right * clientIdx * 2 + Vector3.up * 0.1f;
+            e.TeleportPlayer(Vector3.right * clientIdx * 2 + Vector3.up * 0.1f);
         }
 
         [UnityTest]
@@ -170,7 +170,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
                 return alongLine >= 1.0f;
             }));
 
-            // Have the players jump and assert they retain soem forward momentum
+            // Have the players jump and assert they retain some forward momentum
             ForEachTestableOwner((player, _) => input.Set(player.GetControl<ButtonControl>(JumpControlName), 1.0f));
 
             yield return TestUtils.WaitUntil(() =>
@@ -191,7 +191,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             floor.transform.position += Vector3.back * 10 + Vector3.down * 5;
 
             // Teleport players back to their original positions
-            ForEachOwner((player, i) => player.transform.position = (Vector3.right * i * 2 + Vector3.up * 0.0025f));
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
 
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(SlidingState) == player.CurrentState));
         }
