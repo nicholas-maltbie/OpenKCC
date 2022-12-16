@@ -20,7 +20,7 @@ using nickmaltbie.TestUtilsUnity;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Environment
+namespace nickmaltbie.OpenKCC.netcode.Environment
 {
     /// <summary>
     /// Set parameters for a kinematic rigidbody

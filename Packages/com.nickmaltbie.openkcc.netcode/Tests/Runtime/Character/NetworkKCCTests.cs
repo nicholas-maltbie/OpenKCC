@@ -46,11 +46,6 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             return false;
         }
 
-        public Vector3 GetDisplacementAtPoint(Vector3 point)
-        {
-            return push * Time.deltaTime;
-        }
-
         public float GetMovementWeight(Vector3 point, Vector3 playerVelocity)
         {
             return 1.0f;

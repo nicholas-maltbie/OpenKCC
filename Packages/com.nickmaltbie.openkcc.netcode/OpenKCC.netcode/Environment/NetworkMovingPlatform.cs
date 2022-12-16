@@ -19,7 +19,6 @@
 using System.Collections.Generic;
 using nickmaltbie.TestUtilsUnity;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.netcode.Environment
