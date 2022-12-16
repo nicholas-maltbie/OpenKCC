@@ -112,15 +112,16 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
             {
                 rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 rb.interpolation = RigidbodyInterpolation.Interpolate;
-                return;
+            }
+            else
+            {
+                rb.interpolation = RigidbodyInterpolation.None;
             }
 
             if (!ValidTarget)
             {
                 return;
             }
-
-            rb.interpolation = RigidbodyInterpolation.None;
 
             Vector3 direction = (CurrentTarget.position - rb.position).normalized;
             Vector3 displacement = direction * untiyService.fixedDeltaTime * linearSpeed;
@@ -129,7 +130,11 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
             if (direction == Vector3.zero || distanceToTarget < displacement.magnitude)
             {
                 displacement = CurrentTarget.position - rb.position;
-                CurrentTargetIdx = (CurrentTargetIdx + 1) % targetsList.Count;
+
+                if (IsServer)
+                {
+                    CurrentTargetIdx = (CurrentTargetIdx + 1) % targetsList.Count;
+                }
             }
 
             if (IsContinuous)
