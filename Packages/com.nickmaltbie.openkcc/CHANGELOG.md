@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Removed ParentConstraint requirement from the KCCStateMachine
+    and replaced with a new `RelativeParentConfig` object to managed
+    player's relative position to a parent object.
 * Reorganized camera controller code to be more reusable between the main
     and netcode projects.
 * Moved camera control code to the `nickmaltbie.OpenKCC.CameraControls`
@@ -27,7 +30,6 @@ All notable changes to this project will be documented in this file.
         fields into a CameraConfig when the object is first de-serialized.
         Tagged this version with a string property and called this first version
         v1.0.0 and will use a semantic versioning system to update the value.
-
 
 ## [1.0.1] 2022-11-22
 

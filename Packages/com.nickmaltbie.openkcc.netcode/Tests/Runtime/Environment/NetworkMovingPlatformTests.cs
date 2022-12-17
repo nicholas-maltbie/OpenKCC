@@ -89,6 +89,14 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Envionment
                     }));
         }
 
+        [UnityTest]
+        public IEnumerator Verify_InvalidTarget()
+        {
+            GetAttachedNetworkBehaviour(0, 0).targetsList = null;
+            GetAttachedNetworkBehaviour(0, 0).FixedUpdate();
+            yield return null;
+        }
+
         public override void SetupPrefab(GameObject go)
         {
             NetworkMovingPlatform movingPlatofrm = go.GetComponent<NetworkMovingPlatform>();

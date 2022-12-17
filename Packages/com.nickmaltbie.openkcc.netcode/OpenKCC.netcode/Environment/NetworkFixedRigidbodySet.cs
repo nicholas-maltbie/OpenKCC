@@ -25,6 +25,7 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
     /// <summary>
     /// Set parameters for a kinematic rigidbody
     /// </summary>
+    [RequireComponent(typeof(Rigidbody))]
     public class NetworkFixedRigidbodySet : NetworkBehaviour
     {
         /// <summary>

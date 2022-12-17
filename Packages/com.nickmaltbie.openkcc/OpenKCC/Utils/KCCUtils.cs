@@ -400,15 +400,16 @@ namespace nickmaltbie.OpenKCC.Utils
             Quaternion rotation,
             IKCCConfig config)
         {
+            Vector3 finalPos = position;
             foreach (KCCBounce bounce in GetBounces(position, movement, rotation, config))
             {
                 if (bounce.action == MovementAction.Stop)
                 {
-                    return bounce.finalPosition - position;
+                    finalPos = bounce.finalPosition;
                 }
             }
 
-            return Vector3.zero;
+            return finalPos - position;
         }
 
         /// <summary>
@@ -482,7 +483,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// Gets the velocity of the ground the player is standing on where the player is currently
         /// </summary>
         /// <returns>The velocity of the ground at the point the player is standing on</returns>
-        public static Vector3 GetGroundVelocity(KCCGroundedState groundedState, IKCCConfig kccConfig, Vector3 playerVel)
+        public static Vector3 GetGroundVelocity(IKCCGrounded groundedState, IKCCConfig kccConfig, Vector3 playerVel)
         {
             Vector3 groundVelocity = Vector3.zero;
             IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();

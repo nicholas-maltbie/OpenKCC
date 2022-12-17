@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Setup a `NetworkRelativeParent` and `NetworkRelativeTransform` classes
+    to manage the relative position of an object to a parent object
+    without having to actually parent the objects as is required
+    by the `NetworkTransform` class.
 * Added a basic NetworkMovingPlatform class.
 * Added tests for basic network behaviours and test framework.
 * Setup class for managing netcode tests `NetcodeInputRuntimeTest`

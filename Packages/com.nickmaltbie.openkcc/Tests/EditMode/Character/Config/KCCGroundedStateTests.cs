@@ -75,6 +75,25 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         }
 
         [Test]
+        public void Validate_KCCGroundedState_GetProjectdMovement(
+            [Values] bool falling)
+        {
+            KCCTestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: 0.001f, didHit: falling);
+            kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
+
+            if (falling)
+            {
+                Assert.AreEqual(Vector3.forward, kccGroundedState.GetProjectedMovement(Vector3.forward));
+            }
+            else
+            {
+                Assert.AreEqual(Vector3.forward, kccGroundedState.GetProjectedMovement(Vector3.forward));
+                Assert.AreEqual(Vector3.right, kccGroundedState.GetProjectedMovement(Vector3.right));
+                Assert.AreEqual(Vector3.up, kccGroundedState.GetProjectedMovement(Vector3.up));
+            }
+        }
+
+        [Test]
         public void Validate_KCCGroundedState_CheckGrounded_Sliding()
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: (Vector3.up + Vector3.right * 10).normalized, didHit: true);

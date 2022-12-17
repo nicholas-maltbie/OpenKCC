@@ -16,11 +16,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Diagnostics.CodeAnalysis;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.netcode.Utils
 {
+    [ExcludeFromCodeCoverage]
     public struct NetworkRelativeParent : INetworkSerializable
     {
         public bool active;

@@ -23,6 +23,7 @@ using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.netcode.Character;
+using nickmaltbie.OpenKCC.netcode.Utils;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
@@ -65,11 +66,6 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         {
             return false;
         }
-    }
-
-    public class ClientNetworkTransform : NetworkTransform
-    {
-        protected override bool OnIsServerAuthoritative() => false;
     }
 
     /// <summary>
@@ -208,7 +204,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         {
             ForEachOwner((player, i) =>
             {
-                player.transform.position = (Vector3.right * i * 2 + Vector3.up * 0.0025f);
+                player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f);
                 player.SetStateQuiet(typeof(IdleState));
             });
             SetupInputs();

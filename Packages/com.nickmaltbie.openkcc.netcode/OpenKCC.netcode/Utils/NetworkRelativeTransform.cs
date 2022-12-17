@@ -26,7 +26,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
     public class NetworkRelativeTransform : NetworkBehaviour
     {
         public IUnityService unityService = UnityService.Instance;
-        public float smoothRate = 4;
+        public float smoothRate = 10;
 
         protected Vector3 worldPosition;
         protected Vector3 relativePos;

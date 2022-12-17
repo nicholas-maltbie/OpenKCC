@@ -43,6 +43,8 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
             TestableNetworkBehaviour.Objects[(typeof(E), objectIdx, clientIdx)].gameObject;
         protected TestableNetworkBehaviour GetTestableNetworkBehaviour(int objectIdx, int clientIdx) =>
             TestableNetworkBehaviour.Objects[(typeof(E), objectIdx, clientIdx)];
+        protected TestableNetworkBehaviour GetTestableNetworkBehaviour(Type type, int objectIdx, int clientIdx) =>
+            TestableNetworkBehaviour.Objects[(type, objectIdx, clientIdx)];
         protected E GetAttachedNetworkBehaviour(int objectIdx, int clientIdx) =>
             TestableNetworkBehaviour.Objects[(typeof(E), objectIdx, clientIdx)].GetComponent<E>();
         protected bool HasClient(int objectIdx, int clientIdx) =>
@@ -94,32 +96,45 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
         [UnitySetUp]
         public override IEnumerator UnitySetUp()
         {
-            TestableNetworkBehaviour.CurrentlyTesting = typeof(E);
             yield return base.UnitySetUp();
 
             // create a player for each character
             for (int objectIndex = 0; objectIndex < SpawnCount; objectIndex++)
             {
-                TestableNetworkBehaviour.CurrentlySpawning = objectIndex;
+                yield return SpawnAndWait<E>(m_PrefabToSpawn, objectIndex, SetupClient);
+            }
+        }
 
-                NetworkManager ownerManager = ServerNetworkManager;
-                if (objectIndex != 0)
+        public IEnumerator ServerSpawnAndWait<SpawnType>(GameObject prefab, Action<SpawnType, int, int> ClientSpawn = null)
+        {
+            yield return SpawnAndWait(prefab, 0, ClientSpawn);
+        }
+
+        public IEnumerator SpawnAndWait<SpawnType>(GameObject prefab, int owner, Action<SpawnType, int, int> ClientSpawn = null)
+        {
+            TestableNetworkBehaviour.CurrentlyTesting = typeof(SpawnType);
+            TestableNetworkBehaviour.CurrentlySpawning = owner;
+
+            NetworkManager ownerManager = ServerNetworkManager;
+            if (owner != 0)
+            {
+                ownerManager = ClientNetworkManagers[owner - 1];
+            }
+
+            if (prefab.GetComponent<TestableNetworkBehaviour>() == null)
+            {
+                prefab.AddComponent<TestableNetworkBehaviour>();
+            }
+
+            SpawnObject(prefab, ownerManager);
+            for (int clientIndex = 0; clientIndex <= NumberOfClients; clientIndex++)
+            {
+                while (!TestableNetworkBehaviour.Objects.ContainsKey((typeof(SpawnType), owner, clientIndex)))
                 {
-                    ownerManager = ClientNetworkManagers[objectIndex - 1];
+                    yield return new WaitForSeconds(0.0f);
                 }
 
-                SpawnObject(m_PrefabToSpawn, ownerManager);
-
-                // wait for each object to spawn on each client
-                for (int clientIndex = 0; clientIndex <= NumberOfClients; clientIndex++)
-                {
-                    while (!HasClient(objectIndex, clientIndex))
-                    {
-                        yield return new WaitForSeconds(0.0f);
-                    }
-
-                    SetupClient(GetAttachedNetworkBehaviour(objectIndex, clientIndex), objectIndex, clientIndex);
-                }
+                ClientSpawn?.Invoke(TestableNetworkBehaviour.Objects[(typeof(E), owner, clientIndex)].GetComponent<SpawnType>(), owner, clientIndex);
             }
         }
 
