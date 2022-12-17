@@ -378,7 +378,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 
             if (movingGround)
             {
-                if(avoidTransferMomentum)
+                if (avoidTransferMomentum)
                 {
                     Assert.AreEqual(Vector3.zero, velocity);
                 }

@@ -17,11 +17,8 @@
 // SOFTWARE.
 
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
 using nickmaltbie.OpenKCC.Character.Config;
-using nickmaltbie.OpenKCC.netcode.Environment;
 using nickmaltbie.OpenKCC.netcode.Utils;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;

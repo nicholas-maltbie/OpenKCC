@@ -27,7 +27,6 @@ using nickmaltbie.OpenKCC.netcode.Utils;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
-using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
