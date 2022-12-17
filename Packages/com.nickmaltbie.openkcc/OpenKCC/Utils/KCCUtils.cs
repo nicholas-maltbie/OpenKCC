@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using UnityEngine;
-using UnityEngine.Animations;
 
 namespace nickmaltbie.OpenKCC.Utils
 {
@@ -106,13 +105,15 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="rotation">Rotation of the kcc.</param>
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
+        /// <param name="minSnapThreshold">Minimum snap threshold for snapping down.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
         /// <returns></returns>
-        public static Vector3 SnapPlayerDown(
+        public static Vector3 GetSnapDelta(
             Vector3 position,
             Quaternion rotation,
             Vector3 dir,
             float dist,
+            float minSnapThreshold,
             IColliderCast colliderCast)
         {
             bool didHit = colliderCast.CastSelf(
@@ -122,12 +123,33 @@ namespace nickmaltbie.OpenKCC.Utils
                 dist,
                 out IRaycastHit hit);
 
-            if (didHit && hit.distance > 0)
+            if (didHit && hit.distance > minSnapThreshold)
             {
-                return position + dir * (hit.distance - KCCUtils.Epsilon * 2);
+                return dir * (hit.distance - minSnapThreshold);
             }
 
-            return position;
+            return Vector3.zero;
+        }
+
+        /// <summary>
+        /// Snap the player down onto the ground
+        /// </summary>
+        /// <param name="position">Position of the kcc</param>
+        /// <param name="rotation">Rotation of the kcc.</param>
+        /// <param name="dir">Direction to snap the kcc down.</param>
+        /// <param name="dist">Maximum distance the kcc can snap.</param>
+        /// <param name="minSnapThreshold">Minimum snap threshold for snapping down.</param>
+        /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
+        /// <returns></returns>
+        public static Vector3 SnapPlayerDown(
+            Vector3 position,
+            Quaternion rotation,
+            Vector3 dir,
+            float dist,
+            float minSnapThreshold,
+            IColliderCast colliderCast)
+        {
+            return position + GetSnapDelta(position, rotation, dir, dist, minSnapThreshold, colliderCast);
         }
 
         /// <summary>
@@ -323,6 +345,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 deltaBounce = remainingMomentum * fraction;
             deltaBounce = deltaBounce.normalized * Mathf.Max(0, deltaBounce.magnitude - Epsilon);
             position += deltaBounce;
+
             // Decrease remaining momentum by fraction of movement remaining
             remainingMomentum *= (1 - Mathf.Max(0, deltaBounce.magnitude / distance));
 
@@ -361,6 +384,32 @@ namespace nickmaltbie.OpenKCC.Utils
                 remainingMomentum = remainingMomentum,
                 action = MovementAction.Bounce,
             };
+        }
+
+        /// <summary>
+        /// Get the bounces for a KCC Utils movement action with a set default behaviour.
+        /// </summary>
+        /// <param name="position">Position to start player movement from.</param>
+        /// <param name="movement">Movement to move the player.</param>
+        /// <param name="rotation">Rotation of the player during movement.</param>
+        /// <param name="config">Configuration settings for player movement.</param>
+        /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
+        public static Vector3 GetMovement(
+            Vector3 position,
+            Vector3 movement,
+            Quaternion rotation,
+            IKCCConfig config)
+        {
+            Vector3 finalPos = position;
+            foreach (KCCBounce bounce in GetBounces(position, movement, rotation, config))
+            {
+                if (bounce.action == MovementAction.Stop)
+                {
+                    finalPos = bounce.finalPosition;
+                }
+            }
+
+            return finalPos - position;
         }
 
         /// <summary>
@@ -415,7 +464,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didSnapUp)
             {
-                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp + KCCUtils.Epsilon * 2, config.ColliderCast);
+                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp + Epsilon * 2, Epsilon * 2, config.ColliderCast);
             }
 
             // We're done, player was moved as part of loop
@@ -431,70 +480,43 @@ namespace nickmaltbie.OpenKCC.Utils
         }
 
         /// <summary>
-        /// Teleport a player from one position to another ignoring
-        /// any parent constraints attached to the player.
+        /// Gets the velocity of the ground the player is standing on where the player is currently
         /// </summary>
-        /// <param name="transform">Transform of the player.</param>
-        /// <param name="position">Position to teleport player to.</param>
-        /// <param name="parentConstraint">Constraints attached to the player.</param>
-        public static void TeleportPlayer(Transform transform, Vector3 position, ParentConstraint parentConstraint)
+        /// <returns>The velocity of the ground at the point the player is standing on</returns>
+        public static Vector3 GetGroundVelocity(IKCCGrounded groundedState, IKCCConfig kccConfig, Vector3 playerVel)
         {
-            var sources = new List<ConstraintSource>();
-            parentConstraint.GetSources(sources);
-            if (parentConstraint.sourceCount > 0)
+            Vector3 groundVelocity = Vector3.zero;
+            IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();
+            Rigidbody rb = groundedState.Floor?.GetComponent<Rigidbody>();
+            if (movingGround != null)
             {
-                parentConstraint.RemoveSource(0);
-            }
-
-            transform.position = position;
-        }
-
-        /// <summary>
-        /// Update the moving grounded state of a kinematic character controller.
-        /// </summary>
-        /// <param name="groundedState">Grounded state of the KCC.</param>
-        /// <param name="config">KCC Config for evaluating collisions.</param>
-        /// <param name="transform">Current position and rotation of the KCC.</param>
-        /// <param name="parentConstraint">Parent constraint for attaching the KCC
-        /// to an object.</param>
-        /// <param name="floorConstraint">Reference floor constraint for updating
-        /// the current KCC state. Passed as 'ref' to avoid allocating a
-        /// new one every frame.</param>
-        public static void UpdateMovingGround(
-            KCCGroundedState groundedState,
-            IKCCConfig config,
-            Transform transform,
-            ParentConstraint parentConstraint,
-            ref ConstraintSource floorConstraint)
-        {
-            groundedState.CheckGrounded(config, transform.position, transform.rotation);
-            parentConstraint.constraintActive = groundedState.StandingOnGround;
-            parentConstraint.translationAtRest = transform.position;
-            parentConstraint.rotationAtRest = transform.rotation.eulerAngles;
-
-            if (groundedState.StandingOnGroundOrOverlap && groundedState.Floor != null)
-            {
-                IMovingGround ground = groundedState.Floor.GetComponent<IMovingGround>();
-
-                if (ground == null || ground.ShouldAttach())
+                if (movingGround.AvoidTransferMomentum())
                 {
-                    Transform floorTransform = groundedState.Floor.transform;
-                    floorConstraint.sourceTransform = floorTransform;
-                    floorConstraint.weight = 1.0f;
-                    parentConstraint.AddSource(floorConstraint);
+                    return Vector3.zero;
+                }
 
-                    Vector3 relativePos = transform.position - floorTransform.position;
-                    parentConstraint.SetTranslationOffset(0, floorTransform.InverseTransformDirection(relativePos));
-                }
-                else
-                {
-                    transform.position += ground.GetDisplacementAtPoint(transform.position);
-                }
+                // Weight movement of ground by ground movement weight
+                groundVelocity = movingGround.GetVelocityAtPoint(groundedState.GroundHitPosition);
+                float velocityWeight =
+                    movingGround.GetMovementWeight(groundedState.GroundHitPosition, groundVelocity);
+                float transferWeight =
+                    movingGround.GetTransferMomentumWeight(groundedState.GroundHitPosition, groundVelocity);
+                groundVelocity *= velocityWeight;
+                groundVelocity *= transferWeight;
             }
-            else
+            else if (rb != null && !rb.isKinematic)
             {
-                floorConstraint = default;
+                Vector3 groundVel = rb.GetPointVelocity(groundedState.GroundHitPosition);
+                float velocity = Mathf.Min(groundVel.magnitude, kccConfig.MaxDefaultLaunchVelocity);
+                groundVelocity = groundVel.normalized * velocity;
             }
+            else if (groundedState.StandingOnGround)
+            {
+                float velocity = Mathf.Min(playerVel.magnitude, kccConfig.MaxDefaultLaunchVelocity);
+                groundVelocity = playerVel.normalized * velocity;
+            }
+
+            return groundVelocity;
         }
     }
 }

@@ -70,6 +70,13 @@ namespace nickmaltbie.OpenKCC.Utils
         /// Character push for checking if and how the character should push objects.
         /// </summary>
         ICharacterPush Push { get; }
+
+        /// <summary>
+        /// Max velocity at which the player can be launched
+        /// when gaining momentum from a floor object without
+        /// an IMovingGround attached to it.
+        /// </summary>
+        float MaxDefaultLaunchVelocity { get; }
     }
 
     /// <summary>
@@ -148,5 +155,8 @@ namespace nickmaltbie.OpenKCC.Utils
 
         /// <inheritdoc/>
         public ICharacterPush Push { get => push; set => push = value; }
+
+        /// <inheritdoc/>
+        public float MaxDefaultLaunchVelocity { get; set; }
     }
 }

@@ -32,12 +32,6 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         }
 
         /// <inheritdoc/>
-        public virtual Vector3 GetDisplacementAtPoint(Vector3 point)
-        {
-            return Vector3.zero;
-        }
-
-        /// <inheritdoc/>
         public virtual float GetMovementWeight(Vector3 point, Vector3 playerVelocity)
         {
             return 0;

@@ -23,10 +23,10 @@ using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.netcode.Character;
+using nickmaltbie.OpenKCC.netcode.Utils;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
-using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -44,11 +44,6 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         public bool AvoidTransferMomentum()
         {
             return false;
-        }
-
-        public Vector3 GetDisplacementAtPoint(Vector3 point)
-        {
-            return push * Time.fixedDeltaTime;
         }
 
         public float GetMovementWeight(Vector3 point, Vector3 playerVelocity)
@@ -70,11 +65,6 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         {
             return false;
         }
-    }
-
-    public class ClientNetworkTransform : NetworkTransform
-    {
-        protected override bool OnIsServerAuthoritative() => false;
     }
 
     /// <summary>
@@ -123,7 +113,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
 
         public override void SetupClient(NetworkKCC e, int objectIdx, int clientIdx)
         {
-            e.transform.position = Vector3.right * clientIdx * 2 + Vector3.up * 0.1f;
+            e.TeleportPlayer(Vector3.right * clientIdx * 2 + Vector3.up * 0.1f);
         }
 
         [UnityTest]
@@ -170,7 +160,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
                 return alongLine >= 1.0f;
             }));
 
-            // Have the players jump and assert they retain soem forward momentum
+            // Have the players jump and assert they retain some forward momentum
             ForEachTestableOwner((player, _) => input.Set(player.GetControl<ButtonControl>(JumpControlName), 1.0f));
 
             yield return TestUtils.WaitUntil(() =>

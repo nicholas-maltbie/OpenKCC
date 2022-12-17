@@ -16,41 +16,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.CameraControls;
-using Unity.Netcode;
-using UnityEngine;
+using Unity.Netcode.Components;
 
-namespace nickmaltbie.OpenKCC.netcode.CameraControls
+namespace nickmaltbie.OpenKCC.netcode.Utils
 {
-    /// <summary>
-    /// Script to move main camera to follow the local player
-    /// </summary>
-    [RequireComponent(typeof(NetworkCameraController))]
-    [DefaultExecutionOrder(10000)]
-    public class NetworkCameraFollow : NetworkBehaviour
+    public class ClientNetworkTransform : NetworkTransform
     {
-        /// <summary>
-        /// Position and rotation to control camera position and movement
-        /// </summary>
-        private NetworkCameraController cameraController;
-
-        /// <summary>
-        /// AudioListener for moving listening position
-        /// </summary>
-        private AudioListener audioListener;
-
-        public void Start()
-        {
-            cameraController = GetComponent<NetworkCameraController>();
-            audioListener = GameObject.FindObjectOfType<AudioListener>();
-        }
-
-        public void LateUpdate()
-        {
-            if (IsOwner)
-            {
-                CameraFollow.MoveCamera(cameraController.config.cameraTransform, audioListener);
-            }
-        }
+        protected override bool OnIsServerAuthoritative() => false;
     }
 }

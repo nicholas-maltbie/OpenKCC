@@ -26,7 +26,6 @@ using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
@@ -49,7 +48,6 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         protected JumpAction jumpAction;
         protected KCCGroundedState kccGroundedState;
         protected KCCStateMachine kccStateMachine;
-        protected ParentConstraint constraint;
 
         [SetUp]
         public override void Setup()
@@ -109,9 +107,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             kccStateMachine.config.jumpAction = jumpAction;
             kccStateMachine.config.moveActionReference = InputActionReference.Create(moveInputAction);
             kccStateMachine.config.sprintActionReference = InputActionReference.Create(sprintInputAction);
-            kccStateMachine.Start();
-
-            constraint = kccStateMachine.GetComponent<ParentConstraint>();
+            kccStateMachine.Awake();
         }
 
         [TearDown]

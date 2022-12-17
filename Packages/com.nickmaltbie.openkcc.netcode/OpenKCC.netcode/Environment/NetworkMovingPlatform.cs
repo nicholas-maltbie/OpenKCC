@@ -24,6 +24,7 @@ using UnityEngine;
 namespace nickmaltbie.OpenKCC.netcode.Environment
 {
     [RequireComponent(typeof(Rigidbody))]
+    [DisallowMultipleComponent]
     public class NetworkMovingPlatform : NetworkBehaviour
     {
         /// <summary>
@@ -91,14 +92,35 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// </summary>
         public bool ValidTarget => targetsList != null && targetsList.Count > 0;
 
+        /// <summary>
+        /// Rigidbody for managing player movement.
+        /// </summary>
+        private Rigidbody rb;
+
+        public void Awake()
+        {
+            rb = GetComponent<Rigidbody>();
+            rb.isKinematic = true;
+        }
+
         public void FixedUpdate()
         {
-            if (!ValidTarget || !IsServer)
+            rb.isKinematic = true;
+
+            if (!IsServer)
+            {
+                rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                rb.interpolation = RigidbodyInterpolation.Interpolate;
+            }
+            else
+            {
+                rb.interpolation = RigidbodyInterpolation.None;
+            }
+
+            if (!ValidTarget)
             {
                 return;
             }
-
-            Rigidbody rb = GetComponent<Rigidbody>();
 
             Vector3 direction = (CurrentTarget.position - rb.position).normalized;
             Vector3 displacement = direction * untiyService.fixedDeltaTime * linearSpeed;
@@ -107,7 +129,11 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
             if (direction == Vector3.zero || distanceToTarget < displacement.magnitude)
             {
                 displacement = CurrentTarget.position - rb.position;
-                CurrentTargetIdx = (CurrentTargetIdx + 1) % targetsList.Count;
+
+                if (IsServer)
+                {
+                    CurrentTargetIdx = (CurrentTargetIdx + 1) % targetsList.Count;
+                }
             }
 
             if (IsContinuous)

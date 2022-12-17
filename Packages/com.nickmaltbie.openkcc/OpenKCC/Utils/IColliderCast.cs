@@ -61,6 +61,8 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="distance">Maximum distance of raycast.</param>
         /// <param name="hit">First object hit and related information, will have a distance of Infinity if none
         /// is found.</param>
+        /// <param name="skinWidth">Width of skin of object to use when casting a hit. Essentially buffer
+        /// space around the edge of the object.</param>
         /// <returns>True if an object is hit within distance, false otherwise.</returns>
         bool CastSelf(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit);
 

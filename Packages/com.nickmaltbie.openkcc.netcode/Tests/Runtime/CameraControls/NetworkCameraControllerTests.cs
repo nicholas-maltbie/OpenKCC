@@ -31,7 +31,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.CameraControls
     /// Simple tests for NetworkCameraController.
     /// </summary>
     [TestFixture]
-    public class NetworkCameraControlsTests : NetcodeInputRuntimeTest<NetworkCameraController>
+    public class NetworkCameraControllerTests : NetcodeInputRuntimeTest<NetworkCameraController>
     {
         public const string ZoomActionName = "Zoom";
         public const string LookActionName = "Look";
@@ -56,6 +56,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.CameraControls
         public override void SetupClient(NetworkCameraController e, int objectIdx, int clientIdx)
         {
             e.transform.position = Vector3.right * clientIdx * 2;
+            e.config.thirdPersonCharacterBase = e.gameObject;
         }
 
         [UnityTest]

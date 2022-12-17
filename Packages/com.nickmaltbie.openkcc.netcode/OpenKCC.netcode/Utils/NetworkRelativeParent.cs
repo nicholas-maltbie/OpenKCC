@@ -16,12 +16,28 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Unity.Netcode.Components;
+using System.Diagnostics.CodeAnalysis;
+using Unity.Netcode;
+using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.NetcodeExample
+namespace nickmaltbie.OpenKCC.netcode.Utils
 {
-    public class ClientNetworkTransform : NetworkTransform
+    [ExcludeFromCodeCoverage]
+    public struct NetworkRelativeParent : INetworkSerializable
     {
-        protected override bool OnIsServerAuthoritative() => false;
+        public bool active;
+        public NetworkObjectReference parentTransform;
+        public Vector3 relativePosition;
+        public Vector3 worldPos;
+        public Quaternion rotation;
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref active);
+            serializer.SerializeValue(ref parentTransform);
+            serializer.SerializeValue(ref relativePosition);
+            serializer.SerializeValue(ref worldPos);
+            serializer.SerializeValue(ref rotation);
+        }
     }
 }

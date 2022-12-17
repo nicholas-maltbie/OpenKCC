@@ -22,7 +22,6 @@ using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
@@ -72,7 +71,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             [ValueSource(nameof(DirectionsOnFlatPlane))] Vector3 relativePos
         )
         {
-            kccStateMachine.TeleportPlayer(relativePos);
+            kccStateMachine.transform.position = relativePos;
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
 
@@ -97,8 +96,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
 
                 Assert.AreEqual(floor, kccStateMachine.config.groundedState.Floor);
                 Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGroundOrOverlap);
-                Assert.AreEqual(1, constraint.sourceCount);
-                Assert.AreEqual(floor.transform, constraint.GetSource(0).sourceTransform);
                 yield return new WaitForFixedUpdate();
 
                 Vector3 expectedPosition = floor.transform.position + relativePos;
@@ -112,10 +109,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             [ValueSource(nameof(DirectionsOnFlatPlane))] Vector3 relativePos
         )
         {
-            kccStateMachine.TeleportPlayer(relativePos);
-
-            yield return new WaitForFixedUpdate();
-            yield return new WaitForFixedUpdate();
+            kccStateMachine.transform.position = relativePos;
             yield return null;
 
             // Move the box forward and wait a fixed update, the player should
@@ -127,14 +121,9 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
 
                 // Rotated by the current floor
                 floor.transform.rotation *= Quaternion.Euler(axis.normalized * 5);
-
-                yield return new WaitForFixedUpdate();
-                yield return new WaitForFixedUpdate();
                 yield return null;
                 Assert.AreEqual(floor, kccStateMachine.config.groundedState.Floor);
                 Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGroundOrOverlap);
-                Assert.AreEqual(1, constraint.sourceCount);
-                Assert.AreEqual(floor.transform, constraint.GetSource(0).sourceTransform);
 
                 // Expected position should be relative position
                 Vector3 expectedPos = floor.transform.rotation * relativePos;

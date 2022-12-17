@@ -17,15 +17,16 @@
 // SOFTWARE.
 
 using nickmaltbie.TestUtilsUnity;
+using Unity.Netcode;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Environment
+namespace nickmaltbie.OpenKCC.netcode.Environment
 {
     /// <summary>
     /// Set parameters for a kinematic rigidbody
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    public class FixedRigidbodySet : MonoBehaviour
+    public class NetworkFixedRigidbodySet : NetworkBehaviour
     {
         /// <summary>
         /// Reference to unity service for getting basic unity functions.
@@ -74,14 +75,24 @@ namespace nickmaltbie.OpenKCC.Environment
         /// </summary>
         protected new Rigidbody rigidbody;
 
-        public void Start()
+        public void Awake()
         {
             rigidbody = GetComponent<Rigidbody>();
+        }
+
+        public void Start()
+        {
             rigidbody.isKinematic = true;
         }
 
         public void FixedUpdate()
         {
+            rigidbody.isKinematic = true;
+            if (!IsServer)
+            {
+                return;
+            }
+
             if (linearVelocity.magnitude > 0)
             {
                 // move object by velocity

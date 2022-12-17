@@ -34,14 +34,14 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// </summary>
         [Tooltip("Distance from ground at which a player is considered standing on the ground")]
         [SerializeField]
-        public float groundedDistance = 0.01f;
+        public float groundedDistance = 0.05f;
 
         /// <summary>
         /// Distance to check player distance to ground.
         /// </summary>
         [Tooltip("Distance to draw rays down when checking if player is grounded")]
         [SerializeField]
-        public float groundCheckDistance = 5f;
+        public float groundCheckDistance = 0.25f;
 
         /// <summary>
         /// Maximum angle at which the player can walk (in degrees).

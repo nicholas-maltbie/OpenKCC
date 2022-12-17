@@ -34,15 +34,6 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
         Vector3 GetVelocityAtPoint(Vector3 point);
 
         /// <summary>
-        /// Get displacement of the moving object at a given point on the
-        /// surface of the object (in world space) for the current fixed update.
-        /// </summary>
-        /// <param name="point">Point on the surface of the object (in world space).</param>
-        /// <returns>Displacement on the surface of this object from that point
-        /// for the current fixed update</returns>
-        Vector3 GetDisplacementAtPoint(Vector3 point);
-
-        /// <summary>
         /// Get the weight of movement for a given player's velocity at a given point.
         /// </summary>
         /// <param name="point">Point where player is standing on the object.</param>

@@ -154,6 +154,13 @@ namespace nickmaltbie.OpenKCC.Character.Config
         [SerializeField]
         public float verticalSnapDown = 0.2f;
 
+        /// <summary>
+        /// delta for distance floating over the ground when snapping down.
+        /// </summary>
+        [Tooltip("Delta for distance floating over the ground when snapping down.")]
+        [SerializeField]
+        public float minSnapThreshold = 0.01f;
+
         [Header("Stair and Step")]
 
         /// <summary>
@@ -202,6 +209,9 @@ namespace nickmaltbie.OpenKCC.Character.Config
 
         /// <inheritdoc/>
         public float StepUpDepth => stepUpDepth;
+
+        /// <inheritdoc/>
+        public float MaxDefaultLaunchVelocity => maxDefaultLaunchVelocity;
 
         /// <inheritdoc/>
         public float AnglePower => anglePower;
