@@ -124,7 +124,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     out Vector3 direction, out float distance
                 );
 
-                float distPush = Mathf.Min(maxDistance, distance);
+                float distPush = Mathf.Min(maxDistance, distance + KCCUtils.Epsilon);
                 Vector3 push = direction.normalized * distPush;
                 position += push;
                 pushed += push;

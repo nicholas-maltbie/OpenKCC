@@ -79,7 +79,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
 
             kccStateMachine.Update();
-            kccStateMachine.Update();
+            kccStateMachine.FixedUpdate();
+            kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(typeof(KCCStateMachine.FallingState), kccStateMachine.CurrentState);
             Assert.IsFalse(kccStateMachine.config.groundedState.StandingOnGround);
@@ -93,8 +94,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
             Set(moveStick, Vector2.up);
             Set(sprintButton, 1);
-            Debug.Log($"MoveInput:{moveInputAction.ReadValue<Vector2>()} SprintInput:{sprintInputAction.IsPressed()}");
             kccStateMachine.Update();
+            kccStateMachine.FixedUpdate();
             Assert.AreEqual(typeof(KCCStateMachine.SprintingState), kccStateMachine.CurrentState);
             kccStateMachine.FixedUpdate();
         }
@@ -107,6 +108,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
 
             kccStateMachine.Update();
+            kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.SlidingState));
             Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGround);
@@ -122,12 +124,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true, collider: collider);
 
             kccStateMachine.Update();
+            kccStateMachine.FixedUpdate();
 
             kccStateMachine.transform.position = Vector3.forward * 10;
             Assert.AreEqual(kccStateMachine.transform.position, Vector3.forward * 10);
 
             KCCTestUtils.SetupCastSelf(colliderCastMock, didHit: false);
             kccStateMachine.Update();
+            kccStateMachine.FixedUpdate();
 
             kccStateMachine.transform.position = Vector3.back * 10;
             Assert.AreEqual(kccStateMachine.transform.position, Vector3.back * 10);
@@ -157,6 +161,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             // Update the moving ground object and assert
             // that the player is attached to the moving ground
             kccStateMachine.Update();
+            kccStateMachine.FixedUpdate();
 
             tracking.FixedUpdate();
             tracking.transform.position += direction;
@@ -170,13 +175,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
             Set(moveStick, Vector2.up);
-            Debug.Log("Move input action value: " + moveInputAction.ReadValue<Vector2>());
 
             kccStateMachine.Update();
+            kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(typeof(KCCStateMachine.WalkingState), kccStateMachine.CurrentState);
             TestUtils.AssertInBounds(kccStateMachine.InputMovement, Vector3.forward);
 
+            kccStateMachine.Update();
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(typeof(KCCStateMachine.WalkingState), kccStateMachine.CurrentState);
@@ -202,10 +208,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             PlayerInputUtils.playerMovementState = PlayerInputState.Deny;
 
             kccStateMachine.Update();
+            kccStateMachine.FixedUpdate();
             TestUtils.AssertInBounds(kccStateMachine.InputMovement, Vector3.zero);
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
 
+            kccStateMachine.Update();
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
@@ -221,7 +229,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             kccStateMachine.RaiseEvent(StartMoveInput.Instance);
             kccStateMachine.RaiseEvent(StartSprintEvent.Instance);
-            // kccStateMachine.MovePlayer();
+        }
+
+        [Test]
+        public void Validate_KCCStateMachine_TeleportPlayer()
+        {
+            kccStateMachine.TeleportPlayer(Vector3.forward);
+
+            Assert.AreEqual(Vector3.forward, kccStateMachine.transform.position);
         }
 
         [Test]

@@ -69,11 +69,8 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Envionment
         }
 
         [UnityTest]
-        public IEnumerator Verify_NetworkMovingPlatform_Move(
-            [Values] bool isContinuous)
+        public IEnumerator Verify_NetworkMovingPlatform_Move()
         {
-            GetAttachedNetworkBehaviour(0, 0).IsContinuous = isContinuous;
-
             // When the platform moves on the server, assert that it moves on the clients as well
             // Assert that after a second, the platform has moved towards the first target
             Vector3 start = Vector3.zero;
@@ -93,7 +90,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Envionment
         public IEnumerator Verify_InvalidTarget()
         {
             GetAttachedNetworkBehaviour(0, 0).targetsList = null;
-            GetAttachedNetworkBehaviour(0, 0).FixedUpdate();
+            GetAttachedNetworkBehaviour(0, 0).Update();
             yield return null;
         }
 
@@ -102,10 +99,6 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Envionment
             NetworkMovingPlatform movingPlatofrm = go.GetComponent<NetworkMovingPlatform>();
             go.AddComponent<NetworkTransform>();
             movingPlatofrm.targetsList = positions.Select(v => v.transform).ToList();
-
-            Rigidbody rb = go.GetComponent<Rigidbody>();
-            rb.isKinematic = true;
-            rb.useGravity = false;
         }
     }
 }

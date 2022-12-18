@@ -117,7 +117,7 @@ namespace nickmaltbie.OpenKCC.Utils
             IColliderCast colliderCast)
         {
             bool didHit = colliderCast.CastSelf(
-                position,
+                position + dir * Epsilon,
                 rotation,
                 dir,
                 dist,
@@ -125,7 +125,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didHit && hit.distance > minSnapThreshold)
             {
-                return dir * (hit.distance - minSnapThreshold);
+                return dir * (hit.distance - Epsilon);
             }
 
             return Vector3.zero;
@@ -360,6 +360,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     action = MovementAction.SnapUp,
                 };
             }
+
             // If we didn't snap up:
             // Only apply angular change if hitting something
             // Get angle between surface normal and remaining movement

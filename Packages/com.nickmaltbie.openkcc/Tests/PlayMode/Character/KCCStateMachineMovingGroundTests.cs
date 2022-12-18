@@ -111,6 +111,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
         {
             kccStateMachine.transform.position = relativePos;
             yield return null;
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
 
             // Move the box forward and wait a fixed update, the player should
             // move along with the box
@@ -122,6 +124,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
                 // Rotated by the current floor
                 floor.transform.rotation *= Quaternion.Euler(axis.normalized * 5);
                 yield return null;
+                yield return new WaitForFixedUpdate();
+                yield return new WaitForFixedUpdate();
                 Assert.AreEqual(floor, kccStateMachine.config.groundedState.Floor);
                 Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGroundOrOverlap);
 

@@ -23,8 +23,8 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.netcode.Environment
 {
-    [RequireComponent(typeof(Rigidbody))]
     [DisallowMultipleComponent]
+    [DefaultExecutionOrder(0)]
     public class NetworkMovingPlatform : NetworkBehaviour
     {
         /// <summary>
@@ -32,14 +32,6 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// </summary>
         private NetworkVariable<int> _currentTarget = new NetworkVariable<int>(
             value: 0,
-            readPerm: NetworkVariableReadPermission.Everyone,
-            writePerm: NetworkVariableWritePermission.Server);
-
-        /// <summary>
-        /// Is continous variable with network configuration.
-        /// </summary>
-        private NetworkVariable<bool> _isContinuous = new NetworkVariable<bool>(
-            value: true,
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Server);
 
@@ -56,17 +48,6 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// Unity service for managing time.
         /// </summary>
         internal IUnityService untiyService = UnityService.Instance;
-
-        /// <summary>
-        /// Should continuous movement be used to move the object
-        /// or discrete steps. uses the MovePosition and MoveRotation api
-        /// for continuous movement otherwise.
-        /// </summary>
-        internal bool IsContinuous
-        {
-            get => _isContinuous.Value;
-            set => _isContinuous.Value = value;
-        }
 
         /// <summary>
         /// Velocity at which this platform should move.
@@ -92,43 +73,20 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
         /// </summary>
         public bool ValidTarget => targetsList != null && targetsList.Count > 0;
 
-        /// <summary>
-        /// Rigidbody for managing player movement.
-        /// </summary>
-        private Rigidbody rb;
-
-        public void Awake()
+        public void Update()
         {
-            rb = GetComponent<Rigidbody>();
-            rb.isKinematic = true;
-        }
-
-        public void FixedUpdate()
-        {
-            rb.isKinematic = true;
-
-            if (!IsServer)
-            {
-                rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
-                rb.interpolation = RigidbodyInterpolation.Interpolate;
-            }
-            else
-            {
-                rb.interpolation = RigidbodyInterpolation.None;
-            }
-
-            if (!ValidTarget)
+            if (!ValidTarget || !IsServer)
             {
                 return;
             }
 
-            Vector3 direction = (CurrentTarget.position - rb.position).normalized;
-            Vector3 displacement = direction * untiyService.fixedDeltaTime * linearSpeed;
-            float distanceToTarget = Vector3.Distance(rb.position, CurrentTarget.position);
+            Vector3 direction = (CurrentTarget.position - transform.position).normalized;
+            Vector3 displacement = direction * untiyService.deltaTime * linearSpeed;
+            float distanceToTarget = Vector3.Distance(transform.position, CurrentTarget.position);
 
             if (direction == Vector3.zero || distanceToTarget < displacement.magnitude)
             {
-                displacement = CurrentTarget.position - rb.position;
+                displacement = CurrentTarget.position - transform.position;
 
                 if (IsServer)
                 {
@@ -136,14 +94,7 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
                 }
             }
 
-            if (IsContinuous)
-            {
-                rb.MovePosition(rb.position + displacement);
-            }
-            else
-            {
-                rb.position += displacement;
-            }
+            transform.position += displacement;
         }
     }
 }

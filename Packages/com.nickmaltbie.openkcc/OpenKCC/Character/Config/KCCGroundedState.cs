@@ -106,7 +106,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// Check if a player is sliding for a given max walk angle.
         /// </summary>
         /// <returns>True if the player is slipping/falling on the slope they are currently standing on.</returns>
-        public bool Sliding => StandingOnGround && Angle > maxWalkAngle;
+        public bool Sliding => StandingOnGround && Angle >= maxWalkAngle;
 
         /// <summary>
         /// Update the current grounded state of this kinematic character controller.
@@ -141,7 +141,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         {
             // If the player is standing on the ground, project their movement onto the ground plane
             // This allows them to walk up gradual slopes without facing a hit in movement speed
-            if (!Falling)
+            if (StandingOnGround && Angle <= maxWalkAngle)
             {
                 Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, SurfaceNormal).normalized *
                     movement.magnitude;

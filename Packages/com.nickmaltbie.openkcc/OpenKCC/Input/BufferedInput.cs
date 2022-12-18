@@ -71,7 +71,7 @@ namespace nickmaltbie.OpenKCC.Input
         /// </summary>
         [SerializeField]
         [Tooltip("Total buffer time for player input.")]
-        public float cooldown;
+        public float cooldown = 0.1f;
 
         /// <summary>
         /// Amount of time elapsed since the player pressed the input.
@@ -86,7 +86,7 @@ namespace nickmaltbie.OpenKCC.Input
         /// <summary>
         /// Is the input currently active.
         /// </summary>
-        public bool Pressed => elapsedSinceReset >= cooldown && elapsedSincePressed <= bufferTime;
+        public bool Pressed => elapsedSinceReset > cooldown && elapsedSincePressed <= bufferTime;
 
         /// <summary>
         /// Add delta time to update the buffered input state.

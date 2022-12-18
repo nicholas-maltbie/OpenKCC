@@ -127,13 +127,14 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [MovementSettings(AllowVelocity = true, AllowWalk = true)]
         public class JumpState : State { }
 
+        [ApplyGravity]
         [Animation(LandingAnimState, 0.1f, true)]
         [TransitionOnAnimationComplete(typeof(IdleState), 0.25f, true)]
         [AnimationTransition(typeof(StartMoveInput), typeof(WalkingState), 0.35f, true)]
         [AnimationTransition(typeof(JumpEvent), typeof(JumpState), 0.35f, true)]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true)]
+        [MovementSettings(AllowVelocity = false, AllowWalk = true)]
         public class LandingState : State { }
 
         [Animation(WalkingAnimState, 0.1f, true)]
@@ -188,7 +189,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             var upwardVelocity = Vector3.Project(Velocity, config.Up);
             bool movingUp = Vector3.Dot(upwardVelocity, config.Up) > 0;
 
-            if (config.groundedState.Falling && FallingTime >= fallingGraceTime)
+            if (config.groundedState.Falling)
             {
                 RaiseEvent(LeaveGroundEvent.Instance);
             }
@@ -244,12 +245,13 @@ namespace nickmaltbie.OpenKCC.netcode.Character
                     config.minSnapThreshold,
                     config.ColliderCast);
                 delta += snapDelta;
-                delta += config.Up * config.minSnapThreshold;
                 position += snapDelta;
             }
 
             // Apply velocity if allowed to move via velocity
-            if (moveSettings?.AllowVelocity ?? false)
+            // Edge case, if player is  in sliding state, don't allow them to slide up surfaces
+            bool slidingUp = CurrentState == typeof(SlidingState) && Vector3.Dot(config.Up, Velocity) > 0;
+            if ((moveSettings?.AllowVelocity ?? false) && !slidingUp)
             {
                 Vector3 velDelta = GetMovement(position, Velocity * deltaTime, rotation, config);
                 delta += velDelta;
@@ -289,21 +291,30 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
         }
 
-        /// <inheritdoc/>
-        public override void LateUpdate()
+        public override void FixedUpdate()
         {
             GetComponent<Rigidbody>().isKinematic = true;
+            if (IsOwner)
+            {
+                ApplyMovement(unityService.fixedDeltaTime);
+            }
 
+            base.FixedUpdate();
+        }
+
+        /// <inheritdoc/>
+        public override void Update()
+        {
             if (IsOwner)
             {
                 ReadPlayerMovement();
-                ApplyMovement(unityService.deltaTime);
+                relativeParentConfig.FollowGround(transform);
             }
 
             AttachedAnimator.SetFloat("MoveX", animationMove.Value.x);
             AttachedAnimator.SetFloat("MoveY", animationMove.Value.y);
 
-            base.LateUpdate();
+            base.Update();
         }
 
         /// <inheritdoc/>
@@ -380,15 +391,15 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         }
 
         /// <summary>
-        /// Appies player movement based on current state.
-        /// Incldes pushing out overlappign objects, updating grounded state, jumping,
-        /// moving the player, and updating the groudned state.
+        /// Applies player movement based on current state.
+        /// Includes pushing out overlapping objects, updating grounded state, jumping,
+        /// moving the player, and updating the grounded state.
         /// </summary>
         protected void ApplyMovement(float deltaTime)
         {
             relativeParentConfig.FollowGround(transform);
             Vector3 vel = (transform.position - previousPosition) / deltaTime;
-            previousVelocity = Vector3.Lerp(previousVelocity, vel, 100 * deltaTime);
+            previousVelocity = Vector3.Lerp(previousVelocity, vel, 20 * deltaTime);
 
             Vector3 start = transform.position;
             Vector3 pos = start;
@@ -396,6 +407,17 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             // Push player out of overlapping objects
             Vector3 overlapPush = config.ColliderCast.PushOutOverlapping(pos, transform.rotation, config.maxPushSpeed * deltaTime);
             pos += overlapPush;
+
+            // Allow player to move
+            Vector3 playerMove = MovePlayer(pos, transform.rotation, deltaTime);
+            pos += playerMove;
+
+            // Compute player relative movement state based on final pos
+            Vector3 delta = pos - start;
+            UpdateGroundedState(pos, transform.rotation);
+
+            // Allow player to attempt to jump
+            config.jumpAction.ApplyJumpIfPossible();
 
             // Check if player is falling
             if (config.groundedState.Falling)
@@ -413,22 +435,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
                 Velocity += config.gravity * deltaTime;
             }
 
-            // Allow player to attempt to jump
-            config.jumpAction.ApplyJumpIfPossible();
-
-            // Allow player to move
-            Vector3 playerMove = MovePlayer(pos, transform.rotation, deltaTime);
-            pos += playerMove;
-
-            UpdateGroundedState(pos, transform.rotation);
-
-            // Compute player relative movement state based on final pos
-            Vector3 delta = pos - start;
-            relativeParentConfig.UpdateMovingGround(transform, config.groundedState, delta, deltaTime);
-            GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
-
             transform.position += delta;
-            previousPosition = pos;
+            transform.position += relativeParentConfig.UpdateMovingGround(transform.position, config.groundedState, delta, deltaTime);
+            GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
+            relativeParentConfig.FollowGround(transform);
+            previousPosition = transform.position;
         }
     }
 }

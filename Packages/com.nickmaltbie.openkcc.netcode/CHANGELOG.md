@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Updated NetworkMovingPlatform and FixedRigidbodySet to move in the `Update`
+    function to synchronize with server tick properly.
 * Setup a `NetworkRelativeParent` and `NetworkRelativeTransform` classes
     to manage the relative position of an object to a parent object
     without having to actually parent the objects as is required
