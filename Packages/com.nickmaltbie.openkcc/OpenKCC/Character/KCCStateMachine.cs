@@ -108,9 +108,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Relative parent confirugation for following the ground.
         /// </summary>
-        private RelativeParentConfig relativeParentConfig;
-
-        [InitialState]
+        private RelativeParentConfig relativeParentConfig;[InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
         [Transition(typeof(StartMoveInput), typeof(WalkingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
@@ -249,7 +247,9 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             // Apply velocity if allowed to move via velocity
-            if (moveSettings?.AllowVelocity ?? false)
+            // Edge case, if player is  in sliding state, don't allow them to slide up surfaces
+            bool slidingUp = CurrentState == typeof(SlidingState) && Vector3.Dot(config.Up, Velocity) > 0;
+            if ((moveSettings?.AllowVelocity ?? false) && !slidingUp)
             {
                 Vector3 velDelta = GetMovement(position, Velocity * deltaTime, rotation, config);
                 delta += velDelta;
@@ -270,7 +270,6 @@ namespace nickmaltbie.OpenKCC.Character
             base.Awake();
 
             GetComponent<Rigidbody>().isKinematic = true;
-
             _cameraControls = GetComponent<ICameraControls>();
             config._characterPush = GetComponent<ICharacterPush>();
             config._colliderCast = GetComponent<IColliderCast>();
@@ -372,9 +371,9 @@ namespace nickmaltbie.OpenKCC.Character
         }
 
         /// <summary>
-        /// Appies player movement based on current state.
-        /// Incldes pushing out overlappign objects, updating grounded state, jumping,
-        /// moving the player, and updating the groudned state.
+        /// Applies player movement based on current state.
+        /// Includes pushing out overlapping objects, updating grounded state, jumping,
+        /// moving the player, and updating the grounded state.
         /// </summary>
         protected void ApplyMovement(float deltaTime)
         {
@@ -417,7 +416,7 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             transform.position += delta;
-            transform.position += relativeParentConfig.UpdateMovingGround(pos, config.groundedState, delta, deltaTime);
+            transform.position += relativeParentConfig.UpdateMovingGround(transform.position, config.groundedState, delta, deltaTime);
             relativeParentConfig.FollowGround(transform);
             previousPosition = transform.position;
         }

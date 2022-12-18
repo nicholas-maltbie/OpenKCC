@@ -23,6 +23,7 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.netcode.Utils
 {
+    [DefaultExecutionOrder(10000)]
     public class NetworkRelativeTransform : NetworkBehaviour
     {
         public IUnityService unityService = UnityService.Instance;

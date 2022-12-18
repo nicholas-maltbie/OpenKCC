@@ -391,9 +391,9 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         }
 
         /// <summary>
-        /// Appies player movement based on current state.
-        /// Incldes pushing out overlappign objects, updating grounded state, jumping,
-        /// moving the player, and updating the groudned state.
+        /// Applies player movement based on current state.
+        /// Includes pushing out overlapping objects, updating grounded state, jumping,
+        /// moving the player, and updating the grounded state.
         /// </summary>
         protected void ApplyMovement(float deltaTime)
         {
