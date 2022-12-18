@@ -157,7 +157,7 @@ git lfs install
 for sample in "${samples_array[@]}"
 do
   sample_name=${sample#"$sample_path"}
-  dest="$package_path/Samples/$sample_name"
+  dest="$package_path/Samples~/$sample_name"
   echo "Moving sample at path \"$sample\" to \"$dest\""
 
   # Setup sample directory
