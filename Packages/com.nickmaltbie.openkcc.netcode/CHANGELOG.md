@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.1.0] 2022-12-18
+
 * Updated NetworkMovingPlatform and FixedRigidbodySet to move in the `Update`
     function to synchronize with server tick properly.
 * Setup a `NetworkRelativeParent` and `NetworkRelativeTransform` classes

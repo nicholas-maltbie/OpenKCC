@@ -106,7 +106,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             writePerm: NetworkVariableWritePermission.Owner);
 
         /// <summary>
-        /// Relative position to parent configuration.
+        /// Relative parent configuration for following the ground.
         /// </summary>
         private RelativeParentConfig relativeParentConfig;
 
