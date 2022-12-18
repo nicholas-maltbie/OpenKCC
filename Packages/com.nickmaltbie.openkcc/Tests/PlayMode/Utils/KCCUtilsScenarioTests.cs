@@ -175,6 +175,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             }
 
             RegisterGameObject(pushable);
+            yield return null;
             yield return new WaitForFixedUpdate();
 
             // Have character walk forward into object
@@ -210,6 +211,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
             wall.transform.position = Vector3.forward * (distance - 2) + Vector3.up * 0.5f;
             RegisterGameObject(wall);
+            yield return null;
             yield return new WaitForFixedUpdate();
 
             // Have character walk into wall
@@ -257,6 +259,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             RegisterGameObject(angledWall1.gameObject);
             RegisterGameObject(angledWall2.gameObject);
 
+            yield return null;
             yield return new WaitForFixedUpdate();
 
             // First time player moves, they should move forward and bounce off the first angled wall
@@ -336,6 +339,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
                 wall.transform.position = UnityEngine.Random.insideUnitSphere * 0.75f + Vector3.up + offset;
                 wall.transform.rotation = UnityEngine.Random.rotation;
                 playerPosition.transform.position = offset;
+                yield return null;
                 yield return new WaitForFixedUpdate();
 
                 // have player attempt to move, they should overlap with object and exit early
@@ -371,6 +375,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             platform.gameObject.AddComponent<MeshCollider>();
             RegisterGameObject(platform.gameObject);
 
+            yield return null;
             yield return new WaitForFixedUpdate();
 
             // Run a test for each permutation of snap height and snap depth
@@ -491,6 +496,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             wall.transform.position = Vector3.forward * 3 + Vector3.up * 0.5f;
             wall.transform.rotation = Quaternion.Euler(pitch, yaw, 0);
             RegisterGameObject(wall);
+            yield return null;
             yield return new WaitForFixedUpdate();
 
             // Have character walk into wall

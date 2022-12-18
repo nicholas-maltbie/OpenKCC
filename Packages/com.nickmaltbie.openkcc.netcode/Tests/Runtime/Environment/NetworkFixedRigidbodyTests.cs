@@ -39,16 +39,12 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Envionment
         public override void SetupPrefab(GameObject go)
         {
             go.AddComponent<NetworkTransform>();
-            Rigidbody rb = go.GetComponent<Rigidbody>();
-            rb.isKinematic = true;
         }
 
         [UnityTest]
-        public IEnumerator Verify_NetworkMovingPlatform_Move([Values] bool isContinuous)
+        public IEnumerator Verify_NetworkMovingPlatform_Move()
         {
             NetworkFixedRigidbodySet fixedRb = GetAttachedNetworkBehaviour(0, 0);
-            fixedRb.isContinuous = isContinuous;
-
             Vector3 linearVelocity = Vector3.forward;
             Vector3 angularVelocity = Vector3.up * 30;
             fixedRb.linearVelocity = linearVelocity;

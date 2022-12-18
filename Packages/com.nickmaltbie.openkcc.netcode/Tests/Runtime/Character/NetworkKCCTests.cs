@@ -106,9 +106,10 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             yield return base.UnitySetUp();
 
             // Spawn a floor below the players.
-            floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
             floor.name = "floor";
-            floor.transform.localScale = new Vector3(10, 1, 10);
+            floor.transform.localScale = new Vector3(100, 1, 100);
+            floor.transform.position -= Vector3.up * 0.5f;
         }
 
         public override void SetupClient(NetworkKCC e, int objectIdx, int clientIdx)
@@ -137,7 +138,6 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_MovingGround()
         {
-            floor.transform.localScale = Vector3.one;
             yield return SetupPlayersInIdleState();
 
             // Attach a moving ground conveyer to the ground
@@ -178,10 +178,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             SetupPlayersInIdleState();
 
             floor.transform.rotation = Quaternion.Euler(61, 0, 0);
-            floor.transform.position += Vector3.back * 10 + Vector3.down * 5;
-
-            // Teleport players back to their original positions
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f));
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 1));
 
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(SlidingState) == player.CurrentState));
         }

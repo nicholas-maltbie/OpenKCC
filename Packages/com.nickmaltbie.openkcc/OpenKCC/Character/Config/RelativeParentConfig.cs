@@ -42,9 +42,9 @@ namespace nickmaltbie.OpenKCC.Character.Config
             }
         }
 
-        public void UpdateMovingGround(Transform transform, KCCGroundedState groundedState, Vector3 delta, float deltaTime)
+        public Vector3 UpdateMovingGround(Vector3 position, KCCGroundedState groundedState, Vector3 delta, float deltaTime)
         {
-            if (groundedState.Floor != null)
+            if (groundedState.StandingOnGround && groundedState.Floor != null)
             {
                 Transform parent = groundedState.Floor?.transform;
                 IMovingGround ground = parent.GetComponent<IMovingGround>();
@@ -54,7 +54,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
 
                     if (parent != previousParent)
                     {
-                        relativePos = transform.position + delta - parent.position;
+                        relativePos = position + delta - parent.position;
                         relativePos = Quaternion.Inverse(parent.rotation) * relativePos;
                     }
                     else
@@ -66,14 +66,16 @@ namespace nickmaltbie.OpenKCC.Character.Config
                 }
                 else
                 {
-                    transform.position += ground.GetVelocityAtPoint(groundedState.GroundHitPosition) * deltaTime;
                     previousParent = null;
+                    return ground.GetVelocityAtPoint(groundedState.GroundHitPosition) * deltaTime;
                 }
             }
             else
             {
                 Reset();
             }
+
+            return Vector3.zero;
         }
     }
 }

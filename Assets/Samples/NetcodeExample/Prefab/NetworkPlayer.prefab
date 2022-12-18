@@ -257,8 +257,8 @@ MonoBehaviour:
       groundCheckDistance: 0.25
       maxWalkAngle: 60
     gravity: {x: 0, y: -20, z: 0}
-    walkingSpeed: 7.5
-    sprintSpeed: 10
+    walkingSpeed: 4.5
+    sprintSpeed: 6.5
     maxBounces: 5
     pushDecay: 0.9
     anglePower: 0.5
@@ -269,7 +269,7 @@ MonoBehaviour:
     verticalSnapUp: 0.3
     snapBufferTime: 0.05
     maxDefaultLaunchVelocity: 5
-  fallingGraceTime: 0.1
+  fallingGraceTime: 0.05
 --- !u!114 &1302586632800550119
 MonoBehaviour:
   m_ObjectHideFlags: 0

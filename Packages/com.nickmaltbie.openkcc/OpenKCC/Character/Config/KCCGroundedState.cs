@@ -141,7 +141,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         {
             // If the player is standing on the ground, project their movement onto the ground plane
             // This allows them to walk up gradual slopes without facing a hit in movement speed
-            if (!Falling)
+            if (!Sliding)
             {
                 Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, SurfaceNormal).normalized *
                     movement.magnitude;
