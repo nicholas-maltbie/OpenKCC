@@ -36,14 +36,6 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
             writePerm: NetworkVariableWritePermission.Server);
 
         /// <summary>
-        /// Is continous variable with network configuration.
-        /// </summary>
-        private NetworkVariable<bool> _isContinuous = new NetworkVariable<bool>(
-            value: true,
-            readPerm: NetworkVariableReadPermission.Everyone,
-            writePerm: NetworkVariableWritePermission.Server);
-
-        /// <summary>
         /// Current target the platform is heading for.
         /// </summary>
         public int CurrentTargetIdx
