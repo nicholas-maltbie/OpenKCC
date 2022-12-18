@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Fixed basic animations for network kcc so they sync properly.
+
 ## [1.1.0] 2022-12-18
 
 * Updated NetworkMovingPlatform and FixedRigidbodySet to move in the `Update`
