@@ -108,7 +108,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Relative parent confirugation for following the ground.
         /// </summary>
-        private RelativeParentConfig relativeParentConfig;[InitialState]
+        private RelativeParentConfig relativeParentConfig;
+
+        [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
         [Transition(typeof(StartMoveInput), typeof(WalkingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
