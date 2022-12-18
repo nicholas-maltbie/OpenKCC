@@ -176,10 +176,13 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         public IEnumerator Validate_NetworkKCC_Sliding()
         {
             SetupPlayersInIdleState();
+            floor.transform.position = Vector3.down * 3;
+            yield return new WaitForFixedUpdate();
+            floor.transform.rotation = Quaternion.Euler(70.0f, 0, 0);
 
-            floor.transform.rotation = Quaternion.Euler(61, 0, 0);
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 1));
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.zero));
 
+            // Wait until players are in sliding satte
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(SlidingState) == player.CurrentState));
         }
 
@@ -201,7 +204,6 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             ForEachOwner((player, i) =>
             {
                 player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f);
-                player.SetStateQuiet(typeof(IdleState));
             });
             SetupInputs();
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(IdleState) == player.CurrentState));
@@ -240,8 +242,16 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
 
         public override void SetupPrefab(GameObject go)
         {
+            NetworkKCC kcc = go.GetComponent<NetworkKCC>();
+            kcc.config.maxPushSpeed = 100.0f;
+
             go.AddComponent<CapsuleColliderCast>();
             go.AddComponent<ClientNetworkTransform>();
+
+            // Setup the rigidbody
+            Rigidbody rb = go.GetComponent<Rigidbody>();
+            rb.useGravity = false;
+            rb.isKinematic = true;
 
             // Setup animation controller.
             Animator anim = go.AddComponent<Animator>();
@@ -252,9 +262,6 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             capsuleCollider.center = new Vector3(0, 1, 0);
             capsuleCollider.height = 2.0f;
             capsuleCollider.radius = 0.5f;
-
-            // Get the components to update and modify.
-            capsuleCollider.enabled = false;
         }
     }
 }

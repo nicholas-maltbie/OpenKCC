@@ -145,7 +145,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// </summary>
         [Tooltip("Maximum distance a player can be pushed when overlapping other objects in units per second")]
         [SerializeField]
-        public float maxPushSpeed = 1.0f;
+        public float maxPushSpeed = 10.0f;
 
         /// <summary>
         /// Distance that the character can "snap down" vertical steps.

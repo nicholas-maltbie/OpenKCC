@@ -249,7 +249,9 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
 
             // Apply velocity if allowed to move via velocity
-            if (moveSettings?.AllowVelocity ?? false)
+            // Edge case, if player is  in sliding state, don't allow them to slide up surfaces
+            bool slidingUp = CurrentState == typeof(SlidingState) && Vector3.Dot(config.Up, Velocity) > 0;
+            if ((moveSettings?.AllowVelocity ?? false) && !slidingUp)
             {
                 Vector3 velDelta = GetMovement(position, Velocity * deltaTime, rotation, config);
                 delta += velDelta;
@@ -434,7 +436,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
 
             transform.position += delta;
-            transform.position += relativeParentConfig.UpdateMovingGround(pos, config.groundedState, delta, deltaTime);
+            transform.position += relativeParentConfig.UpdateMovingGround(transform.position, config.groundedState, delta, deltaTime);
             GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
             relativeParentConfig.FollowGround(transform);
             previousPosition = transform.position;

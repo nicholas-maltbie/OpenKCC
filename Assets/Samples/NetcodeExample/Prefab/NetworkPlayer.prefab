@@ -244,11 +244,11 @@ MonoBehaviour:
     moveActionReference: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
     sprintActionReference: {fileID: -6424176782126915535, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
     jumpAction:
-      coyoteTime: 0
+      coyoteTime: 0.1
       jumpInput:
         inputActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-        bufferTime: 0
-        cooldown: 0
+        bufferTime: 0.05
+        cooldown: 0.5
       jumpVelocity: 6.5
       maxJumpAngle: 85
       jumpAngleWeightFactor: 0
