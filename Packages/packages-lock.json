@@ -38,7 +38,7 @@
       "dependencies": {
         "com.nickmaltbie.openkcc": "1.0.1",
         "com.nickmaltbie.screenmanager": "3.0.0",
-        "com.nickmaltbie.statemachineunity": "1.1.0",
+        "com.nickmaltbie.statemachineunity": "1.1.2",
         "com.nickmaltbie.networkstatemachineunity": "1.0.0",
         "com.nickmaltbie.testutilsunity": "0.0.2",
         "com.unity.inputsystem": "1.0.0",

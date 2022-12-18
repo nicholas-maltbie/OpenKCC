@@ -114,7 +114,8 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
 
         public override void SetupClient(NetworkKCC e, int objectIdx, int clientIdx)
         {
-            e.TeleportPlayer(Vector3.right * clientIdx * 2 + Vector3.up * 0.1f);
+            e.TeleportPlayer(Vector3.right * clientIdx * 2 + Vector3.up * 0.025f);
+            e.GetComponent<CapsuleCollider>().enabled = objectIdx == clientIdx;
         }
 
         [UnityTest]
@@ -124,14 +125,18 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
 
             for (int i = 0; i <= NumberOfClients; i++)
             {
+                NetworkKCC kcc = GetAttachedNetworkBehaviour(i, i);
+
                 // Wait for player to fall to ground
-                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState || typeof(LandingState) == player.CurrentState));
+                yield return TestUtils.WaitUntil(() => typeof(IdleState) == kcc.CurrentState || typeof(LandingState) == kcc.CurrentState);
                 input.Set(GetTestableNetworkBehaviour(i, i).GetControl<StickControl>(MoveControlName), Vector2.up);
-                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(WalkingState) == player.CurrentState));
+                yield return TestUtils.WaitUntil(() => typeof(WalkingState) == kcc.CurrentState);
                 input.Set(GetTestableNetworkBehaviour(i, i).GetControl<ButtonControl>(SprintControlName), 1.0f);
-                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(SprintingState) == player.CurrentState));
+                yield return TestUtils.WaitUntil(() => typeof(SprintingState) == kcc.CurrentState);
                 input.Set(GetTestableNetworkBehaviour(i, i).GetControl<StickControl>(MoveControlName), Vector2.zero);
-                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState));
+                yield return TestUtils.WaitUntil(() => typeof(IdleState) == kcc.CurrentState);
+                input.Set(GetTestableNetworkBehaviour(i, i).GetControl<ButtonControl>(JumpControlName), 1.0f);
+                yield return TestUtils.WaitUntil(() => typeof(JumpState) == kcc.CurrentState);
             }
         }
 
@@ -186,25 +191,9 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(SlidingState) == player.CurrentState));
         }
 
-        [UnityTest]
-        public IEnumerator Validate_NetworkKCC_Jump_Transition()
-        {
-            yield return SetupPlayersInIdleState();
-            for (int i = 0; i <= NumberOfClients; i++)
-            {
-                // Wait for player to fall to ground
-                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(IdleState) == player.CurrentState));
-                input.Set(GetTestableNetworkBehaviour(i, i).GetControl<ButtonControl>(JumpControlName), 1.0f);
-                yield return TestUtils.WaitUntil(() => ForAllPlayers(i, player => typeof(JumpState) == player.CurrentState));
-            }
-        }
-
         protected IEnumerator SetupPlayersInIdleState()
         {
-            ForEachOwner((player, i) =>
-            {
-                player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.0025f);
-            });
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.1f));
             SetupInputs();
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(IdleState) == player.CurrentState));
         }

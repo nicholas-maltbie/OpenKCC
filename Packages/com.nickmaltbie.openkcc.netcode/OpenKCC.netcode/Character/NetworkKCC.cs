@@ -371,8 +371,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             float moveY = AttachedAnimator.GetFloat("MoveY");
             moveX = Mathf.Lerp(moveX, moveVector.x, 4 * unityService.deltaTime);
             moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
-            AttachedAnimator.SetFloat("MoveX", moveX);
-            AttachedAnimator.SetFloat("MoveY", moveY);
+            animationMove.Value = new Vector2(moveX, moveY);
 
             bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
             RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
