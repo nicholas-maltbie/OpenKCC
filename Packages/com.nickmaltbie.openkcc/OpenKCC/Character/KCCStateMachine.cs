@@ -106,7 +106,7 @@ namespace nickmaltbie.OpenKCC.Character
         private Vector3 previousVelocity;
 
         /// <summary>
-        /// Relative parent confirugation for following the ground.
+        /// Relative parent configuration for following the ground.
         /// </summary>
         private RelativeParentConfig relativeParentConfig;
 

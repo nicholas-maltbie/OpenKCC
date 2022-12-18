@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.1.0] 2022-12-18
+
 * Updated kcc state machine to be synced with the network kcc.
 * Removed ParentConstraint requirement from the KCCStateMachine
     and replaced with a new `RelativeParentConfig` object to managed
