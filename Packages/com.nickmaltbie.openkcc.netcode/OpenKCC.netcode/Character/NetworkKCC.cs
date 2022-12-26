@@ -291,6 +291,14 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
         }
 
+        public override void LateUpdate()
+        {
+            relativeParentConfig.FollowGround(transform);
+            transform.position += config.ColliderCast.PushOutOverlapping(transform.position, transform.rotation, config.maxPushSpeed * unityService.deltaTime);
+
+            base.LateUpdate();
+        }
+
         public override void FixedUpdate()
         {
             GetComponent<Rigidbody>().isKinematic = true;
@@ -308,7 +316,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             if (IsOwner)
             {
                 ReadPlayerMovement();
-                relativeParentConfig.FollowGround(transform);
             }
 
             AttachedAnimator.SetFloat("MoveX", animationMove.Value.x);
