@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - '*'
+    branches: ['main']
   release:
     types: [published]
 
@@ -31,6 +32,15 @@ jobs:
           branch: release/${{ steps.releaseTagName.outputs.tag }}
           force: true
 
+      # Deploy build to release branch
+      - name: Push package via Release Tag
+        if: github.ref == 'refs/heads/main'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release/latest
+          force: true
+
       - name: Git lfs Pull
         run: git lfs pull
         shell: bash
@@ -43,6 +53,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       
       - name: Publish Package to NpmJS
+        if: "${{ steps.releaseTagName.outputs.tag != '' }}"
         run: npm publish
         continue-on-error: true
         env:
@@ -74,6 +85,24 @@ jobs:
           branch: release/netcode/${{ steps.releaseTagName.outputs.tag }}
           force: true
 
+      # Deploy build to release branch
+      - name: Push package via Release Tag
+        if: "${{ steps.releaseTagName.outputs.tag != '' }}"
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release/${{ steps.releaseTagName.outputs.tag }}
+          force: true
+
+      # Deploy build to release branch
+      - name: Push package via Release Tag
+        if: github.ref == 'refs/heads/main'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release/netcode/latest
+          force: true
+
       - name: Git lfs Pull
         run: git lfs pull
         shell: bash
@@ -86,6 +115,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       
       - name: Publish Package to NpmJS
+        if: "${{ steps.releaseTagName.outputs.tag != '' }}"
         run: npm publish
         continue-on-error: true
         env:

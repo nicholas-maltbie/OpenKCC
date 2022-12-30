@@ -23,25 +23,6 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
-  create-package:
-    name: Create release/latest branch
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/git-lfs-cache
-      - uses: ./.github/actions/setvars
-
-      - name: Setup Package
-        run: ./setup-package.sh -p ${{ env.PACKAGE_PATH }} -s ${{ env.SAMPLES }}
-
-      # Deploy build to release branch
-      - name: Push package
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/latest
-          force: true
-
   build-webgl-app:
     name: Build WebGL App
     runs-on: ubuntu-latest
