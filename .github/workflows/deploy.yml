@@ -23,25 +23,6 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
-  create-package:
-    name: Create release/latest branch
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/git-lfs-cache
-      - uses: ./.github/actions/setvars
-
-      - name: Setup Package
-        run: ./setup-package.sh -p ${{ env.PACKAGE_PATH }} -s ${{ env.SAMPLES }}
-
-      # Deploy build to release branch
-      - name: Push package
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/latest
-          force: true
-
   build-webgl-app:
     name: Build WebGL App
     runs-on: ubuntu-latest
@@ -69,6 +50,33 @@ jobs:
           name: temp_build_webgl
           path: Builds/${{ env.PROJECT_NAME }}-WebGL
 
+  build-openkcc-netcode-app:
+    name: Build WebGL netcode version of Project
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setvars
+      - uses: ./.github/actions/git-lfs-cache
+      - uses: ./.github/actions/unity-library-cache
+        with:
+          target_platform: WebGL
+
+      # Build the game deployment at build
+      - uses: game-ci/unity-builder@v2.0.4
+        with:
+          unityVersion: ${{ env.UNITY_VERSION }}
+          targetPlatform: WebGL
+          buildMethod: ScriptBatch.OfficialBuild_WebGL_Netcode
+
+      # save build to temp_build_netcode_webgl
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: temp_build_netcode_webgl
+          path: Builds/${{ env.PROJECT_NAME }}-WebGL-Netcode
+
   # Build the documentation
   build-docs:
     name: DocFX build for website
@@ -95,7 +103,7 @@ jobs:
   combine-and-deploy-artifact:
     name: Combine and Deploy Artifact
     runs-on: ubuntu-latest
-    needs: [build-webgl-app, build-docs]
+    needs: [build-openkcc-netcode-app, build-webgl-app, build-docs]
     steps:
       # Download previous builds
       - name: Download WebGL Build
@@ -148,7 +156,7 @@ jobs:
     name: Cleanup the build artifacts after deploying site.
     runs-on: ubuntu-latest
     if: always()
-    needs: [deploy-combined-webgl]
+    needs: deploy-combined-webgl
 
     steps:
       - name: Cleanup temp build artifacts
