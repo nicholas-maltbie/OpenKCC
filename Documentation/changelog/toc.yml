@@ -1,5 +1,8 @@
-# Changelog is populated from Packages\com.nickmaltbie.screenmanager\CHANGELOG.md
-# as part of build script.
+# Changelog is populated from 
+# Packages\com.nickmaltbie.openkcc\CHANGELOG.md %~dp0\changelog\CHANGELOG.md
+# Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md %~dp0\changelog\CHANGELOG.netcode.md
 
-- name: Changelog
+- name: Changelog OpenKCC
   href: CHANGELOG.md
+- name: Changelog OpenKCC netcode
+  href: CHANGELOG.netcode.md
