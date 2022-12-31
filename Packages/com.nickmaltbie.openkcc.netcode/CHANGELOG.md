@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.1.2] 2022-12-31
+
+* Fixed materials in samples to be included in the package folder.
 * Fixed basic animations for network kcc so they sync properly.
 
 ## [1.1.0] 2022-12-18
