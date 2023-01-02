@@ -27,6 +27,7 @@ using nickmaltbie.OpenKCC.netcode.Utils;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
+using nickmaltbie.StateMachineUnity.Event;
 using Unity.Netcode;
 using UnityEngine;
 using static nickmaltbie.OpenKCC.Character.Animation.HumanoidKCCAnim;
@@ -381,7 +382,8 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             animationMove.Value = new Vector2(moveX, moveY);
 
             bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
-            RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
+            IEvent moveEvent = moving ? StartMoveInput.Instance as IEvent : StopMoveInput.Instance as IEvent;
+            RaiseEvent(moveEvent);
 
             if (moving)
             {

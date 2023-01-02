@@ -25,6 +25,7 @@ using nickmaltbie.OpenKCC.Character.Events;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
+using nickmaltbie.StateMachineUnity.Event;
 using nickmaltbie.StateMachineUnity.Fixed;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -357,7 +358,8 @@ namespace nickmaltbie.OpenKCC.Character
             AttachedAnimator.SetFloat("MoveY", moveY);
 
             bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
-            RaiseEvent(moving ? StartMoveInput.Instance : StopMoveInput.Instance);
+            IEvent moveEvent = moving ? StartMoveInput.Instance as IEvent : StopMoveInput.Instance as IEvent;
+            RaiseEvent(moveEvent);
 
             if (moving)
             {
