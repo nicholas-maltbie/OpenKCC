@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.1.3] 2022-1-1
 
+* Refactored code to use com.nickmaltbie.recolorshaderunity
 * Fixed code reference to IEvent for backwards compatibility.
 
 ## [1.1.2] 2022-12-31
