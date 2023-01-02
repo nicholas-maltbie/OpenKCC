@@ -136,6 +136,8 @@ library. My favorite way to import the `Moq.dll` in Unity is by using
 In order to run the samples from the project, you must import the following
 projects:
 
+* [com.nickmaltbie.recolorshaderunity](https://nickmaltbie.com/RecolorShaderUnity/docs/)
+  version 1.0.0 or newer.
 * [com.unity.probuilder](https://docs.unity3d.com/Packages/com.unity.probuilder@5.0/manual/index.html)
   version 5.0 or newer
 * [com.unity.render-pipelines.universal](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@11.0/manual/index.html)

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Box Blue
-  m_Shader: {fileID: -6465566751694194690, guid: 6ee87c2d743bb7c4bb9f126fbc157abf, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 2f40f8309ba435c46a07440f1906787a, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4

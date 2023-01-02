@@ -25,7 +25,7 @@
       "source": "embedded",
       "dependencies": {
         "com.nickmaltbie.screenmanager": "3.0.0",
-        "com.nickmaltbie.statemachineunity": "1.1.0",
+        "com.nickmaltbie.statemachineunity": "1.1.4",
         "com.nickmaltbie.testutilsunity": "1.0.0",
         "com.unity.inputsystem": "1.0.0",
         "com.unity.textmeshpro": "3.0.0"
@@ -36,15 +36,22 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.nickmaltbie.openkcc": "1.0.1",
+        "com.nickmaltbie.openkcc": "1.1.0",
         "com.nickmaltbie.screenmanager": "3.0.0",
-        "com.nickmaltbie.statemachineunity": "1.1.2",
+        "com.nickmaltbie.statemachineunity": "1.1.4",
         "com.nickmaltbie.networkstatemachineunity": "1.0.0",
         "com.nickmaltbie.testutilsunity": "0.0.2",
         "com.unity.inputsystem": "1.0.0",
         "com.unity.netcode.gameobjects": "1.1.0",
         "com.unity.textmeshpro": "3.0.0"
       }
+    },
+    "com.nickmaltbie.recolorshaderunity": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://registry.npmjs.org"
     },
     "com.nickmaltbie.screenmanager": {
       "version": "3.1.0",
@@ -57,7 +64,7 @@
       "url": "https://registry.npmjs.org"
     },
     "com.nickmaltbie.statemachineunity": {
-      "version": "1.1.2",
+      "version": "1.1.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
