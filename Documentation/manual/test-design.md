@@ -1,5 +1,18 @@
 # Test Design
 
+<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD033 -->
+<!-- Disable line length lint rule for portion of embed -->
+<div class="videoWrapper">
+<iframe
+    src="https://www.youtube.com/embed/3No2mpbHJrI"
+    title="Why Test Games"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen></iframe>
+</div>
+<!-- markdownlint-enable MD013 -->
+
 The OpenKCC project is a library intended for a variety of use cases.
 To manage new code being added to the project and ensure it does not break
 existing features, there are some tests added to the project.
