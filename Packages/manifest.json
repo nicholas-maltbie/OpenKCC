@@ -9,7 +9,7 @@
     }
   ],
   "dependencies": {
-    "com.community.netcode.transport.websocket": "git+https://github.com/nicholas-maltbie/multiplayer-community-contributions?path=/Transports/com.community.netcode.transport.websocket#webgl-patch",
+    "com.community.netcode.transport.websocket": "git+https://github.com/Unity-Technologies/multiplayer-community-contributions?path=/Transports/com.community.netcode.transport.websocket#c7246c713392424c1388fd516f2c6a1debaea14d",
     "com.nickmaltbie.recolorshaderunity": "1.0.0",
     "com.nickmaltbie.screenmanager": "3.1.0",
     "com.nickmaltbie.statemachineunity": "1.1.4",

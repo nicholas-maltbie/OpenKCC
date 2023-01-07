@@ -55,7 +55,7 @@ To use the latest release, simply reference:
 git+https://github.com/nicholas-maltbie/openkcc.git#release/latest
 ```
 
-For a full list of all tags, check the [OpenKCC Tags](https://github.com/nicholas-maltbie/ScreenManager/tags)
+For a full list of all tags, check the [OpenKCC Tags](https://github.com/nicholas-maltbie/OpenKCC/tags)
 list on github. I will usually associated a tag with each release of the project.
 
 _Note_: before I started using the package format for the project, I manually
@@ -204,14 +204,15 @@ As these videos are created they will be listed here:
 * [Projection Based Movement of KCC](https://youtu.be/s-99Z_W8bcQ)
 * [How the KCC Manages Jumping](https://youtu.be/CGsDdBZa5EM)
 * [Camera controller and Dither Shader](https://youtu.be/Zw6qvOOHGC4)
-* \[Planned\] Character Controller Case Study and Requirements Engineering
+* [Why Test Games](https://youtu.be/3No2mpbHJrI)
 
 ## Development
 
 If you want to help with the project, feel free to make some
 changes and submit a PR to the repo.
 
-This project is developed using Unity Release [2021.3.11f1](https://unity3d.com/unity/whats-new/2021.3.11).
+This project is developed using Unity Release
+[2021.3.11f1](https://unity3d.com/unity/whats-new/2021.3.11).
 Install this version of Unity from Unity Hub using this link:
 [unityhub://2021.3.11f1/0a5ca18544bf](unityhub://2021.3.11f1/0a5ca18544bf).
 
