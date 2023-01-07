@@ -55,7 +55,7 @@ To use the latest release, simply reference:
 git+https://github.com/nicholas-maltbie/openkcc.git#release/latest
 ```
 
-For a full list of all tags, check the [OpenKCC Tags](https://github.com/nicholas-maltbie/ScreenManager/tags)
+For a full list of all tags, check the [OpenKCC Tags](https://github.com/nicholas-maltbie/OpenKCC/tags)
 list on github. I will usually associated a tag with each release of the project.
 
 _Note_: before I started using the package format for the project, I manually
