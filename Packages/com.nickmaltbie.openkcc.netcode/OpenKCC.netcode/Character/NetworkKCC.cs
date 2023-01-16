@@ -224,7 +224,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             if (moveSettings?.AllowWalk ?? false)
             {
                 Vector3 move = GetProjectedMovement();
-                float speed = moveSettings.Speed(this);
+                float speed = moveSettings.Speed(config);
 
                 Vector3 moveDelta = GetMovement(position, move * speed * deltaTime, rotation, config);
                 delta += moveDelta;
