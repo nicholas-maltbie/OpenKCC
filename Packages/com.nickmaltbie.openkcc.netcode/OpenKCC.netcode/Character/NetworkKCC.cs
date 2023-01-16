@@ -125,7 +125,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [TransitionOnAnimationComplete(typeof(FallingState), 0.15f, true)]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
+        [MovementSettings(AllowVelocity = true, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
         public class JumpState : State { }
 
         [ApplyGravity]
@@ -135,7 +135,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [AnimationTransition(typeof(JumpEvent), typeof(JumpState), 0.35f, true)]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = true)]
+        [MovementSettings(AllowVelocity = false, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
         public class LandingState : State { }
 
         [Animation(WalkingAnimState, 0.1f, true)]
@@ -144,7 +144,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(StartSprintEvent), typeof(SprintingState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true)]
+        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true, SpeedConfig = nameof(config.walkingSpeed))]
         public class WalkingState : State { }
 
         [Animation(SprintingAnimState, 0.1f, true)]
@@ -153,7 +153,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(StopSprintEvent), typeof(WalkingState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true, OverrideVelocityFunction = nameof(config.sprintSpeed))]
+        [MovementSettings(
+            AllowVelocity = false,
+            AllowWalk = true,
+            SnapPlayerDown = true,
+            SpeedConfig = nameof(config.sprintSpeed))]
         public class SprintingState : State { }
 
         [ApplyGravity]
@@ -161,7 +165,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true, SnapPlayerDown = true)]
+        [MovementSettings(AllowVelocity = true, AllowWalk = true, SnapPlayerDown = true, SpeedConfig = nameof(config.walkingSpeed))]
         public class SlidingState : State { }
 
         [ApplyGravity]
@@ -170,7 +174,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
+        [MovementSettings(AllowVelocity = true, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
         public class FallingState : State { }
 
         [ApplyGravity]
@@ -178,7 +182,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 1.0f)]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true)]
+        [MovementSettings(AllowVelocity = true, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
         public class LongFallingState : State { }
 
         /// <summary>
@@ -220,14 +224,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             if (moveSettings?.AllowWalk ?? false)
             {
                 Vector3 move = GetProjectedMovement();
-                float speed = config.walkingSpeed;
-
-                string overrideParam = moveSettings.OverrideVelocityFunction;
-
-                if (!string.IsNullOrEmpty(overrideParam))
-                {
-                    speed = (float)config.EvaluateMember(overrideParam);
-                }
+                float speed = moveSettings.Speed(this);
 
                 Vector3 moveDelta = GetMovement(position, move * speed * deltaTime, rotation, config);
                 delta += moveDelta;

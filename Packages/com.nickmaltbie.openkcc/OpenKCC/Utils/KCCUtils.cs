@@ -302,7 +302,12 @@ namespace nickmaltbie.OpenKCC.Utils
             // Do a cast of the collider to see if an object is hit during this
             // movement bounce
             float distance = remainingMomentum.magnitude;
-            if (!config.ColliderCast.CastSelf(position, rotation, remainingMomentum.normalized, distance, out IRaycastHit hit))
+            if (!config.ColliderCast.CastSelf(
+                position,
+                rotation,
+                remainingMomentum.normalized,
+                distance,
+                out IRaycastHit hit))
             {
                 // If there is no hit, move to desired position
                 return new KCCBounce

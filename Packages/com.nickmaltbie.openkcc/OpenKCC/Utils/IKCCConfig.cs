@@ -42,6 +42,28 @@ namespace nickmaltbie.OpenKCC.Utils
         float VerticalSnapUp { get; }
 
         /// <summary>
+        /// Distance that the character can "snap down" vertical steps.
+        /// </summary>
+        float VerticalSnapDown { get; }
+
+        /// <summary>
+        /// Delta for distance floating over the ground when snapping down.
+        /// </summary>
+        float MinSnapThreshold { get; }
+
+        /// <summary>
+        /// Maximum distance the player can be pushed out of overlapping
+        /// objects in units per second.
+        /// </summary>
+        float MaxPushSpeed { get; }
+
+        /// <summary>
+        /// Gravity for the kcc config.
+        /// </summary>
+        /// <value></value>
+        Vector3 Gravity { get; }
+
+        /// <summary>
         /// Minimum depth required for a stair when moving onto a step.
         /// </summary>
         float StepUpDepth { get; }
@@ -158,5 +180,17 @@ namespace nickmaltbie.OpenKCC.Utils
 
         /// <inheritdoc/>
         public float MaxDefaultLaunchVelocity { get; set; }
+
+        /// <inheritdoc/>
+        public float VerticalSnapDown { get; set; }
+
+        /// <inheritdoc/>
+        public float MinSnapThreshold { get; set; }
+
+        /// <inheritdoc/>
+        public Vector3 Gravity { get; set; }
+
+        /// <inheritdoc/>
+        public float MaxPushSpeed { get; set; }
     }
 }

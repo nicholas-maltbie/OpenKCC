@@ -233,6 +233,18 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// </summary>
         public Vector3 Down => gravity.normalized;
 
+        /// <inheritdoc/>
+        public float VerticalSnapDown => verticalSnapDown;
+
+        /// <inheritdoc/>
+        public float MinSnapThreshold => minSnapThreshold;
+
+        /// <inheritdoc/>
+        public Vector3 Gravity => gravity;
+
+        /// <inheritdoc/>
+        public float MaxPushSpeed => maxPushSpeed;
+
         /// <summary>
         /// Collider cast associated with the character.
         /// </summary>

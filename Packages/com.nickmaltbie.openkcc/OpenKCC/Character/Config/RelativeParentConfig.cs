@@ -42,7 +42,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
             }
         }
 
-        public Vector3 UpdateMovingGround(Vector3 position, KCCGroundedState groundedState, Vector3 delta, float deltaTime)
+        public Vector3 UpdateMovingGround(Vector3 position, IKCCGrounded groundedState, Vector3 delta, float deltaTime)
         {
             if (groundedState.StandingOnGround && groundedState.Floor != null)
             {
