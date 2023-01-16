@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6848717913279412209}
   - component: {fileID: 6848717913279412208}
   m_Layer: 0
-  m_Name: DigparticleTrail
+  m_Name: DiggingTrailParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3805,12 +3805,7 @@ ParticleSystem:
   SubModule:
     serializedVersion: 2
     enabled: 0
-    subEmitters:
-    - serializedVersion: 3
-      emitter: {fileID: 0}
-      type: 0
-      properties: 0
-      emitProbability: 1
+    subEmitters: []
   LightsModule:
     enabled: 0
     ratio: 0

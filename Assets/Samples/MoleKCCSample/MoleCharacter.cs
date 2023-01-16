@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using System;
+using System.Linq;
 using nickmaltbie.NetworkStateMachineUnity;
 using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character;
@@ -50,13 +51,39 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
     public class MoleCharacter : NetworkSMAnim, IJumping, IGetKCCConfig, IGetKCCGrounded
     {
         [SerializeField]
-        public ParticleSystem diggingParticles;
+        public ParticleSystem diggingTrailParticlePrefab;
 
         [SerializeField]
-        public ParticleSystem trailParticles;
+        public ParticleSystem burrowParticlePrefab;
+
+        [SerializeField]
+        public Vector3 particleOffset = new Vector3(0, -0.5f, 0);
 
         [SerializeField]
         public Vector3 avatarDiggingOffset = new Vector3(0, -0.5f, 0);
+
+        [SerializeField]
+        public int maxDiggingTrails = 10;
+
+        private ParticleSystem burrowParticles;
+        private ParticleSystem[] diggingTrails;
+        private int currentTrail;
+
+        private ParticleSystem CurrentTrail => diggingTrails[currentTrail];
+        private ParticleSystem NextTrail
+        {
+            get 
+            {
+                currentTrail = (currentTrail + 1) % diggingTrails.Length;
+
+                if (CurrentTrail.isPlaying)
+                {
+                    CurrentTrail.Stop();
+                }
+                CurrentTrail.Clear();
+                return CurrentTrail;
+            }
+        }
 
         private Vector3 defaultOffset;
 
@@ -125,6 +152,11 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// </summary>
         private RelativeParentConfig relativeParentConfig;
 
+        /// <summary>
+        /// Previous parent for spawning burrowing particles.
+        /// </summary>
+        private Transform previousParent;
+
         [InitialState]
         [Animation("Idle")]
         [Transition(typeof(StartMoveInput), typeof(WalkingState))]
@@ -171,14 +203,30 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             }
         }
 
+        public void Awake()
+        {
+            burrowParticles = GameObject.Instantiate(burrowParticlePrefab, transform);
+            diggingTrails = Enumerable.Range(0, maxDiggingTrails)
+                .Select(_ => GameObject.Instantiate(diggingTrailParticlePrefab, transform))
+                .ToArray();
+
+            burrowParticles.transform.localPosition = particleOffset;
+            burrowParticles.Stop();
+            foreach (ParticleSystem trail in diggingTrails)
+            {
+                trail.transform.localPosition = particleOffset;
+                trail.Stop();
+            }
+        }
+
         /// <summary>
         /// Configure kcc state machine operations.
         /// </summary>
         public override void Start()
         {
             base.Start();
-
             defaultOffset = AttachedAnimator.transform.localPosition;
+
             GetComponent<Rigidbody>().isKinematic = true;
 
             movementEngine = GetComponent<MoleMovementEngine>();
@@ -265,31 +313,37 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
             if (particlesEnabled)
             {
-                ParticleSystem.MainModule particleSettings = trailParticles.main;
-                if (relativeParentConfig.previousParent == null)
+                Transform currentParent = config.groundedState.Floor.transform;
+                if (config.groundedState.StandingOnGround && previousParent != currentParent)
                 {
-                    particleSettings.simulationSpace = ParticleSystemSimulationSpace.World;
+                    CurrentTrail.Stop();
+                    ParticleSystem.MainModule trailParticles = NextTrail.main;
+                    trailParticles.simulationSpace = ParticleSystemSimulationSpace.Custom;
+                    trailParticles.customSimulationSpace = currentParent;
+                    CurrentTrail.Play();
                 }
-                else
-                {
-                    particleSettings.simulationSpace = ParticleSystemSimulationSpace.Custom;
-                    particleSettings.customSimulationSpace = relativeParentConfig.previousParent;
-                }
-            }
 
-            if (particlesEnabled != diggingParticles.isPlaying)
+                if (!CurrentTrail.isPlaying)
+                {
+                    CurrentTrail.Play();
+                }
+
+                if (!burrowParticles.isPlaying)
+                {
+                    burrowParticles.Play();
+                    ParticleSystem.MainModule burrowSettings = burrowParticles.main;
+                    burrowSettings.simulationSpace = ParticleSystemSimulationSpace.Local;
+                    burrowParticles.transform.localPosition = particleOffset;
+                }
+
+                previousParent = currentParent;
+            }
+            else
             {
-                if (particlesEnabled)
-                {
-                    diggingParticles.Play();
-                    trailParticles.Play();
-                }
-                else
-                {
-                    diggingParticles.Stop();
-                    diggingParticles.Clear();
-                    trailParticles.Stop();
-                }
+                previousParent = null;
+                CurrentTrail.Stop();
+                burrowParticles.Stop();
+                burrowParticles.Clear();
             }
 
             if (Attribute.GetCustomAttribute(CurrentState, typeof(AvatarOffsetAttribute)) is AvatarOffsetAttribute avatarOffset)
