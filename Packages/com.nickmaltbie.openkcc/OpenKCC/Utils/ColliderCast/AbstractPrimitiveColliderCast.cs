@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils.ColliderCast
@@ -87,15 +86,15 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Primitive collider shape associated with this object.
         /// </summary>
-        abstract public Collider Collider { get; }
+        public abstract Collider Collider { get; }
 
         /// <inheritdoc/>
-        abstract public Vector3 GetBottom(Vector3 position, Quaternion rotation);
+        public abstract Vector3 GetBottom(Vector3 position, Quaternion rotation);
 
         /// <inheritdoc/>
-        abstract public IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation);
+        public abstract IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation);
 
         /// <inheritdoc/>
-        abstract  public IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance);
+        public abstract IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance);
     }
 }

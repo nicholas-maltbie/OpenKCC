@@ -29,7 +29,6 @@ using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
 using nickmaltbie.StateMachineUnity.Event;
-using Unity.Netcode;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.MoleKCCSample
@@ -143,7 +142,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
         [Animation("Digging")]
         [DiggingParticlesEnabled]
-        [AvatarOffsetAttribute(OffsetValue=nameof(avatarDiggingOffset))]
+        [AvatarOffsetAttribute(OffsetValue = nameof(avatarDiggingOffset))]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
@@ -295,7 +294,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
             if (Attribute.GetCustomAttribute(CurrentState, typeof(AvatarOffsetAttribute)) is AvatarOffsetAttribute avatarOffset)
             {
-                AttachedAnimator.transform.localPosition = (Vector3) this.EvaluateMember(avatarOffset.OffsetValue);
+                AttachedAnimator.transform.localPosition = (Vector3)this.EvaluateMember(avatarOffset.OffsetValue);
             }
             else
             {

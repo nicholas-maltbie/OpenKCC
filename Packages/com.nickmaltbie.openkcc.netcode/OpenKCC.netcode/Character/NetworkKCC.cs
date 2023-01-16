@@ -31,7 +31,6 @@ using nickmaltbie.StateMachineUnity.Event;
 using Unity.Netcode;
 using UnityEngine;
 using static nickmaltbie.OpenKCC.Character.Animation.HumanoidKCCAnim;
-using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
 namespace nickmaltbie.OpenKCC.netcode.Character
 {

@@ -53,7 +53,7 @@ namespace nickmaltbie.OpenKCC.Character.Attributes
         {
             if (!string.IsNullOrWhiteSpace(SpeedConfig))
             {
-                return (float) source.EvaluateMember(SpeedConfig);
+                return (float)source.EvaluateMember(SpeedConfig);
             }
 
             return 0.0f;

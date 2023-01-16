@@ -19,7 +19,6 @@
 using System.Linq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Editor;
-using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using UnityEngine;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;

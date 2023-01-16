@@ -46,11 +46,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         private InputAction overrideMoveAction;
 
         /// <summary>
-        /// Override move action for testing.
-        /// </summary>
-        private InputAction overrideSprintAction;
-
-        /// <summary>
         /// Gets the move action associated with this humaoid kcc config.
         /// </summary>
         public InputAction MoveAction

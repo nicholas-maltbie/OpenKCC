@@ -21,7 +21,6 @@ using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Animation;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Input;
-using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;

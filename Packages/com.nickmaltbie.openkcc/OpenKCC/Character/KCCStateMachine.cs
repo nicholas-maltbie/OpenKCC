@@ -30,7 +30,6 @@ using nickmaltbie.StateMachineUnity.Fixed;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static nickmaltbie.OpenKCC.Character.Animation.HumanoidKCCAnim;
-using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
 namespace nickmaltbie.OpenKCC.Character
 {

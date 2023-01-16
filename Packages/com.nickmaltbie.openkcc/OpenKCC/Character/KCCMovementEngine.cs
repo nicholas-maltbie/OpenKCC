@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nicholas Maltbie
+﻿// Copyright (C) 2022 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -231,7 +231,7 @@ namespace nickmaltbie.OpenKCC.Character
                     typeof(ApplyGravity)) is ApplyGravity :
                 false;
 
-            var moveSettings = currentState != null ?
+            MovementSettingsAttribute moveSettings = currentState != null ?
                 Attribute.GetCustomAttribute(
                     currentState,
                     typeof(MovementSettingsAttribute)) as MovementSettingsAttribute :
