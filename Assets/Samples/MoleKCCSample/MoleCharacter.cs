@@ -72,7 +72,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         private ParticleSystem CurrentTrail => diggingTrails[currentTrail];
         private ParticleSystem NextTrail
         {
-            get 
+            get
             {
                 currentTrail = (currentTrail + 1) % diggingTrails.Length;
 
@@ -80,6 +80,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 {
                     CurrentTrail.Stop();
                 }
+
                 CurrentTrail.Clear();
                 return CurrentTrail;
             }
@@ -305,6 +306,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                         Quaternion.FromToRotation(Vector3.up, (transform.position - previousPosition).normalized),
                         unityService.deltaTime);
                 }
+
                 previousPosition = transform.position;
             }
 
