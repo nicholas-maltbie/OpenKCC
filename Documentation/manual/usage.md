@@ -8,7 +8,7 @@ a character controller with a unique camera controller and collider cast.
 
 The default example in the samples has a character controller that
 uses the @nickmaltbie.OpenKCC.CameraControls.CameraController
-and a @nickmaltbie.OpenKCC.Utils.CapsuleColliderCast.
+and a @nickmaltbie.OpenKCC.Utils.ColliderCast.CapsuleColliderCast.
 
 - This creates a character with a hybrid first and third person camera
   perspective and has a capsule collider shape similar to unity's basic
@@ -48,12 +48,12 @@ a basic use case.
     character controller as well as behaviour when the character goes into
     rag doll/prone mode. This should also correspond with an attached
     collider(s) to the character.
-1. @nickmaltbie.OpenKCC.Utils.CapsuleColliderCast -
+1. @nickmaltbie.OpenKCC.Utils.ColliderCast.CapsuleColliderCast -
     This manages how the character bounces off objects and navigates the 3D
     scene. It should align with the attached collider shapes.
     As of right now, the only supported collider shape is a
     [CapsuleCollider](https://docs.unity3d.com/ScriptReference/CapsuleCollider.html)
-    via the @nickmaltbie.OpenKCC.Utils.CapsuleColliderCast
+    via the @nickmaltbie.OpenKCC.Utils.ColliderCast.CapsuleColliderCast
     but there are plans to expand this to include all primitives as well
     as composited colliders of multiple primitives together.
 1. @nickmaltbie.OpenKCC.CameraControls.ICameraControls -

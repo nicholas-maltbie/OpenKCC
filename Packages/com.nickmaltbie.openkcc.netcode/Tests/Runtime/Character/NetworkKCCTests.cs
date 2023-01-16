@@ -19,12 +19,13 @@
 using System.Collections;
 using System.Linq;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
+using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.netcode.Character;
 using nickmaltbie.OpenKCC.netcode.Utils;
-using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEditor;
@@ -173,7 +174,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
                     i =>
                     {
                         NetworkKCC networkKCC = GetAttachedNetworkBehaviour(i, i);
-                        return Vector3.Project(networkKCC.Velocity, conveyer.push.normalized).magnitude >= 1.0f;
+                        return Vector3.Project(networkKCC.GetComponent<KCCMovementEngine>().Velocity, conveyer.push.normalized).magnitude >= 1.0;
                     }));
         }
 

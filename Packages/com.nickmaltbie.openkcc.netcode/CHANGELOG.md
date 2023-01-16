@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
-## [1.1.3] 2022-1-1
+## [1.2.0] 2023-1-15
+
+* Setup basic mole character controller using the `MoleMovementEngine`
+    in the sample `MoleKCCSample`.
+* Refactored `NetworkKCC` to use the newly added `KCCMovementEngine`.
+
+## [1.1.3] 2023-1-1
 
 * Refactored code to use com.nickmaltbie.recolorshaderunity
 * Fixed code reference to IEvent for backwards compatibility.

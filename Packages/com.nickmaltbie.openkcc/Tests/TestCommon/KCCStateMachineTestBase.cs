@@ -21,7 +21,7 @@ using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Animation;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Input;
-using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEditor.Animations;
@@ -48,6 +48,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         protected JumpAction jumpAction;
         protected KCCGroundedState kccGroundedState;
         protected KCCStateMachine kccStateMachine;
+        protected KCCMovementEngine moveEngine;
 
         [SetUp]
         public override void Setup()
@@ -108,6 +109,8 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             kccStateMachine.config.moveActionReference = InputActionReference.Create(moveInputAction);
             kccStateMachine.config.sprintActionReference = InputActionReference.Create(sprintInputAction);
             kccStateMachine.Awake();
+
+            moveEngine = go.GetComponent<KCCMovementEngine>();
         }
 
         [TearDown]

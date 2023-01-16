@@ -19,7 +19,7 @@
 using System.Linq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Editor;
-using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using UnityEngine;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
@@ -154,7 +154,9 @@ namespace nickmaltbie.OpenKCC.Demo.Editor
                 movement = kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance;
             }*/
 
-            Vector3 movement = kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance;
+            Vector3 rotatedMovement = kcc.HorizPlaneView * kcc.InputMovement;
+            Vector3 projectedMovement = kcc.config.groundedState.GetProjectedMovement(rotatedMovement);
+            Vector3 movement = projectedMovement;
 
             // Get Check each step forward
             Vector3 stepOffset = movement / steps;

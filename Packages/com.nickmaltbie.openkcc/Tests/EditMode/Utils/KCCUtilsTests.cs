@@ -269,7 +269,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         [TestCaseSource(nameof(TestDirections))]
         public void Verify_KCCInvalidProjectedMomentum(Vector3 move)
         {
-            Vector3 projected = KCCUtils.GetProjectedMomentumSafe(move, Vector3.forward, Vector3.up);
+            Vector3 projected = KCCUtils.GetBouncedMomentumSafe(move, Vector3.forward, Vector3.up);
             Assert.IsTrue((move.magnitude - projected.magnitude) <= 0.001f, $"Expected projected vector to have magnitude of {move.magnitude} but instead found {projected.magnitude}");
         }
 

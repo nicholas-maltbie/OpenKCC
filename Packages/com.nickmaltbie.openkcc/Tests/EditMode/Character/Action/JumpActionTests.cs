@@ -74,6 +74,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             kccGroundedMock = new Mock<IKCCGrounded>();
 
             kccConfigMock.Setup(e => e.Up).Returns(Vector3.up);
+            kccConfigMock.Setup(e => e.Gravity).Returns(Vector3.down);
             jumpingMock.Setup(e => e.ApplyJump(It.IsAny<Vector3>()))
                 .Callback((Vector3 jump) => inputJump = jump);
             jumpAction.jumpInput = bufferedInput;

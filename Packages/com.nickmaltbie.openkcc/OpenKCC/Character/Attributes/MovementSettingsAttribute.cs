@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using System;
+using nickmaltbie.OpenKCC.Utils;
 
 namespace nickmaltbie.OpenKCC.Character.Attributes
 {
@@ -41,8 +42,21 @@ namespace nickmaltbie.OpenKCC.Character.Attributes
         public bool SnapPlayerDown = false;
 
         /// <summary>
+        /// Function to read speed value.
+        /// </summary>
+        public string SpeedConfig;
+
+        /// <summary>
         /// Function to override velocity value.
         /// </summary>
-        public string OverrideVelocityFunction = null;
+        public float Speed(object source)
+        {
+            if (!string.IsNullOrWhiteSpace(SpeedConfig))
+            {
+                return (float)source.EvaluateMember(SpeedConfig);
+            }
+
+            return 0.0f;
+        }
     }
 }

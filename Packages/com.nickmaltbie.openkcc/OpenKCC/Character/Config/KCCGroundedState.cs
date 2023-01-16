@@ -54,12 +54,12 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// <summary>
         /// Current distance the player is from the ground.
         /// </summary>
-        public float DistanceToGround { get; private set; }
+        public float DistanceToGround { get; set; }
 
         /// <summary>
         /// Was the player grounded this frame
         /// </summary>
-        public bool OnGround { get; private set; }
+        public bool OnGround { get; set; }
 
         /// <summary>
         /// Angle between the ground and the player.
@@ -69,7 +69,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// <summary>
         /// The surface normal vector of the ground the player is standing on.
         /// </summary>
-        public Vector3 SurfaceNormal { get; private set; }
+        public Vector3 SurfaceNormal { get; set; }
 
         /// <summary>
         /// The point in which the player is hitting the ground.

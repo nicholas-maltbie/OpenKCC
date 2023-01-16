@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Editor

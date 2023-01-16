@@ -26,7 +26,7 @@ namespace nickmaltbie.OpenKCC.Utils
     /// <summary>
     /// Data structure describing a bounce of the KCC when moving throughout a scene.
     /// </summary>
-    public struct KCCBounce
+    public class KCCBounce
     {
         /// <summary>
         /// Initial position before moving.
@@ -52,6 +52,11 @@ namespace nickmaltbie.OpenKCC.Utils
         /// Action that ocurred during this bounce.
         /// </summary>
         public KCCUtils.MovementAction action;
+
+        /// <summary>
+        /// Collision data associated with the bounce.
+        /// </summary>
+        public IRaycastHit hit;
 
         /// <summary>
         /// Get the movement of a vector (from initial position to final position).
@@ -266,7 +271,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="planeNormal">Plane normal that the player is bouncing off of.</param>
         /// <param name="up">Upwards direction relative to player.</param>
         /// <returns>Remaining momentum of the player.</returns>
-        public static Vector3 GetProjectedMomentumSafe(Vector3 momentum, Vector3 planeNormal, Vector3 up)
+        public static Vector3 GetBouncedMomentumSafe(Vector3 momentum, Vector3 planeNormal, Vector3 up)
         {
             Vector3 projectedMomentum = Vector3.ProjectOnPlane(momentum, planeNormal).normalized * momentum.magnitude;
 
@@ -302,7 +307,12 @@ namespace nickmaltbie.OpenKCC.Utils
             // Do a cast of the collider to see if an object is hit during this
             // movement bounce
             float distance = remainingMomentum.magnitude;
-            if (!config.ColliderCast.CastSelf(position, rotation, remainingMomentum.normalized, distance, out IRaycastHit hit))
+            if (!config.ColliderCast.CastSelf(
+                position,
+                rotation,
+                remainingMomentum.normalized,
+                distance,
+                out IRaycastHit hit))
             {
                 // If there is no hit, move to desired position
                 return new KCCBounce
@@ -311,6 +321,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     finalPosition = remainingMomentum + initialPosition,
                     initialMomentum = initialMomentum,
                     remainingMomentum = Vector3.zero,
+                    hit = hit,
                     action = MovementAction.Move,
                 };
             }
@@ -324,6 +335,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     finalPosition = initialPosition,
                     initialMomentum = initialMomentum,
                     remainingMomentum = Vector3.zero,
+                    hit = hit,
                     action = MovementAction.Invalid,
                 };
             }
@@ -357,6 +369,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     finalPosition = position,
                     initialMomentum = initialMomentum,
                     remainingMomentum = remainingMomentum,
+                    hit = hit,
                     action = MovementAction.SnapUp,
                 };
             }
@@ -375,7 +388,7 @@ namespace nickmaltbie.OpenKCC.Utils
             remainingMomentum *= Mathf.Pow(1 - normalizedAngle, config.AnglePower) * 0.9f + 0.1f;
             // Rotate the remaining remaining movement to be projected along the plane 
             // of the surface hit (emulate pushing against the object)
-            remainingMomentum = GetProjectedMomentumSafe(remainingMomentum, hit.normal, config.Up);
+            remainingMomentum = GetBouncedMomentumSafe(remainingMomentum, hit.normal, config.Up);
 
             return new KCCBounce
             {
@@ -383,6 +396,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 finalPosition = position,
                 initialMomentum = initialMomentum,
                 remainingMomentum = remainingMomentum,
+                hit = hit,
                 action = MovementAction.Bounce,
             };
         }

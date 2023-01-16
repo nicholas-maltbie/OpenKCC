@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Samples/NetcodeExample/ExampleScene.unity
     guid: 6108162bd91fd1745939e36b0e117e51
+  - enabled: 1
+    path: Assets/Samples/MoleKCCSample/MoleScene.unity
+    guid: 6b87e5282025fb24f8c1c326a1a2de5b
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: bd3a9f17edf6c454c870b081303aa6d2, type: 2}
