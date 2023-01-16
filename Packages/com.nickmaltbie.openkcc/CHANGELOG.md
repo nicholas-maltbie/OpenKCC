@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
-## [1.1.3] 2022-1-1
+## [1.2.0] 2023-1-15
+
+* Added Mole character sample.
+* Added a new `KCCMovementEngine` to manage calls to `KCCUtils` via
+    another layer of abstraction to avoid having to duplicate
+    lots of code for player movement.
+* Refactored `KCCStateMachine` to use the newly added `KCCMovementEngine`.
+
+## [1.1.3] 2023-1-1
 
 * Refactored code to use com.nickmaltbie.recolorshaderunity
 * Fixed code reference to IEvent for backwards compatibility.

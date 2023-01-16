@@ -26,7 +26,7 @@
     }
   ],
   "dependencies": {
-    "com.nickmaltbie.openkcc": "1.1.0",
+    "com.nickmaltbie.openkcc": "1.2.0",
     "com.nickmaltbie.screenmanager": "3.0.0",
     "com.nickmaltbie.statemachineunity": "1.1.4",
     "com.nickmaltbie.networkstatemachineunity": "1.0.0",

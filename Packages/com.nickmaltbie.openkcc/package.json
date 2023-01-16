@@ -26,6 +26,11 @@
       "displayName": "Simplified KCC Demo Character",
       "description": "Simplified script example of KCC Movement.",
       "path": "Samples~/SimplifiedDemoKCC"
+    },
+    {
+      "displayName": "Mole Character",
+      "description": "Example Mole Character.",
+      "path": "Samples~/MoleKCC"
     }
   ],
   "dependencies": {
