@@ -1,6 +1,6 @@
 {
-    "name": "nickmaltbie.OpenKCC.NetcodeExample",
-    "rootNamespace": "nickmaltbie.OpenKCC.NetcodeExample",
+    "name": "nickmaltbie.OpenKCC.netcode.common",
+    "rootNamespace": "nickmaltbie.OpenKCC.netcode.common",
     "references": [
         "WebSocket Transport for Netcode for GameObjects",
         "Unity.Netcode.Components",
