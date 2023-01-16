@@ -157,6 +157,11 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// </summary>
         private Transform previousParent;
 
+        /// <summary>
+        /// Position from previous frame for rotating mole.
+        /// </summary>
+        private Vector3 previousPosition;
+
         [InitialState]
         [Animation("Idle")]
         [Transition(typeof(StartMoveInput), typeof(WalkingState))]
@@ -288,13 +293,19 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 config.jumpAction.ApplyJumpIfPossible();
 
                 // Set the player's rotation to follow the floor
-                Quaternion rotation = Quaternion.identity;
                 if (config.groundedState.StandingOnGround)
                 {
-                    rotation = Quaternion.FromToRotation(Vector3.up, config.groundedState.SurfaceNormal);
+                    var rotation = Quaternion.FromToRotation(Vector3.up, config.groundedState.SurfaceNormal);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, rotation, 10 * unityService.fixedDeltaTime);
                 }
-
-                transform.rotation = Quaternion.Lerp(transform.rotation, rotation, 10 * unityService.fixedDeltaTime);
+                else
+                {
+                    transform.rotation = Quaternion.Lerp(
+                        transform.rotation,
+                        Quaternion.FromToRotation(Vector3.up, (transform.position - previousPosition).normalized),
+                        unityService.deltaTime);
+                }
+                previousPosition = transform.position;
             }
 
             GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);

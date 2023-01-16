@@ -6,7 +6,9 @@ All notable changes to this project will be documented in this file.
 
 ## [1.2.0] 2023-1-15
 
-* Refactored `KCCStateMachine` to use the newly added `KCCMovementEngine`.
+* Setup basic mole character controller using the `MoleMovementEngine`
+    in the sample `MoleKCCSample`.
+* Refactored `NetworkKCC` to use the newly added `KCCMovementEngine`.
 
 ## [1.1.3] 2023-1-1
 
