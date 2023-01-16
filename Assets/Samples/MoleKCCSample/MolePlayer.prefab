@@ -41,7 +41,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7761971533017685877}
   - component: {fileID: 7761971533017685880}
-  - component: {fileID: 7761971533017685155}
   - component: {fileID: 7761971533017685496}
   - component: {fileID: 7761971533017685163}
   - component: {fileID: 7761971533017685448}
@@ -91,19 +90,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7761971533017685155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7761971533017685566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb8881fd8d6f824459325a88b4790336, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pushPower: 4
 --- !u!114 &7761971533017685496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,14 +281,14 @@ MonoBehaviour:
         inputActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
         bufferTime: 0
         cooldown: 0.1
-      jumpVelocity: 5
+      jumpVelocity: 10
       maxJumpAngle: 90
-      jumpAngleWeightFactor: 0.95
+      jumpAngleWeightFactor: 0.5
     groundedState:
       groundedDistance: 0.05
       groundCheckDistance: 0.25
       maxWalkAngle: 90
-    gravity: {x: 0, y: -9.807, z: 0}
+    gravity: {x: 0, y: -20, z: 0}
     walkingSpeed: 7.5
     sprintSpeed: 10
     maxBounces: 5
@@ -314,7 +300,6 @@ MonoBehaviour:
     verticalSnapUp: 0.3
     snapBufferTime: 0.05
     maxDefaultLaunchVelocity: 5
-  fallingGraceTime: 0.1
 --- !u!135 &7851488135037656253
 SphereCollider:
   m_ObjectHideFlags: 0

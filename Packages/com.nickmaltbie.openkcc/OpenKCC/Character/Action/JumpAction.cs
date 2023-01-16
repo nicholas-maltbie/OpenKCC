@@ -135,8 +135,9 @@ namespace nickmaltbie.OpenKCC.Character.Action
                 JumpedWhileSliding = true;
             }
 
-            Vector3 jumpDirection = (kccGrounded.StandingOnGround ? kccGrounded.SurfaceNormal : kccConfig.Up) *
-                jumpAngleWeightFactor + kccConfig.Up * (1 - jumpAngleWeightFactor);
+            Vector3 upDir = -kccConfig.Gravity.normalized;
+            Vector3 jumpDirection = (kccGrounded.StandingOnGround ? kccGrounded.SurfaceNormal : upDir) *
+                jumpAngleWeightFactor + upDir * (1 - jumpAngleWeightFactor);
             actor.ApplyJump(jumpVelocity * jumpDirection.normalized);
             jumpInput.Reset();
         }

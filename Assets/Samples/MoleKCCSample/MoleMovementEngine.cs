@@ -23,7 +23,13 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 if (bounce.action == KCCUtils.MovementAction.Bounce)
                 {
                     // If we bounce off a wall perpendicular to the current surface
-                    if (Vector3.Dot(bounce.hit.normal, groundedState.SurfaceNormal) <= KCCUtils.Epsilon)
+                    Vector3 normal = groundedState.SurfaceNormal;
+                    if (normal == Vector3.zero)
+                    {
+                        normal = -config.Gravity.normalized;
+                    }
+
+                    if (Vector3.Dot(bounce.hit.normal, normal) <= KCCUtils.Epsilon)
                     {
                         // Rotate the remaining movement
                         bounce.remainingMomentum = Quaternion.LookRotation(bounce.hit.normal) * bounce.initialMomentum;
@@ -33,6 +39,8 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                         if (ground != null)
                         {
                             ground.SurfaceNormal = bounce.hit.normal;
+                            ground.OnGround = true;
+                            ground.DistanceToGround = KCCUtils.Epsilon;
                         }
                     }
                 }

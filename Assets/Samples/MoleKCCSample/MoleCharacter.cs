@@ -50,11 +50,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         public MoleKCCConfig config = new MoleKCCConfig();
 
         /// <summary>
-        /// Grace time before player starts falling.
-        /// </summary>
-        public float fallingGraceTime = 0.1f;
-
-        /// <summary>
         /// Time in which the player has been falling.
         /// </summary>
         public float FallingTime { get; private set; }
@@ -104,7 +99,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <summary>
         /// Movement engine for controlling the kinematic character controller.
         /// </summary>
-        protected KCCMovementEngine movementEngine;
+        protected MoleMovementEngine movementEngine;
 
         /// <summary>
         /// Velocity of the player from the previous frame.
@@ -175,7 +170,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
             GetComponent<Rigidbody>().isKinematic = true;
 
-            movementEngine = GetComponent<KCCMovementEngine>();
+            movementEngine = GetComponent<MoleMovementEngine>();
             _cameraControls = GetComponent<ICameraControls>();
             config._characterPush = GetComponent<ICharacterPush>();
             config._colliderCast = GetComponent<IColliderCast>();
@@ -240,7 +235,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                     rotation = Quaternion.FromToRotation(Vector3.up, config.groundedState.SurfaceNormal);
                 }
 
-                transform.rotation = Quaternion.Lerp(transform.rotation, rotation, 20 * unityService.fixedDeltaTime);
+                transform.rotation = Quaternion.Lerp(transform.rotation, rotation, 10 * unityService.fixedDeltaTime);
             }
 
             GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);

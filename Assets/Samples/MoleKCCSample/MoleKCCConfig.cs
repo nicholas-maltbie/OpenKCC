@@ -198,7 +198,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         {
             get
             {
-                if (groundedState.StandingOnGround)
+                if (groundedState.SurfaceNormal != Vector3.zero)
                 {
                     return groundedState.SurfaceNormal;
                 }

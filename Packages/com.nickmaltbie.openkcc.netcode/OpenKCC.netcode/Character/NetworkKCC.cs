@@ -48,12 +48,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// </summary>
         [SerializeField]
         public HumanoidKCCConfig config = new HumanoidKCCConfig();
-
-        /// <summary>
-        /// Grace time before player starts falling.
-        /// </summary>
-        public float fallingGraceTime = 0.1f;
-
         /// <summary>
         /// Time in which the player has been falling.
         /// </summary>
