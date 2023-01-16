@@ -20,7 +20,6 @@ using System;
 using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Utils;
-using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character
@@ -31,49 +30,48 @@ namespace nickmaltbie.OpenKCC.Character
     /// for a basic character controller.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    [DefaultExecutionOrder(2000)]
-    public class KCCMovementEngine : MonoBehaviour
+    [RequireComponent(typeof(IGetKCCConfig))]
+    [RequireComponent(typeof(IGetKCCGrounded))]
+    public class KCCMovementEngine : MonoBehaviour, IJumping
     {
-        /// <summary>
-        /// Unity service for managing static values.
-        /// </summary>
-        public IUnityService unityService = UnityService.Instance;
+        private IKCCConfig _config;
+        private IKCCGrounded _grounded;
 
         /// <summary>
         /// KCC Configuration for managing the kcc state machine.
         /// </summary>
-        IKCCConfig config;
+        public IKCCConfig config => _config ??= GetComponent<IGetKCCConfig>().kccConfig;
 
         /// <summary>
         /// KCC Grounded state for the movement engine.
         /// </summary>
-        IKCCGrounded groundedState;
+        public IKCCGrounded groundedState => _grounded ??= GetComponent<IGetKCCGrounded>().kccGrounded;
 
         /// <summary>
         /// Position of the player previous frame.
         /// </summary>
-        private Vector3 previousPosition;
+        protected Vector3 previousPosition;
 
         /// <summary>
         /// Velocity of the player from the previous frame.
         /// </summary>
-        private Vector3 previousVelocity;
+        protected Vector3 previousVelocity;
 
         /// <summary>
         /// Relative parent configuration for following the ground.
         /// </summary>
-        private RelativeParentConfig relativeParentConfig;
+        protected RelativeParentConfig relativeParentConfig;
 
         /// <summary>
         /// Velocity fo the player from the previous frame.
         /// </summary>
         /// <value></value>
-        Vector3 Velocity { get; set; }
+        public Vector3 Velocity { get; protected set; }
 
         /// <summary>
         /// Time in which the player has been falling.
         /// </summary>
-        public float FallingTime { get; private set; }
+        public float FallingTime { get; protected set; }
 
         /// <summary>
         /// Apply movement of a player based on current state.
@@ -311,6 +309,24 @@ namespace nickmaltbie.OpenKCC.Character
             transform.position += relativeParentConfig.UpdateMovingGround(transform.position, groundedState, delta, deltaTime);
             relativeParentConfig.FollowGround(transform);
             previousPosition = transform.position;
+        }
+
+        /// <summary>
+        /// Teleport player to a given position.
+        /// </summary>
+        /// <param name="position">Position to teleport player to.</param>
+        public void TeleportPlayer(Vector3 position)
+        {
+            relativeParentConfig.Reset();
+            transform.position = position;
+        }
+
+        /// <inheritdoc/>
+        public void ApplyJump(Vector3 velocity)
+        {
+            Vector3 groundVel = KCCUtils.GetGroundVelocity(groundedState, config, previousVelocity);
+            Velocity = velocity + groundVel;
+            relativeParentConfig.Reset();
         }
     }
 }

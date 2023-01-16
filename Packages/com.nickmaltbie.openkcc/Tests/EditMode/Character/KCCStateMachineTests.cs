@@ -196,7 +196,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             Assert.AreEqual(typeof(KCCStateMachine.IdleState), kccStateMachine.CurrentState);
             kccStateMachine.ApplyJump(Vector3.up * strength);
-            TestUtils.AssertInBounds(kccStateMachine.Velocity, Vector3.up * strength);
+            TestUtils.AssertInBounds(moveEngine.Velocity, Vector3.up * strength);
             Assert.AreEqual(typeof(KCCStateMachine.JumpState), kccStateMachine.CurrentState);
         }
 

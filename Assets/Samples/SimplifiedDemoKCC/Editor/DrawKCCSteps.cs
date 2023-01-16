@@ -154,7 +154,9 @@ namespace nickmaltbie.OpenKCC.Demo.Editor
                 movement = kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance;
             }*/
 
-            Vector3 movement = kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance;
+            Vector3 rotatedMovement = kcc.HorizPlaneView * kcc.InputMovement;
+            Vector3 projectedMovement = kcc.config.groundedState.GetProjectedMovement(rotatedMovement);
+            Vector3 movement = projectedMovement;
 
             // Get Check each step forward
             Vector3 stepOffset = movement / steps;

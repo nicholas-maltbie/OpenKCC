@@ -142,9 +142,12 @@ namespace nickmaltbie.OpenKCC.Demo.Editor
                 colliderCast = GetComponent<IColliderCast>();
             }
 
+            Vector3 rotatedMovement = kcc.HorizPlaneView * kcc.InputMovement;
+            Vector3 projectedMovement = kcc.config.groundedState.GetProjectedMovement(rotatedMovement);
+
             Vector3 movement = useProjectedMovement ?
-                kcc.GetProjectedMovement(Vector3.forward).normalized * movementDistance
-                : kcc.RotatedMovement(Vector3.forward).normalized * movementDistance;
+                projectedMovement * movementDistance :
+                rotatedMovement * movementDistance;
 
             // Get the bounces the player's movement would make
             var bounces = new List<KCCBounce>(
