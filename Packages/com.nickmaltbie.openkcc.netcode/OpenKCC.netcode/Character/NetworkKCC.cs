@@ -75,11 +75,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public Vector3 RotatedMovement(Vector3 inputMovement) => HorizPlaneView * inputMovement;
 
         /// <summary>
-        /// Player velocity in world space.
-        /// </summary>
-        public Vector3 Velocity { get; private set; }
-
-        /// <summary>
         /// Input movement from player input updated each frame.
         /// </summary>
         public Vector3 InputMovement { get; private set; }
@@ -91,19 +86,9 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public IKCCGrounded kccGrounded => config.groundedState;
 
         /// <summary>
-        /// Position of the platform player is standing on.
-        /// </summary>
-        private Vector3 previousPosition;
-
-        /// <summary>
         /// Movement engine for controlling the kinematic character controller.
         /// </summary>
         protected KCCMovementEngine movementEngine;
-
-        /// <summary>
-        /// Velocity of the player from the previous frame.
-        /// </summary>
-        private Vector3 previousVelocity;
 
         /// <summary>
         /// Animation movement for the player
@@ -196,7 +181,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// </summary>
         public void UpdateGroundedState()
         {
-            var upwardVelocity = Vector3.Project(Velocity, config.Up);
+            var upwardVelocity = Vector3.Project(movementEngine.Velocity, config.Up);
             bool movingUp = Vector3.Dot(upwardVelocity, config.Up) > 0;
 
             if (config.groundedState.Falling)
@@ -213,6 +198,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
         }
 
+        public void Awake()
+        {
+            movementEngine = GetComponent<KCCMovementEngine>();
+        }
+
         /// <summary>
         /// Configure kcc state machine operations.
         /// </summary>
@@ -221,8 +211,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             base.Start();
 
             GetComponent<Rigidbody>().isKinematic = true;
-
-            movementEngine = GetComponent<KCCMovementEngine>();
             _cameraControls = GetComponent<ICameraControls>();
             config._characterPush = GetComponent<ICharacterPush>();
             config._colliderCast = GetComponent<IColliderCast>();
