@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 6287251619445628944}
   - component: {fileID: 927829132273873527}
   - component: {fileID: 3057974211939587652}
+  - component: {fileID: 1755217166684006379}
   m_Layer: 0
   m_Name: NetworkPlayer
   m_TagString: Untagged
@@ -257,8 +258,8 @@ MonoBehaviour:
       groundCheckDistance: 0.25
       maxWalkAngle: 60
     gravity: {x: 0, y: -20, z: 0}
-    walkingSpeed: 4.5
-    sprintSpeed: 6.5
+    walkingSpeed: 6.5
+    sprintSpeed: 8.5
     maxBounces: 5
     pushDecay: 0.9
     anglePower: 0.5
@@ -342,6 +343,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   smoothRate: 20
+--- !u!114 &1755217166684006379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928389238801210305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958f6019d666515419c7bf4b6a76110a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3423680949552840105
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -128,7 +128,6 @@ namespace nickmaltbie.OpenKCC.Character
             return delta;
         }
 
-        
         /// <summary>
         /// Snap the player down onto the ground
         /// </summary>

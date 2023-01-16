@@ -258,7 +258,7 @@ namespace nickmaltbie.OpenKCC.Character
             var moveSettings = Attribute.GetCustomAttribute(
                 CurrentState,
                 typeof(MovementSettingsAttribute)) as MovementSettingsAttribute;
-            
+
             float speed = moveSettings?.Speed(config) ?? config.walkingSpeed;
             Vector3 scaledMovement = projectedMovement * speed;
             return scaledMovement;
