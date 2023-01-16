@@ -25,19 +25,21 @@ using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
 using nickmaltbie.OpenKCC.netcode.Utils;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
 using nickmaltbie.StateMachineUnity.Event;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.MoleSample
+namespace nickmaltbie.OpenKCC.MoleKCCSample
 {
     /// <summary>
     /// Have a character controller push any dynamic rigidbody it hits
     /// </summary>
-    [RequireComponent(typeof(KCCMovementEngine))]
+    [RequireComponent(typeof(MoleMovementEngine))]
     [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(SphereColliderCast))]
     [DefaultExecutionOrder(1000)]
     public class MoleCharacter : NetworkSMAnim, IJumping, IGetKCCConfig, IGetKCCGrounded
     {
@@ -207,14 +209,15 @@ namespace nickmaltbie.OpenKCC.MoleSample
         /// ground.</returns>
         public Vector3 GetDesiredVelocity()
         {
-            Vector3 rotatedMovement = Quaternion.FromToRotation(Vector3.up, config.Up) * InputMovement;
+            Quaternion moveDir = transform.rotation;
+            Vector3 rotatedMovement = moveDir * (HorizPlaneView * InputMovement);
 
             var moveSettings = Attribute.GetCustomAttribute(
                 CurrentState,
                 typeof(MovementSettingsAttribute)) as MovementSettingsAttribute;
 
             float speed = moveSettings?.Speed(config) ?? config.walkingSpeed;
-            Vector3 scaledMovement = HorizPlaneView * rotatedMovement * speed;
+            Vector3 scaledMovement = rotatedMovement * speed;
             return scaledMovement;
         }
 
@@ -237,20 +240,11 @@ namespace nickmaltbie.OpenKCC.MoleSample
                     rotation = Quaternion.FromToRotation(Vector3.up, config.groundedState.SurfaceNormal);
                 }
 
-                transform.rotation = rotation;
+                transform.rotation = Quaternion.Lerp(transform.rotation, rotation, 20 * unityService.fixedDeltaTime);
             }
 
             GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
             base.FixedUpdate();
-        }
-
-        /// <summary>
-        /// Teleport player to a given position.
-        /// </summary>
-        /// <param name="position">Position to teleport player to.</param>
-        public void TeleportPlayer(Vector3 position)
-        {
-            movementEngine.TeleportPlayer(position);
         }
 
         /// <inheritdoc/>

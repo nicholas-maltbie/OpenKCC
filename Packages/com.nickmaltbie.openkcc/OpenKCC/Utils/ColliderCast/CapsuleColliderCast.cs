@@ -20,13 +20,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Utils
+namespace nickmaltbie.OpenKCC.Utils.ColliderCast
 {
     /// <summary>
     /// ColliderCast behaviour intended to work with any capsule collider shape.
     /// </summary>
     [RequireComponent(typeof(CapsuleCollider))]
-    public class CapsuleColliderCast : MonoBehaviour, IColliderCast
+    public class CapsuleColliderCast : AbstractPrimitiveColliderCast
     {
         /// <summary>
         /// Mesh of capsule for debug drawing.
@@ -49,6 +49,9 @@ namespace nickmaltbie.OpenKCC.Utils
         internal Mesh DebugCapsuleMesh => _debugCapsuleMesh ??=
             CapsuleMaker.CapsuleData(radius: CapsuleCollider.radius, depth: CapsuleCollider.height - CapsuleCollider.radius * 2);
 
+        /// <inheritdoc/>
+        public override Collider Collider => CapsuleCollider;
+
         /// <summary>
         /// Gets transformed parameters describing this capsule collider for a given position and rotation
         /// </summary>
@@ -69,7 +72,7 @@ namespace nickmaltbie.OpenKCC.Utils
         }
 
         /// <inheritdoc/>
-        public IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation)
+        public override IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation)
         {
             (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation);
             return Physics
@@ -78,7 +81,7 @@ namespace nickmaltbie.OpenKCC.Utils
         }
 
         /// <inheritdoc/>
-        public IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance)
+        public override IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance)
         {
             (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation, -KCCUtils.Epsilon);
             return Physics.CapsuleCastAll(top, bottom, radius, direction, distance, ~0, QueryTriggerInteraction.Ignore)
@@ -86,66 +89,10 @@ namespace nickmaltbie.OpenKCC.Utils
         }
 
         /// <inheritdoc/>
-        public bool CastSelf(
-            Vector3 position,
-            Quaternion rotation,
-            Vector3 direction,
-            float distance,
-            out IRaycastHit hit)
-        {
-            var closest = new RaycastHit() { distance = Mathf.Infinity };
-            bool hitSomething = false;
-            foreach (RaycastHit objHit in GetHits(position, rotation, direction, distance))
-            {
-                if (objHit.collider.gameObject.transform != gameObject.transform)
-                {
-                    if (objHit.distance < closest.distance)
-                    {
-                        closest = objHit;
-                    }
-
-                    hitSomething = true;
-                }
-            }
-
-            hit = new RaycastHitWrapper(closest);
-            return hitSomething;
-        }
-
-        /// <inheritdoc/>
-        public Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance)
-        {
-            Vector3 pushed = Vector3.zero;
-            foreach (Collider overlap in GetOverlapping(position, rotation))
-            {
-                Physics.ComputePenetration(
-                    CapsuleCollider, position, rotation,
-                    overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
-                    out Vector3 direction, out float distance
-                );
-
-                float distPush = Mathf.Min(maxDistance, distance + KCCUtils.Epsilon);
-                Vector3 push = direction.normalized * distPush;
-                position += push;
-                pushed += push;
-            }
-
-            return pushed;
-        }
-
-        /// <inheritdoc/>
-        public Vector3 GetBottom(Vector3 position, Quaternion rotation)
+        public override Vector3 GetBottom(Vector3 position, Quaternion rotation)
         {
             (_, Vector3 bottom, float radius, _) = GetParams(position, rotation);
             return bottom + radius * (rotation * Vector3.down);
-        }
-
-        /// <inheritdoc/>
-        public bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit)
-        {
-            bool didHit = Physics.Raycast(new Ray(source, direction), out RaycastHit hit, distance);
-            stepHit = new RaycastHitWrapper(hit);
-            return didHit;
         }
     }
 }

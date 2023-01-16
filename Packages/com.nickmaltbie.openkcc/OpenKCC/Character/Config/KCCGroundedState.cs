@@ -69,7 +69,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// <summary>
         /// The surface normal vector of the ground the player is standing on.
         /// </summary>
-        public Vector3 SurfaceNormal { get; private set; }
+        public Vector3 SurfaceNormal { get; set; }
 
         /// <summary>
         /// The point in which the player is hitting the ground.

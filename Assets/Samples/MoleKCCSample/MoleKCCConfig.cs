@@ -25,7 +25,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-namespace nickmaltbie.OpenKCC.MoleSample
+namespace nickmaltbie.OpenKCC.MoleKCCSample
 {
     [Serializable]
     public class MoleKCCConfig : IKCCConfig
@@ -115,17 +115,6 @@ namespace nickmaltbie.OpenKCC.MoleSample
         public float pushDecay = 0.9f;
 
         /// <summary>
-        /// Decrease in momentum factor due to angle change when walking.
-        /// Should be a positive float value. It's an exponential applied to 
-        /// values between [0, 1] so values smaller than 1 create a positive
-        /// curve and grater than 1 for a negative curve.
-        /// </summary>
-        [Tooltip("Decrease in momentum when walking into objects (such as walls) at an angle as an exponential." +
-        "Values between [0, 1] so values smaller than 1 create a positive curve and grater than 1 for a negative curve")]
-        [SerializeField]
-        public float anglePower = 0.5f;
-
-        /// <summary>
         /// Maximum distance the player can be pushed out of overlapping objects in units per second.
         /// </summary>
         [Tooltip("Maximum distance a player can be pushed when overlapping other objects in units per second")]
@@ -199,10 +188,10 @@ namespace nickmaltbie.OpenKCC.MoleSample
         public float MaxDefaultLaunchVelocity => maxDefaultLaunchVelocity;
 
         /// <inheritdoc/>
-        public float AnglePower => anglePower;
+        public float AnglePower => 0;
 
         /// <inheritdoc/>
-        public bool CanSnapUp => !groundedState.Falling;
+        public bool CanSnapUp => true;
 
         /// <inheritdoc/>
         public Vector3 Up

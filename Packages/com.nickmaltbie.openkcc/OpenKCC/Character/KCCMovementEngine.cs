@@ -94,7 +94,7 @@ namespace nickmaltbie.OpenKCC.Character
             // Move the player if they are allowed to walk
             if (moveSettings?.AllowWalk ?? false)
             {
-                Vector3 moveDelta = GetMovement(position, move, rotation, config);
+                Vector3 moveDelta = GetMovement(position, move, rotation);
                 delta += moveDelta;
                 position += moveDelta;
             }
@@ -117,7 +117,7 @@ namespace nickmaltbie.OpenKCC.Character
             // Apply velocity if allowed to move via velocity
             if (moveSettings?.AllowVelocity ?? false)
             {
-                Vector3 velDelta = GetMovement(position, Velocity * deltaTime, rotation, config);
+                Vector3 velDelta = GetMovement(position, Velocity * deltaTime, rotation);
                 delta += velDelta;
             }
             else
@@ -190,11 +190,10 @@ namespace nickmaltbie.OpenKCC.Character
         /// <param name="rotation">Rotation of the player during movement.</param>
         /// <param name="config">Configuration settings for player movement.</param>
         /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
-        public static Vector3 GetMovement(
+        public virtual Vector3 GetMovement(
             Vector3 position,
             Vector3 movement,
-            Quaternion rotation,
-            IKCCConfig config)
+            Quaternion rotation)
         {
             Vector3 finalPos = position;
             foreach (KCCBounce bounce in KCCUtils.GetBounces(position, movement, rotation, config))

@@ -28,9 +28,9 @@
       "path": "Samples~/SimplifiedDemoKCC"
     },
     {
-      "displayName": "Mole Character",
-      "description": "Example Mole Character.",
-      "path": "Samples~/MoleKCC"
+      "displayName": "Mole KCC Sample Character",
+      "description": "Example Mole Character with movement along any axis.",
+      "path": "Samples~/MoleKCCSample"
     }
   ],
   "dependencies": {
