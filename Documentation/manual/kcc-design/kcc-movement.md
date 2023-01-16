@@ -93,7 +93,7 @@ Unity has a function to determine if a capsule would collide with any object
 in the scene when moving it a given direction. Using this function, we can
 check what the play would hit and stop them before they hit that object.
 
-The specific example of [CapsuleColliderCast](xref:nickmaltbie.OpenKCC.Utils.CapsuleColliderCast)
+The specific example of [CapsuleColliderCast](xref:nickmaltbie.OpenKCC.Utils.ColliderCast.CapsuleColliderCast)
 represents an implementation of the `IColliderCast` for a capsule shaped object.
 
 ## Bouncing and Sliding
