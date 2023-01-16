@@ -34,6 +34,13 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.MoleKCCSample
 {
+    public class AvatarOffsetAttribute : Attribute
+    {
+        public string OffsetValue;
+    }
+
+    public class DiggingParticlesEnabled : Attribute { }
+
     /// <summary>
     /// Have a character controller push any dynamic rigidbody it hits
     /// </summary>
@@ -43,6 +50,17 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
     [DefaultExecutionOrder(1000)]
     public class MoleCharacter : NetworkSMAnim, IJumping, IGetKCCConfig, IGetKCCGrounded
     {
+        [SerializeField]
+        public ParticleSystem diggingParticles;
+
+        [SerializeField]
+        public ParticleSystem trailParticles;
+
+        [SerializeField]
+        public Vector3 avatarDiggingOffset = new Vector3(0, -0.5f, 0);
+
+        private Vector3 defaultOffset;
+
         /// <summary>
         /// Values for configuring and managing KCC Config.
         /// </summary>
@@ -67,7 +85,14 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <summary>
         /// Rotation of the plane the player is viewing
         /// </summary>
-        private Quaternion HorizPlaneView => Quaternion.Euler(0, CameraControls?.Yaw ?? transform.eulerAngles.y, 0);
+        private Quaternion HorizPlaneView
+        {
+            get
+            {
+                float rotation = CameraControls?.Yaw ?? transform.eulerAngles.y;
+                return Quaternion.Euler(0, rotation, 0);
+            }
+        }
 
         /// <summary>
         /// Player rotated movement that they intend to move.
@@ -92,26 +117,9 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         public IKCCGrounded kccGrounded => config.groundedState;
 
         /// <summary>
-        /// Position of the platform player is standing on.
-        /// </summary>
-        private Vector3 previousPosition;
-
-        /// <summary>
         /// Movement engine for controlling the kinematic character controller.
         /// </summary>
         protected MoleMovementEngine movementEngine;
-
-        /// <summary>
-        /// Velocity of the player from the previous frame.
-        /// </summary>
-        private Vector3 previousVelocity;
-
-        /// <summary>
-        /// Animation movement for the player
-        /// </summary>
-        private NetworkVariable<Vector2> animationMove = new NetworkVariable<Vector2>(
-            readPerm: NetworkVariableReadPermission.Everyone,
-            writePerm: NetworkVariableWritePermission.Owner);
 
         /// <summary>
         /// Relative parent configuration for following the ground.
@@ -119,24 +127,30 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         private RelativeParentConfig relativeParentConfig;
 
         [InitialState]
+        [Animation("Idle")]
         [Transition(typeof(StartMoveInput), typeof(WalkingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [MovementSettings(AllowVelocity = false, AllowWalk = false, SnapPlayerDown = true)]
         public class IdleState : State { }
 
+        [Animation("Jumping")]
         [ApplyGravity]
         [TransitionOnAnimationComplete(typeof(FallingState), 0.15f, true)]
         [Transition(typeof(GroundedEvent), typeof(IdleState))]
         [MovementSettings(AllowVelocity = true, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
         public class JumpState : State { }
 
+        [Animation("Digging")]
+        [DiggingParticlesEnabled]
+        [AvatarOffsetAttribute(OffsetValue=nameof(avatarDiggingOffset))]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true, SpeedConfig = nameof(config.walkingSpeed))]
         public class WalkingState : State { }
 
+        [Animation("Walking")]
         [ApplyGravity]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(GroundedEvent), typeof(IdleState))]
@@ -148,14 +162,11 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// </summary>
         public void UpdateGroundedState()
         {
-            var upwardVelocity = Vector3.Project(Velocity, config.Up);
-            bool movingUp = Vector3.Dot(upwardVelocity, config.Up) > 0;
-
             if (config.groundedState.Falling)
             {
                 RaiseEvent(LeaveGroundEvent.Instance);
             }
-            else if (config.groundedState.StandingOnGround && !movingUp)
+            else if (config.groundedState.StandingOnGround)
             {
                 RaiseEvent(GroundedEvent.Instance);
             }
@@ -168,6 +179,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         {
             base.Start();
 
+            defaultOffset = AttachedAnimator.transform.localPosition;
             GetComponent<Rigidbody>().isKinematic = true;
 
             movementEngine = GetComponent<MoleMovementEngine>();
@@ -204,7 +216,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// ground.</returns>
         public Vector3 GetDesiredVelocity()
         {
-            Quaternion moveDir = transform.rotation;
+            var moveDir = Quaternion.FromToRotation(Vector3.up, kccConfig.Up);
             Vector3 rotatedMovement = moveDir * (HorizPlaneView * InputMovement);
 
             var moveSettings = Attribute.GetCustomAttribute(
@@ -250,8 +262,45 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 ReadPlayerMovement();
             }
 
-            AttachedAnimator.SetFloat("MoveX", animationMove.Value.x);
-            AttachedAnimator.SetFloat("MoveY", animationMove.Value.y);
+            bool particlesEnabled = Attribute.GetCustomAttribute(CurrentState, typeof(DiggingParticlesEnabled)) != null;
+
+            if (particlesEnabled)
+            {
+                ParticleSystem.MainModule particleSettings = trailParticles.main;
+                if (relativeParentConfig.previousParent == null)
+                {
+                    particleSettings.simulationSpace = ParticleSystemSimulationSpace.World;
+                }
+                else
+                {
+                    particleSettings.simulationSpace = ParticleSystemSimulationSpace.Custom;
+                    particleSettings.customSimulationSpace = relativeParentConfig.previousParent;
+                }
+            }
+
+            if (particlesEnabled != diggingParticles.isPlaying)
+            {
+                if (particlesEnabled)
+                {
+                    diggingParticles.Play();
+                    trailParticles.Play();
+                }
+                else
+                {
+                    diggingParticles.Stop();
+                    diggingParticles.Clear();
+                    trailParticles.Stop();
+                }
+            }
+
+            if (Attribute.GetCustomAttribute(CurrentState, typeof(AvatarOffsetAttribute)) is AvatarOffsetAttribute avatarOffset)
+            {
+                AttachedAnimator.transform.localPosition = (Vector3) this.EvaluateMember(avatarOffset.OffsetValue);
+            }
+            else
+            {
+                AttachedAnimator.transform.localPosition = defaultOffset;
+            }
 
             base.Update();
         }
@@ -275,12 +324,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             Vector2 moveVector = denyMovement ? Vector2.zero : config.MoveAction?.ReadValue<Vector2>() ?? Vector2.zero;
             InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
             config.jumpAction.Update();
-
-            float moveX = AttachedAnimator.GetFloat("MoveX");
-            float moveY = AttachedAnimator.GetFloat("MoveY");
-            moveX = Mathf.Lerp(moveX, moveVector.x, 4 * unityService.deltaTime);
-            moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
-            animationMove.Value = new Vector2(moveX, moveY);
 
             bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
             IEvent moveEvent = moving ? StartMoveInput.Instance as IEvent : StopMoveInput.Instance as IEvent;
