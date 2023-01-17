@@ -30,6 +30,7 @@ using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
 using nickmaltbie.StateMachineUnity.Event;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.MoleKCCSample
@@ -85,6 +86,11 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 return CurrentTrail;
             }
         }
+
+        private NetworkVariable<Vector3> relativeUp = new NetworkVariable<Vector3>(
+            Vector3.up,
+            readPerm: NetworkVariableReadPermission.Everyone,
+            writePerm: NetworkVariableWritePermission.Owner);
 
         private Vector3 defaultOffset;
 
@@ -211,9 +217,9 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
         public void Awake()
         {
-            burrowParticles = GameObject.Instantiate(burrowParticlePrefab, transform);
+            burrowParticles = Instantiate(burrowParticlePrefab, transform);
             diggingTrails = Enumerable.Range(0, maxDiggingTrails)
-                .Select(_ => GameObject.Instantiate(diggingTrailParticlePrefab, transform))
+                .Select(_ => Instantiate(diggingTrailParticlePrefab, transform))
                 .ToArray();
 
             burrowParticles.transform.localPosition = particleOffset;
@@ -292,23 +298,25 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                     CurrentState);
                 UpdateGroundedState();
                 config.jumpAction.ApplyJumpIfPossible();
-
-                // Set the player's rotation to follow the floor
-                if (config.groundedState.StandingOnGround)
-                {
-                    var rotation = Quaternion.FromToRotation(Vector3.up, config.groundedState.SurfaceNormal);
-                    transform.rotation = Quaternion.Lerp(transform.rotation, rotation, 10 * unityService.fixedDeltaTime);
-                }
-                else
-                {
-                    transform.rotation = Quaternion.Lerp(
-                        transform.rotation,
-                        Quaternion.FromToRotation(Vector3.up, (transform.position - previousPosition).normalized),
-                        unityService.deltaTime);
-                }
-
-                previousPosition = transform.position;
+                relativeUp.Value = config.Up;
             }
+
+            if (config.groundedState.StandingOnGround)
+            {
+                // Set the player's rotation to follow the ground
+                var rotation = Quaternion.FromToRotation(Vector3.up, relativeUp.Value);
+                transform.rotation = Quaternion.Lerp(transform.rotation, rotation, 10 * unityService.deltaTime);
+            }
+            else
+            {
+                // or Velocity if not grounded
+                transform.rotation = Quaternion.Lerp(
+                    transform.rotation,
+                    Quaternion.FromToRotation(Vector3.up, (transform.position - previousPosition).normalized),
+                    10 * unityService.deltaTime);
+            }
+
+            previousPosition = transform.position;
 
             GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
             base.FixedUpdate();
@@ -326,14 +334,27 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
             if (particlesEnabled)
             {
-                Transform currentParent = config.groundedState.Floor.transform;
-                if (config.groundedState.StandingOnGround && previousParent != currentParent)
+                if (!IsOwner)
+                {
+                    config.groundedState.SurfaceNormal = relativeUp.Value;
+                    config.groundedState.CheckGrounded(config, transform.position, transform.rotation);
+                }
+
+                Transform currentParent = config.groundedState.Floor?.transform;
+
+                if (currentParent == null)
+                {
+                    CurrentTrail.Stop();
+                    ParticleSystem.MainModule trailParticles = NextTrail.main;
+                    trailParticles.simulationSpace = ParticleSystemSimulationSpace.World;
+                    trailParticles.customSimulationSpace = null;
+                }
+                else if (config.groundedState.StandingOnGround && previousParent != currentParent)
                 {
                     CurrentTrail.Stop();
                     ParticleSystem.MainModule trailParticles = NextTrail.main;
                     trailParticles.simulationSpace = ParticleSystemSimulationSpace.Custom;
                     trailParticles.customSimulationSpace = currentParent;
-                    CurrentTrail.Play();
                 }
 
                 if (!CurrentTrail.isPlaying)
