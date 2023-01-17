@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+
+## [1.2.1] 2023-1-15
+
+* Removed rotation synchronization from the network relative transform.
+    Will overhaul the class in the future.
+* Small fixes to mole multiplayer synchronization and tails.
+
 ## [1.2.0] 2023-1-15
 
 * Setup basic mole character controller using the `MoleMovementEngine`

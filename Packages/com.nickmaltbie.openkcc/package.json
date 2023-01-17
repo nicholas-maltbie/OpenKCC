@@ -1,7 +1,7 @@
 {
   "name": "com.nickmaltbie.openkcc",
   "displayName": "Open KCC",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "unity": "2021.1",
   "unityRelease": "19f1",
   "description": "Open Source Kinematic Character Controller project.",
