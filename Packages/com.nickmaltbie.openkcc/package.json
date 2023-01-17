@@ -1,7 +1,7 @@
 {
   "name": "com.nickmaltbie.openkcc",
   "displayName": "Open KCC",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "unity": "2021.1",
   "unityRelease": "19f1",
   "description": "Open Source Kinematic Character Controller project.",
@@ -26,11 +26,6 @@
       "displayName": "Simplified KCC Demo Character",
       "description": "Simplified script example of KCC Movement.",
       "path": "Samples~/SimplifiedDemoKCC"
-    },
-    {
-      "displayName": "Mole KCC Sample Character",
-      "description": "Example Mole Character with movement along any axis.",
-      "path": "Samples~/MoleKCCSample"
     }
   ],
   "dependencies": {
