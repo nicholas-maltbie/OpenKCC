@@ -87,6 +87,21 @@ The samples in the project include:
 
 * ExampleFirstPersonKCC - Example first person character controller with a basic
   test scene.
+* Mole KCC Sample Character - Example mole character controller for moving
+  around and climbing on objects.
+
+Required packages for samples that are not
+already included in the project:
+
+```json
+dependencies:
+{
+  "com.community.netcode.transport.websocket": "git+https://github.com/Unity-Technologies/multiplayer-community-contributions?path=/Transports/com.community.netcode.transport.websocket",
+  "com.unity.probuilder": "5.0.6",
+  "com.unity.render-pipelines.universal": "12.1.7",
+  "com.nickmaltbie.recolorshaderunity": "1.0.0"
+}
+```
 
 ## Documentation
 

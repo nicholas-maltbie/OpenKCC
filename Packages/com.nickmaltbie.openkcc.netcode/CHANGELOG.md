@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.2.2] 2023-1-15
+
+* Corrected some issues with samples path for export.
 
 ## [1.2.1] 2023-1-15
 

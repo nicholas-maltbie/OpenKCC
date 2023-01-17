@@ -23,7 +23,7 @@ and is automatically deployed with each update to the codebase.
 
 ## Installation
 
-Make sure to add the required dependcies to your project
+Make sure to add the required dependencies to your project
 
 * [com.unity.inputsystem](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.3/manual/index.html)
   version 1.0.0 or newer
@@ -164,6 +164,26 @@ It contains some useful utility classes in addition to the sample.
 The sample is hosted online at [https://nickmaltbie.com/OpenKCC/Netcode/](https://nickmaltbie.com/OpenKCC/Netcode/)
 but you will need to host a server on a windows/linux/mac machine as the
 WebGL build for unity does not support opening a server socket within WebGL.
+
+Required packages for samples that are not
+already included in the project:
+
+```json
+dependencies:
+{
+  "com.community.netcode.transport.websocket": "git+https://github.com/Unity-Technologies/multiplayer-community-contributions?path=/Transports/com.community.netcode.transport.websocket",
+  "com.unity.probuilder": "5.0.6",
+  "com.unity.render-pipelines.universal": "12.1.7",
+  "com.nickmaltbie.recolorshaderunity": "1.0.0"
+}
+```
+
+The samples in the project include:
+
+* ExampleFirstPersonKCC - Example first person character controller with a basic
+  test scene.
+* Mole KCC Sample Character - Example mole character controller for moving
+  around and climbing on objects.
 
 ## Documentation
 
