@@ -29,7 +29,6 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
         public NetworkObjectReference parentTransform;
         public Vector3 relativePosition;
         public Vector3 worldPos;
-        public Quaternion rotation;
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
@@ -37,7 +36,6 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
             serializer.SerializeValue(ref parentTransform);
             serializer.SerializeValue(ref relativePosition);
             serializer.SerializeValue(ref worldPos);
-            serializer.SerializeValue(ref rotation);
         }
     }
 }

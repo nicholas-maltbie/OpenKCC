@@ -61,6 +61,14 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     };
 
     /// <summary>
+    /// Gets the list of scenes to use in the mole sample build.
+    /// </summary>
+    public static string[] MoleSampleGameScenes => new[]
+    {
+        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "MoleKCCSample", "MoleScene.unity")
+    };
+
+    /// <summary>
     /// Gets the list of scenes to use in the netcode build.
     /// </summary>
     public static string[] NetcodeGameScenes => new[]
@@ -242,6 +250,30 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
 
         // Build player.
         BuildPipeline.BuildPlayer(GameScenes, path + $"/{AppName}.x86_64", BuildTarget.StandaloneLinux64, BuildOptions.Development);
+    }
+
+    /// <summary>
+    /// Create a build for Mole Sample with windows 64 version and IL2CPP backend.
+    /// </summary>
+    [MenuItem("Build/Mole Sample/Demo/Windows64 Build")]
+    public static void MoleWindowsBuild()
+    {
+        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+
+        var options = new BuildPlayerOptions
+        {
+            scenes = MoleSampleGameScenes,
+            locationPathName = Path.Combine(
+                BuildDirectory,
+                $"MoleSample-Win64-{VersionNumber}",
+                $"{AppName}.exe"),
+            targetGroup = BuildTargetGroup.Standalone,
+            target = BuildTarget.StandaloneWindows64,
+            options = BuildOptions.Development
+        };
+
+        // Build player.
+        BuildPipeline.BuildPlayer(options);
     }
 
     /// <summary>

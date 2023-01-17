@@ -41,6 +41,16 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
 
         public NetworkObject Floor { get; set; }
 
+        public Transform GetParent()
+        {
+            if (networkConstraint.Value.parentTransform.TryGet(out NetworkObject obj))
+            {
+                return obj.transform;
+            }
+
+            return null;
+        }
+
         public void UpdateState(RelativeParentConfig config)
         {
             Floor = config.previousParent?.GetComponent<NetworkObject>();
@@ -73,7 +83,6 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                         parentTransform = Floor,
                         relativePosition = relativePos,
                         worldPos = transform.position,
-                        rotation = transform.rotation,
                     };
                 }
                 else
@@ -85,7 +94,6 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
                         parentTransform = default,
                         relativePosition = default,
                         worldPos = transform.position,
-                        rotation = transform.rotation,
                     };
                 }
             }
