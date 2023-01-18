@@ -1,7 +1,7 @@
 {
   "name": "com.nickmaltbie.openkcc.netcode",
   "displayName": "Open KCC Netcode",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "unity": "2021.1",
   "unityRelease": "19f1",
   "description": "Open Source Kinematic Character Controller for NetCode.",
