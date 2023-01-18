@@ -50,6 +50,33 @@ jobs:
           name: temp_build_webgl
           path: Builds/${{ env.PROJECT_NAME }}-WebGL
 
+  build-openkcc-mole-app:
+    name: Build Mole App for Project
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setvars
+      - uses: ./.github/actions/git-lfs-cache
+      - uses: ./.github/actions/unity-library-cache
+        with:
+          target_platform: WebGL
+
+      # Build the game deployment at build
+      - uses: game-ci/unity-builder@v2.0.4
+        with:
+          unityVersion: ${{ env.UNITY_VERSION }}
+          targetPlatform: WebGL
+          buildMethod: ScriptBatch.OfficialBuild_WebGL_MoleSample
+
+      # save build to temp_build_mole_webgl
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: temp_build_mole_webgl
+          path: Builds/${{ env.PROJECT_NAME }}-WebGL-MoleSample
+
   build-openkcc-netcode-app:
     name: Build WebGL netcode version of Project
     runs-on: ubuntu-latest
@@ -103,7 +130,7 @@ jobs:
   combine-and-deploy-artifact:
     name: Combine and Deploy Artifact
     runs-on: ubuntu-latest
-    needs: [build-openkcc-netcode-app, build-webgl-app, build-docs]
+    needs: [build-openkcc-netcode-app, build-openkcc-mole-app, build-webgl-app, build-docs]
     steps:
       # Download previous builds
       - name: Download WebGL Build
@@ -118,6 +145,12 @@ jobs:
           name: temp_build_netcode_webgl
           path: _site/Netcode
 
+      - name: Download WebGL Mole Build
+        uses: actions/download-artifact@v3
+        with:
+          name: temp_build_mole_webgl
+          path: _site/Mole
+
       - name: Download Docs Build
         uses: actions/download-artifact@v3
         with:
@@ -131,6 +164,8 @@ jobs:
 
   # Deploy job
   deploy-combined-webgl:
+    name: "Deploy Combined Artifacts"
+    
     # Add a dependency to the build job
     needs: combine-and-deploy-artifact
 
@@ -165,5 +200,6 @@ jobs:
           name: |
             temp_build_webgl
             temp_build_netcode_webgl
+            temp_build_mole_webgl
             temp_build_docs
             github-pages

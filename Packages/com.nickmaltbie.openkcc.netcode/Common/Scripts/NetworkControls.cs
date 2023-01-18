@@ -28,13 +28,14 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace nickmaltbie.OpenKCC.NetcodeExample
+namespace nickmaltbie.OpenKCC.netcode.Common
 {
     public class NetworkControls : MonoBehaviour
     {
         public Button hostButton;
         public Button clientButton;
         public Button serverButton;
+        public Button playOffline;
         public TMP_InputField serverAddress;
         public TMP_InputField serverPort;
         public TMP_Text debugMessage;
@@ -54,7 +55,8 @@ namespace nickmaltbie.OpenKCC.NetcodeExample
         {
             Host,
             Client,
-            Server
+            Server,
+            Offline
         };
 
         public bool GetConnectedState()
@@ -75,6 +77,7 @@ namespace nickmaltbie.OpenKCC.NetcodeExample
             hostButton.onClick.AddListener(() => StartNetworkManager(NMActionType.Host));
             clientButton.onClick.AddListener(() => StartNetworkManager(NMActionType.Client));
             serverButton.onClick.AddListener(() => StartNetworkManager(NMActionType.Server));
+            playOffline.onClick.AddListener(() => StartNetworkManager(NMActionType.Offline));
 
             var networkTransport = NetworkManager.Singleton.NetworkConfig.NetworkTransport as WebSocketTransport;
 
@@ -194,7 +197,24 @@ namespace nickmaltbie.OpenKCC.NetcodeExample
                 return;
             }
 
-            var networkTransport = NetworkManager.Singleton.NetworkConfig.NetworkTransport as WebSocketTransport;
+            // Cleanup network transports if they exist.
+            NetworkTransport oldTransport = NetworkManager.Singleton.gameObject.GetComponent<NetworkTransport>();
+            if (oldTransport != null)
+            {
+                GameObject.Destroy(oldTransport);
+            }
+
+            if (action == NMActionType.Offline)
+            {
+                // Override the hosting transport with an offline version
+                NetworkTransport offlineTransport = NetworkManager.Singleton.gameObject.AddComponent<OfflineNetworkTransport>();
+                NetworkManager.Singleton.NetworkConfig.NetworkTransport = offlineTransport;
+                NetworkManager.Singleton.StartHost();
+                return;
+            }
+
+            WebSocketTransport networkTransport = NetworkManager.Singleton.gameObject.AddComponent<WebSocketTransport>();
+            NetworkManager.Singleton.NetworkConfig.NetworkTransport = networkTransport;
             networkTransport.ConnectAddress = serverAddress.text;
             networkTransport.Port = ushort.Parse(serverPort.text);
             networkTransport.SecureConnection = secureConnection.isOn;

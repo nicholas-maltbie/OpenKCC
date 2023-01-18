@@ -75,7 +75,7 @@ namespace nickmaltbie.OpenKCC.netcode.Environment
 
         public void Update()
         {
-            if (!ValidTarget || !IsServer)
+            if (!ValidTarget || !IsServer || !IsSpawned)
             {
                 return;
             }
