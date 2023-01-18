@@ -203,7 +203,7 @@ namespace nickmaltbie.OpenKCC.netcode.Common
             {
                 GameObject.Destroy(oldTransport);
             }
-            
+
             if (action == NMActionType.Offline)
             {
                 // Override the hosting transport with an offline version
