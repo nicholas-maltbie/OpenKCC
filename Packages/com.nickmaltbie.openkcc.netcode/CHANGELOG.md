@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Updated readme with notes on how to install required libraries.
 * Refactored samples to fix import errors and make downloading dependencies
     easier.
 * Added simple `OfflineNetworkTransport` and added ability to play
