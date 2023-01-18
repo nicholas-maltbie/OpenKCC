@@ -95,7 +95,8 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
             // Copy the web.config to the output path
             File.Copy(
                 System.IO.Path.Combine(Application.dataPath, "Config", "web.config"),
-                System.IO.Path.Combine(report.summary.outputPath, "Build", "web.config"));
+                System.IO.Path.Combine(report.summary.outputPath, "Build", "web.config"),
+                true);
         }
 
         // Restore default settings
@@ -112,6 +113,50 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         MacOSBuild();
         LinuxBuild();
         WindowsBuild();
+    }
+
+    /// <summary>
+    /// Create a build for Mole Sample with windows 64 version and IL2CPP backend.
+    /// </summary>
+    [MenuItem("Build/Mole Sample/Demo/Windows64 Build")]
+    public static void WindowsBuild_MoleSample()
+    {
+        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+
+        var options = new BuildPlayerOptions
+        {
+            scenes = MoleSampleGameScenes,
+            locationPathName = Path.Combine(
+                BuildDirectory,
+                $"MoleSample-Win64-{VersionNumber}",
+                $"{AppName}.exe"),
+            targetGroup = BuildTargetGroup.Standalone,
+            target = BuildTarget.StandaloneWindows64,
+            options = BuildOptions.Development
+        };
+
+        // Build player.
+        BuildPipeline.BuildPlayer(options);
+    }
+
+    /// <summary>
+    /// Create a demo build for the WebGL platform.
+    /// </summary>
+    [MenuItem("Build/Mole Sample/Official/WebGL")]
+    public static void OfficialBuild_WebGL_MoleSample()
+    {
+        PlayerSettings.WebGL.template = "PROJECT:Better2020";
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.decompressionFallback = true;
+        var options = new BuildPlayerOptions
+        {
+            scenes = MoleSampleGameScenes,
+            locationPathName = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-WebGL-MoleSample"),
+            target = BuildTarget.WebGL,
+        };
+
+        // Build player.
+        BuildPipeline.BuildPlayer(options);
     }
 
     /// <summary>
@@ -253,30 +298,6 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     }
 
     /// <summary>
-    /// Create a build for Mole Sample with windows 64 version and IL2CPP backend.
-    /// </summary>
-    [MenuItem("Build/Mole Sample/Demo/Windows64 Build")]
-    public static void MoleWindowsBuild()
-    {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
-
-        var options = new BuildPlayerOptions
-        {
-            scenes = MoleSampleGameScenes,
-            locationPathName = Path.Combine(
-                BuildDirectory,
-                $"MoleSample-Win64-{VersionNumber}",
-                $"{AppName}.exe"),
-            targetGroup = BuildTargetGroup.Standalone,
-            target = BuildTarget.StandaloneWindows64,
-            options = BuildOptions.Development
-        };
-
-        // Build player.
-        BuildPipeline.BuildPlayer(options);
-    }
-
-    /// <summary>
     /// Create a build for the windows 64 version with IL2CPP backend.
     /// </summary>
     [MenuItem("Build/Main/Demo/Windows64 Build")]
@@ -308,6 +329,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     {
         OfficialBuild_WebGL();
         OfficialBuild_WebGL_Netcode();
+        OfficialBuild_WebGL_MoleSample();
     }
 
     /// <summary>

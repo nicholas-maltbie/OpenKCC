@@ -21,7 +21,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace nickmaltbie.OpenKCC.NetcodeExample
+namespace nickmaltbie.OpenKCC.netcode.Common
 {
     public class DisconnectAction : MonoBehaviour
     {

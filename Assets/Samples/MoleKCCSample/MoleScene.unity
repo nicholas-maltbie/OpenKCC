@@ -1148,7 +1148,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 598309288828770140, guid: b6dfd7ace8d17c843b78fbc0e5f0a07d, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 3977976239
+      value: 3988828967
       objectReference: {fileID: 0}
     - target: {fileID: 598309288828770141, guid: b6dfd7ace8d17c843b78fbc0e5f0a07d, type: 3}
       propertyPath: linearSpeed
@@ -1444,7 +1444,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5907897126438711473, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 253243483
+      value: 1052937093
       objectReference: {fileID: 0}
     - target: {fileID: 8752817440950304479, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_LocalScale.x
@@ -2212,7 +2212,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-6626
+  m_Name: pb_Mesh48272
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3474,7 +3474,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4730952189568250202, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 946710403
+      value: 3354070861
       objectReference: {fileID: 0}
     - target: {fileID: 7027148876223953991, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
       propertyPath: m_Name
@@ -3538,7 +3538,7 @@ PrefabInstance:
       objectReference: {fileID: 443410628}
     - target: {fileID: 7027148876223954014, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
       propertyPath: m_VersionIndex
-      value: 978
+      value: 981
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
@@ -3556,7 +3556,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5907897126438711473, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 741403621
+      value: 1759090621
       objectReference: {fileID: 0}
     - target: {fileID: 8752817441032410576, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_Name
@@ -3970,7 +3970,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5907897126438711473, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 685951931
+      value: 2171722327
       objectReference: {fileID: 0}
     - target: {fileID: 8752817441032410576, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_Name
@@ -4041,7 +4041,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-6790
+  m_Name: pb_Mesh47950
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -6823,7 +6823,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 598309288828770140, guid: b6dfd7ace8d17c843b78fbc0e5f0a07d, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 2170578543
+      value: 687882695
       objectReference: {fileID: 0}
     - target: {fileID: 3338652870361394586, guid: b6dfd7ace8d17c843b78fbc0e5f0a07d, type: 3}
       propertyPath: m_Name
@@ -6890,7 +6890,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1252741660}
   - component: {fileID: 1252741659}
-  - component: {fileID: 1252741661}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: NetworkManager
@@ -6914,7 +6913,7 @@ MonoBehaviour:
   LogLevel: 1
   NetworkConfig:
     ProtocolVersion: 0
-    NetworkTransport: {fileID: 1252741661}
+    NetworkTransport: {fileID: 0}
     PlayerPrefab: {fileID: 7761971533017685566, guid: 4a07efd71e578854985fe4ad9831c8ef, type: 3}
     NetworkPrefabs: []
     TickRate: 30
@@ -6947,23 +6946,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1252741661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252741657}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54618226c9df54608af7731199ed5f0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConnectAddress: 127.0.0.1
-  Port: 7777
-  SecureConnection: 0
-  AllowForwardedRequest: 1
-  CertificateBase64String: 
 --- !u!1 &1336733111
 GameObject:
   m_ObjectHideFlags: 0
@@ -7317,7 +7299,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5907897126438711473, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 3826622927
+      value: 4115317950
       objectReference: {fileID: 0}
     - target: {fileID: 8752817441032410576, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_Name
@@ -10836,7 +10818,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5907897126438711473, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 875051014
+      value: 1072208649
       objectReference: {fileID: 0}
     - target: {fileID: 8752817441032410576, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
       propertyPath: m_Name
@@ -10907,7 +10889,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4730952189568250202, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 2316260457
+      value: 1234641415
       objectReference: {fileID: 0}
     - target: {fileID: 7027148876223953991, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
       propertyPath: m_Name
@@ -10971,7 +10953,7 @@ PrefabInstance:
       objectReference: {fileID: 978709721}
     - target: {fileID: 7027148876223954014, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
       propertyPath: m_VersionIndex
-      value: 978
+      value: 981
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
