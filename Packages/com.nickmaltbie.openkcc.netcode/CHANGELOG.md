@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.2.3] 2023-1-17
+
 * Updated readme with notes on how to install required libraries.
 * Refactored samples to fix import errors and make downloading dependencies
     easier.
