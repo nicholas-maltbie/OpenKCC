@@ -196,6 +196,7 @@ jobs:
     steps:
       - name: Cleanup temp build artifacts
         uses: joutvhu/delete-artifact@v1
+        continue-on-error: true
         with:
           name: |
             temp_build_webgl
