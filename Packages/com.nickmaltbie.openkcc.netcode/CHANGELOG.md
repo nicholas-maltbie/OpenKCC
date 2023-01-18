@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Added simple `OfflineNetworkTransport` and added ability to play
+    the demo in an offline for netcode.
+
 ## [1.2.2] 2023-1-15
 
 * Corrected some issues with samples path for export.
