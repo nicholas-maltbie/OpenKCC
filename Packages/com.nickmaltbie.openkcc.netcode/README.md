@@ -94,12 +94,24 @@ Required packages for samples that are not
 already included in the project:
 
 ```json
-dependencies:
 {
-  "com.community.netcode.transport.websocket": "git+https://github.com/Unity-Technologies/multiplayer-community-contributions?path=/Transports/com.community.netcode.transport.websocket",
-  "com.unity.probuilder": "5.0.6",
-  "com.unity.render-pipelines.universal": "12.1.7",
-  "com.nickmaltbie.recolorshaderunity": "1.0.0"
+  "scopedRegistries": [
+    {
+      "name": "nickmaltbie",
+      "url": "https://registry.npmjs.org",
+      "scopes": [
+        "com.nickmaltbie"
+      ]
+    }
+  ],
+  "dependencies": {
+    "com.community.netcode.transport.websocket": "git+https://github.com/Unity-Technologies/multiplayer-community-contributions?path=/Transports/com.community.netcode.transport.websocket",
+    "com.nickmaltbie.recolorshaderunity": "1.0.0",
+    "com.unity.inputsystem": "1.4.4",
+    "com.nickmaltbie.testutilsunity": "1.0.0",
+    "com.unity.netcode.gameobjects": "1.1.0",
+    "com.unity.probuilder": "5.0.6"
+  }
 }
 ```
 
