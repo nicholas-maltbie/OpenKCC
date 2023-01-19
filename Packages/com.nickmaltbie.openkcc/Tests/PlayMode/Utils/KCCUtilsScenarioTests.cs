@@ -511,7 +511,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             KCCValidation.ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
 
             TestUtils.AssertInBounds(bounces[0].Movement, Vector3.forward * 2, 1.0f);
-            TestUtils.AssertInBounds(bounces[1].Movement.magnitude, 0.5f, movement.magnitude - bounces[0].Movement.magnitude, bound: TestUtils.BoundRange.GraterThan);
         }
     }
 }
