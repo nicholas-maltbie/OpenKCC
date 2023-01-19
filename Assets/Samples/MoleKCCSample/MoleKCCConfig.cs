@@ -225,6 +225,20 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <inheritdoc/>
         public float MaxPushSpeed => maxPushSpeed;
 
+        /// <inheritdoc/>
+        public bool ApplyGravity => groundedState.Falling;
+
+        /// <summary>
+        /// Is the character attempting to jump.
+        /// </summary>
+        public bool Jumping { get; set; }
+
+        /// <inheritdoc/>
+        public bool ApplyVelocity => groundedState.Sliding || groundedState.Falling || Jumping;
+
+        /// <inheritdoc/>
+        public bool SnapPlayerDown => groundedState.StandingOnGround && !Jumping;
+
         /// <summary>
         /// Collider cast associated with the character.
         /// </summary>

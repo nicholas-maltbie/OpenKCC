@@ -107,25 +107,23 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = false, SnapPlayerDown = true)]
+        [MovementSettings]
         public class IdleState : State { }
 
-        [ApplyGravity]
         [Animation(JumpAnimState, 0.1f, true)]
         [TransitionOnAnimationComplete(typeof(FallingState), 0.15f, true)]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
         public class JumpState : State { }
 
-        [ApplyGravity]
         [Animation(LandingAnimState, 0.1f, true)]
         [TransitionOnAnimationComplete(typeof(IdleState), 0.25f, true)]
         [AnimationTransition(typeof(StartMoveInput), typeof(WalkingState), 0.35f, true)]
         [AnimationTransition(typeof(JumpEvent), typeof(JumpState), 0.35f, true)]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
         public class LandingState : State { }
 
         [Animation(WalkingAnimState, 0.1f, true)]
@@ -134,7 +132,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(StartSprintEvent), typeof(SprintingState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true, SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
         public class WalkingState : State { }
 
         [Animation(SprintingAnimState, 0.1f, true)]
@@ -143,36 +141,29 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(StopSprintEvent), typeof(WalkingState))]
-        [MovementSettings(
-            AllowVelocity = false,
-            AllowWalk = true,
-            SnapPlayerDown = true,
-            SpeedConfig = nameof(config.sprintSpeed))]
+        [MovementSettings(SpeedConfig = nameof(config.sprintSpeed))]
         public class SprintingState : State { }
 
-        [ApplyGravity]
         [Animation(SlidingAnimState, 0.35f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true, SnapPlayerDown = true, SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
         public class SlidingState : State { }
 
-        [ApplyGravity]
         [Animation(FallingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
         public class FallingState : State { }
 
-        [ApplyGravity]
         [Animation(LongFallingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 1.0f)]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
         public class LongFallingState : State { }
 
         /// <summary>
@@ -191,7 +182,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             {
                 RaiseEvent(SteepSlopeEvent.Instance);
             }
-            else if (config.groundedState.StandingOnGround && !movingUp)
+            else if (config.groundedState.StandingOnGround)
             {
                 RaiseEvent(GroundedEvent.Instance);
             }
@@ -245,12 +236,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         {
             Vector3 rotatedMovement = HorizPlaneView * InputMovement;
             Vector3 projectedMovement = config.groundedState.GetProjectedMovement(rotatedMovement);
-
-            var moveSettings = Attribute.GetCustomAttribute(
-                CurrentState,
-                typeof(MovementSettingsAttribute)) as MovementSettingsAttribute;
-
-            float speed = moveSettings?.Speed(config) ?? config.walkingSpeed;
+            float speed = MovementSettingsAttribute.GetSpeed(CurrentState, config);
             Vector3 scaledMovement = projectedMovement * speed;
             return scaledMovement;
         }
@@ -258,17 +244,18 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public override void FixedUpdate()
         {
             GetComponent<Rigidbody>().isKinematic = true;
+            config.Jumping = CurrentState == typeof(JumpState);
+
             if (IsOwner)
             {
+                config.jumpAction.ApplyJumpIfPossible();
                 movementEngine.MovePlayer(
                     unityService.fixedDeltaTime,
-                    GetDesiredVelocity() * unityService.fixedDeltaTime,
-                    CurrentState);
+                    GetDesiredVelocity() * unityService.fixedDeltaTime);
                 UpdateGroundedState();
-                config.jumpAction.ApplyJumpIfPossible();
+                GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
             }
 
-            GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
             base.FixedUpdate();
         }
 
@@ -300,6 +287,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         {
             if (IsOwner)
             {
+                config.Jumping = true;
                 movementEngine.ApplyJump(velocity);
                 RaiseEvent(JumpEvent.Instance);
             }

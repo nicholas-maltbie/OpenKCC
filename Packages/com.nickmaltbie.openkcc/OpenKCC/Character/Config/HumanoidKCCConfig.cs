@@ -242,8 +242,22 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// <inheritdoc/>
         public Vector3 Gravity => gravity;
 
+        /// <summary>
+        /// Is the player currently jumping.
+        /// </summary>
+        public bool Jumping { get; set; }
+
         /// <inheritdoc/>
         public float MaxPushSpeed => maxPushSpeed;
+
+        /// <inheritdoc/>
+        public bool ApplyGravity => groundedState.Sliding || groundedState.Falling;
+
+        /// <inheritdoc/>
+        public bool ApplyVelocity => groundedState.Sliding || groundedState.Falling || Jumping;
+
+        /// <inheritdoc/>
+        public bool SnapPlayerDown => groundedState.StandingOnGround;
 
         /// <summary>
         /// Collider cast associated with the character.

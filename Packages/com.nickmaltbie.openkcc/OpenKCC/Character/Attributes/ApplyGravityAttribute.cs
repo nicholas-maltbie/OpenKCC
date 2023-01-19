@@ -23,5 +23,6 @@ namespace nickmaltbie.OpenKCC.Character.Attributes
     /// <summary>
     /// Attribute to apply gravity to player in a given state.
     /// </summary>
+    [Obsolete("Replaced with the KCCConfig.ApplyGravity attribute")]
     public class ApplyGravity : Attribute { }
 }

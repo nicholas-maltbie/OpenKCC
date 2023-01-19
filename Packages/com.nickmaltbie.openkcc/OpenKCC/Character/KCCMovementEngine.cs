@@ -16,8 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
-using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
@@ -74,34 +72,38 @@ namespace nickmaltbie.OpenKCC.Character
         public float FallingTime { get; protected set; }
 
         /// <summary>
+        /// Is the player's velocity currently moving them up
+        /// along the up vector.
+        /// </summary>
+        public bool MovingUp()
+        {
+            return Vector3.Dot(Vector3.Project(config.Up, Velocity), config.Up) > 0;
+        }
+
+        /// <summary>
         /// Apply movement of a player based on current state.
         /// </summary>
         /// <param name="position">Current position of the player.</param>
         /// <param name="rotation">Current rotation of the player.</param>
         /// <param name="deltaTime">Delta time for the movement.</param>
-        /// <param name="moveSettings">Move settings for the current action.</param>
         /// <returns>Delta in position due to player movement.</returns>
-        public Vector3 MovePlayer(
+        protected Vector3 MovePlayer(
             Vector3 position,
             Quaternion rotation,
             Vector3 move,
-            float deltaTime,
-            MovementSettingsAttribute moveSettings)
+            float deltaTime)
         {
             // Move the player based on movement settings
             Vector3 delta = Vector3.zero;
 
-            // Move the player if they are allowed to walk
-            if (moveSettings?.AllowWalk ?? false)
-            {
-                Vector3 moveDelta = GetMovement(position, move, rotation);
-                delta += moveDelta;
-                position += moveDelta;
-            }
+            // Move the player based on provided movement.
+            Vector3 moveDelta = GetMovement(position, move, rotation);
+            delta += moveDelta;
+            position += moveDelta;
 
             // Apply velocity if allowed to move via velocity
             // Only snap down if the player is currently grounded
-            if (groundedState.StandingOnGround && (moveSettings?.SnapPlayerDown ?? false))
+            if (config.SnapPlayerDown && groundedState.StandingOnGround && !MovingUp())
             {
                 Vector3 snapDelta = GetSnapDelta(
                     position,
@@ -115,7 +117,7 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             // Apply velocity if allowed to move via velocity
-            if (moveSettings?.AllowVelocity ?? false)
+            if (config.ApplyVelocity)
             {
                 Vector3 velDelta = GetMovement(position, Velocity * deltaTime, rotation);
                 delta += velDelta;
@@ -190,7 +192,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <param name="rotation">Rotation of the player during movement.</param>
         /// <param name="config">Configuration settings for player movement.</param>
         /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
-        public virtual Vector3 GetMovement(
+        protected virtual Vector3 GetMovement(
             Vector3 position,
             Vector3 movement,
             Quaternion rotation)
@@ -214,51 +216,15 @@ namespace nickmaltbie.OpenKCC.Character
         }
 
         /// <summary>
-        /// Apply movement of the character.
-        /// </summary>
-        /// <param name="deltaTime">Delta time.</param>
-        /// <param name="move">Desired move for the character.</param>
-        /// <param name="currentState">Current state of the character
-        /// to load movement settings from.</param>
-        public void MovePlayer(
-            float deltaTime,
-            Vector3 move,
-            Type currentState = null)
-        {
-            bool gravity = currentState != null ?
-                Attribute.GetCustomAttribute(
-                    currentState,
-                    typeof(ApplyGravity)) is ApplyGravity :
-                false;
-
-            MovementSettingsAttribute moveSettings = currentState != null ?
-                Attribute.GetCustomAttribute(
-                    currentState,
-                    typeof(MovementSettingsAttribute)) as MovementSettingsAttribute :
-                null;
-
-            ApplyMovement(
-                deltaTime,
-                move,
-                gravity,
-                moveSettings
-            );
-        }
-
-        /// <summary>
-        /// Applies player movement based on current state.
+        /// Applies player movement based current configuration.
         /// Includes pushing out overlapping objects, updating grounded state, jumping,
         /// moving the player, and updating the grounded state.
         /// </summary>
         /// <param name="deltaTime">Delta time for the update.</param>
         /// <param name="move">Desired player movement.</param>
-        /// <param name="applyGravity">Should gravity be applied.</param>
-        /// <param name="moveSettings">Movement settings for player.</param>
-        public virtual void ApplyMovement(
+        public virtual void MovePlayer(
             float deltaTime,
-            Vector3 move,
-            bool applyGravity,
-            MovementSettingsAttribute moveSettings)
+            Vector3 move)
         {
             relativeParentConfig.FollowGround(transform);
             Vector3 vel = (transform.position - previousPosition) / deltaTime;
@@ -279,8 +245,7 @@ namespace nickmaltbie.OpenKCC.Character
                 pos,
                 transform.rotation,
                 move,
-                deltaTime,
-                moveSettings);
+                deltaTime);
             pos += playerMove;
 
             // Compute player relative movement state based on final pos
@@ -298,9 +263,14 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             // Apply gravity if needed
-            if (applyGravity)
+            if (config.ApplyGravity)
             {
                 Velocity += config.Gravity * deltaTime;
+            }
+
+            if (!config.ApplyVelocity)
+            {
+                Velocity = Vector3.zero;
             }
 
             transform.position += delta;
@@ -323,7 +293,14 @@ namespace nickmaltbie.OpenKCC.Character
         public void ApplyJump(Vector3 velocity)
         {
             Vector3 groundVel = KCCUtils.GetGroundVelocity(groundedState, config, previousVelocity);
-            Velocity = velocity + groundVel;
+            
+            // If player is currently sliding, keep the current momentum
+            if (!groundedState.Sliding)
+            {
+                Velocity = Vector3.zero;
+            }
+            Velocity += velocity + groundVel;
+
             relativeParentConfig.Reset();
         }
     }

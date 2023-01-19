@@ -174,14 +174,12 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         [Transition(typeof(StartMoveInput), typeof(WalkingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = false, SnapPlayerDown = true)]
         public class IdleState : State { }
 
         [Animation("Jumping")]
-        [ApplyGravity]
         [TransitionOnAnimationComplete(typeof(FallingState), 0.15f, true)]
         [Transition(typeof(GroundedEvent), typeof(IdleState))]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
         public class JumpState : State { }
 
         [Animation("Digging")]
@@ -190,14 +188,13 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
-        [MovementSettings(AllowVelocity = false, AllowWalk = true, SnapPlayerDown = true, SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
         public class WalkingState : State { }
 
         [Animation("Walking")]
-        [ApplyGravity]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(GroundedEvent), typeof(IdleState))]
-        [MovementSettings(AllowVelocity = true, AllowWalk = true, SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
         public class FallingState : State { }
 
         /// <summary>
@@ -277,12 +274,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         {
             var moveDir = Quaternion.FromToRotation(Vector3.up, kccConfig.Up);
             Vector3 rotatedMovement = moveDir * (HorizPlaneView * InputMovement);
-
-            var moveSettings = Attribute.GetCustomAttribute(
-                CurrentState,
-                typeof(MovementSettingsAttribute)) as MovementSettingsAttribute;
-
-            float speed = moveSettings?.Speed(config) ?? config.walkingSpeed;
+            float speed = MovementSettingsAttribute.GetSpeed(CurrentState, config);
             Vector3 scaledMovement = rotatedMovement * speed;
             return scaledMovement;
         }
@@ -292,12 +284,12 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             GetComponent<Rigidbody>().isKinematic = true;
             if (IsOwner)
             {
+                config.Jumping = CurrentState == typeof(JumpState);
+                config.jumpAction.ApplyJumpIfPossible();
                 movementEngine.MovePlayer(
                     unityService.fixedDeltaTime,
-                    GetDesiredVelocity() * unityService.fixedDeltaTime,
-                    CurrentState);
+                    GetDesiredVelocity() * unityService.fixedDeltaTime);
                 UpdateGroundedState();
-                config.jumpAction.ApplyJumpIfPossible();
                 relativeUp.Value = config.Up;
             }
 
@@ -397,6 +389,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         {
             if (IsOwner)
             {
+                config.Jumping = true;
                 movementEngine.ApplyJump(velocity);
                 RaiseEvent(JumpEvent.Instance);
             }

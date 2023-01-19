@@ -277,9 +277,9 @@ namespace nickmaltbie.OpenKCC.Utils
 
             // If projected momentum is less than original momentum (so if the projection broke due to float
             // operations), then change this to just project along the vertical.
-            if (projectedMomentum.magnitude + Epsilon < momentum.magnitude)
+            if (Mathf.Abs(projectedMomentum.magnitude - momentum.magnitude) > Epsilon)
             {
-                return Vector3.ProjectOnPlane(momentum, up).normalized * momentum.magnitude;
+                return momentum;
             }
 
             return projectedMomentum;
@@ -385,7 +385,8 @@ namespace nickmaltbie.OpenKCC.Utils
             float normalizedAngle = angleBetween / MaxAngleShoveRadians;
 
             // Reduce the momentum by the remaining movement that ocurred
-            remainingMomentum *= Mathf.Pow(1 - normalizedAngle, config.AnglePower) * 0.9f + 0.1f;
+            remainingMomentum *= Mathf.Pow(Mathf.Max(0, 1 - normalizedAngle), config.AnglePower);
+
             // Rotate the remaining remaining movement to be projected along the plane 
             // of the surface hit (emulate pushing against the object)
             remainingMomentum = GetBouncedMomentumSafe(remainingMomentum, hit.normal, config.Up);
