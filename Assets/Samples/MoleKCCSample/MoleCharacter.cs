@@ -58,10 +58,10 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         public ParticleSystem burrowParticlePrefab;
 
         [SerializeField]
-        public Vector3 particleOffset = new Vector3(0, -0.5f, 0);
+        public Vector3 particleOffset = new Vector3(0, 0, 0);
 
         [SerializeField]
-        public Vector3 avatarDiggingOffset = new Vector3(0, -0.5f, 0);
+        public Vector3 avatarDiggingOffset = new Vector3(0, 0, 0);
 
         [SerializeField]
         public int maxDiggingTrails = 10;
