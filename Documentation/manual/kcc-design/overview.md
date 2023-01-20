@@ -22,10 +22,14 @@ to move the player through a virtual environment.
 The goal of the design section is to document how the OpenKCC is designed to
 work as well as propose new features or structures for the project.
 
+See the [KCC User Stories](kcc-user-stories.md) document for more details
+of of the supported APIs.
+
 ## Design Details
 
 See the various sections for further details
 
+* [Make Your Own KCC](make-your-own-kcc.md)
 * [State Machine Design](kcc-fsm-design.md)
 * [KCC Movement Design](kcc-movement.md)
 * [Physics for Character Controllers](physics-notes.md)

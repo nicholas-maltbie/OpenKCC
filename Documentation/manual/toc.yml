@@ -10,6 +10,10 @@
       href: kcc-design/kcc-fsm-design.md
     - name: KCC Movement Design
       href: kcc-design/kcc-movement.md
+    - name: KCC USer Stories
+      href: kcc-design/kcc-user-stories.md
+    - name: Make Your Own KCC
+      href: kcc-design/make-your-own-kcc.md
     - name: Physics for Character Controllers
       href: kcc-design/physics-notes.md
 
