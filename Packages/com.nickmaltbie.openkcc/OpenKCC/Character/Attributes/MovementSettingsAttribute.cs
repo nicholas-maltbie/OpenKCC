@@ -29,16 +29,19 @@ namespace nickmaltbie.OpenKCC.Character.Attributes
         /// <summary>
         /// Allow movement by normal velocity.
         /// </summary>
+        [Obsolete("Replaced by KCCConfig.AllowVelocity")]
         public bool AllowVelocity = false;
 
         /// <summary>
         /// Allow movement by player input movement.
         /// </summary>
+        [Obsolete("Natural extension of letting speed config be unset, so not needed.")]
         public bool AllowWalk = false;
 
         /// <summary>
         /// Should the player be snapped down after moving.
         /// </summary>
+        [Obsolete("Replaced by KCCConfig.SnapPlayerDown")]
         public bool SnapPlayerDown = false;
 
         /// <summary>
@@ -47,13 +50,15 @@ namespace nickmaltbie.OpenKCC.Character.Attributes
         public string SpeedConfig;
 
         /// <summary>
-        /// Function to override velocity value.
+        /// Get player speed from a movement settings attribute.
         /// </summary>
-        public float Speed(object source)
+        /// <param name="state">State to lookup speed for.</param>
+        /// <param name="source">Object to lookup speed from.</param>
+        public static float GetSpeed(Type state, object source)
         {
-            if (!string.IsNullOrWhiteSpace(SpeedConfig))
+            if (Attribute.GetCustomAttribute(state, typeof(MovementSettingsAttribute)) is MovementSettingsAttribute settings && !string.IsNullOrWhiteSpace(settings.SpeedConfig))
             {
-                return (float)source.EvaluateMember(SpeedConfig);
+                return (float)source.EvaluateMember(settings.SpeedConfig);
             }
 
             return 0.0f;

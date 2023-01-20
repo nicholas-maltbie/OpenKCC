@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7761971533017685565}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.7, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -238,7 +238,7 @@ MonoBehaviour:
     baseCameraOffset: {x: 0, y: 0, z: 0}
     minCameraDistance: 0
     maxCameraDistance: 4
-    currentDistance: 0
+    currentDistance: 3
     zoomSpeed: 1
     cameraRaycastMask:
       serializedVersion: 2
@@ -277,6 +277,7 @@ MonoBehaviour:
   burrowParticlePrefab: {fileID: 7473199888666396088, guid: 796eac02c7916814697664456b40db6d, type: 3}
   particleOffset: {x: 0, y: -0.5, z: 0}
   avatarDiggingOffset: {x: 0, y: -0.6, z: 0}
+  maxDiggingTrails: 10
   config:
     moveActionReference: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
     jumpAction:

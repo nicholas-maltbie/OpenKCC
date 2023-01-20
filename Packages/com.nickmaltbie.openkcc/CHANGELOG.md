@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Updated APIs available in the KCCMovementEngine to allow
+    for passing a movement in world space to move the player.
+* Changed KCCMovementEngine to get the configuration values
+    from the KCCConfig and not from a MovementSettingsAttribute
+* Depreciated old fields in the MovementSettingsAttribute
+    that will be removed in a future update.
+
 ## [1.2.0] 2023-1-15
 
 * Added Mole character sample.

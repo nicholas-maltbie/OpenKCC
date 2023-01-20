@@ -99,6 +99,23 @@ namespace nickmaltbie.OpenKCC.Utils
         /// an IMovingGround attached to it.
         /// </summary>
         float MaxDefaultLaunchVelocity { get; }
+
+        /// <summary>
+        /// Should gravity be applied to player velocity during
+        /// the next movement update.
+        /// </summary>
+        bool ApplyGravity { get; }
+
+        /// <summary>
+        /// Should velocity be applied to the player's position
+        /// during the next movement update.
+        /// </summary>
+        bool ApplyVelocity { get; }
+
+        /// <summary>
+        /// Should the player be snapped down as part of player movement.
+        /// </summary>
+        bool SnapPlayerDown { get; }
     }
 
     /// <summary>
@@ -192,5 +209,14 @@ namespace nickmaltbie.OpenKCC.Utils
 
         /// <inheritdoc/>
         public float MaxPushSpeed { get; set; }
+
+        /// <inheritdoc/>
+        public bool ApplyGravity { get; set; }
+
+        /// <inheritdoc/>
+        public bool ApplyVelocity { get; set; }
+
+        /// <inheritdoc/>
+        public bool SnapPlayerDown { get; set; }
     }
 }

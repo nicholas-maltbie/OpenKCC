@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Touched up MoleKCCSample to be better configured
+* Updated NetworkKCC and MoleCharacter to use newer KCCMovementEngine APIs.
+
 ## [1.2.3] 2023-1-17
 
 * Updated readme with notes on how to install required libraries.

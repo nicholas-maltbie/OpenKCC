@@ -28,7 +28,8 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
     [RequireComponent(typeof(IGetKCCGrounded))]
     public class MoleMovementEngine : KCCMovementEngine
     {
-        public override Vector3 GetMovement(
+        /// <inheritdoc/>
+        protected override Vector3 GetMovement(
             Vector3 position,
             Vector3 movement,
             Quaternion rotation)
