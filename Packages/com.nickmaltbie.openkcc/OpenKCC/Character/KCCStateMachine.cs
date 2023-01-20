@@ -182,7 +182,7 @@ namespace nickmaltbie.OpenKCC.Character
         public void UpdateGroundedState()
         {
             var upwardVelocity = Vector3.Project(movementEngine.Velocity, config.Up);
-            bool movingUp = Vector3.Dot(upwardVelocity, config.Up) > 0;
+            _ = Vector3.Dot(upwardVelocity, config.Up) > 0;
 
             if (config.groundedState.Falling)
             {

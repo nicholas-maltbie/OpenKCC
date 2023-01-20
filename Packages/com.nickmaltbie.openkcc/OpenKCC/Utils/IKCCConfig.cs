@@ -111,7 +111,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// during the next movement update.
         /// </summary>
         bool ApplyVelocity { get; }
-        
+
         /// <summary>
         /// Should the player be snapped down as part of player movement.
         /// </summary>

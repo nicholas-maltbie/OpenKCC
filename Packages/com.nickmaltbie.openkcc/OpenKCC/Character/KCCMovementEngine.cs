@@ -293,12 +293,13 @@ namespace nickmaltbie.OpenKCC.Character
         public void ApplyJump(Vector3 velocity)
         {
             Vector3 groundVel = KCCUtils.GetGroundVelocity(groundedState, config, previousVelocity);
-            
+
             // If player is currently sliding, keep the current momentum
             if (!groundedState.Sliding)
             {
                 Velocity = Vector3.zero;
             }
+
             Velocity += velocity + groundVel;
 
             relativeParentConfig.Reset();

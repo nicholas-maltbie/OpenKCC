@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using nickmaltbie.NetworkStateMachineUnity;
 using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character;
@@ -172,7 +171,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public void UpdateGroundedState()
         {
             var upwardVelocity = Vector3.Project(movementEngine.Velocity, config.Up);
-            bool movingUp = Vector3.Dot(upwardVelocity, config.Up) > 0;
+            _ = Vector3.Dot(upwardVelocity, config.Up) > 0;
 
             if (config.groundedState.Falling)
             {

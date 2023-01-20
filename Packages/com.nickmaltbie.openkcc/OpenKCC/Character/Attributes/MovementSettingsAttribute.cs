@@ -44,7 +44,6 @@ namespace nickmaltbie.OpenKCC.Character.Attributes
         [Obsolete("Replaced by KCCConfig.SnapPlayerDown")]
         public bool SnapPlayerDown = false;
 
-
         /// <summary>
         /// Function to read speed value.
         /// </summary>
@@ -57,9 +56,7 @@ namespace nickmaltbie.OpenKCC.Character.Attributes
         /// <param name="source">Object to lookup speed from.</param>
         public static float GetSpeed(Type state, object source)
         {
-            var settings = Attribute.GetCustomAttribute(state, typeof(MovementSettingsAttribute)) as MovementSettingsAttribute;
-
-            if (settings != null && !string.IsNullOrWhiteSpace(settings.SpeedConfig))
+            if (Attribute.GetCustomAttribute(state, typeof(MovementSettingsAttribute)) is MovementSettingsAttribute settings && !string.IsNullOrWhiteSpace(settings.SpeedConfig))
             {
                 return (float)source.EvaluateMember(settings.SpeedConfig);
             }
