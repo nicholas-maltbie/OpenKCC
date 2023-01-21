@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Added giant to climb on for the mole demo
 * Touched up MoleKCCSample to be better configured
 * Updated NetworkKCC and MoleCharacter to use newer KCCMovementEngine APIs.
 
