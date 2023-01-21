@@ -202,7 +202,8 @@ include
 
 * Configuring bounces and slide like motion.
 * Identifying steps and stepping up when needed.
-* Configuring the collider shape and cast interactions
+* Configuring the collider shape and cast interactions.
+* Support restricting movement to lower dimension.
 
 ## Designing an API
 
@@ -270,3 +271,37 @@ easier.
 Once the design notes are finalized, we can write
 up the implementation notes for how to update the
 implementation based on this design.
+
+### IKCCConfig
+
+* Get rid of configurable KCCConfig.Up
+    * replace it with `transform.Up`
+* Move parameters related to movement such as `Up`
+    into the KCCMovementEngine as most
+    users don't care about configuring it.
+    Users can override it if they need to.
+* Move grounded state into the KCCMovementEngine
+    as well for same reason as `Up`
+* Bounces is override-able but isn't changeable
+    in the editor.
+* Combine parameters, `SnapUp * 1.25 = SnapDown`
+    Only `SnapUp` is configurable.
+
+### KCC Movement Engine
+
+Exposed parameters
+
+* Get rid of `Velocity`
+    * Add a function to call `MovePlayer(Vector3 worldMove)`
+    * Overloaded function `MovePlayerLocal(Vector3 localMove)`
+        * `=> MovePlayer(transform.rotation * localMove)`
+        * Relative to up vector.
+    * Have it return the collisions and grounded state
+        * `(GroundedState, IEnumerable<Collision>)`
+* No gravity by default
+    * Relative movement function relative to `Up` vector
+
+### KCCUtils
+
+Make a lightweight `struct` for all parameters
+Remove concept of push.
