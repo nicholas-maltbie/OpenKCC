@@ -17,7 +17,7 @@ Ideally, our game architecture programmer will be able to use the API of the KCC
 
 We could probably be convinced to let KCC handle things like gravity for us if the API were well defined and the customization was robust enough, but for the foreseeable future it’s best to think that we are glued to our custom state solution.
 
-Use Case Level #1: A simple yet robust character that is driven by custom client-side code making use of the Customization Level API
+**Use Case Level #1: A simple yet robust character that is driven by custom client-side code making use of the Customization Level API**
 
 **Example Use Case:** For example, a character controller like this is something we would hope to be able to achieve while handling states, input, and events ourselves:
 https://www.youtube.com/watch?v=ylG72jvo_2s&ab_channel=CaptainRipley
