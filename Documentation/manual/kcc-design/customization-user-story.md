@@ -83,7 +83,7 @@ private void FixedUpdate()
 }
 ```
 
-**And here's an example with a very rough approximation of how we might use the KCCMovementEngine with our own state solution*:*
+**And here's an example with a very rough approximation of how we might use the KCCMovementEngine with our own state solution:**
 
 ```c#
 /*
