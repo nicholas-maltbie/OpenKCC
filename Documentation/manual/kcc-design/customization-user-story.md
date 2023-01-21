@@ -21,7 +21,7 @@ Use Case Level #1: A simple yet robust character that is driven by custom client
 
 **Example Use Case:** For example, a character controller like this is something we would hope to be able to achieve while handling states, input, and events ourselves:
 https://www.youtube.com/watch?v=ylG72jvo_2s&ab_channel=CaptainRipley
-- In fact I intend to start implementing a character controller with equivalent features, that we could then focus on porting to Open KCC and developing it alongside the API
+- In fact I intend to start implementing a character controller with equivalent features, that way we could focus on porting it to Open KCC and developing the KCCMovementEngine API alongside it
 
 Features:
 - A Run and Jump State that reads player input and enables planar movement around the scene, as well as custom, client defined jump physics
