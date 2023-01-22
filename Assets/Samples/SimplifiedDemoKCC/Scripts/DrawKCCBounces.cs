@@ -4,15 +4,9 @@ using UnityEngine;
 
 namespace com.nickmaltbie.OpenKCC.Demo
 {
-    [RequireComponent(typeof(KCCStateMachine))]
     [RequireComponent(typeof(IColliderCast))]
     public class DrawKCCBounces : MonoBehaviour
     {
-        /// <summary>
-        /// Collider cast for checking movement and collision of the character controller.
-        /// </summary>
-        private IColliderCast colliderCast;
-
         /// <summary>
         /// Should a collider at the position of the character be drawn?
         /// </summary>
@@ -88,6 +82,18 @@ namespace com.nickmaltbie.OpenKCC.Demo
         [SerializeField]
         [Tooltip("Maximum bounces when calculating movement.")]
         public int maxBounces = 5;
+
+        /// <summary>
+        /// Step up height for stairs.
+        /// </summary>
+        [SerializeField]
+        public float stepHeight = 0.35f;
+
+        /// <summary>
+        /// Step depth for stairs.
+        /// </summary>
+        [SerializeField]
+        public float stepDepth = 0.1f;
 
         /// <summary>
         /// Color of overlapping objects for the character collider gizmo.

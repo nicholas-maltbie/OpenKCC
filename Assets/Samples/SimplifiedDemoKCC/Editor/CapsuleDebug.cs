@@ -20,7 +20,7 @@ using nickmaltbie.OpenKCC.Utils;
 using UnityEditor;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Demo.Debug
+namespace nickmaltbie.OpenKCC.Demo.Editor
 {
     /// <summary>
     /// Debug functions for capsule drawing.

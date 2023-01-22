@@ -1,6 +1,6 @@
 {
-    "name": "nickmaltbie.OpenKCC.EditorGizmos",
-    "rootNamespace": "com.nickmaltbie.OpenKCC.EditorGizmos",
+    "name": "nickmaltbie.OpenKCC.Demo.Editor",
+    "rootNamespace": "com.nickmaltbie.OpenKCC.Demo.Editor",
     "references": [
         "nickmaltbie.OpenKCC",
         "nickmaltbie.OpenKCC.Demo",

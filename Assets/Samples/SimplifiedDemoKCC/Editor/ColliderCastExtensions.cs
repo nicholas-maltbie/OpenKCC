@@ -20,7 +20,7 @@ using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Demo.Debug
+namespace nickmaltbie.OpenKCC.Demo.Editor
 {
     /// <summary>
     /// Collider cast extensions for debug drawing.

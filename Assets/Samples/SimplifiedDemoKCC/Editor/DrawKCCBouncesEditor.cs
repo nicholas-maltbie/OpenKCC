@@ -16,22 +16,19 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using System.Linq;
 using com.nickmaltbie.OpenKCC.Demo;
-using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Demo.Debug;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEditor;
 using UnityEngine;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
-namespace nickmaltbie.OpenKCC.EditorGizmos
+namespace nickmaltbie.OpenKCC.Demo.Editor
 {
     /// <summary>
     /// Draw the bounces using the gizmos in unity. 
     /// </summary>
-    public class DrawKCCBouncesGizmos : Editor
+    public static class DrawKCCBouncesGizmos
     {
         [DrawGizmo(GizmoType.Selected | GizmoType.Active)]
         public static void DrawGizmoForMyScript(DrawKCCBounces source, GizmoType gizmoType)
@@ -40,7 +37,6 @@ namespace nickmaltbie.OpenKCC.EditorGizmos
 
             Vector3 movement = transform.forward * source.movementDistance;
             IColliderCast colliderCast = source.GetComponent<IColliderCast>();
-            KCCStateMachine kcc = source.GetComponent<KCCStateMachine>();
 
             // Get the bounces the player's movement would make
             var bounces = KCCUtils.GetBounces(
@@ -51,11 +47,11 @@ namespace nickmaltbie.OpenKCC.EditorGizmos
                     {
                         maxBounces = source.maxBounces,
                         pushDecay = 0,
-                        verticalSnapUp = kcc.config.VerticalSnapUp,
-                        stepUpDepth = kcc.config.StepUpDepth,
-                        anglePower = kcc.config.AnglePower,
+                        verticalSnapUp = source.stepHeight,
+                        stepUpDepth = source.stepDepth,
+                        anglePower = 0,
                         canSnapUp = true,
-                        up = kcc.config.Up,
+                        up = Vector3.up,
                         colliderCast = colliderCast,
                         push = null
                     }).ToList();
@@ -67,7 +63,9 @@ namespace nickmaltbie.OpenKCC.EditorGizmos
             {
                 Color orderColor = source.bounceColors[bounce > 0 ? 0 : bounce % source.bounceColors.Length];
 
-                if (bounceData.action == MovementAction.Move || bounceData.action == MovementAction.Bounce)
+                if (bounceData.action == MovementAction.Move ||
+                    bounceData.action == MovementAction.Bounce ||
+                    bounceData.action == MovementAction.SnapUp)
                 {
                     if (bounce == 0 && !source.drawInitialCollider)
                     {
@@ -89,7 +87,8 @@ namespace nickmaltbie.OpenKCC.EditorGizmos
                     Gizmos.color = orderColor;
                     Gizmos.DrawLine(bounceData.initialPosition, bounceData.finalPosition);
                 }
-                else if (bounceData.action == MovementAction.Bounce)
+                else if (bounceData.action == MovementAction.Bounce ||
+                    bounceData.action == MovementAction.SnapUp)
                 {
                     Gizmos.color = orderColor;
                     Gizmos.DrawLine(bounceData.initialPosition, bounceData.finalPosition);
