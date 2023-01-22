@@ -219,14 +219,11 @@ namespace nickmaltbie.OpenKCC.Demo
         /// <summary>
         /// Is the player pressing jump action.
         /// </summary>
-        private bool jumpInputPressed = false;
+        private bool jumpInputPressed => jumpAction.action.IsPressed();
 
         public void Start()
         {
             capsuleCollider = GetComponent<CapsuleCollider>();
-
-            jumpAction.action.performed += value => jumpInputPressed = value.ReadValueAsButton();
-
             Rigidbody rigidbody = GetComponent<Rigidbody>();
             rigidbody.isKinematic = true;
         }
