@@ -3,7 +3,7 @@
     "rootNamespace": "com.nickmaltbie.OpenKCC.Demo",
     "references": [
         "nickmaltbie.OpenKCC",
-        "nickmaltbie.OpenKCC.Editor",
+        "nickmaltbie.OpenKCC.Debug",
         "Unity.InputSystem",
         "nickmaltbie.StateMachineUnity"
     ],
