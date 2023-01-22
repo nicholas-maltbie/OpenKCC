@@ -17,13 +17,13 @@
 // SOFTWARE.
 
 using System.Linq;
-using com.nickmaltbie.OpenKCC.Demo;
+using com.nickmaltbie.OpenKCC.Debug;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEditor;
 using UnityEngine;
 using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
-namespace nickmaltbie.OpenKCC.Demo.Editor
+namespace nickmaltbie.OpenKCC.Editor
 {
     /// <summary>
     /// Draw the bounces using the gizmos in unity. 

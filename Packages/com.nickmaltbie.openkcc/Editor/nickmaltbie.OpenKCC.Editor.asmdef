@@ -1,9 +1,9 @@
 {
-    "name": "nickmaltbie.OpenKCC.Demo.Editor",
-    "rootNamespace": "com.nickmaltbie.OpenKCC.Demo.Editor",
+    "name": "nickmaltbie.OpenKCC.Editor",
+    "rootNamespace": "com.nickmaltbie.OpenKCC.Editor",
     "references": [
         "nickmaltbie.OpenKCC",
-        "nickmaltbie.OpenKCC.Demo",
+        "nickmaltbie.OpenKCC.Debug",
         "Unity.InputSystem",
         "nickmaltbie.StateMachineUnity"
     ],
