@@ -231,7 +231,7 @@ MonoBehaviour:
   movePlayer: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   jumpAction: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   rotateSpeed: 90
-  cameraTransform: {fileID: 0}
+  cameraTransform: {fileID: 640097780250268970}
   maxBounces: 5
   moveSpeed: 5
   anglePower: 0.5

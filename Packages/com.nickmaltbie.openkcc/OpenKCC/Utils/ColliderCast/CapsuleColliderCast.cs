@@ -41,12 +41,12 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Capsule Collider associated with this object.
         /// </summary>
-        internal CapsuleCollider CapsuleCollider => _capsuleCollider ??= GetComponent<CapsuleCollider>();
+        public CapsuleCollider CapsuleCollider => _capsuleCollider ??= GetComponent<CapsuleCollider>();
 
         /// <summary>
         /// Debug mesh associated with capsule collider.
         /// </summary>
-        internal Mesh DebugCapsuleMesh => _debugCapsuleMesh ??=
+        public Mesh DebugCapsuleMesh => _debugCapsuleMesh ??=
             CapsuleMaker.CapsuleData(radius: CapsuleCollider.radius, depth: CapsuleCollider.height - CapsuleCollider.radius * 2);
 
         /// <inheritdoc/>

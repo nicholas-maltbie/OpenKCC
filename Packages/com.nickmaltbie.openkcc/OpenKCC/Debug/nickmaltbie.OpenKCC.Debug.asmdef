@@ -1,11 +1,14 @@
 {
-    "name": "nickmaltbie.OpenKCC.Demo",
-    "rootNamespace": "com.nickmaltbie.OpenKCC.Demo",
+    "name": "nickmaltbie.OpenKCC.Debug",
+    "rootNamespace": "nickmaltbie.OpenKCC.Debug",
     "references": [
-        "nickmaltbie.OpenKCC",
-        "nickmaltbie.OpenKCC.Debug",
         "Unity.InputSystem",
-        "nickmaltbie.StateMachineUnity"
+        "Unity.TextMeshPro",
+        "nickmaltbie.ScreenManager",
+        "nickmaltbie.ScreenManager.Actions",
+        "nickmaltbie.TestUtilsUnity",
+        "nickmaltbie.StateMachineUnity",
+        "nickmaltbie.OpenKCC"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

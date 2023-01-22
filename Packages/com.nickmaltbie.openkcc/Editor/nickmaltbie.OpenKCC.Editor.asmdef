@@ -1,8 +1,11 @@
 {
     "name": "nickmaltbie.OpenKCC.Editor",
-    "rootNamespace": "nickmaltbie.OpenKCC.Editor",
+    "rootNamespace": "com.nickmaltbie.OpenKCC.Editor",
     "references": [
-        "GUID:a39c454983160b74bad1ea1398c0807f"
+        "nickmaltbie.OpenKCC",
+        "nickmaltbie.OpenKCC.Debug",
+        "Unity.InputSystem",
+        "nickmaltbie.StateMachineUnity"
     ],
     "includePlatforms": [
         "Editor"
