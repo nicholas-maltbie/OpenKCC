@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Refactored debug draw code for character controller.
 * Updated APIs available in the KCCMovementEngine to allow
     for passing a movement in world space to move the player.
 * Changed KCCMovementEngine to get the configuration values
