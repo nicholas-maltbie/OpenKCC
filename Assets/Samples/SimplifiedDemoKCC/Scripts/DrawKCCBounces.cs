@@ -101,5 +101,29 @@ namespace com.nickmaltbie.OpenKCC.Demo
         [SerializeField]
         [Tooltip("Color of overlapping objects for the character collider gizmo.")]
         public Color overlapColor = Color.red;
+
+        [SerializeField]
+        public float maxDrawDistance = 10.0f;
+
+        [SerializeField]
+        public float drawMoveRate = 0.5f;
+
+        [SerializeField]
+        public float drawDelay = 1.0f;
+
+        [SerializeField]
+        public float elapsed = 0.0f;
+
+        public void Update()
+        {
+            elapsed += Time.deltaTime;
+
+            movementDistance = 0.0f;
+
+            if (elapsed >= drawDelay)
+            {
+                movementDistance = Mathf.Min((elapsed - drawDelay) * drawMoveRate, maxDrawDistance);
+            }
+        }
     }
 }
