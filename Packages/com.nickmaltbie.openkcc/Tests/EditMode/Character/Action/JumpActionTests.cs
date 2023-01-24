@@ -126,8 +126,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
 
             jumpAction.Update();
             Assert.IsTrue(jumpAction.AttemptingJump);
-            Assert.IsTrue(jumpAction.ApplyJumpIfPossible());
-            Assert.IsFalse(jumpAction.ApplyJumpIfPossible());
+            Assert.IsTrue(jumpAction.ApplyJumpIfPossible(kccGroundedMock.Object));
+            Assert.IsFalse(jumpAction.ApplyJumpIfPossible(kccGroundedMock.Object));
         }
 
         [Test]

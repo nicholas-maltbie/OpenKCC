@@ -136,17 +136,13 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         protected void SnapPlayerDown()
         {
-            bool didHit = ColliderCast.CastSelf(
+            transform.position = KCCUtils.SnapPlayerDown(
                 transform.position,
                 transform.rotation,
                 -Up,
                 SnapDown,
-                out IRaycastHit hit);
-
-            if (didHit && hit.distance > KCCUtils.Epsilon)
-            {
-                transform.position += -Up * (hit.distance - KCCUtils.Epsilon * 2);
-            }
+                KCCUtils.Epsilon,
+                ColliderCast);
         }
 
         /// <summary>
@@ -209,7 +205,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Have the player to visually move with the ground.
         /// </summary>
-        public void LateUpdate()
+        public void Update()
         {
             relativeParentConfig.FollowGround(transform);
         }
@@ -242,7 +238,8 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             // Compute player relative movement state based on final pos
-            CheckGrounded();
+            bool snappedUp = bounces.Any(bounce => bounce.action == KCCUtils.MovementAction.SnapUp);
+            CheckGrounded(snappedUp);
 
             Vector3 delta = transform.position - start;
             transform.position += relativeParentConfig.UpdateMovingGround(transform.position, groundedState, delta, unityService.fixedDeltaTime);
@@ -286,7 +283,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Update the current grounded state of this kinematic character controller.
         /// </summary>
-        protected KCCGroundedState CheckGrounded()
+        protected KCCGroundedState CheckGrounded(bool snappedUp)
         {
             bool didHit = ColliderCast.CastSelf(
                 transform.position,
@@ -295,17 +292,22 @@ namespace nickmaltbie.OpenKCC.Character
                 GroundCheckDistance,
                 out IRaycastHit hit);
 
+            Vector3 normal = hit.normal;
+
+            if (snappedUp)
+            {
+                normal = groundedState.SurfaceNormal;
+            }
+
             groundedState = new KCCGroundedState(
                 distanceToGround : hit.distance,
                 onGround : didHit,
-                angle : Vector3.Angle(hit.normal, Up),
-                surfaceNormal : hit.normal,
+                angle : Vector3.Angle(normal, Up),
+                surfaceNormal : normal,
                 groundHitPosition : hit.distance > 0 ? hit.point : groundedState.GroundHitPosition,
                 floor : hit.collider?.gameObject,
                 groundedDistance : GroundedDistance,
                 maxWalkAngle: MaxWalkAngle);
-            
-            UnityEngine.Debug.Log($"distanceToGround: {groundedState.DistanceToGround}");
 
             return groundedState;
         }

@@ -249,18 +249,18 @@ namespace nickmaltbie.OpenKCC.Character
         public override void FixedUpdate()
         {
             GetComponent<Rigidbody>().isKinematic = true;
-            jumpAction.ApplyJumpIfPossible();
-            movementEngine.MovePlayer(GetDesiredVelocity() * unityService.fixedDeltaTime);
+            jumpAction.ApplyJumpIfPossible(movementEngine.groundedState);
+            movementEngine.MovePlayer((GetDesiredVelocity() + Velocity) * unityService.fixedDeltaTime);
             UpdateGroundedState();
 
             // Apply gravity if needed
-            if (movementEngine.groundedState.StandingOnGround)
-            {
-                Velocity = Vector3.zero;
-            }
-            else if (movementEngine.groundedState.Falling || movementEngine.groundedState.Sliding)
+            if (movementEngine.groundedState.Falling || movementEngine.groundedState.Sliding)
             {
                 Velocity += Physics.gravity * unityService.fixedDeltaTime;
+            }
+            else if (movementEngine.groundedState.StandingOnGround)
+            {
+                Velocity = Vector3.zero;
             }
 
             base.FixedUpdate();
@@ -277,7 +277,6 @@ namespace nickmaltbie.OpenKCC.Character
         public void ApplyJump(Vector3 velocity)
         {
             Velocity = velocity + movementEngine.GetGroundVelocity(Vector3.zero);
-            UnityEngine.Debug.Log($"Jumping, velocity:{Velocity.ToString("F3")}");
             RaiseEvent(JumpEvent.Instance);
         }
 
@@ -292,7 +291,7 @@ namespace nickmaltbie.OpenKCC.Character
             Vector3 projectedMovement = movementEngine.GetProjectedMovement(rotatedMovement);
             float speed = MovementSettingsAttribute.GetSpeed(CurrentState, this);
             Vector3 scaledMovement = projectedMovement * speed;
-            return scaledMovement + Velocity;
+            return scaledMovement;
         }
 
         /// <summary>

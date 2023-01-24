@@ -110,7 +110,6 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="rotation">Rotation of the kcc.</param>
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
-        /// <param name="minSnapThreshold">Minimum snap threshold for snapping down.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
         /// <returns></returns>
         public static Vector3 GetSnapDelta(
@@ -118,7 +117,6 @@ namespace nickmaltbie.OpenKCC.Utils
             Quaternion rotation,
             Vector3 dir,
             float dist,
-            float minSnapThreshold,
             IColliderCast colliderCast)
         {
             bool didHit = colliderCast.CastSelf(
@@ -128,7 +126,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 dist,
                 out IRaycastHit hit);
 
-            if (didHit && hit.distance > minSnapThreshold)
+            if (didHit && hit.distance > Epsilon)
             {
                 return dir * (hit.distance - Epsilon);
             }
@@ -154,7 +152,7 @@ namespace nickmaltbie.OpenKCC.Utils
             float minSnapThreshold,
             IColliderCast colliderCast)
         {
-            return position + GetSnapDelta(position, rotation, dir, dist, minSnapThreshold, colliderCast);
+            return position + GetSnapDelta(position, rotation, dir, dist, colliderCast);
         }
 
         /// <summary>
@@ -340,20 +338,6 @@ namespace nickmaltbie.OpenKCC.Utils
                 };
             }
 
-            // If we are really close to something, just exit
-            if (hit.distance <= KCCUtils.Epsilon)
-            {
-                return new KCCBounce
-                {
-                    initialPosition = initialPosition,
-                    finalPosition = initialPosition,
-                    initialMomentum = initialMomentum,
-                    remainingMomentum = Vector3.zero,
-                    hit = hit,
-                    action = MovementAction.Stop,
-                };
-            }
-
             float fraction = hit.distance / distance;
             // Set the fraction of remaining movement (minus some small value)
             Vector3 deltaBounce = remainingMomentum * fraction;
@@ -462,11 +446,6 @@ namespace nickmaltbie.OpenKCC.Utils
                     yield return bounce;
                     break;
                 }
-                else if (bounce.action == MovementAction.Stop)
-                {
-                    yield return bounce;
-                    yield break;
-                }
                 else if (bounce.action == MovementAction.SnapUp)
                 {
                     didSnapUp = true;
@@ -487,7 +466,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didSnapUp)
             {
-                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp + Epsilon * 2, Epsilon * 2, config.ColliderCast);
+                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp, Epsilon, config.ColliderCast);
             }
 
             // We're done, player was moved as part of loop

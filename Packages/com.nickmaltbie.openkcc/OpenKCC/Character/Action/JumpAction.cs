@@ -114,9 +114,9 @@ namespace nickmaltbie.OpenKCC.Character.Action
         /// jump and the player can jump.
         /// </summary>
         /// <returns>True if the player jumped, false otherwise.</returns>
-        public bool ApplyJumpIfPossible()
+        public bool ApplyJumpIfPossible(IKCCGrounded grounded)
         {
-            UnityEngine.Debug.Log($"AttemptingJump:{AttemptingJump} CanPerform:{CanPerform}");
+            this.kccGrounded = grounded;
 
             if (AttemptingJump && CanPerform)
             {

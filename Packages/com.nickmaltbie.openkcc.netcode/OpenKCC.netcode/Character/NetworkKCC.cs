@@ -250,7 +250,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
 
             if (IsOwner)
             {
-                config.jumpAction.ApplyJumpIfPossible();
+                config.jumpAction.ApplyJumpIfPossible(movementEngine.groundedState);
                 movementEngine.MovePlayer(GetDesiredVelocity() * unityService.fixedDeltaTime);
                 UpdateGroundedState();
                 GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
