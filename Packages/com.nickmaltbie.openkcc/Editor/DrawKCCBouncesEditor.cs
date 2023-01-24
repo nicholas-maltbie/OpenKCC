@@ -45,15 +45,13 @@ namespace nickmaltbie.OpenKCC.Editor
                     transform.rotation,
                     new KCCConfig
                     {
-                        maxBounces = source.maxBounces,
-                        pushDecay = 0,
-                        verticalSnapUp = source.stepHeight,
-                        stepUpDepth = source.stepDepth,
-                        anglePower = 0,
-                        canSnapUp = true,
-                        up = Vector3.up,
-                        colliderCast = colliderCast,
-                        push = null
+                        MaxBounces = source.maxBounces,
+                        VerticalSnapUp = source.stepHeight,
+                        StepUpDepth = source.stepDepth,
+                        AnglePower = 0,
+                        CanSnapUp = true,
+                        Up = Vector3.up,
+                        ColliderCast = colliderCast,
                     }).ToList();
 
             int bounce = 0;

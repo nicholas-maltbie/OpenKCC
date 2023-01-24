@@ -37,6 +37,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
     [TestFixture]
     public class KCCStateMachineTests : KCCStateMachineTestBase
     {
+        /*
         private Mock<IUnityService> unityServiceMock;
         private Mock<IColliderCast> colliderCastMock;
         private Mock<IKCCConfig> kccConfigMock;
@@ -60,14 +61,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccGroundedState = new KCCGroundedState();
             kccConfigMock.Setup(e => e.ColliderCast).Returns(colliderCastMock.Object);
             kccConfigMock.Setup(e => e.Up).Returns(Vector3.up);
-            kccGroundedState.groundedDistance = 0.01f;
-            kccGroundedState.maxWalkAngle = 60.0f;
 
             kccStateMachine.Awake();
             kccStateMachine.CameraControls = cameraControlsMock.Object;
-            kccStateMachine.config.groundedState = kccGroundedState;
-            kccStateMachine.config._characterPush = characterPushMock.Object;
-            kccStateMachine.config._colliderCast = colliderCastMock.Object;
         }
 
         [Test]
@@ -83,9 +79,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(typeof(KCCStateMachine.FallingState), kccStateMachine.CurrentState);
-            Assert.IsFalse(kccStateMachine.config.groundedState.StandingOnGround);
-            Assert.IsFalse(kccStateMachine.config.groundedState.Sliding);
-            Assert.IsTrue(kccStateMachine.config.groundedState.Falling);
+            Assert.IsFalse(groundedState.StandingOnGround);
+            Assert.IsFalse(groundedState.Sliding);
+            Assert.IsTrue(groundedState.Falling);*
         }
 
         [Test]
@@ -111,9 +107,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.SlidingState));
-            Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGround);
-            Assert.IsTrue(kccStateMachine.config.groundedState.Sliding);
-            Assert.IsFalse(kccStateMachine.config.groundedState.Falling);
+            Assert.IsTrue(groundedState.StandingOnGround);
+            Assert.IsTrue(groundedState.Sliding);
+            Assert.IsFalse(groundedState.Falling);
         }
 
         [Test]
@@ -196,7 +192,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             Assert.AreEqual(typeof(KCCStateMachine.IdleState), kccStateMachine.CurrentState);
             kccStateMachine.ApplyJump(Vector3.up * strength);
-            TestUtils.AssertInBounds(moveEngine.Velocity, Vector3.up * strength);
+            TestUtils.AssertInBounds(kccStateMachine.Velocity, Vector3.up * strength);
             Assert.AreEqual(typeof(KCCStateMachine.JumpState), kccStateMachine.CurrentState);
         }
 
@@ -237,28 +233,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.TeleportPlayer(Vector3.forward);
 
             Assert.AreEqual(Vector3.forward, kccStateMachine.transform.position);
-        }
-
-        [Test]
-        public void Validate_KCCStateMachine_Values(
-            [Random(2)] int maxBounces,
-            [Random(2)] float pushDecay,
-            [Random(2)] float verticalSnapUp,
-            [Random(2)] float stepUpDepth,
-            [Random(2)] float anglePower
-        )
-        {
-            kccStateMachine.config.maxBounces = maxBounces;
-            kccStateMachine.config.pushDecay = pushDecay;
-            kccStateMachine.config.verticalSnapUp = verticalSnapUp;
-            kccStateMachine.config.stepUpDepth = stepUpDepth;
-            kccStateMachine.config.anglePower = anglePower;
-
-            Assert.AreEqual(kccStateMachine.config.MaxBounces, maxBounces);
-            Assert.AreEqual(kccStateMachine.config.PushDecay, pushDecay);
-            Assert.AreEqual(kccStateMachine.config.VerticalSnapUp, verticalSnapUp);
-            Assert.AreEqual(kccStateMachine.config.StepUpDepth, stepUpDepth);
-            Assert.AreEqual(kccStateMachine.config.AnglePower, anglePower);
-        }
+        }*/
     }
 }

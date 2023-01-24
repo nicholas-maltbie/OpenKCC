@@ -39,13 +39,14 @@ namespace nickmaltbie.OpenKCC.netcode.Character
     [RequireComponent(typeof(KCCMovementEngine))]
     [RequireComponent(typeof(Rigidbody))]
     [DefaultExecutionOrder(1000)]
-    public class NetworkKCC : NetworkSMAnim, IJumping, IGetKCCConfig, IGetKCCGrounded
+    public class NetworkKCC : NetworkSMAnim, IJumping
     {
         /// <summary>
         /// Values for configuring and managing KCC Config.
         /// </summary>
         [SerializeField]
         public HumanoidKCCConfig config = new HumanoidKCCConfig();
+
         /// <summary>
         /// Time in which the player has been falling.
         /// </summary>
@@ -87,6 +88,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// Movement engine for controlling the kinematic character controller.
         /// </summary>
         protected KCCMovementEngine movementEngine;
+
+        /// <summary>
+        /// Current velocity of the player.
+        /// </summary>
+        public Vector3 Velocity { get; protected set; }
 
         /// <summary>
         /// Animation movement for the player
@@ -170,9 +176,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// </summary>
         public void UpdateGroundedState()
         {
-            var upwardVelocity = Vector3.Project(movementEngine.Velocity, config.Up);
-            _ = Vector3.Dot(upwardVelocity, config.Up) > 0;
-
             if (config.groundedState.Falling)
             {
                 RaiseEvent(LeaveGroundEvent.Instance);
@@ -234,10 +237,10 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public Vector3 GetDesiredVelocity()
         {
             Vector3 rotatedMovement = HorizPlaneView * InputMovement;
-            Vector3 projectedMovement = config.groundedState.GetProjectedMovement(rotatedMovement);
+            Vector3 projectedMovement = movementEngine.GetProjectedMovement(rotatedMovement);
             float speed = MovementSettingsAttribute.GetSpeed(CurrentState, config);
             Vector3 scaledMovement = projectedMovement * speed;
-            return scaledMovement;
+            return scaledMovement + Velocity;
         }
 
         public override void FixedUpdate()
@@ -248,9 +251,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             if (IsOwner)
             {
                 config.jumpAction.ApplyJumpIfPossible();
-                movementEngine.MovePlayer(
-                    unityService.fixedDeltaTime,
-                    GetDesiredVelocity() * unityService.fixedDeltaTime);
+                movementEngine.MovePlayer(GetDesiredVelocity() * unityService.fixedDeltaTime);
                 UpdateGroundedState();
                 GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
             }
@@ -287,7 +288,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             if (IsOwner)
             {
                 config.Jumping = true;
-                movementEngine.ApplyJump(velocity);
+                Velocity = velocity;
                 RaiseEvent(JumpEvent.Instance);
             }
         }

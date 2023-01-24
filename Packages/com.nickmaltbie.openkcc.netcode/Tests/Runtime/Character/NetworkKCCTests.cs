@@ -174,7 +174,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
                     i =>
                     {
                         NetworkKCC networkKCC = GetAttachedNetworkBehaviour(i, i);
-                        return Vector3.Project(networkKCC.GetComponent<KCCMovementEngine>().Velocity, conveyer.push.normalized).magnitude >= 1.0;
+                        return Vector3.Project(networkKCC.Velocity, conveyer.push.normalized).magnitude >= 1.0;
                     }));
         }
 

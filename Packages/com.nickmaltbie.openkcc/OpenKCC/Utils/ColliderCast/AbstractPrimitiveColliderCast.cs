@@ -68,7 +68,6 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
 
                 float distPush = Mathf.Min(maxDistance, distance + KCCUtils.Epsilon);
                 Vector3 push = direction.normalized * distPush;
-                position += push;
                 pushed += push;
             }
 

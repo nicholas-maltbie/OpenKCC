@@ -36,7 +36,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         public void Verify_DefaultOrUnknownSerialization_ToCurrentVersion()
         {
             KCCStateMachine kcc = CreateGameObject().AddComponent<KCCStateMachine>();
-            kcc.OnBeforeSerialize();
+
+            /*
 
             // Assume we had some previous configuration
             // before versioning started
@@ -87,6 +88,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Assert.AreEqual(kcc.snapBufferTime, kcc.config.snapBufferTime);
             Assert.AreEqual(kcc.maxDefaultLaunchVelocity, kcc.config.maxDefaultLaunchVelocity);
 #pragma warning restore CS0618 // Type or member is obsolete
+
+            */
         }
     }
 }

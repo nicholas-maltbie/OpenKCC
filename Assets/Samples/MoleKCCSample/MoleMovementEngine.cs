@@ -24,10 +24,9 @@ using UnityEngine;
 namespace nickmaltbie.OpenKCC.MoleKCCSample
 {
     [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(IGetKCCConfig))]
-    [RequireComponent(typeof(IGetKCCGrounded))]
     public class MoleMovementEngine : KCCMovementEngine
     {
+        /*
         /// <inheritdoc/>
         protected override Vector3 GetMovement(
             Vector3 position,
@@ -62,6 +61,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             }
 
             return finalPos - position;
-        }
+        }*/
     }
 }

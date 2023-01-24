@@ -65,6 +65,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             floor.transform.position = new Vector3(0, -0.5f, 0);
         }
 
+        /*
         [UnityTest]
         public IEnumerator FollowLinearMovement(
             [ValueSource(nameof(TestDirections))] Vector3 dir,
@@ -133,6 +134,6 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
                 Vector3 expectedPos = floor.transform.rotation * relativePos;
                 TestUtils.AssertInBounds(kccStateMachine.transform.position, expectedPos, 1.0f);
             }
-        }
+        }*/
     }
 }

@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Attributes;
@@ -41,29 +40,74 @@ namespace nickmaltbie.OpenKCC.Character
     [DefaultExecutionOrder(1000)]
     public class KCCStateMachine :
         FixedSMAnim,
-        IJumping,
-        IGetKCCConfig,
-        IGetKCCGrounded,
-        ISerializationCallbackReceiver
+        IJumping
     {
-        /// <summary>
-        /// Current version fo the serialization.
-        /// </summary>
-        public const string CurrentSerializationVersion = "v1.0.0";
+        [Header("Input Controls")]
 
         /// <summary>
-        /// Version of serialization for the KCC state machine.
-        /// Used to migrate to newer version if using older version.
+        /// Action reference for moving the player.
         /// </summary>
-        [HideInInspector]
+        [Tooltip("Action reference for moving the player")]
         [SerializeField]
-        internal string serializationVersion;
+        public InputActionReference moveActionReference;
 
         /// <summary>
-        /// Values for configuring and managing KCC Config.
+        /// Action reference for sprinting.
         /// </summary>
+        [Tooltip("Action reference for moving the player")]
         [SerializeField]
-        public HumanoidKCCConfig config = new HumanoidKCCConfig();
+        public InputActionReference sprintActionReference;
+
+        /// <summary>
+        /// Action reference for jumping.
+        /// </summary>
+        [Tooltip("Action reference for jumping")]
+        [SerializeField]
+        public JumpAction jumpAction;
+
+        [Header("Movement Settings")]
+
+        /// <summary>
+        /// Speed of player movement when walking.
+        /// </summary>
+        [Tooltip("Speed of player when walking")]
+        [SerializeField]
+        public float walkingSpeed = 7.5f;
+
+        /// <summary>
+        /// Speed of player when sprinting.
+        /// </summary>
+        [Tooltip("Speed of player when sprinting")]
+        [SerializeField]
+        public float sprintSpeed = 10.0f;
+
+        /// <summary>
+        /// Override move action for testing.
+        /// </summary>
+        private InputAction overrideMoveAction;
+
+        /// <summary>
+        /// Override move action for testing.
+        /// </summary>
+        private InputAction overrideSprintAction;
+
+        /// <summary>
+        /// Gets the move action associated with this humaoid kcc config.
+        /// </summary>
+        public InputAction MoveAction
+        {
+            get => overrideMoveAction ?? moveActionReference?.action;
+            set => overrideMoveAction = value;
+        }
+
+        /// <summary>
+        /// Gets the move action associated with this humaoid kcc config.
+        /// </summary>
+        public InputAction SprintAction
+        {
+            get => overrideSprintAction ?? sprintActionReference?.action;
+            set => overrideSprintAction = value;
+        }
 
         /// <summary>
         /// Camera controls associated with the player.
@@ -75,11 +119,10 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         protected KCCMovementEngine movementEngine;
 
-        /// <inheritdoc/>
-        public IKCCConfig kccConfig => config;
-
-        /// <inheritdoc/>
-        public IKCCGrounded kccGrounded => config.groundedState;
+        /// <summary>
+        /// Current velocity of the player.
+        /// </summary>
+        public Vector3 Velocity { get; protected set; }
 
         /// <summary>
         /// Get the camera controls associated with the state machine.
@@ -109,7 +152,7 @@ namespace nickmaltbie.OpenKCC.Character
         [TransitionOnAnimationComplete(typeof(FallingState), 0.15f, true)]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class JumpState : State { }
 
         [Animation(LandingAnimState, 0.1f, true)]
@@ -118,7 +161,7 @@ namespace nickmaltbie.OpenKCC.Character
         [AnimationTransition(typeof(JumpEvent), typeof(JumpState), 0.35f, true)]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class LandingState : State { }
 
         [Animation(WalkingAnimState, 0.1f, true)]
@@ -127,7 +170,7 @@ namespace nickmaltbie.OpenKCC.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(StartSprintEvent), typeof(SprintingState))]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class WalkingState : State { }
 
         [Animation(SprintingAnimState, 0.1f, true)]
@@ -136,14 +179,14 @@ namespace nickmaltbie.OpenKCC.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(StopSprintEvent), typeof(WalkingState))]
-        [MovementSettings(SpeedConfig = nameof(config.sprintSpeed))]
+        [MovementSettings(SpeedConfig = nameof(sprintSpeed))]
         public class SprintingState : State { }
 
         [Animation(SlidingAnimState, 0.35f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class SlidingState : State { }
 
         [Animation(FallingAnimState, 0.1f, true)]
@@ -151,14 +194,14 @@ namespace nickmaltbie.OpenKCC.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class FallingState : State { }
 
         [Animation(LongFallingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 1.0f)]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class LongFallingState : State { }
 
         /// <summary>
@@ -171,8 +214,6 @@ namespace nickmaltbie.OpenKCC.Character
             GetComponent<Rigidbody>().isKinematic = true;
             movementEngine = GetComponent<KCCMovementEngine>();
             _cameraControls = GetComponent<ICameraControls>();
-            config._characterPush = GetComponent<ICharacterPush>();
-            config._colliderCast = GetComponent<IColliderCast>();
             SetupInputs();
         }
 
@@ -181,18 +222,15 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void UpdateGroundedState()
         {
-            var upwardVelocity = Vector3.Project(movementEngine.Velocity, config.Up);
-            _ = Vector3.Dot(upwardVelocity, config.Up) > 0;
-
-            if (config.groundedState.Falling)
+            if (movementEngine.groundedState.Falling)
             {
                 RaiseEvent(LeaveGroundEvent.Instance);
             }
-            else if (config.groundedState.Sliding)
+            else if (movementEngine.groundedState.Sliding)
             {
                 RaiseEvent(SteepSlopeEvent.Instance);
             }
-            else if (config.groundedState.StandingOnGround)
+            else if (movementEngine.groundedState.StandingOnGround)
             {
                 RaiseEvent(GroundedEvent.Instance);
             }
@@ -203,20 +241,27 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void SetupInputs()
         {
-            config.jumpAction?.Setup(config.groundedState, config, this);
-            config.MoveAction?.Enable();
+            jumpAction?.Setup(movementEngine.groundedState, movementEngine, this);
+            MoveAction?.Enable();
         }
 
         /// <inheritdoc/>
         public override void FixedUpdate()
         {
             GetComponent<Rigidbody>().isKinematic = true;
-            config.Jumping = CurrentState == typeof(JumpState);
-            config.jumpAction.ApplyJumpIfPossible();
-            movementEngine.MovePlayer(
-                unityService.fixedDeltaTime,
-                GetDesiredVelocity() * unityService.fixedDeltaTime);
+            jumpAction.ApplyJumpIfPossible();
+            movementEngine.MovePlayer(GetDesiredVelocity() * unityService.fixedDeltaTime);
             UpdateGroundedState();
+
+            // Apply gravity if needed
+            if (movementEngine.groundedState.StandingOnGround)
+            {
+                Velocity = Vector3.zero;
+            }
+            else if (movementEngine.groundedState.Falling || movementEngine.groundedState.Sliding)
+            {
+                Velocity += Physics.gravity * unityService.fixedDeltaTime;
+            }
 
             base.FixedUpdate();
         }
@@ -231,8 +276,8 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public void ApplyJump(Vector3 velocity)
         {
-            movementEngine.ApplyJump(velocity);
-            config.Jumping = true;
+            Velocity = velocity + movementEngine.GetGroundVelocity(Vector3.zero);
+            UnityEngine.Debug.Log($"Jumping, velocity:{Velocity.ToString("F3")}");
             RaiseEvent(JumpEvent.Instance);
         }
 
@@ -244,10 +289,10 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 GetDesiredVelocity()
         {
             Vector3 rotatedMovement = HorizPlaneView * InputMovement;
-            Vector3 projectedMovement = config.groundedState.GetProjectedMovement(rotatedMovement);
-            float speed = MovementSettingsAttribute.GetSpeed(CurrentState, config);
+            Vector3 projectedMovement = movementEngine.GetProjectedMovement(rotatedMovement);
+            float speed = MovementSettingsAttribute.GetSpeed(CurrentState, this);
             Vector3 scaledMovement = projectedMovement * speed;
-            return scaledMovement;
+            return scaledMovement + Velocity;
         }
 
         /// <summary>
@@ -265,9 +310,9 @@ namespace nickmaltbie.OpenKCC.Character
         public void ReadPlayerMovement()
         {
             bool denyMovement = PlayerInputUtils.playerMovementState == PlayerInputState.Deny;
-            Vector2 moveVector = denyMovement ? Vector2.zero : config.MoveAction?.ReadValue<Vector2>() ?? Vector2.zero;
+            Vector2 moveVector = denyMovement ? Vector2.zero : MoveAction?.ReadValue<Vector2>() ?? Vector2.zero;
             InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
-            config.jumpAction.Update();
+            jumpAction.Update();
 
             float moveX = AttachedAnimator.GetFloat("MoveX");
             float moveY = AttachedAnimator.GetFloat("MoveY");
@@ -282,7 +327,7 @@ namespace nickmaltbie.OpenKCC.Character
 
             if (moving)
             {
-                if (config.SprintAction?.IsPressed() ?? false)
+                if (SprintAction?.IsPressed() ?? false)
                 {
                     RaiseEvent(StartSprintEvent.Instance);
                 }
@@ -292,194 +337,5 @@ namespace nickmaltbie.OpenKCC.Character
                 }
             }
         }
-
-        #region Parse Depreciated Configurations of KCC StateMachine.
-        /// <summary>
-        /// Persist volatile fields to serialized data before
-        /// unity serializes the object.
-        /// </summary>
-        public void OnBeforeSerialize()
-        {
-            // Do nothing for now...
-        }
-
-        /// <summary>
-        /// Allow for parsing depreciated fields into the newer
-        /// format.
-        /// </summary>
-        public void OnAfterDeserialize()
-        {
-            // If HumanoidKCCConfig config is uninitialized, read in values from previous
-            // depreciated fields
-            if (string.IsNullOrEmpty(serializationVersion))
-            {
-                // Disabling warnings because this method is to convert from obsolete
-                // fields to current structure.
-#pragma warning disable CS0618 // Type or member is obsolete
-                config.moveActionReference = moveAction;
-                config.sprintActionReference = sprintAction;
-                config.jumpAction = jumpAction;
-                config.groundedState = groundedState;
-                config.gravity = gravity;
-                config.walkingSpeed = walkingSpeed;
-                config.sprintSpeed = sprintSpeed;
-                config.maxBounces = maxBounces;
-                config.pushDecay = pushDecay;
-                config.anglePower = anglePower;
-                config.maxPushSpeed = maxPushSpeed;
-                config.verticalSnapDown = verticalSnapDown;
-                config.stepUpDepth = stepUpDepth;
-                config.verticalSnapUp = verticalSnapUp;
-                config.snapBufferTime = snapBufferTime;
-                config.maxDefaultLaunchVelocity = maxDefaultLaunchVelocity;
-                serializationVersion = CurrentSerializationVersion;
-#pragma warning restore CS0618 // Type or member is obsolete
-            }
-        }
-        #endregion
-
-        #region Fields To Be Depreciated
-        private const string DepreciatedMessage =
-            "This field is no longer used and has been replaced with a" +
-            "corresponding HumanoidKCCConfig config field. Please do not use" +
-            "this value as it will be removed in a future update.";
-
-        /// <summary>
-        /// Action reference for moving the player.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public InputActionReference moveAction;
-
-        /// <summary>
-        /// Action reference for sprinting.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public InputActionReference sprintAction;
-
-        /// <summary>
-        /// Action reference for jumping.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public JumpAction jumpAction;
-
-        /// <summary>
-        /// Current grounded state and configuration of the player.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public KCCGroundedState groundedState = new KCCGroundedState();
-
-        /// <summary>
-        /// Direction and strength of gravity
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public Vector3 gravity = new Vector3(0, -9.807f, 0);
-
-        /// <summary>
-        /// Speed of player movement when walking.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public float walkingSpeed = 7.5f;
-
-        /// <summary>
-        /// Speed of player when sprinting.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public float sprintSpeed = 10.0f;
-
-        /// <summary>
-        /// Maximum number of time player can bounce of walls/floors/objects during an update.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public int maxBounces = 5;
-
-        /// <summary>
-        /// Decay value of momentum when hitting another object.
-        /// Should be between [0, 1].
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public float pushDecay = 0.9f;
-
-        /// <summary>
-        /// Decrease in momentum factor due to angle change when walking.
-        /// Should be a positive float value. It's an exponential applied to 
-        /// values between [0, 1] so values smaller than 1 create a positive
-        /// curve and grater than 1 for a negative curve.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public float anglePower = 0.5f;
-
-        /// <summary>
-        /// Maximum distance the player can be pushed out of overlapping objects in units per second.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public float maxPushSpeed = 1.0f;
-
-        /// <summary>
-        /// Distance that the character can "snap down" vertical steps.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public float verticalSnapDown = 0.2f;
-
-        /// <summary>
-        /// Minimum depth of a stair for a user to climb up
-        /// (thinner steps than this value will not let the player climb).
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public float stepUpDepth = 0.1f;
-
-        /// <summary>
-        /// Distance that the player can snap up when moving up stairs or vertical steps in terrain.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public float verticalSnapUp = 0.3f;
-
-        /// <summary>
-        /// Time in which the player can snap up or down steps even after starting to fall.
-        /// This property is useful to reduce the jerky stopping and moving effects when
-        /// going up or down cliffs.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public float snapBufferTime = 0.05f;
-
-        /// <summary>
-        /// Max velocity at which the player can be launched
-        /// when gaining momentum from a floor object without
-        /// an IMovingGround attached to it.
-        /// </summary>
-        [HideInInspector]
-        [SerializeField]
-        [Obsolete(DepreciatedMessage)]
-        public float maxDefaultLaunchVelocity = 5.0f;
-        #endregion
     }
 }

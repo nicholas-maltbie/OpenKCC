@@ -59,15 +59,13 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
         /// <value></value>
         public KCCConfig CreateKCCConfig() => new KCCConfig
         {
-            maxBounces = 5,
-            pushDecay = 0.9f,
-            verticalSnapUp = 0.3f,
-            stepUpDepth = 0.1f,
-            anglePower = 1,
-            canSnapUp = true,
-            up = Vector3.up,
-            colliderCast = playerColliderCast,
-            push = characterPush,
+            MaxBounces = 5,
+            VerticalSnapUp = 0.3f,
+            StepUpDepth = 0.1f,
+            AnglePower = 1,
+            CanSnapUp = true,
+            Up = Vector3.up,
+            ColliderCast = playerColliderCast,
         };
 
         /// <summary>
@@ -394,9 +392,9 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
                 // Player should bounce forward and have at least first step be a bounce up
                 KCCConfig config = CreateKCCConfig();
                 config.MaxBounces = Mathf.Min(5);
-                config.stepUpDepth = snapDepth;
-                config.verticalSnapUp = snapHeight;
-                config.canSnapUp = true;
+                config.StepUpDepth = snapDepth;
+                config.VerticalSnapUp = snapHeight;
+                config.CanSnapUp = true;
 
                 // Reset player position
                 playerPosition.position = Vector3.zero;
@@ -405,9 +403,9 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
                 // Edge case, player can walk up steps if player can take multiple steps in one snap
                 int maxStepsAtOnce = (int)Mathf.Floor(snapHeight / stepHeight);
                 float maxStepsDepth = maxStepsAtOnce * stepDepth;
-                bool canClimb = stepHeight <= config.verticalSnapUp && (stepDepth >= config.stepUpDepth || maxStepsDepth >= config.stepUpDepth);
+                bool canClimb = stepHeight <= config.VerticalSnapUp && (stepDepth >= config.StepUpDepth || maxStepsDepth >= config.StepUpDepth);
 
-                Debug.Log($"Computed canClimb:{canClimb} = stepHeight:{stepHeight} <= config.verticalSnapUp:{config.verticalSnapUp} && stepDepth:{stepDepth} >= config.stepUpDepth:{config.stepUpDepth}");
+                Debug.Log($"Computed canClimb:{canClimb} = stepHeight:{stepHeight} <= config.verticalSnapUp:{config.VerticalSnapUp} && stepDepth:{stepDepth} >= config.stepUpDepth:{config.StepUpDepth}");
 
                 // Have player move forward until they hit the top of the steps
                 Func<bool> climbedSteps = () => canClimb &&

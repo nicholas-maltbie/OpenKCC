@@ -340,16 +340,18 @@ namespace nickmaltbie.OpenKCC.Utils
                 };
             }
 
-            // Apply some force to the object hit if it is moveable, Apply force on entity hit
-            if (config.Push != null &&
-                config.Push.CanPushObject(hit.collider))
+            // If we are really close to something, just exit
+            if (hit.distance <= KCCUtils.Epsilon)
             {
-                config.Push.PushObject(new KinematicCharacterControllerHit(
-                    hit.collider, hit.collider?.attachedRigidbody, hit.collider?.gameObject,
-                    hit.collider?.transform, hit.point, hit.normal, remainingMomentum.normalized, movement.magnitude
-                ));
-                // If pushing something, reduce remaining force significantly
-                remainingMomentum *= config.PushDecay;
+                return new KCCBounce
+                {
+                    initialPosition = initialPosition,
+                    finalPosition = initialPosition,
+                    initialMomentum = initialMomentum,
+                    remainingMomentum = Vector3.zero,
+                    hit = hit,
+                    action = MovementAction.Stop,
+                };
             }
 
             float fraction = hit.distance / distance;
@@ -460,6 +462,11 @@ namespace nickmaltbie.OpenKCC.Utils
                     yield return bounce;
                     break;
                 }
+                else if (bounce.action == MovementAction.Stop)
+                {
+                    yield return bounce;
+                    yield break;
+                }
                 else if (bounce.action == MovementAction.SnapUp)
                 {
                     didSnapUp = true;
@@ -493,46 +500,6 @@ namespace nickmaltbie.OpenKCC.Utils
                 action = MovementAction.Stop,
             };
             yield break;
-        }
-
-        /// <summary>
-        /// Gets the velocity of the ground the player is standing on where the player is currently
-        /// </summary>
-        /// <returns>The velocity of the ground at the point the player is standing on</returns>
-        public static Vector3 GetGroundVelocity(IKCCGrounded groundedState, IKCCConfig kccConfig, Vector3 playerVel)
-        {
-            Vector3 groundVelocity = Vector3.zero;
-            IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();
-            Rigidbody rb = groundedState.Floor?.GetComponent<Rigidbody>();
-            if (movingGround != null)
-            {
-                if (movingGround.AvoidTransferMomentum())
-                {
-                    return Vector3.zero;
-                }
-
-                // Weight movement of ground by ground movement weight
-                groundVelocity = movingGround.GetVelocityAtPoint(groundedState.GroundHitPosition);
-                float velocityWeight =
-                    movingGround.GetMovementWeight(groundedState.GroundHitPosition, groundVelocity);
-                float transferWeight =
-                    movingGround.GetTransferMomentumWeight(groundedState.GroundHitPosition, groundVelocity);
-                groundVelocity *= velocityWeight;
-                groundVelocity *= transferWeight;
-            }
-            else if (rb != null && !rb.isKinematic)
-            {
-                Vector3 groundVel = rb.GetPointVelocity(groundedState.GroundHitPosition);
-                float velocity = Mathf.Min(groundVel.magnitude, kccConfig.MaxDefaultLaunchVelocity);
-                groundVelocity = groundVel.normalized * velocity;
-            }
-            else if (groundedState.StandingOnGround)
-            {
-                float velocity = Mathf.Min(playerVel.magnitude, kccConfig.MaxDefaultLaunchVelocity);
-                groundVelocity = playerVel.normalized * velocity;
-            }
-
-            return groundVelocity;
         }
     }
 }

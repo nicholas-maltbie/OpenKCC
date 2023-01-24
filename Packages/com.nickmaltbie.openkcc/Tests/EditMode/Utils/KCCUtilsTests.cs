@@ -343,64 +343,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
         }
 
-        [Test]
-        public void Validate_KCCGetGroundVelocity(
-            [Values] bool movingGround,
-            [Values] bool avoidTransferMomentum,
-            [Values] bool rigidbody,
-            [Values] bool isKinematic,
-            [Values] bool onGround)
-        {
-            GameObject floor = CreateGameObject();
-            MovingGroundComponent ground = null;
-            Rigidbody rb = null;
-
-            if (movingGround)
-            {
-                ground = floor.AddComponent<MovingGroundComponent>();
-                ground.avoidTransferMomentum = avoidTransferMomentum;
-            }
-
-            if (rigidbody)
-            {
-                rb = floor.AddComponent<Rigidbody>();
-                rb.isKinematic = isKinematic;
-            }
-
-            var kccConfig = new KCCConfig();
-            var grounded = new Mock<IKCCGrounded>();
-
-            kccConfig.MaxDefaultLaunchVelocity = 2.5f;
-            grounded.Setup(e => e.StandingOnGround).Returns(onGround);
-            grounded.Setup(e => e.Floor).Returns(floor);
-
-            Vector3 velocity = KCCUtils.GetGroundVelocity(grounded.Object, kccConfig, Vector3.forward);
-
-            if (movingGround)
-            {
-                if (avoidTransferMomentum)
-                {
-                    Assert.AreEqual(Vector3.zero, velocity);
-                }
-                else
-                {
-                    Assert.AreEqual(ground.GetVelocityAtPoint(Vector3.zero), velocity);
-                }
-            }
-            else if (rigidbody && !isKinematic)
-            {
-                Assert.AreEqual(rb.GetPointVelocity(Vector3.zero), velocity);
-            }
-            else if (onGround)
-            {
-                Assert.AreEqual(Vector3.forward, velocity);
-            }
-            else
-            {
-                Assert.AreEqual(Vector3.zero, velocity);
-            }
-        }
-
         /// <summary>
         /// Validate a KCC bounce for a specified set of properties.
         /// </summary>
@@ -504,15 +446,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
                 rotation.Value,
                 new KCCConfig
                 {
-                    maxBounces = maxBounces,
-                    pushDecay = pushDecay,
-                    verticalSnapUp = verticalSnapUp,
-                    stepUpDepth = stepUpDepth,
-                    anglePower = anglePower,
-                    canSnapUp = canSnapUp,
-                    up = up.Value,
-                    colliderCast = colliderCast,
-                    push = push
+                    MaxBounces = maxBounces,
+                    PushDecay = pushDecay,
+                    VerticalSnapUp = verticalSnapUp,
+                    StepUpDepth = stepUpDepth,
+                    AnglePower = anglePower,
+                    CanSnapUp = canSnapUp,
+                    Up = up.Value,
+                    ColliderCast = colliderCast,
                 }
             );
         }

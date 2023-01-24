@@ -187,6 +187,9 @@ namespace nickmaltbie.OpenKCC.CameraControls.Config
             baseCameraOffset = cameraTransform == null ? Vector3.zero : cameraTransform.localPosition;
             currentDistance = Mathf.Clamp(currentDistance, minCameraDistance, maxCameraDistance);
             ignoreObjects.Add(go);
+
+            LookAction.Enable();
+            ZoomAction.Enable();
         }
     }
 }

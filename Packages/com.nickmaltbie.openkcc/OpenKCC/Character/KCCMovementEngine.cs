@@ -16,8 +16,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.Generic;
+using System.Linq;
 using nickmaltbie.OpenKCC.Character.Config;
+using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character
@@ -28,32 +32,80 @@ namespace nickmaltbie.OpenKCC.Character
     /// for a basic character controller.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(IGetKCCConfig))]
-    [RequireComponent(typeof(IGetKCCGrounded))]
-    public class KCCMovementEngine : MonoBehaviour, IJumping
+    [RequireComponent(typeof(IColliderCast))]
+    public class KCCMovementEngine : MonoBehaviour, IKCCConfig
     {
-        private IKCCConfig _config;
-        private IKCCGrounded _grounded;
 
         /// <summary>
-        /// KCC Configuration for managing the kcc state machine.
+        /// Upwards direction for the KCC Movement engine.
         /// </summary>
-        public IKCCConfig config => _config ??= GetComponent<IGetKCCConfig>().kccConfig;
+        public Vector3 Up => Vector3.up;
 
         /// <summary>
-        /// KCC Grounded state for the movement engine.
+        /// Collider cast for player movement.
         /// </summary>
-        public IKCCGrounded groundedState => _grounded ??= GetComponent<IGetKCCGrounded>().kccGrounded;
+        public IColliderCast ColliderCast => _colliderCast ??= GetComponent<IColliderCast>();
 
         /// <summary>
-        /// Position of the player previous frame.
+        /// Distance to ground at which player is considered grounded.
         /// </summary>
-        protected Vector3 previousPosition;
+        public float GroundedDistance => 0.05f;
 
         /// <summary>
-        /// Velocity of the player from the previous frame.
+        /// Distance to check player distance to ground.
         /// </summary>
-        protected Vector3 previousVelocity;
+        public float GroundCheckDistance => 0.25f;
+
+        /// <summary>
+        /// Maximum angle at which the player can walk (in degrees).
+        /// </summary>
+        public float MaxWalkAngle => 60f;
+
+        /// <inheritdoc/>
+        public int MaxBounces => 5;
+
+        /// <inheritdoc/>
+        public float VerticalSnapUp => StepHeight;
+
+        /// <inheritdoc/>
+        public float VerticalSnapDown => SnapDown;
+
+        /// <inheritdoc/>
+        public float StepUpDepth => 0.1f;
+
+        /// <inheritdoc/>
+        public float AnglePower => 0.5f;
+
+        /// <inheritdoc/>
+        public bool CanSnapUp => groundedState.OnGround;
+
+        /// <summary>
+        /// Unity service for managing calls to static variables in
+        /// a testable manner.
+        /// </summary>
+        protected IUnityService unityService = UnityService.Instance;
+
+        /// <summary>
+        /// Step height the player can walk up.
+        /// </summary>
+        protected float StepHeight => 0.35f;
+
+        /// <summary>
+        /// Max push speed of the player in units per second when pushing
+        /// out of overlapping objects.
+        /// </summary>
+        protected float MaxPushSpeed => 100.0f;
+
+        /// <summary>
+        /// Snap down distance for player snapping down.
+        /// </summary>
+        protected float SnapDown => StepHeight * 1.5f;
+
+        /// <summary>
+        /// Max default launch velocity for the player from unlabeled
+        /// surfaces.
+        /// </summary>
+        protected float MaxDefaultLaunchVelocity => 5.0f;
 
         /// <summary>
         /// Relative parent configuration for following the ground.
@@ -61,156 +113,103 @@ namespace nickmaltbie.OpenKCC.Character
         protected RelativeParentConfig relativeParentConfig;
 
         /// <summary>
-        /// Velocity fo the player from the previous frame.
+        /// Current grounded state of the character.
         /// </summary>
-        /// <value></value>
-        public Vector3 Velocity { get; protected set; }
+        public KCCGroundedState groundedState { get; protected set; }
 
         /// <summary>
-        /// Time in which the player has been falling.
+        /// Collider cast for player shape.
         /// </summary>
-        public float FallingTime { get; protected set; }
+        private IColliderCast _colliderCast;
 
         /// <summary>
-        /// Is the player's velocity currently moving them up
-        /// along the up vector.
+        /// Is the a movement vector is moving in the direction
+        /// upwards relative to player direction.
         /// </summary>
-        public bool MovingUp()
+        public bool MovingUp(Vector3 move)
         {
-            return Vector3.Dot(Vector3.Project(config.Up, Velocity), config.Up) > 0;
-        }
-
-        /// <summary>
-        /// Apply movement of a player based on current state.
-        /// </summary>
-        /// <param name="position">Current position of the player.</param>
-        /// <param name="rotation">Current rotation of the player.</param>
-        /// <param name="deltaTime">Delta time for the movement.</param>
-        /// <returns>Delta in position due to player movement.</returns>
-        protected Vector3 MovePlayer(
-            Vector3 position,
-            Quaternion rotation,
-            Vector3 move,
-            float deltaTime)
-        {
-            // Move the player based on movement settings
-            Vector3 delta = Vector3.zero;
-
-            // Move the player based on provided movement.
-            Vector3 moveDelta = GetMovement(position, move, rotation);
-            delta += moveDelta;
-            position += moveDelta;
-
-            // Apply velocity if allowed to move via velocity
-            // Only snap down if the player is currently grounded
-            if (config.SnapPlayerDown && groundedState.StandingOnGround && !MovingUp())
-            {
-                Vector3 snapDelta = GetSnapDelta(
-                    position,
-                    transform.rotation,
-                    -config.Up,
-                    config.VerticalSnapDown,
-                    config.MinSnapThreshold,
-                    config.ColliderCast);
-                delta += snapDelta;
-                position += snapDelta;
-            }
-
-            // Apply velocity if allowed to move via velocity
-            if (config.ApplyVelocity)
-            {
-                Vector3 velDelta = GetMovement(position, Velocity * deltaTime, rotation);
-                delta += velDelta;
-            }
-            else
-            {
-                Velocity = Vector3.zero;
-            }
-
-            return delta;
+            return Vector3.Dot(move, Up) > 0;
         }
 
         /// <summary>
         /// Snap the player down onto the ground
         /// </summary>
-        /// <param name="position">Position of the kcc</param>
-        /// <param name="rotation">Rotation of the kcc.</param>
-        /// <param name="dir">Direction to snap the kcc down.</param>
-        /// <param name="dist">Maximum distance the kcc can snap.</param>
-        /// <param name="minSnapThreshold">Minimum snap threshold for snapping down.</param>
-        /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
-        /// <returns></returns>
-        public static Vector3 GetSnapDelta(
-            Vector3 position,
-            Quaternion rotation,
-            Vector3 dir,
-            float dist,
-            float minSnapThreshold,
-            IColliderCast colliderCast)
+        protected void SnapPlayerDown()
         {
-            bool didHit = colliderCast.CastSelf(
-                position + dir * KCCUtils.Epsilon,
-                rotation,
-                dir,
-                dist,
+            bool didHit = ColliderCast.CastSelf(
+                transform.position,
+                transform.rotation,
+                -Up,
+                SnapDown,
                 out IRaycastHit hit);
 
-            if (didHit && hit.distance > minSnapThreshold)
+            if (didHit && hit.distance > KCCUtils.Epsilon)
             {
-                return dir * (hit.distance - KCCUtils.Epsilon);
+                transform.position += -Up * (hit.distance - KCCUtils.Epsilon * 2);
             }
-
-            return Vector3.zero;
-        }
-
-        /// <summary>
-        /// Snap the player down onto the ground
-        /// </summary>
-        /// <param name="position">Position of the kcc</param>
-        /// <param name="rotation">Rotation of the kcc.</param>
-        /// <param name="dir">Direction to snap the kcc down.</param>
-        /// <param name="dist">Maximum distance the kcc can snap.</param>
-        /// <param name="minSnapThreshold">Minimum snap threshold for snapping down.</param>
-        /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
-        /// <returns></returns>
-        public static Vector3 SnapPlayerDown(
-            Vector3 position,
-            Quaternion rotation,
-            Vector3 dir,
-            float dist,
-            float minSnapThreshold,
-            IColliderCast colliderCast)
-        {
-            return position + GetSnapDelta(position, rotation, dir, dist, minSnapThreshold, colliderCast);
         }
 
         /// <summary>
         /// Get the bounces for a KCC Utils movement action with a set default behaviour.
         /// </summary>
-        /// <param name="position">Position to start player movement from.</param>
         /// <param name="movement">Movement to move the player.</param>
-        /// <param name="rotation">Rotation of the player during movement.</param>
-        /// <param name="config">Configuration settings for player movement.</param>
         /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
-        protected virtual Vector3 GetMovement(
-            Vector3 position,
-            Vector3 movement,
-            Quaternion rotation)
+        protected virtual IEnumerable<KCCBounce> GetMovement(Vector3 movement)
         {
-            Vector3 finalPos = position;
-            foreach (KCCBounce bounce in KCCUtils.GetBounces(position, movement, rotation, config))
+            foreach (KCCBounce bounce in KCCUtils.GetBounces(transform.position, movement, transform.rotation, this))
             {
                 if (bounce.action == KCCUtils.MovementAction.Stop)
                 {
-                    finalPos = bounce.finalPosition;
+                    transform.position = bounce.finalPosition;
                 }
+                yield return bounce;
             }
-
-            return finalPos - position;
         }
 
-        /// <inheritdoc/>
-        public void Update()
+        /// <summary>
+        /// Gets the velocity of the ground the player is standing on where the player is currently
+        /// </summary>
+        /// <returns>The velocity of the ground at the point the player is standing on</returns>
+        public Vector3 GetGroundVelocity(Vector3 playerVel)
+        {
+            Vector3 groundVelocity = Vector3.zero;
+            IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();
+            Rigidbody rb = groundedState.Floor?.GetComponent<Rigidbody>();
+            if (movingGround != null)
+            {
+                if (movingGround.AvoidTransferMomentum())
+                {
+                    return Vector3.zero;
+                }
+
+                // Weight movement of ground by ground movement weight
+                groundVelocity = movingGround.GetVelocityAtPoint(groundedState.GroundHitPosition);
+                float velocityWeight =
+                    movingGround.GetMovementWeight(groundedState.GroundHitPosition, groundVelocity);
+                float transferWeight =
+                    movingGround.GetTransferMomentumWeight(groundedState.GroundHitPosition, groundVelocity);
+                groundVelocity *= velocityWeight;
+                groundVelocity *= transferWeight;
+            }
+            else if (rb != null && !rb.isKinematic)
+            {
+                Vector3 groundVel = rb.GetPointVelocity(groundedState.GroundHitPosition);
+                float velocity = Mathf.Min(groundVel.magnitude, MaxDefaultLaunchVelocity);
+                groundVelocity = groundVel.normalized * velocity;
+            }
+            else if (groundedState.StandingOnGround)
+            {
+                float velocity = Mathf.Min(playerVel.magnitude, MaxDefaultLaunchVelocity);
+                groundVelocity = playerVel.normalized * velocity;
+            }
+
+            return groundVelocity;
+        }
+
+        /// <summary>
+        /// Have the player to visually move with the ground.
+        /// </summary>
+        public void LateUpdate()
         {
             relativeParentConfig.FollowGround(transform);
         }
@@ -220,63 +219,36 @@ namespace nickmaltbie.OpenKCC.Character
         /// Includes pushing out overlapping objects, updating grounded state, jumping,
         /// moving the player, and updating the grounded state.
         /// </summary>
-        /// <param name="deltaTime">Delta time for the update.</param>
-        /// <param name="move">Desired player movement.</param>
-        public virtual void MovePlayer(
-            float deltaTime,
-            Vector3 move)
+        /// <param name="move">Desired player movement in world space.</param>
+        public virtual IEnumerable<KCCBounce> MovePlayer(Vector3 move)
         {
             relativeParentConfig.FollowGround(transform);
-            Vector3 vel = (transform.position - previousPosition) / deltaTime;
-            previousVelocity = Vector3.Lerp(previousVelocity, vel, 20 * deltaTime);
-
             Vector3 start = transform.position;
-            Vector3 pos = start;
 
             // Push player out of overlapping objects
-            Vector3 overlapPush = config.ColliderCast.PushOutOverlapping(
-                pos,
+            transform.position += ColliderCast.PushOutOverlapping(
+                transform.position,
                 transform.rotation,
-                config.MaxPushSpeed * deltaTime);
-            pos += overlapPush;
+                MaxPushSpeed * unityService.fixedDeltaTime);
 
             // Allow player to move
-            Vector3 playerMove = MovePlayer(
-                pos,
-                transform.rotation,
-                move,
-                deltaTime);
-            pos += playerMove;
+            KCCBounce[] bounces = GetMovement(move).ToArray();
+
+            // Only snap down if the player was grounded before they started
+            // moving and are not currently trying to move upwards.
+            if (groundedState.StandingOnGround && !MovingUp(move))
+            {
+                SnapPlayerDown();
+            }
 
             // Compute player relative movement state based on final pos
-            Vector3 delta = pos - start;
-            groundedState.CheckGrounded(config, pos, transform.rotation);
+            CheckGrounded();
 
-            // Check if player is falling
-            if (groundedState.Falling)
-            {
-                FallingTime += deltaTime;
-            }
-            else
-            {
-                FallingTime = 0;
-            }
-
-            // Apply gravity if needed
-            if (config.ApplyGravity)
-            {
-                Velocity += config.Gravity * deltaTime;
-            }
-
-            if (!config.ApplyVelocity)
-            {
-                Velocity = Vector3.zero;
-            }
-
-            transform.position += delta;
-            transform.position += relativeParentConfig.UpdateMovingGround(transform.position, groundedState, delta, deltaTime);
+            Vector3 delta = transform.position - start;
+            transform.position += relativeParentConfig.UpdateMovingGround(transform.position, groundedState, delta, unityService.fixedDeltaTime);
             relativeParentConfig.FollowGround(transform);
-            previousPosition = transform.position;
+
+            return bounces;
         }
 
         /// <summary>
@@ -289,20 +261,53 @@ namespace nickmaltbie.OpenKCC.Character
             transform.position = position;
         }
 
-        /// <inheritdoc/>
-        public void ApplyJump(Vector3 velocity)
+        /// <summary>
+        /// Get the movement of the player projected onto the plane
+        /// they are standing on if they are not falling.
+        /// </summary>
+        /// <param name="movement">How the player is attempting to move.</param>
+        /// <returns>Projected movement onto the plane the player is standing on.</returns>
+        public Vector3 GetProjectedMovement(Vector3 movement)
         {
-            Vector3 groundVel = KCCUtils.GetGroundVelocity(groundedState, config, previousVelocity);
-
-            // If player is currently sliding, keep the current momentum
-            if (!groundedState.Sliding)
+            // If the player is standing on the ground, project their movement onto the ground plane
+            // This allows them to walk up gradual slopes without facing a hit in movement speed
+            if (groundedState.StandingOnGround && !groundedState.Sliding)
             {
-                Velocity = Vector3.zero;
+                Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, groundedState.SurfaceNormal).normalized * movement.magnitude;
+                if (projectedMovement.magnitude + KCCUtils.Epsilon >= movement.magnitude)
+                {
+                    movement = projectedMovement;
+                }
             }
 
-            Velocity += velocity + groundVel;
+            return movement;
+        }
 
-            relativeParentConfig.Reset();
+        /// <summary>
+        /// Update the current grounded state of this kinematic character controller.
+        /// </summary>
+        protected KCCGroundedState CheckGrounded()
+        {
+            bool didHit = ColliderCast.CastSelf(
+                transform.position,
+                transform.rotation,
+                -Up,
+                GroundCheckDistance,
+                out IRaycastHit hit);
+
+            groundedState = new KCCGroundedState(
+                distanceToGround : hit.distance,
+                onGround : didHit,
+                angle : Vector3.Angle(hit.normal, Up),
+                surfaceNormal : hit.normal,
+                groundHitPosition : hit.distance > 0 ? hit.point : groundedState.GroundHitPosition,
+                floor : hit.collider?.gameObject,
+                groundedDistance : GroundedDistance,
+                maxWalkAngle: MaxWalkAngle);
+            
+            UnityEngine.Debug.Log($"distanceToGround: {groundedState.DistanceToGround}");
+
+            return groundedState;
         }
     }
 }

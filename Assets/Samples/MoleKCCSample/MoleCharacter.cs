@@ -49,8 +49,9 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(SphereColliderCast))]
     [DefaultExecutionOrder(1000)]
-    public class MoleCharacter : NetworkSMAnim, IJumping, IGetKCCConfig, IGetKCCGrounded
+    public class MoleCharacter : NetworkSMAnim, IJumping
     {
+        /*
         [SerializeField]
         public ParticleSystem diggingTrailParticlePrefab;
 
@@ -87,18 +88,14 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             }
         }
 
+        public float walkingSpeed = 5.0f;
+
         private NetworkVariable<Vector3> relativeUp = new NetworkVariable<Vector3>(
             Vector3.up,
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Owner);
 
         private Vector3 defaultOffset;
-
-        /// <summary>
-        /// Values for configuring and managing KCC Config.
-        /// </summary>
-        [SerializeField]
-        public MoleKCCConfig config = new MoleKCCConfig();
 
         /// <summary>
         /// Time in which the player has been falling.
@@ -136,18 +133,12 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <summary>
         /// Player velocity in world space.
         /// </summary>
-        public Vector3 Velocity { get; private set; }
+        public Vector3 Velocity { get; protected set; }
 
         /// <summary>
         /// Input movement from player input updated each frame.
         /// </summary>
         public Vector3 InputMovement { get; private set; }
-
-        /// <inheritdoc/>
-        public IKCCConfig kccConfig => config;
-
-        /// <inheritdoc/>
-        public IKCCGrounded kccGrounded => config.groundedState;
 
         /// <summary>
         /// Movement engine for controlling the kinematic character controller.
@@ -179,7 +170,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         [Animation("Jumping")]
         [TransitionOnAnimationComplete(typeof(FallingState), 0.15f, true)]
         [Transition(typeof(GroundedEvent), typeof(IdleState))]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class JumpState : State { }
 
         [Animation("Digging")]
@@ -188,13 +179,13 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class WalkingState : State { }
 
         [Animation("Walking")]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(GroundedEvent), typeof(IdleState))]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class FallingState : State { }
 
         /// <summary>
@@ -202,7 +193,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// </summary>
         public void UpdateGroundedState()
         {
-            if (config.groundedState.Falling)
+            if (movementEngine.grounded.Falling)
             {
                 RaiseEvent(LeaveGroundEvent.Instance);
             }
@@ -286,9 +277,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             {
                 config.Jumping = CurrentState == typeof(JumpState);
                 config.jumpAction.ApplyJumpIfPossible();
-                movementEngine.MovePlayer(
-                    unityService.fixedDeltaTime,
-                    GetDesiredVelocity() * unityService.fixedDeltaTime);
+                movementEngine.MovePlayer(GetDesiredVelocity() * unityService.fixedDeltaTime);
                 UpdateGroundedState();
                 relativeUp.Value = config.Up;
             }
@@ -408,6 +397,10 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             bool moving = InputMovement.magnitude >= KCCUtils.Epsilon;
             IEvent moveEvent = moving ? StartMoveInput.Instance as IEvent : StopMoveInput.Instance as IEvent;
             RaiseEvent(moveEvent);
+        }*/
+        public void ApplyJump(Vector3 velocity)
+        {
+            throw new NotImplementedException();
         }
     }
 }
