@@ -122,6 +122,10 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         private IColliderCast _colliderCast;
 
+        protected Vector3 previousPosition = Vector3.zero;
+
+        public SmoothedVector worldVelocity = new SmoothedVector(10);
+
         /// <summary>
         /// Is the a movement vector is moving in the direction
         /// upwards relative to player direction.
@@ -129,6 +133,11 @@ namespace nickmaltbie.OpenKCC.Character
         public bool MovingUp(Vector3 move)
         {
             return Vector3.Dot(move, Up) > 0;
+        }
+
+        public void Awake()
+        {
+            previousPosition = transform.position;
         }
 
         /// <summary>
@@ -166,7 +175,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Gets the velocity of the ground the player is standing on where the player is currently
         /// </summary>
         /// <returns>The velocity of the ground at the point the player is standing on</returns>
-        public Vector3 GetGroundVelocity(Vector3 playerVel)
+        public Vector3 GetGroundVelocity()
         {
             Vector3 groundVelocity = Vector3.zero;
             IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();
@@ -195,8 +204,9 @@ namespace nickmaltbie.OpenKCC.Character
             }
             else if (groundedState.StandingOnGround)
             {
-                float velocity = Mathf.Min(playerVel.magnitude, MaxDefaultLaunchVelocity);
-                groundVelocity = playerVel.normalized * velocity;
+                Vector3 avgVel = worldVelocity.Average();
+                float velocity = Mathf.Min(avgVel.magnitude, MaxDefaultLaunchVelocity);
+                groundVelocity = avgVel.normalized * velocity;
             }
 
             return groundVelocity;
@@ -219,6 +229,9 @@ namespace nickmaltbie.OpenKCC.Character
         public virtual IEnumerable<KCCBounce> MovePlayer(Vector3 move)
         {
             relativeParentConfig.FollowGround(transform);
+            Vector3 previousVelocity = (transform.position - previousPosition) / unityService.deltaTime;
+            worldVelocity.AddSample(previousVelocity);
+
             Vector3 start = transform.position;
 
             // Push player out of overlapping objects
@@ -245,6 +258,7 @@ namespace nickmaltbie.OpenKCC.Character
             transform.position += relativeParentConfig.UpdateMovingGround(transform.position, groundedState, delta, unityService.fixedDeltaTime);
             relativeParentConfig.FollowGround(transform);
 
+            previousPosition = transform.position;
             return bounces;
         }
 

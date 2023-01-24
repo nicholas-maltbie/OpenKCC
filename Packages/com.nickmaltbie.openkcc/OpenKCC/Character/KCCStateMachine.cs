@@ -276,7 +276,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <inheritdoc/>
         public void ApplyJump(Vector3 velocity)
         {
-            Velocity = velocity + movementEngine.GetGroundVelocity(Vector3.zero);
+            Velocity = velocity + movementEngine.GetGroundVelocity();
             RaiseEvent(JumpEvent.Instance);
         }
 
