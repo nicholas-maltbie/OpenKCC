@@ -16,8 +16,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
@@ -26,41 +26,64 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
     [RequireComponent(typeof(Rigidbody))]
     public class MoleMovementEngine : KCCMovementEngine
     {
-        /*
-        /// <inheritdoc/>
-        protected override Vector3 GetMovement(
-            Vector3 position,
-            Vector3 movement,
-            Quaternion rotation)
+        public override float AnglePower => 1.0f;
+        public Vector3 groundNormal = Vector3.up;
+        public bool overrideGrounded = false;
+
+        public void SetNormal(Vector3 normal)
         {
-            Vector3 finalPos = position;
-            foreach (KCCBounce bounce in KCCUtils.GetBounces(position, movement, rotation, config))
+            groundNormal = normal;
+            overrideGrounded = true;
+        }
+
+        public override Vector3 Up
+        {
+            get
             {
-                if (bounce.action == KCCUtils.MovementAction.Bounce)
+                if (overrideGrounded)
                 {
+                    return groundNormal;
+                }
+                if (GroundedState.StandingOnGround)
+                {
+                    return GroundedState.SurfaceNormal;
+                }
+
+                return Vector3.up;
+            }
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<KCCBounce> GetMovement(Vector3 movement)
+        {
+            foreach (KCCBounce bounce in base.GetMovement(movement))
+            {
+                if (bounce.action == KCCUtils.MovementAction.Bounce || bounce.action == KCCUtils.MovementAction.Stop)
+                {
+                    if (bounce.hit == null)
+                    {
+                        yield return bounce;
+                        continue;
+                    }
+
                     // If we bounce off a wall perpendicular to the current surface
                     Vector3 normal = bounce.hit.normal;
                     if (normal != Vector3.zero)
                     {
                         // Rotate the remaining movement
-                        bounce.remainingMomentum = Quaternion.LookRotation(bounce.hit.normal) * bounce.remainingMomentum;
-
-                        // Adjust up vector for grounded state
-                        if (groundedState is KCCGroundedState ground)
-                        {
-                            ground.SurfaceNormal = bounce.hit.normal;
-                            ground.OnGround = true;
-                            ground.DistanceToGround = KCCUtils.Epsilon;
-                        }
+                        bounce.remainingMomentum = Quaternion.LookRotation(bounce.hit.normal) *
+                            bounce.initialMomentum.normalized *
+                            bounce.remainingMomentum.magnitude;
+                        SetNormal(bounce.hit.normal);
                     }
                 }
-                else if (bounce.action == KCCUtils.MovementAction.Stop)
-                {
-                    finalPos = bounce.finalPosition;
-                }
+
+                yield return bounce;
             }
 
-            return finalPos - position;
-        }*/
+            // Compute the new grounded state
+            CheckGrounded(false);
+            groundNormal = GroundedState.SurfaceNormal;
+        }
     }
 }

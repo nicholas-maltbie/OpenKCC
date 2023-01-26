@@ -35,46 +35,69 @@ namespace nickmaltbie.OpenKCC.Character
     [RequireComponent(typeof(IColliderCast))]
     public class KCCMovementEngine : MonoBehaviour, IKCCConfig
     {
+        /// <summary>
+        /// Height of a step that the player can climb up.
+        /// </summary>
+        [SerializeField]
+        public float stepHeight = 0.35f;
 
+        /// <summary>
+        /// Max angle the player can walk up before slipping.
+        /// </summary>
+        [SerializeField]
+        public float maxWalkAngle = 60.0f;
+
+        /// <summary>
+        /// Max velocity player can be launched at from moving objects.
+        /// </summary>
+        [SerializeField]
+        public float maxDefaultLaunchVelocity = 5.0f;
+        
         /// <summary>
         /// Upwards direction for the KCC Movement engine.
         /// </summary>
-        public Vector3 Up => Vector3.up;
+        public virtual Vector3 Up => Vector3.up;
 
         /// <summary>
         /// Collider cast for player movement.
         /// </summary>
-        public IColliderCast ColliderCast => _colliderCast ??= GetComponent<IColliderCast>();
+        public virtual IColliderCast ColliderCast => _colliderCast ??= GetComponent<IColliderCast>();
 
         /// <summary>
         /// Distance to ground at which player is considered grounded.
         /// </summary>
-        public float GroundedDistance => 0.05f;
+        public virtual float GroundedDistance => 0.05f;
 
         /// <summary>
         /// Distance to check player distance to ground.
         /// </summary>
-        public float GroundCheckDistance => 0.25f;
+        public virtual float GroundCheckDistance => 0.25f;
 
         /// <summary>
         /// Maximum angle at which the player can walk (in degrees).
         /// </summary>
-        public float MaxWalkAngle => 60f;
+        public virtual float MaxWalkAngle => maxWalkAngle;
 
         /// <inheritdoc/>
-        public int MaxBounces => 5;
+        public virtual int MaxBounces => 5;
 
         /// <inheritdoc/>
-        public float VerticalSnapUp => StepHeight;
+        public virtual float VerticalSnapUp => stepHeight;
 
         /// <inheritdoc/>
-        public float VerticalSnapDown => SnapDown;
+        public virtual float VerticalSnapDown => SnapDown;
 
         /// <inheritdoc/>
-        public float StepUpDepth => 0.1f;
+        public virtual float StepUpDepth => 0.1f;
 
         /// <inheritdoc/>
-        public float AnglePower => 2.0f;
+        public virtual float AnglePower => 2.0f;
+
+        /// <summary>
+        /// Max push speed of the player in units per second when pushing
+        /// out of overlapping objects.
+        /// </summary>
+        public float MaxPushSpeed => 100.0f;
 
         /// <inheritdoc/>
         public bool CanSnapUp => GroundedState.OnGround;
@@ -86,26 +109,15 @@ namespace nickmaltbie.OpenKCC.Character
         protected IUnityService unityService = UnityService.Instance;
 
         /// <summary>
-        /// Step height the player can walk up.
-        /// </summary>
-        protected float StepHeight => 0.35f;
-
-        /// <summary>
-        /// Max push speed of the player in units per second when pushing
-        /// out of overlapping objects.
-        /// </summary>
-        protected float MaxPushSpeed => 100.0f;
-
-        /// <summary>
         /// Snap down distance for player snapping down.
         /// </summary>
-        protected float SnapDown => StepHeight * 2f;
+        protected float SnapDown => stepHeight * 2f;
 
         /// <summary>
         /// Max default launch velocity for the player from unlabeled
         /// surfaces.
         /// </summary>
-        protected float MaxDefaultLaunchVelocity => 5.0f;
+        protected float MaxDefaultLaunchVelocity => maxDefaultLaunchVelocity;
 
         /// <summary>
         /// Relative parent configuration for following the ground.
