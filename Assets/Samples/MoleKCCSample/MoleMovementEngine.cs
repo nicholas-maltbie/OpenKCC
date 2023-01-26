@@ -44,6 +44,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 {
                     return groundNormal;
                 }
+
                 if (GroundedState.StandingOnGround)
                 {
                     return GroundedState.SurfaceNormal;

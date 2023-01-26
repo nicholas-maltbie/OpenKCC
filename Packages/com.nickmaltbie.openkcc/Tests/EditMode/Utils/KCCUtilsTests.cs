@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
@@ -438,7 +437,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             rotation ??= Quaternion.Euler(Vector3.zero);
             up ??= Vector3.up;
             colliderCast ??= colliderCastMock.Object;
-            push ??= characterPushMock.Object;
+            _ = push ?? characterPushMock.Object;
 
             return KCCUtils.GetBounces(
                 position,

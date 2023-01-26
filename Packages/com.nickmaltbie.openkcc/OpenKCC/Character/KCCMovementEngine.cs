@@ -46,7 +46,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [SerializeField]
         public float maxWalkAngle = 60.0f;
-        
+
         /// <summary>
         /// Upwards direction for the KCC Movement engine.
         /// </summary>
@@ -181,6 +181,7 @@ namespace nickmaltbie.OpenKCC.Character
                 {
                     transform.position = bounce.finalPosition;
                 }
+
                 yield return bounce;
             }
         }
@@ -333,13 +334,13 @@ namespace nickmaltbie.OpenKCC.Character
             }
 
             GroundedState = new KCCGroundedState(
-                distanceToGround : hit.distance,
-                onGround : didHit,
-                angle : Vector3.Angle(normal, Up),
-                surfaceNormal : normal,
-                groundHitPosition : hit.distance > 0 ? hit.point : GroundedState.GroundHitPosition,
-                floor : hit.collider?.gameObject,
-                groundedDistance : GroundedDistance,
+                distanceToGround: hit.distance,
+                onGround: didHit,
+                angle: Vector3.Angle(normal, Up),
+                surfaceNormal: normal,
+                groundHitPosition: hit.distance > 0 ? hit.point : GroundedState.GroundHitPosition,
+                floor: hit.collider?.gameObject,
+                groundedDistance: GroundedDistance,
                 maxWalkAngle: MaxWalkAngle);
 
             return GroundedState;

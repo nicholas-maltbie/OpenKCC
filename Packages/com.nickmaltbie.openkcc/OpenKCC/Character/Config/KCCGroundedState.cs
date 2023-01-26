@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System;
-using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character.Config

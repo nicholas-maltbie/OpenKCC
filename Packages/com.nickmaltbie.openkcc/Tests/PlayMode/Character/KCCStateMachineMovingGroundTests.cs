@@ -64,7 +64,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             box.transform.rotation = Quaternion.identity;
             floor.transform.position = new Vector3(0, -0.5f, 0);
         }
-        
+
         [UnityTest]
         public IEnumerator FollowLinearMovement(
             [ValueSource(nameof(TestDirections))] Vector3 dir,

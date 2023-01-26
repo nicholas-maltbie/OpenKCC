@@ -19,7 +19,6 @@
 using System.Collections;
 using System.Linq;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
-using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Input;

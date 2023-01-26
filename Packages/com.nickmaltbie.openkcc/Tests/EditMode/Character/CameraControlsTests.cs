@@ -19,7 +19,6 @@
 using System.Collections;
 using Moq;
 using nickmaltbie.OpenKCC.CameraControls;
-using nickmaltbie.OpenKCC.CameraControls.Config;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.TestUtilsUnity;
