@@ -48,7 +48,7 @@ namespace nickmaltbie.OpenKCC.Editor
                         MaxBounces = source.maxBounces,
                         VerticalSnapUp = source.stepHeight,
                         StepUpDepth = source.stepDepth,
-                        AnglePower = 0,
+                        AnglePower = 1.0f,
                         CanSnapUp = true,
                         Up = Vector3.up,
                         ColliderCast = colliderCast,

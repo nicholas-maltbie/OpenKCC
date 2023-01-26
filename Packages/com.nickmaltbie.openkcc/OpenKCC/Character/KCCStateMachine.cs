@@ -250,7 +250,9 @@ namespace nickmaltbie.OpenKCC.Character
         {
             GetComponent<Rigidbody>().isKinematic = true;
             jumpAction.ApplyJumpIfPossible(movementEngine.groundedState);
-            movementEngine.MovePlayer((GetDesiredVelocity() + Velocity) * unityService.fixedDeltaTime);
+            movementEngine.MovePlayer(
+                GetDesiredMovement() * unityService.fixedDeltaTime,
+                Velocity * unityService.fixedDeltaTime);
             UpdateGroundedState();
 
             // Apply gravity if needed
@@ -283,9 +285,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// The the player's desired velocity for their current input value.
         /// </summary>
-        /// <returns>Vector of player velocity based on input movement rotated by player view and projected onto the
-        /// ground.</returns>
-        public Vector3 GetDesiredVelocity()
+        /// <returns>Vector of player velocity based on input movement rotated by player view
+        /// and projected onto the ground.</returns>
+        public Vector3 GetDesiredMovement()
         {
             Vector3 rotatedMovement = HorizPlaneView * InputMovement;
             Vector3 projectedMovement = movementEngine.GetProjectedMovement(rotatedMovement);

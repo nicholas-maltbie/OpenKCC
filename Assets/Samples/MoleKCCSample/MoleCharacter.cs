@@ -261,7 +261,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// </summary>
         /// <returns>Vector of player velocity based on input movement rotated by player view and projected onto the
         /// ground.</returns>
-        public Vector3 GetDesiredVelocity()
+        public Vector3 GetDesiredMovement()
         {
             var moveDir = Quaternion.FromToRotation(Vector3.up, kccConfig.Up);
             Vector3 rotatedMovement = moveDir * (HorizPlaneView * InputMovement);
@@ -277,7 +277,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             {
                 config.Jumping = CurrentState == typeof(JumpState);
                 config.jumpAction.ApplyJumpIfPossible();
-                movementEngine.MovePlayer(GetDesiredVelocity() * unityService.fixedDeltaTime);
+                movementEngine.MovePlayer(GetDesiredMovement() * unityService.fixedDeltaTime);
                 UpdateGroundedState();
                 relativeUp.Value = config.Up;
             }

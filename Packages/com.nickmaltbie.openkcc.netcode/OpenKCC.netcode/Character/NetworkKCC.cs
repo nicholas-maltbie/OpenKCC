@@ -77,13 +77,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// Input movement from player input updated each frame.
         /// </summary>
         public Vector3 InputMovement { get; private set; }
-
-        /// <inheritdoc/>
-        public IKCCConfig kccConfig => config;
-
-        /// <inheritdoc/>
-        public IKCCGrounded kccGrounded => config.groundedState;
-
         /// <summary>
         /// Movement engine for controlling the kinematic character controller.
         /// </summary>
@@ -234,13 +227,13 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// </summary>
         /// <returns>Vector of player velocity based on input movement rotated by player view and projected onto the
         /// ground.</returns>
-        public Vector3 GetDesiredVelocity()
+        public Vector3 GetDesiredMovement()
         {
             Vector3 rotatedMovement = HorizPlaneView * InputMovement;
             Vector3 projectedMovement = movementEngine.GetProjectedMovement(rotatedMovement);
             float speed = MovementSettingsAttribute.GetSpeed(CurrentState, config);
             Vector3 scaledMovement = projectedMovement * speed;
-            return scaledMovement + Velocity;
+            return scaledMovement;
         }
 
         public override void FixedUpdate()
@@ -251,7 +244,11 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             if (IsOwner)
             {
                 config.jumpAction.ApplyJumpIfPossible(movementEngine.groundedState);
-                movementEngine.MovePlayer(GetDesiredVelocity() * unityService.fixedDeltaTime);
+                movementEngine.MovePlayer(
+                    GetDesiredMovement() * unityService.fixedDeltaTime,
+                    Velocity * unityService.fixedDeltaTime);
+
+                // Don't allow the player's velocity to be more than they moved.
                 UpdateGroundedState();
                 GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
             }

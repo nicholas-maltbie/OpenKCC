@@ -74,7 +74,7 @@ namespace nickmaltbie.OpenKCC.Character
         public float StepUpDepth => 0.1f;
 
         /// <inheritdoc/>
-        public float AnglePower => 0.5f;
+        public float AnglePower => 2.0f;
 
         /// <inheritdoc/>
         public bool CanSnapUp => groundedState.OnGround;
@@ -99,7 +99,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Snap down distance for player snapping down.
         /// </summary>
-        protected float SnapDown => StepHeight * 1.5f;
+        protected float SnapDown => StepHeight * 2f;
 
         /// <summary>
         /// Max default launch velocity for the player from unlabeled
@@ -116,6 +116,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// Current grounded state of the character.
         /// </summary>
         public KCCGroundedState groundedState { get; protected set; }
+
+        /// <inheritdoc/>
+        public bool MoveUpWalls => false;
 
         /// <summary>
         /// Collider cast for player shape.
@@ -150,7 +153,6 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.rotation,
                 -Up,
                 SnapDown,
-                KCCUtils.Epsilon,
                 ColliderCast);
         }
 
@@ -225,8 +227,8 @@ namespace nickmaltbie.OpenKCC.Character
         /// Includes pushing out overlapping objects, updating grounded state, jumping,
         /// moving the player, and updating the grounded state.
         /// </summary>
-        /// <param name="move">Desired player movement in world space.</param>
-        public virtual IEnumerable<KCCBounce> MovePlayer(Vector3 move)
+        /// <param name="moves">Desired player movement in world space.</param>
+        public virtual KCCBounce[] MovePlayer(params Vector3[] moves)
         {
             relativeParentConfig.FollowGround(transform);
             Vector3 previousVelocity = (transform.position - previousPosition) / unityService.deltaTime;
@@ -241,14 +243,19 @@ namespace nickmaltbie.OpenKCC.Character
                 MaxPushSpeed * unityService.fixedDeltaTime);
 
             // Allow player to move
-            KCCBounce[] bounces = GetMovement(move).ToArray();
-
-            // Only snap down if the player was grounded before they started
-            // moving and are not currently trying to move upwards.
-            if (groundedState.StandingOnGround && !MovingUp(move))
+            KCCBounce[] bounces = moves.SelectMany(move =>
             {
-                SnapPlayerDown();
-            }
+                KCCBounce[] bounces = GetMovement(move).ToArray();
+
+                // Only snap down if the player was grounded before they started
+                // moving and are not currently trying to move upwards.
+                if (groundedState.StandingOnGround && !groundedState.Sliding && !MovingUp(move))
+                {
+                    SnapPlayerDown();
+                }
+
+                return bounces;
+            }).ToArray();
 
             // Compute player relative movement state based on final pos
             bool snappedUp = bounces.Any(bounce => bounce.action == KCCUtils.MovementAction.SnapUp);
@@ -297,7 +304,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Update the current grounded state of this kinematic character controller.
         /// </summary>
-        protected KCCGroundedState CheckGrounded(bool snappedUp)
+        protected KCCGroundedState CheckGrounded(bool snapped)
         {
             bool didHit = ColliderCast.CastSelf(
                 transform.position,
@@ -308,7 +315,7 @@ namespace nickmaltbie.OpenKCC.Character
 
             Vector3 normal = hit.normal;
 
-            if (snappedUp)
+            if (snapped)
             {
                 normal = groundedState.SurfaceNormal;
             }

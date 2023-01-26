@@ -17,8 +17,6 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using nickmaltbie.OpenKCC.Character.Config;
-using nickmaltbie.OpenKCC.Environment.MovingGround;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils
@@ -96,7 +94,12 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <summary>
         /// Maximum angle between two colliding objects.
         /// </summary>
-        public const float MaxAngleShoveRadians = 90.0f;
+        public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
+
+        /// <summary>
+        /// Small buffer angle when moving into objects.
+        /// </summary>
+        public const float BufferAngleShove = 120.0f;
 
         /// <summary>
         /// Epsilon value for spacing out the KCC very small distances.
@@ -128,7 +131,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didHit && hit.distance > Epsilon)
             {
-                return dir * (hit.distance - Epsilon);
+                return dir * (hit.distance - Epsilon * 2);
             }
 
             return Vector3.zero;
@@ -141,7 +144,6 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="rotation">Rotation of the kcc.</param>
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
-        /// <param name="minSnapThreshold">Minimum snap threshold for snapping down.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
         /// <returns></returns>
         public static Vector3 SnapPlayerDown(
@@ -149,7 +151,6 @@ namespace nickmaltbie.OpenKCC.Utils
             Quaternion rotation,
             Vector3 dir,
             float dist,
-            float minSnapThreshold,
             IColliderCast colliderCast)
         {
             return position + GetSnapDelta(position, rotation, dir, dist, colliderCast);
@@ -197,6 +198,28 @@ namespace nickmaltbie.OpenKCC.Utils
         }
 
         /// <summary>
+        /// Check if the character bounced
+        /// into a surface perpendicular to
+        /// itself.
+        /// </summary>
+        /// <param name="hit">Surface the character bounces into.</param>
+        /// <param name="rotation">Current rotation of the player.</param>
+        /// <param name="config">Configuration for collider cast calls.</param>
+        /// <returns>True if the step is perpendicular to up, false otherwise.</returns>
+        public static bool CheckPerpendicularBounce(
+            IRaycastHit hit,
+            Vector3 momentum,
+            IKCCConfig config)
+        {
+            bool hitStep = config.ColliderCast.DoRaycastInDirection(
+                hit.point - config.Up * Epsilon + hit.normal * Epsilon,
+                momentum.normalized,
+                momentum.magnitude,
+                out IRaycastHit stepHit);
+            return hitStep && Vector3.Dot(stepHit.normal, config.Up) <= Epsilon;
+        }
+
+        /// <summary>
         /// Attempt to snap up at current height or maximum height of the player's snap up height.
         /// </summary>
         /// <param name="colliderCast">Collider cast associated with the player.</param>
@@ -221,19 +244,9 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 footVector = Vector3.Project(hit.point, config.Up) - Vector3.Project(bottom, config.Up);
             bool isAbove = Vector3.Dot(footVector, config.Up) > 0;
             float distanceToFeet = footVector.magnitude * (isAbove ? 1 : -1);
-
-            bool hitStep = config.ColliderCast.DoRaycastInDirection(
-                hit.point - config.Up * Epsilon + hit.normal * Epsilon,
-                momentum.normalized,
-                momentum.magnitude,
-                out IRaycastHit stepHit);
-            bool perpendicularStep = hitStep && Vector3.Dot(stepHit.normal, config.Up) <= Epsilon;
-
             bool snappedUp = false;
 
-            if (hitStep &&
-                perpendicularStep &&
-                hit.distance > 0 &&
+            if (hit.distance > 0 &&
                 distanceToFeet < config.VerticalSnapUp &&
                 distanceToFeet > 0)
             {
@@ -347,7 +360,10 @@ namespace nickmaltbie.OpenKCC.Utils
             // Decrease remaining momentum by fraction of movement remaining
             remainingMomentum *= (1 - Mathf.Max(0, deltaBounce.magnitude / distance));
 
-            if (config.CanSnapUp && AttemptSnapUp(hit, remainingMomentum, ref position, rotation, config))
+            // Check if the player is running into a perpendicular surface
+            bool perpendicularBounce = CheckPerpendicularBounce(hit, remainingMomentum, config);
+
+            if (perpendicularBounce && config.CanSnapUp && AttemptSnapUp(hit, remainingMomentum, ref position, rotation, config))
             {
                 return new KCCBounce
                 {
@@ -363,18 +379,14 @@ namespace nickmaltbie.OpenKCC.Utils
             // If we didn't snap up:
             // Only apply angular change if hitting something
             // Get angle between surface normal and remaining movement
-            float angleBetween = Vector3.Angle(hit.normal, remainingMomentum) - 90.0f;
+            float angleBetween = Vector3.Angle(hit.normal, remainingMomentum);
 
             // Normalize angle between to be between 0 and 1
-            // 0 means no angle, 1 means 90 degree angle
-            angleBetween = Mathf.Min(MaxAngleShoveRadians, Mathf.Abs(angleBetween));
-            float normalizedAngle = angleBetween / MaxAngleShoveRadians;
+            float normalizedAngle = Mathf.Max(angleBetween - BufferAngleShove, 0) / MaxAngleShoveDegrees;
 
-            // Reduce the momentum by the remaining movement that ocurred
-            remainingMomentum *= Mathf.Pow(Mathf.Max(0, 1 - normalizedAngle), config.AnglePower);
+            // Get the component of the vector on non vertical
+            remainingMomentum *= Mathf.Pow(Mathf.Abs(1 - normalizedAngle), config.AnglePower);
 
-            // Rotate the remaining remaining movement to be projected along the plane 
-            // of the surface hit (emulate pushing against the object)
             remainingMomentum = GetBouncedMomentumSafe(remainingMomentum, hit.normal, config.Up);
 
             return new KCCBounce
@@ -466,7 +478,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didSnapUp)
             {
-                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp, Epsilon, config.ColliderCast);
+                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp, config.ColliderCast);
             }
 
             // We're done, player was moved as part of loop

@@ -417,8 +417,8 @@ namespace nickmaltbie.OpenKCC.Demo
 
                 // Normalize angle between to be between 0 and 1
                 // 0 means no angle, 1 means 90 degree angle
-                angleBetween = Mathf.Min(KCCUtils.MaxAngleShoveRadians, Mathf.Abs(angleBetween));
-                float normalizedAngle = angleBetween / KCCUtils.MaxAngleShoveRadians;
+                angleBetween = Mathf.Min(KCCUtils.MaxAngleShoveDegrees, Mathf.Abs(angleBetween));
+                float normalizedAngle = angleBetween / KCCUtils.MaxAngleShoveDegrees;
 
                 // Reduce the remaining movement by the remaining movement that ocurred
                 remaining *= Mathf.Pow(1 - normalizedAngle, anglePower) * 0.9f + 0.1f;

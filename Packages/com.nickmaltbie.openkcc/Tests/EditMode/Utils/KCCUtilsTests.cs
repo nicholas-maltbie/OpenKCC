@@ -252,11 +252,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         /// Verify that player will snap down as expected.
         /// </summary>
         [Test]
-        public void Verify_KCCSnapPlayerDown([Values(0.0f, 0.1f, 0.2f)] float minThreshold)
+        public void Verify_KCCSnapPlayerDown()
         {
-            SetupColliderCast(true, KCCTestUtils.SetupRaycastHitMock(null, Vector3.zero, Vector3.up, 0.01f + minThreshold));
+            SetupColliderCast(true, KCCTestUtils.SetupRaycastHitMock(null, Vector3.zero, Vector3.up, 0.01f));
 
-            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, minThreshold, colliderCastMock.Object);
+            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, colliderCastMock.Object);
 
             Assert.IsTrue(displacement.magnitude > 0.0f, $"Expected displacement to have a magnitude grater than zero but instead found {displacement.ToString("F3")}");
         }

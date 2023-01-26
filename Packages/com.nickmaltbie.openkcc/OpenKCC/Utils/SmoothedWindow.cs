@@ -63,8 +63,6 @@ namespace nickmaltbie.OpenKCC.Utils
             sum -= previous;
             sum += value;
 
-            UnityEngine.Debug.Log($"sum:{sum} value:{value} currentIdx:{currentIdx}");
-
             return previous;
         }
     }
