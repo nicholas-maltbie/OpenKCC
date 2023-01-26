@@ -462,6 +462,10 @@ namespace nickmaltbie.OpenKCC.Utils
                 {
                     didSnapUp = true;
                 }
+                else if (Vector3.Dot(bounce.Movement, movement) < 0)
+                {
+                    break;
+                }
 
                 yield return bounce;
 
