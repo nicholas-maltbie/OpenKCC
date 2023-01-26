@@ -38,9 +38,7 @@ namespace nickmaltbie.OpenKCC.Character
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(KCCMovementEngine))]
     [DefaultExecutionOrder(1000)]
-    public class KCCStateMachine :
-        FixedSMAnim,
-        IJumping
+    public class KCCStateMachine : FixedSMAnim, IJumping
     {
         [Header("Input Controls")]
 
@@ -92,7 +90,7 @@ namespace nickmaltbie.OpenKCC.Character
         private InputAction overrideSprintAction;
 
         /// <summary>
-        /// Gets the move action associated with this humaoid kcc config.
+        /// Gets the move action associated with this kcc.
         /// </summary>
         public InputAction MoveAction
         {
@@ -101,7 +99,7 @@ namespace nickmaltbie.OpenKCC.Character
         }
 
         /// <summary>
-        /// Gets the move action associated with this humaoid kcc config.
+        /// Gets the move action associated with this kcc.
         /// </summary>
         public InputAction SprintAction
         {
@@ -222,15 +220,15 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void UpdateGroundedState()
         {
-            if (movementEngine.groundedState.Falling)
+            if (movementEngine.GroundedState.Falling)
             {
                 RaiseEvent(LeaveGroundEvent.Instance);
             }
-            else if (movementEngine.groundedState.Sliding)
+            else if (movementEngine.GroundedState.Sliding)
             {
                 RaiseEvent(SteepSlopeEvent.Instance);
             }
-            else if (movementEngine.groundedState.StandingOnGround)
+            else if (movementEngine.GroundedState.StandingOnGround)
             {
                 RaiseEvent(GroundedEvent.Instance);
             }
@@ -241,7 +239,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void SetupInputs()
         {
-            jumpAction?.Setup(movementEngine.groundedState, movementEngine, this);
+            jumpAction?.Setup(movementEngine.GroundedState, movementEngine, this);
             MoveAction?.Enable();
         }
 
@@ -249,18 +247,18 @@ namespace nickmaltbie.OpenKCC.Character
         public override void FixedUpdate()
         {
             GetComponent<Rigidbody>().isKinematic = true;
-            jumpAction.ApplyJumpIfPossible(movementEngine.groundedState);
+            jumpAction.ApplyJumpIfPossible(movementEngine.GroundedState);
             movementEngine.MovePlayer(
                 GetDesiredMovement() * unityService.fixedDeltaTime,
                 Velocity * unityService.fixedDeltaTime);
             UpdateGroundedState();
 
             // Apply gravity if needed
-            if (movementEngine.groundedState.Falling || movementEngine.groundedState.Sliding)
+            if (movementEngine.GroundedState.Falling || movementEngine.GroundedState.Sliding)
             {
                 Velocity += Physics.gravity * unityService.fixedDeltaTime;
             }
-            else if (movementEngine.groundedState.StandingOnGround)
+            else if (movementEngine.GroundedState.StandingOnGround)
             {
                 Velocity = Vector3.zero;
             }

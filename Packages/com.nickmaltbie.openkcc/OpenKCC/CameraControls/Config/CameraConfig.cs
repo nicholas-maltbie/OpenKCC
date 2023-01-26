@@ -188,8 +188,8 @@ namespace nickmaltbie.OpenKCC.CameraControls.Config
             currentDistance = Mathf.Clamp(currentDistance, minCameraDistance, maxCameraDistance);
             ignoreObjects.Add(go);
 
-            LookAction.Enable();
-            ZoomAction.Enable();
+            LookAction?.Enable();
+            ZoomAction?.Enable();
         }
     }
 }

@@ -19,6 +19,7 @@
 using nickmaltbie.NetworkStateMachineUnity;
 using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Attributes;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
@@ -29,6 +30,7 @@ using nickmaltbie.StateMachineUnity.Attributes;
 using nickmaltbie.StateMachineUnity.Event;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static nickmaltbie.OpenKCC.Character.Animation.HumanoidKCCAnim;
 
 namespace nickmaltbie.OpenKCC.netcode.Character
@@ -41,16 +43,44 @@ namespace nickmaltbie.OpenKCC.netcode.Character
     [DefaultExecutionOrder(1000)]
     public class NetworkKCC : NetworkSMAnim, IJumping
     {
-        /// <summary>
-        /// Values for configuring and managing KCC Config.
-        /// </summary>
-        [SerializeField]
-        public HumanoidKCCConfig config = new HumanoidKCCConfig();
+        [Header("Input Controls")]
 
         /// <summary>
-        /// Time in which the player has been falling.
+        /// Action reference for moving the player.
         /// </summary>
-        public float FallingTime { get; private set; }
+        [Tooltip("Action reference for moving the player")]
+        [SerializeField]
+        public InputActionReference moveActionReference;
+
+        /// <summary>
+        /// Action reference for sprinting.
+        /// </summary>
+        [Tooltip("Action reference for moving the player")]
+        [SerializeField]
+        public InputActionReference sprintActionReference;
+
+        /// <summary>
+        /// Action reference for jumping.
+        /// </summary>
+        [Tooltip("Action reference for jumping")]
+        [SerializeField]
+        public JumpAction jumpAction;
+
+        [Header("Movement Settings")]
+
+        /// <summary>
+        /// Speed of player movement when walking.
+        /// </summary>
+        [Tooltip("Speed of player when walking")]
+        [SerializeField]
+        public float walkingSpeed = 7.5f;
+
+        /// <summary>
+        /// Speed of player when sprinting.
+        /// </summary>
+        [Tooltip("Speed of player when sprinting")]
+        [SerializeField]
+        public float sprintSpeed = 10.0f;
 
         /// <summary>
         /// Camera controls associated with the player.
@@ -77,10 +107,39 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// Input movement from player input updated each frame.
         /// </summary>
         public Vector3 InputMovement { get; private set; }
+
         /// <summary>
         /// Movement engine for controlling the kinematic character controller.
         /// </summary>
         protected KCCMovementEngine movementEngine;
+
+        /// <summary>
+        /// Override move action for testing.
+        /// </summary>
+        private InputAction overrideMoveAction;
+
+        /// <summary>
+        /// Override move action for testing.
+        /// </summary>
+        private InputAction overrideSprintAction;
+
+        /// <summary>
+        /// Gets the move action associated with this kcc.
+        /// </summary>
+        public InputAction MoveAction
+        {
+            get => overrideMoveAction ?? moveActionReference?.action;
+            set => overrideMoveAction = value;
+        }
+
+        /// <summary>
+        /// Gets the move action associated with this kcc.
+        /// </summary>
+        public InputAction SprintAction
+        {
+            get => overrideSprintAction ?? sprintActionReference?.action;
+            set => overrideSprintAction = value;
+        }
 
         /// <summary>
         /// Current velocity of the player.
@@ -112,7 +171,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [TransitionOnAnimationComplete(typeof(FallingState), 0.15f, true)]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class JumpState : State { }
 
         [Animation(LandingAnimState, 0.1f, true)]
@@ -121,7 +180,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [AnimationTransition(typeof(JumpEvent), typeof(JumpState), 0.35f, true)]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class LandingState : State { }
 
         [Animation(WalkingAnimState, 0.1f, true)]
@@ -130,7 +189,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(StartSprintEvent), typeof(SprintingState))]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class WalkingState : State { }
 
         [Animation(SprintingAnimState, 0.1f, true)]
@@ -139,14 +198,14 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [Transition(typeof(StopSprintEvent), typeof(WalkingState))]
-        [MovementSettings(SpeedConfig = nameof(config.sprintSpeed))]
+        [MovementSettings(SpeedConfig = nameof(sprintSpeed))]
         public class SprintingState : State { }
 
         [Animation(SlidingAnimState, 0.35f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class SlidingState : State { }
 
         [Animation(FallingAnimState, 0.1f, true)]
@@ -154,14 +213,14 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
         [TransitionAfterTime(typeof(LongFallingState), 2.0f)]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class FallingState : State { }
 
         [Animation(LongFallingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 1.0f)]
-        [MovementSettings(SpeedConfig = nameof(config.walkingSpeed))]
+        [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class LongFallingState : State { }
 
         /// <summary>
@@ -169,15 +228,15 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// </summary>
         public void UpdateGroundedState()
         {
-            if (config.groundedState.Falling)
+            if (movementEngine.GroundedState.Falling)
             {
                 RaiseEvent(LeaveGroundEvent.Instance);
             }
-            else if (config.groundedState.Sliding)
+            else if (movementEngine.GroundedState.Sliding)
             {
                 RaiseEvent(SteepSlopeEvent.Instance);
             }
-            else if (config.groundedState.StandingOnGround)
+            else if (movementEngine.GroundedState.StandingOnGround)
             {
                 RaiseEvent(GroundedEvent.Instance);
             }
@@ -197,8 +256,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
 
             GetComponent<Rigidbody>().isKinematic = true;
             _cameraControls = GetComponent<ICameraControls>();
-            config._characterPush = GetComponent<ICharacterPush>();
-            config._colliderCast = GetComponent<IColliderCast>();
             SetupInputs();
         }
 
@@ -209,15 +266,15 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         {
             if (IsOwner)
             {
-                config.jumpAction?.Setup(config.groundedState, config, this);
-                config.MoveAction?.Enable();
+                jumpAction?.Setup(movementEngine.GroundedState, movementEngine, this);
+                MoveAction?.Enable();
             }
         }
 
         public override void LateUpdate()
         {
             relativeParentConfig.FollowGround(transform);
-            transform.position += config.ColliderCast.PushOutOverlapping(transform.position, transform.rotation, config.maxPushSpeed * unityService.deltaTime);
+            transform.position += movementEngine.ColliderCast.PushOutOverlapping(transform.position, transform.rotation, 100 * unityService.deltaTime);
 
             base.LateUpdate();
         }
@@ -231,7 +288,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         {
             Vector3 rotatedMovement = HorizPlaneView * InputMovement;
             Vector3 projectedMovement = movementEngine.GetProjectedMovement(rotatedMovement);
-            float speed = MovementSettingsAttribute.GetSpeed(CurrentState, config);
+            float speed = MovementSettingsAttribute.GetSpeed(CurrentState, this);
             Vector3 scaledMovement = projectedMovement * speed;
             return scaledMovement;
         }
@@ -239,18 +296,25 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public override void FixedUpdate()
         {
             GetComponent<Rigidbody>().isKinematic = true;
-            config.Jumping = CurrentState == typeof(JumpState);
 
             if (IsOwner)
             {
-                config.jumpAction.ApplyJumpIfPossible(movementEngine.groundedState);
+                jumpAction.ApplyJumpIfPossible(movementEngine.GroundedState);
                 movementEngine.MovePlayer(
                     GetDesiredMovement() * unityService.fixedDeltaTime,
                     Velocity * unityService.fixedDeltaTime);
-
-                // Don't allow the player's velocity to be more than they moved.
                 UpdateGroundedState();
                 GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
+
+                // Apply gravity if needed
+                if (movementEngine.GroundedState.Falling || movementEngine.GroundedState.Sliding)
+                {
+                    Velocity += Physics.gravity * unityService.fixedDeltaTime;
+                }
+                else if (movementEngine.GroundedState.StandingOnGround)
+                {
+                    Velocity = Vector3.zero;
+                }
             }
 
             base.FixedUpdate();
@@ -284,8 +348,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         {
             if (IsOwner)
             {
-                config.Jumping = true;
-                Velocity = velocity;
+                Velocity = velocity + movementEngine.GetGroundVelocity();
                 RaiseEvent(JumpEvent.Instance);
             }
         }
@@ -296,9 +359,9 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         public void ReadPlayerMovement()
         {
             bool denyMovement = PlayerInputUtils.playerMovementState == PlayerInputState.Deny;
-            Vector2 moveVector = denyMovement ? Vector2.zero : config.MoveAction?.ReadValue<Vector2>() ?? Vector2.zero;
+            Vector2 moveVector = denyMovement ? Vector2.zero : MoveAction?.ReadValue<Vector2>() ?? Vector2.zero;
             InputMovement = new Vector3(moveVector.x, 0, moveVector.y);
-            config.jumpAction.Update();
+            jumpAction.Update();
 
             float moveX = AttachedAnimator.GetFloat("MoveX");
             float moveY = AttachedAnimator.GetFloat("MoveY");
@@ -312,7 +375,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
 
             if (moving)
             {
-                if (config.SprintAction?.IsPressed() ?? false)
+                if (SprintAction?.IsPressed() ?? false)
                 {
                     RaiseEvent(StartSprintEvent.Instance);
                 }

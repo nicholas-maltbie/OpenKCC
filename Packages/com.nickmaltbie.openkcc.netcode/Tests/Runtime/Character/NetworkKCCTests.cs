@@ -223,18 +223,15 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             jumpAction.jumpInput = jumpInput;
 
             // Setup actions
-            networkKCC.config.jumpAction = jumpAction;
-            networkKCC.config.MoveAction = moveInputAction;
-            networkKCC.config.SprintAction = sprintInputAction;
+            networkKCC.jumpAction = jumpAction;
+            networkKCC.MoveAction = moveInputAction;
+            networkKCC.SprintAction = sprintInputAction;
 
             networkKCC.SetupInputs();
         }
 
         public override void SetupPrefab(GameObject go)
         {
-            NetworkKCC kcc = go.GetComponent<NetworkKCC>();
-            kcc.config.maxPushSpeed = 100.0f;
-
             go.AddComponent<CapsuleColliderCast>();
             go.AddComponent<ClientNetworkTransform>();
 

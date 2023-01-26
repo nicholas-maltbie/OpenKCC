@@ -77,7 +77,7 @@ namespace nickmaltbie.OpenKCC.Character
         public float AnglePower => 2.0f;
 
         /// <inheritdoc/>
-        public bool CanSnapUp => groundedState.OnGround;
+        public bool CanSnapUp => GroundedState.OnGround;
 
         /// <summary>
         /// Unity service for managing calls to static variables in
@@ -115,7 +115,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Current grounded state of the character.
         /// </summary>
-        public KCCGroundedState groundedState { get; protected set; }
+        public KCCGroundedState GroundedState { get; protected set; }
 
         /// <inheritdoc/>
         public bool MoveUpWalls => false;
@@ -125,8 +125,14 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public IColliderCast _colliderCast;
 
+        /// <summary>
+        /// Previous position of the player for calculating moving ground position.
+        /// </summary>
         protected Vector3 previousPosition = Vector3.zero;
 
+        /// <summary>
+        /// Approximated world velocity of the player.
+        /// </summary>
         public SmoothedVector worldVelocity = new SmoothedVector(10);
 
         /// <summary>
@@ -180,8 +186,8 @@ namespace nickmaltbie.OpenKCC.Character
         public Vector3 GetGroundVelocity()
         {
             Vector3 groundVelocity = Vector3.zero;
-            IMovingGround movingGround = groundedState.Floor?.GetComponent<IMovingGround>();
-            Rigidbody rb = groundedState.Floor?.GetComponent<Rigidbody>();
+            IMovingGround movingGround = GroundedState.Floor?.GetComponent<IMovingGround>();
+            Rigidbody rb = GroundedState.Floor?.GetComponent<Rigidbody>();
             if (movingGround != null)
             {
                 if (movingGround.AvoidTransferMomentum())
@@ -190,21 +196,21 @@ namespace nickmaltbie.OpenKCC.Character
                 }
 
                 // Weight movement of ground by ground movement weight
-                groundVelocity = movingGround.GetVelocityAtPoint(groundedState.GroundHitPosition);
+                groundVelocity = movingGround.GetVelocityAtPoint(GroundedState.GroundHitPosition);
                 float velocityWeight =
-                    movingGround.GetMovementWeight(groundedState.GroundHitPosition, groundVelocity);
+                    movingGround.GetMovementWeight(GroundedState.GroundHitPosition, groundVelocity);
                 float transferWeight =
-                    movingGround.GetTransferMomentumWeight(groundedState.GroundHitPosition, groundVelocity);
+                    movingGround.GetTransferMomentumWeight(GroundedState.GroundHitPosition, groundVelocity);
                 groundVelocity *= velocityWeight;
                 groundVelocity *= transferWeight;
             }
             else if (rb != null && !rb.isKinematic)
             {
-                Vector3 groundVel = rb.GetPointVelocity(groundedState.GroundHitPosition);
+                Vector3 groundVel = rb.GetPointVelocity(GroundedState.GroundHitPosition);
                 float velocity = Mathf.Min(groundVel.magnitude, MaxDefaultLaunchVelocity);
                 groundVelocity = groundVel.normalized * velocity;
             }
-            else if (groundedState.StandingOnGround)
+            else if (GroundedState.StandingOnGround)
             {
                 Vector3 avgVel = worldVelocity.Average();
                 float velocity = Mathf.Min(avgVel.magnitude, MaxDefaultLaunchVelocity);
@@ -249,7 +255,7 @@ namespace nickmaltbie.OpenKCC.Character
 
                 // Only snap down if the player was grounded before they started
                 // moving and are not currently trying to move upwards.
-                if (groundedState.StandingOnGround && !groundedState.Sliding && !MovingUp(move))
+                if (GroundedState.StandingOnGround && !GroundedState.Sliding && !MovingUp(move))
                 {
                     SnapPlayerDown();
                 }
@@ -262,7 +268,7 @@ namespace nickmaltbie.OpenKCC.Character
             CheckGrounded(snappedUp);
 
             Vector3 delta = transform.position - start;
-            transform.position += relativeParentConfig.UpdateMovingGround(transform.position, groundedState, delta, unityService.fixedDeltaTime);
+            transform.position += relativeParentConfig.UpdateMovingGround(transform.position, GroundedState, delta, unityService.fixedDeltaTime);
             relativeParentConfig.FollowGround(transform);
 
             previousPosition = transform.position;
@@ -289,9 +295,9 @@ namespace nickmaltbie.OpenKCC.Character
         {
             // If the player is standing on the ground, project their movement onto the ground plane
             // This allows them to walk up gradual slopes without facing a hit in movement speed
-            if (groundedState.StandingOnGround && !groundedState.Sliding)
+            if (GroundedState.StandingOnGround && !GroundedState.Sliding)
             {
-                Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, groundedState.SurfaceNormal).normalized * movement.magnitude;
+                Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, GroundedState.SurfaceNormal).normalized * movement.magnitude;
                 if (projectedMovement.magnitude + KCCUtils.Epsilon >= movement.magnitude)
                 {
                     movement = projectedMovement;
@@ -317,20 +323,20 @@ namespace nickmaltbie.OpenKCC.Character
 
             if (snapped)
             {
-                normal = groundedState.SurfaceNormal;
+                normal = GroundedState.SurfaceNormal;
             }
 
-            groundedState = new KCCGroundedState(
+            GroundedState = new KCCGroundedState(
                 distanceToGround : hit.distance,
                 onGround : didHit,
                 angle : Vector3.Angle(normal, Up),
                 surfaceNormal : normal,
-                groundHitPosition : hit.distance > 0 ? hit.point : groundedState.GroundHitPosition,
+                groundHitPosition : hit.distance > 0 ? hit.point : GroundedState.GroundHitPosition,
                 floor : hit.collider?.gameObject,
                 groundedDistance : GroundedDistance,
                 maxWalkAngle: MaxWalkAngle);
 
-            return groundedState;
+            return GroundedState;
         }
     }
 }

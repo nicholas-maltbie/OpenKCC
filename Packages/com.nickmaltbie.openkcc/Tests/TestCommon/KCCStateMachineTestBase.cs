@@ -48,7 +48,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         protected JumpAction jumpAction;
         protected KCCStateMachine kccStateMachine;
         protected KCCMovementEngine moveEngine;
-        protected KCCGroundedState KCCGroundedState => moveEngine.groundedState;
+        protected KCCGroundedState KCCGroundedState => moveEngine.GroundedState;
 
         [SetUp]
         public override void Setup()
