@@ -123,7 +123,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Collider cast for player shape.
         /// </summary>
-        private IColliderCast _colliderCast;
+        public IColliderCast _colliderCast;
 
         protected Vector3 previousPosition = Vector3.zero;
 
@@ -304,7 +304,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Update the current grounded state of this kinematic character controller.
         /// </summary>
-        protected KCCGroundedState CheckGrounded(bool snapped)
+        public KCCGroundedState CheckGrounded(bool snapped)
         {
             bool didHit = ColliderCast.CastSelf(
                 transform.position,

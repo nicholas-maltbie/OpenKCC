@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using Moq;
+using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
@@ -32,28 +33,25 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
     [TestFixture]
     public class KCCGroundedStateTests : TestBase
     {
-        /*
+        private KCCMovementEngine movementEngine;
         private Mock<IColliderCast> colliderCastMock;
-        private Mock<IKCCConfig> kccConfigMock;
         private KCCGroundedState kccGroundedState;
 
         [SetUp]
         public void SetUp()
         {
             colliderCastMock = new Mock<IColliderCast>();
-            kccConfigMock = new Mock<IKCCConfig>();
             kccGroundedState = new KCCGroundedState();
-            kccConfigMock.Setup(e => e.ColliderCast).Returns(colliderCastMock.Object);
-            kccConfigMock.Setup(e => e.Up).Returns(Vector3.up);
-            kccGroundedState.groundedDistance = 0.01f;
-            kccGroundedState.maxWalkAngle = 60.0f;
+
+            movementEngine = base.CreateGameObject().AddComponent<KCCMovementEngine>();
+            movementEngine._colliderCast = colliderCastMock.Object;
         }
 
         [Test]
         public void Validate_KCCGroundedState_CheckGrounded_StandingOnGround()
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: 0.001f, didHit: true);
-            kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
+            kccGroundedState = movementEngine.CheckGrounded(false);
 
             TestUtils.AssertInBounds(kccGroundedState.Angle, 0.0f);
             Assert.IsTrue(kccGroundedState.StandingOnGround);
@@ -67,7 +65,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         )
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: distance, didHit: distance < Mathf.Infinity);
-            kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
+            kccGroundedState = movementEngine.CheckGrounded(false);
 
             Assert.IsFalse(kccGroundedState.StandingOnGround);
             Assert.IsFalse(kccGroundedState.Sliding);
@@ -80,17 +78,17 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             [Values] bool falling)
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: 0.001f, didHit: falling);
-            kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
+            kccGroundedState = movementEngine.CheckGrounded(false);
 
             if (falling)
             {
-                Assert.AreEqual(Vector3.forward, kccGroundedState.GetProjectedMovement(Vector3.forward));
+                Assert.AreEqual(Vector3.forward, movementEngine.GetProjectedMovement(Vector3.forward));
             }
             else
             {
-                Assert.AreEqual(Vector3.forward, kccGroundedState.GetProjectedMovement(Vector3.forward));
-                Assert.AreEqual(Vector3.right, kccGroundedState.GetProjectedMovement(Vector3.right));
-                Assert.AreEqual(Vector3.up, kccGroundedState.GetProjectedMovement(Vector3.up));
+                Assert.AreEqual(Vector3.forward, movementEngine.GetProjectedMovement(Vector3.forward));
+                Assert.AreEqual(Vector3.right, movementEngine.GetProjectedMovement(Vector3.right));
+                Assert.AreEqual(Vector3.up, movementEngine.GetProjectedMovement(Vector3.up));
             }
         }
 
@@ -98,11 +96,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         public void Validate_KCCGroundedState_CheckGrounded_Sliding()
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: (Vector3.up + Vector3.right * 10).normalized, didHit: true);
-            kccGroundedState.CheckGrounded(kccConfigMock.Object, Vector3.zero, Quaternion.identity);
+            kccGroundedState = movementEngine.CheckGrounded(false);
 
             Assert.IsTrue(kccGroundedState.StandingOnGround);
             Assert.IsTrue(kccGroundedState.Sliding);
             Assert.IsTrue(kccGroundedState.DistanceToGround == 0.001f);
-        }*/
+        }
     }
 }

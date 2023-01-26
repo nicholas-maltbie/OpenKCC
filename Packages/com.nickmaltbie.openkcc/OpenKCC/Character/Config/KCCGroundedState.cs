@@ -105,8 +105,8 @@ namespace nickmaltbie.OpenKCC.Character.Config
             Vector3 surfaceNormal,
             Vector3 groundHitPosition,
             GameObject floor,
-            float groundedDistance,
-            float maxWalkAngle)
+            float groundedDistance = 0.01f,
+            float maxWalkAngle = 60.0f)
         {
             DistanceToGround = distanceToGround;
             OnGround = onGround;

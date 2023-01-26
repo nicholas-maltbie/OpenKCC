@@ -50,8 +50,12 @@ namespace nickmaltbie.OpenKCC.CameraControls
 
         public void Start()
         {
-            GetComponent<PlayerInput>().enabled = true;
             config.Setup(gameObject);
+            PlayerInput playerInput;
+            if ((playerInput = GetComponent<PlayerInput>()) != null)
+            {
+                playerInput.enabled = true;
+            }
         }
 
         public void Update()

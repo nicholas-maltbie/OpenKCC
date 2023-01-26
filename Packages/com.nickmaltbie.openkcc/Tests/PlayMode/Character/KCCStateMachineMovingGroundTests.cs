@@ -64,8 +64,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             box.transform.rotation = Quaternion.identity;
             floor.transform.position = new Vector3(0, -0.5f, 0);
         }
-
-        /*
+        
         [UnityTest]
         public IEnumerator FollowLinearMovement(
             [ValueSource(nameof(TestDirections))] Vector3 dir,
@@ -77,7 +76,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             yield return new WaitForFixedUpdate();
 
             // Wait until player is no longer overlapping with object.
-            while (kccStateMachine.config.groundedState.DistanceToGround <= 0)
+            while (KCCGroundedState.DistanceToGround <= 0)
             {
                 yield return new WaitForFixedUpdate();
             }
@@ -95,8 +94,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForFixedUpdate();
 
-                Assert.AreEqual(floor, kccStateMachine.config.groundedState.Floor);
-                Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGroundOrOverlap);
+                Assert.AreEqual(floor, KCCGroundedState.Floor);
+                Assert.IsTrue(KCCGroundedState.StandingOnGroundOrOverlap);
                 yield return new WaitForFixedUpdate();
 
                 Vector3 expectedPosition = floor.transform.position + relativePos;
@@ -127,13 +126,13 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
                 yield return null;
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForFixedUpdate();
-                Assert.AreEqual(floor, kccStateMachine.config.groundedState.Floor);
-                Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGroundOrOverlap);
+                Assert.AreEqual(floor, KCCGroundedState.Floor);
+                Assert.IsTrue(KCCGroundedState.StandingOnGroundOrOverlap);
 
                 // Expected position should be relative position
                 Vector3 expectedPos = floor.transform.rotation * relativePos;
                 TestUtils.AssertInBounds(kccStateMachine.transform.position, expectedPos, 1.0f);
             }
-        }*/
+        }
     }
 }

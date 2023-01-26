@@ -37,11 +37,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
     [TestFixture]
     public class KCCStateMachineTests : KCCStateMachineTestBase
     {
-        /*
         private Mock<IUnityService> unityServiceMock;
         private Mock<IColliderCast> colliderCastMock;
-        private Mock<IKCCConfig> kccConfigMock;
-        private Mock<ICharacterPush> characterPushMock;
         private Mock<ICameraControls> cameraControlsMock;
 
         [SetUp]
@@ -52,18 +49,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             unityServiceMock = new Mock<IUnityService>();
             colliderCastMock = new Mock<IColliderCast>();
             cameraControlsMock = new Mock<ICameraControls>();
-            kccConfigMock = new Mock<IKCCConfig>();
-            characterPushMock = new Mock<ICharacterPush>();
 
             unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
             unityServiceMock.Setup(e => e.fixedDeltaTime).Returns(1.0f);
 
-            kccGroundedState = new KCCGroundedState();
-            kccConfigMock.Setup(e => e.ColliderCast).Returns(colliderCastMock.Object);
-            kccConfigMock.Setup(e => e.Up).Returns(Vector3.up);
-
             kccStateMachine.Awake();
             kccStateMachine.CameraControls = cameraControlsMock.Object;
+
+            moveEngine._colliderCast = colliderCastMock.Object;
         }
 
         [Test]
@@ -79,9 +72,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(typeof(KCCStateMachine.FallingState), kccStateMachine.CurrentState);
-            Assert.IsFalse(groundedState.StandingOnGround);
-            Assert.IsFalse(groundedState.Sliding);
-            Assert.IsTrue(groundedState.Falling);*
+            Assert.IsFalse(KCCGroundedState.StandingOnGround);
+            Assert.IsFalse(KCCGroundedState.Sliding);
+            Assert.IsTrue(KCCGroundedState.Falling);
         }
 
         [Test]
@@ -107,9 +100,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.SlidingState));
-            Assert.IsTrue(groundedState.StandingOnGround);
-            Assert.IsTrue(groundedState.Sliding);
-            Assert.IsFalse(groundedState.Falling);
+            Assert.IsTrue(KCCGroundedState.StandingOnGround);
+            Assert.IsTrue(KCCGroundedState.Sliding);
+            Assert.IsFalse(KCCGroundedState.Falling);
         }
 
         [Test]
@@ -163,7 +156,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             tracking.transform.position += direction;
             tracking.FixedUpdate();
 
-            Assert.AreEqual(movingGround, kccStateMachine.config.groundedState.Floor);
+            Assert.AreEqual(movingGround, KCCGroundedState.Floor);
         }
 
         [Test]
@@ -182,9 +175,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(typeof(KCCStateMachine.WalkingState), kccStateMachine.CurrentState);
-            Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGround);
-            Assert.IsFalse(kccStateMachine.config.groundedState.Sliding);
-            Assert.IsFalse(kccStateMachine.config.groundedState.Falling);
+            Assert.IsTrue(KCCGroundedState.StandingOnGround);
+            Assert.IsFalse(KCCGroundedState.Sliding);
+            Assert.IsFalse(KCCGroundedState.Falling);
         }
 
         [Test]
@@ -213,9 +206,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.FixedUpdate();
 
             Assert.AreEqual(kccStateMachine.CurrentState, typeof(KCCStateMachine.IdleState));
-            Assert.IsTrue(kccStateMachine.config.groundedState.StandingOnGround);
-            Assert.IsFalse(kccStateMachine.config.groundedState.Sliding);
-            Assert.IsFalse(kccStateMachine.config.groundedState.Falling);
+            Assert.IsTrue(KCCGroundedState.StandingOnGround);
+            Assert.IsFalse(KCCGroundedState.Sliding);
+            Assert.IsFalse(KCCGroundedState.Falling);
 
             PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
         }
@@ -233,6 +226,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.TeleportPlayer(Vector3.forward);
 
             Assert.AreEqual(Vector3.forward, kccStateMachine.transform.position);
-        }*/
+        }
     }
 }
