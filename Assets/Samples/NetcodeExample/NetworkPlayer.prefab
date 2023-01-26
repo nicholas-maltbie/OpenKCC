@@ -243,17 +243,10 @@ MonoBehaviour:
   _attachedAnimator: {fileID: 9145067047235797048}
   moveActionReference: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   sprintActionReference: {fileID: -6424176782126915535, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-  jumpAction:
-    coyoteTime: 0
-    jumpInput:
-      inputActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-      bufferTime: 0
-      cooldown: 0.1
-    jumpVelocity: 6.5
-    maxJumpAngle: 85
-    jumpAngleWeightFactor: 0
+  jumpActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   walkingSpeed: 7.5
   sprintSpeed: 10
+  jumpVelocity: 6.5
 --- !u!114 &1302586632800550119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,6 +331,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 958f6019d666515419c7bf4b6a76110a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stepHeight: 0.35
+  maxWalkAngle: 60
 --- !u!1001 &3423680949552840105
 PrefabInstance:
   m_ObjectHideFlags: 0

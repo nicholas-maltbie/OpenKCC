@@ -65,81 +65,34 @@ a basic use case.
 
 There are many properties that configure the OpenKCC. These properties
 are also explained in depth in the @nickmaltbie.OpenKCC.Character.KCCStateMachine
-documentation page. The config variables for the KCCStateMachine are
-stored in the @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig
+documentation page.
 
 - **Input Controls** - Controls to manage character movement.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.moveAction
+    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.moveActionReference
         \- Action to move player along two axis input
         (forward back, left right)
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.sprintAction
+    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.sprintActionReference
         \- Button action to control sprinting speed
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.jumpAction
+    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.jumpAction
         \- Button action to start player jump configured via a
         @nickmaltbie.OpenKCC.Character.Action.JumpAction
-- **Player Jump Settings** - Settings relevant to player jumps
-    - @nickmaltbie.OpenKCC.Input.BufferedInput.inputAction
-        \- @UnityEngine.InputSystem.InputActionReference for the input.
-    - @nickmaltbie.OpenKCC.Input.BufferedInput.bufferTime
-        \- Time in which the player's input for jumping
-        will be buffered before hitting hte ground in seconds.
-    - @nickmaltbie.OpenKCC.Input.BufferedInput.cooldown
-        \- Minimum time between jumps in seconds.
-    - @nickmaltbie.OpenKCC.Character.Action.JumpAction.jumpVelocity
-        \- Vertical velocity of player when they jump.
-    - @nickmaltbie.OpenKCC.Character.Action.JumpAction.maxJumpAngle
-        \- Maximum angle at which the player can jump (in degrees).
-    - @nickmaltbie.OpenKCC.Character.Action.JumpAction.jumpAngleWeightFactor
-        \- Weight to which the player's jump is weighted towards the
-        direction of the surface they are standing on.
-    - @nickmaltbie.OpenKCC.Character.Action.ConditionalAction.coyoteTime
-        \- Time in which the player will float before they start to
-        fall when they are not grounded.
-- **Ground Checking** - Configures grounded state for player.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.gravity
-        \- Direction and magnitude of gravity in units per second squared.
-    - The rest of the values are configured via the
-    @nickmaltbie.OpenKCC.Character.Config.KCCGroundedState by the
-    @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.groundedState parameter
-    - @nickmaltbie.OpenKCC.Character.Config.KCCGroundedState.groundedDistance
-        \- Distance from ground at which a player is considered standing on the ground.
-    - @nickmaltbie.OpenKCC.Character.Config.KCCGroundedState.groundCheckDistance
-        \- Distance to check player distance to ground.
-    - @nickmaltbie.OpenKCC.Character.Config.KCCGroundedState.maxWalkAngle
-        \- Maximum angle at which the player can walk (in degrees).
-- **Motion Settings** - Settings for controlling player movement.
-  Many of these settings are based on the character movement design,
-  See [KCC Movement Design](kcc-design/kcc-movement.md) for more details.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.walkingSpeed
-        \- Speed at which the player walks, in units per second.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.sprintSpeed
-        \- Speed of player when sprinting, in units per second.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.maxBounces
-        \- Maximum bounces for computing player movement.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.pushDecay
-        \- Preserved momentum percentage when pushing an object. A value
-        of 0 would indicate a complete stop while a value of 1 would be fully
-        bouncing off an object when the player collides with it.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.anglePower
-        \- Angle decay rate when sliding off surfaces.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.maxPushSpeed
-        \- Maximum distance a player can be pushed when overlapping
-        other objects in units per second. Useful for resolving collisions.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.verticalSnapDown
-        \- Distance at which the player can "snap down" when walking.
-- **Stair and Step** - Setting related to player stairs and steps.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.stepUpDepth
-        \- Minimum depth required when stepping up stairs.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.verticalSnapUp
-        \- Max distance the player can snap up stairs.
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.snapBufferTime
-        \- Time in which the player can snap up or down
-        steps even after starting to fall
-- **Moving Ground** - Settings relevant to attaching to moving ground
-    - @nickmaltbie.OpenKCC.Character.Config.HumanoidKCCConfig.maxDefaultLaunchVelocity
-        \- Max velocity at which the player can be launched
-        when gaining momentum from a floor object without
-        an IMovingGround attached to it.
+- **Player Movement Settings** - Settings relevant to player movement
+    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.walkingSpeed
+        \- player speed while walking.
+    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.sprintSpeed
+        \- Player speed while sprinting.
+    - @nickmaltbie.OpenKCC.Character.KCCStateMachine.jumpVelocity
+        \- Velocity of player when Jumping.
+
+The rest of the movement settings are controlled
+via the @nickmaltbie.OpenKCC.Character.KCCMovementEngine
+with the following configurable parameters:
+
+- @nickmaltbie.OpenKCC.Character.KCCMovementEngine.stepHeight
+    \- Maximum height of steps the player can climb up.
+- @nickmaltbie.OpenKCC.Character.KCCMovementEngine.maxWalkAngle
+    \- Maximum angle the player can walk up before
+    they start slipping back down.
 
 ## Making Your Own Custom Kinematic Character Controller
 

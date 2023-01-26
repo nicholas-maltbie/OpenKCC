@@ -80,16 +80,9 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <summary>
         /// Action reference for sprinting.
         /// </summary>
-        [Tooltip("Action reference for moving the player")]
+        [Tooltip("Action reference for player jumping")]
         [SerializeField]
-        public InputActionReference sprintActionReference;
-
-        /// <summary>
-        /// Action reference for jumping.
-        /// </summary>
-        [Tooltip("Action reference for jumping")]
-        [SerializeField]
-        public JumpAction jumpAction;
+        public InputActionReference jumpActionReference;
 
         [Header("Movement Settings")]
 
@@ -101,14 +94,21 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         public float walkingSpeed = 7.5f;
 
         /// <summary>
-        /// Override move action for testing.
+        /// Velocity of player jump.
         /// </summary>
-        private InputAction overrideMoveAction;
+        [Tooltip("Velocity of player jump.")]
+        [SerializeField]
+        public float jumpVelocity = 6.5f;
+
+        /// <summary>
+        /// Action reference for jumping.
+        /// </summary>
+        internal JumpAction jumpAction;
 
         /// <summary>
         /// Override move action for testing.
         /// </summary>
-        private InputAction overrideSprintAction;
+        private InputAction overrideMoveAction;
 
         /// <summary>
         /// Gets the move action associated with this kcc.
@@ -117,15 +117,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         {
             get => overrideMoveAction ?? moveActionReference?.action;
             set => overrideMoveAction = value;
-        }
-
-        /// <summary>
-        /// Gets the move action associated with this kcc.
-        /// </summary>
-        public InputAction SprintAction
-        {
-            get => overrideSprintAction ?? sprintActionReference?.action;
-            set => overrideSprintAction = value;
         }
 
         private ParticleSystem burrowParticles;
@@ -268,6 +259,19 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             diggingTrails = Enumerable.Range(0, maxDiggingTrails)
                 .Select(_ => Instantiate(diggingTrailParticlePrefab, transform))
                 .ToArray();
+
+            jumpAction = new JumpAction()
+            {
+                jumpInput = new Input.BufferedInput()
+                {
+                    inputActionReference = jumpActionReference,
+                    cooldown = 0.25f,
+                    bufferTime = 0.05f,
+                },
+                jumpVelocity = jumpVelocity,
+                maxJumpAngle = 180.0f,
+                jumpAngleWeightFactor = 0.5f,
+            };
 
             burrowParticles.transform.localPosition = particleOffset;
             burrowParticles.Stop();

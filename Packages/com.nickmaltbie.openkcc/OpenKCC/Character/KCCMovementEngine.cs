@@ -46,12 +46,6 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         [SerializeField]
         public float maxWalkAngle = 60.0f;
-
-        /// <summary>
-        /// Max velocity player can be launched at from moving objects.
-        /// </summary>
-        [SerializeField]
-        public float maxDefaultLaunchVelocity = 5.0f;
         
         /// <summary>
         /// Upwards direction for the KCC Movement engine.
@@ -117,7 +111,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Max default launch velocity for the player from unlabeled
         /// surfaces.
         /// </summary>
-        protected float MaxDefaultLaunchVelocity => maxDefaultLaunchVelocity;
+        protected float MaxDefaultLaunchVelocity => 5.0f;
 
         /// <summary>
         /// Relative parent configuration for following the ground.

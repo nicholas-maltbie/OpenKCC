@@ -57,11 +57,11 @@ namespace nickmaltbie.OpenKCC.Character
         public InputActionReference sprintActionReference;
 
         /// <summary>
-        /// Action reference for jumping.
+        /// Action reference for sprinting.
         /// </summary>
-        [Tooltip("Action reference for jumping")]
+        [Tooltip("Action reference for player jumping")]
         [SerializeField]
-        public JumpAction jumpAction;
+        public InputActionReference jumpActionReference;
 
         [Header("Movement Settings")]
 
@@ -78,6 +78,18 @@ namespace nickmaltbie.OpenKCC.Character
         [Tooltip("Speed of player when sprinting")]
         [SerializeField]
         public float sprintSpeed = 10.0f;
+
+        /// <summary>
+        /// Velocity of player jump.
+        /// </summary>
+        [Tooltip("Velocity of player jump.")]
+        [SerializeField]
+        public float jumpVelocity = 6.5f;
+
+        /// <summary>
+        /// Action reference for jumping.
+        /// </summary>
+        internal JumpAction jumpAction;
 
         /// <summary>
         /// Override move action for testing.
@@ -208,6 +220,18 @@ namespace nickmaltbie.OpenKCC.Character
         public override void Awake()
         {
             base.Awake();
+            jumpAction = new JumpAction()
+            {
+                jumpInput = new Input.BufferedInput()
+                {
+                    inputActionReference = jumpActionReference,
+                    cooldown = 0.25f,
+                    bufferTime = 0.05f,
+                },
+                jumpVelocity = jumpVelocity,
+                maxJumpAngle = 85.0f,
+                jumpAngleWeightFactor = 0.0f,
+            };
 
             GetComponent<Rigidbody>().isKinematic = true;
             movementEngine = GetComponent<KCCMovementEngine>();
