@@ -34,7 +34,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// Have no angle decay in movement up walls.
         /// </summary>
         public override float AnglePower => 1.0f;
-        
+
         /// <summary>
         /// Surface normal for overriding up direction.
         /// </summary>
@@ -44,7 +44,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// Should the grounded angle be overwritten.
         /// </summary>
         public bool overrideGrounded = false;
-        
+
         /// <summary>
         /// Set the normal vector for the ground the mole is standing on.
         /// </summary>

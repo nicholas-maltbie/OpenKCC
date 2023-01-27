@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Utils
 {

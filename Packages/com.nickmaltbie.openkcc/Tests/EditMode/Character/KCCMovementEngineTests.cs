@@ -16,45 +16,24 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.CameraControls.Config;
-using nickmaltbie.TestUtilsUnity;
-using UnityEngine;
+using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
+using NUnit.Framework;
 
-namespace nickmaltbie.OpenKCC.CameraControls
+namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
     /// <summary>
-    /// Basic hybrid first and third person camera controller.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.KCCMovementEngine"/> in edit mode.
     /// </summary>
-    public class CameraController : MonoBehaviour, ICameraControls
+    [TestFixture]
+    public class KCCMovementEngineTests : TestBase
     {
-        /// <summary>
-        /// Unity service associated with this game object for testing.
-        /// </summary>
-        public IUnityService unityService = UnityService.Instance;
+        private KCCMovementEngine engine;
 
-        /// <summary>
-        /// Camera config associated wit this camera controller.
-        /// </summary>
-        [SerializeField]
-        public CameraConfig config = new CameraConfig();
-
-        /// <inheritdoc/>
-        public float PreviousOpacity { get; set; }
-
-        /// <inheritdoc/>
-        public float Pitch { get; set; }
-
-        /// <inheritdoc/>
-        public float Yaw { get; set; }
-
-        public void Start()
+        [SetUp]
+        public override void Setup()
         {
-            config.Setup(gameObject);
-        }
-
-        public void Update()
-        {
-            CameraUtils.UpdateCameraController(config, gameObject, this, unityService.deltaTime);
+            engine = CreateGameObject().AddComponent<KCCMovementEngine>();
         }
     }
 }

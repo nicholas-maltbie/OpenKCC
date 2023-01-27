@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nicholas Maltbie
+﻿// Copyright (C) 2023 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -50,15 +50,15 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         [Test]
         public void Validate_SmoothedWindowVector3()
         {
-            SmoothedVector vector = new SmoothedVector(4);
-            
+            var vector = new SmoothedVector(4);
+
             Assert.AreEqual(Vector3.zero, vector.Average());
-            
+
             vector.AddSample(Vector3.up);
             Assert.AreEqual(Vector3.up, vector.Average());
             vector.AddSample(Vector3.up);
             Assert.AreEqual(Vector3.up, vector.Average());
-            
+
             vector.AddSample(Vector3.down);
             vector.AddSample(Vector3.down);
             Assert.AreEqual(Vector3.zero, vector.Average());
@@ -71,13 +71,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         [Test]
         public void Validate_SmoothedWindow_Samples([NUnit.Framework.Range(0, 100, 10)] int size)
         {
-            SmoothedWindowTest smoothed = new SmoothedWindowTest(size);
+            var smoothed = new SmoothedWindowTest(size);
             SmoothedWindow<int> window = smoothed;
 
             for (int i = 0; i < size; i++)
             {
                 window.AddSample(i);
-                
+
                 Assert.AreEqual(i + 1, window.Count);
                 Assert.IsTrue(smoothed.Values.SequenceEqual(Enumerable.Range(0, i + 1)));
             }
