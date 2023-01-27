@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Utils
 {
@@ -25,44 +26,83 @@ namespace nickmaltbie.OpenKCC.Utils
     /// </summary>
     public abstract class SmoothedWindow<E>
     {
-        protected E[] samples;
-        protected int currentIdx;
+        /// <summary>
+        /// Gets the sample values.
+        /// </summary>
+        protected E[] Samples { get; private set; }
+
+        /// <summary>
+        /// Gets the current selected index.
+        /// </summary>
+        protected int CurrentIdx { get; private set; }
+
+        /// <summary>
+        /// Count of 
+        /// </summary>
+        /// <value></value>
         public int Count { get; protected set; }
 
+        /// <summary>
+        /// Create a smoothed window.
+        /// </summary>
+        /// <param name="size">Size of smoothing window.</param>
         public SmoothedWindow(int size)
         {
-            samples = new E[size];
+            Samples = new E[size];
         }
 
+        /// <summary>
+        /// Adds a sample to the smoothing window at the next
+        /// available space. Will overwrite data if any data
+        /// is there.
+        /// </summary>
+        /// <param name="value">Value to add.</param>
+        /// <returns>Previous value removed.</returns>
         public virtual E AddSample(E value)
         {
-            E previous = samples[currentIdx];
-            samples[currentIdx] = value;
-
-            currentIdx = (currentIdx + 1) % samples.Length;
-
-            Count = Mathf.Max(Count, currentIdx);
+            E previous = Samples[CurrentIdx];
+            Samples[CurrentIdx] = value;
+            Count = Mathf.Max(Count, ++CurrentIdx);
+            CurrentIdx %= Samples.Length;
             return previous;
         }
     }
 
+    /// <summary>
+    /// Smoothed window for a Vector3 value.
+    /// </summary>
     public class SmoothedVector : SmoothedWindow<Vector3>
     {
+        /// <summary>
+        /// Running sum of the values stored in samples.
+        /// </summary>
         protected Vector3 sum = Vector3.zero;
 
+        /// <summary>
+        /// Create a smoothed vector with a given number of samples..
+        /// </summary>
+        /// <param name="size">Size of smoothing window.</param>
         public SmoothedVector(int size) : base(size) { }
 
+        /// <summary>
+        /// Returns the average of all samples in the window.
+        /// </summary>
         public Vector3 Average()
         {
+            if (Count == 0)
+            {
+                return Vector3.zero;
+            }
+
             return sum / Count;
         }
 
+        /// <inheritdoc/>
         public override Vector3 AddSample(Vector3 value)
         {
             Vector3 previous = base.AddSample(value);
-            sum -= previous;
             sum += value;
-
+            sum -= previous;
             return previous;
         }
     }

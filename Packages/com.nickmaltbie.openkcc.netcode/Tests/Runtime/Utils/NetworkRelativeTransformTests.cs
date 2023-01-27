@@ -72,6 +72,34 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Utils
                 (tr.transform.position - sourceObj.transform.position).magnitude <= 0.001f));
         }
 
+        [UnityTest]
+        public IEnumerator Verify_NetworkRelativeTransform_GetParent()
+        {
+            // Spawn a parent object to attach to later
+            yield return ServerSpawnAndWait<NetworkObject>(parentPrefab);
+            GameObject parentObj = GetTestableNetworkBehaviour(typeof(NetworkObject), 0, 0).gameObject;
+            GameObject sourceObj = GetTestableNetworkBehaviour(0, 0).gameObject;
+
+            // Assign object 0's parent to be parent prefab
+            NetworkRelativeTransform obj = GetAttachedNetworkBehaviour(0, 0);
+            obj.UpdateState(new RelativeParentConfig
+            {
+                relativePos = Vector3.up,
+                previousParent = parentObj.transform,
+            });
+
+            // Assert that parent propagates.
+            yield return TestUtils.WaitUntil(() => ForAllPlayers(0, tr => tr.GetParent() == parentObj.transform));
+
+            // Assert that parent changes to null.
+            obj.UpdateState(new RelativeParentConfig
+            {
+                relativePos = Vector3.up,
+                previousParent = null,
+            });
+            yield return TestUtils.WaitUntil(() => ForAllPlayers(0, tr => tr.GetParent() == null));
+        }
+
         public override void SetupPrefab(GameObject go)
         {
             parentPrefab = CreateNetworkObjectPrefab("ParentPrefab");

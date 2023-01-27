@@ -106,8 +106,8 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
 
             kccStateMachine = go.AddComponent<KCCStateMachine>();
             kccStateMachine.jumpAction = jumpAction;
-            kccStateMachine.moveActionReference = InputActionReference.Create(moveInputAction);
-            kccStateMachine.sprintActionReference = InputActionReference.Create(sprintInputAction);
+            kccStateMachine.MoveAction = moveInputAction;
+            kccStateMachine.SprintAction = sprintInputAction;
             kccStateMachine.Awake();
 
             moveEngine = go.GetComponent<KCCMovementEngine>();

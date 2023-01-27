@@ -408,32 +408,6 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="rotation">Rotation of the player during movement.</param>
         /// <param name="config">Configuration settings for player movement.</param>
         /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
-        public static Vector3 GetMovement(
-            Vector3 position,
-            Vector3 movement,
-            Quaternion rotation,
-            IKCCConfig config)
-        {
-            Vector3 finalPos = position;
-            foreach (KCCBounce bounce in GetBounces(position, movement, rotation, config))
-            {
-                if (bounce.action == MovementAction.Stop)
-                {
-                    finalPos = bounce.finalPosition;
-                }
-            }
-
-            return finalPos - position;
-        }
-
-        /// <summary>
-        /// Get the bounces for a KCC Utils movement action with a set default behaviour.
-        /// </summary>
-        /// <param name="position">Position to start player movement from.</param>
-        /// <param name="movement">Movement to move the player.</param>
-        /// <param name="rotation">Rotation of the player during movement.</param>
-        /// <param name="config">Configuration settings for player movement.</param>
-        /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
         public static IEnumerable<KCCBounce> GetBounces(
             Vector3 position,
             Vector3 movement,

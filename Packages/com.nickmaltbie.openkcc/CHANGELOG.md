@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Removed some unused functions and properties from `KCCMovementEngine`,
+    `KCCUtils`, and `IKCCConfig`.
+* Added some tests for the untested behaviors.
 * Refactored existing code to remove the `HumanoidKCCConfig` and moved
     most functionality to the `KCCMovementEngine`.
 * Removed velocity from the `KCCMovementEngine` and manage this variable

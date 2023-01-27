@@ -78,7 +78,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public override Vector3 GetBottom(Vector3 position, Quaternion rotation)
         {
             (Vector3 center, float radius) = GetParams(position, rotation);
-            return center - radius * (rotation * Vector3.down);
+            return center - radius * (rotation * transform.up);
         }
     }
 }

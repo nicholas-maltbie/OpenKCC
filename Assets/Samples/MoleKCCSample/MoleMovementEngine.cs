@@ -23,19 +23,41 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.MoleKCCSample
 {
+    /// <summary>
+    /// MovementEngine for the mole character to allow the player to
+    /// walk up and down walls directly.
+    /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     public class MoleMovementEngine : KCCMovementEngine
     {
+        /// <summary>
+        /// Have no angle decay in movement up walls.
+        /// </summary>
         public override float AnglePower => 1.0f;
-        public Vector3 groundNormal = Vector3.up;
-        public bool overrideGrounded = false;
+        
+        /// <summary>
+        /// Surface normal for overriding up direction.
+        /// </summary>
+        protected Vector3 groundNormal = Vector3.up;
 
+        /// <summary>
+        /// Should the grounded angle be overwritten.
+        /// </summary>
+        public bool overrideGrounded = false;
+        
+        /// <summary>
+        /// Set the normal vector for the ground the mole is standing on.
+        /// </summary>
+        /// <param name="normal"></param>
         public void SetNormal(Vector3 normal)
         {
             groundNormal = normal;
             overrideGrounded = true;
         }
 
+        /// <summary>
+        /// Override the up direction for the mole.
+        /// </summary>
         public override Vector3 Up
         {
             get
@@ -75,8 +97,9 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                         bounce.remainingMomentum = Quaternion.LookRotation(bounce.hit.normal) *
                             bounce.initialMomentum.normalized *
                             bounce.remainingMomentum.magnitude;
-                        SetNormal(bounce.hit.normal);
                     }
+
+                    SetNormal(bounce.hit.normal);
                 }
 
                 yield return bounce;
@@ -84,7 +107,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
             // Compute the new grounded state
             CheckGrounded(false);
-            groundNormal = GroundedState.SurfaceNormal;
+            SetNormal(GroundedState.SurfaceNormal);
         }
     }
 }

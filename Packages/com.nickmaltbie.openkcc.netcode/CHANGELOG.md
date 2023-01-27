@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Added documentation to the `MoleMovementEngine`.
 * Refactored the `NetworkKCC` and Mole Sample to use the new `KCCMovementEngine`.
     Also simplified parameters to follow the same design as `KCCStateMachine`.
 * Added giant to climb on for the mole demo
