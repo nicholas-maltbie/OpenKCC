@@ -27,7 +27,7 @@ using UnityEngine;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 {
     /// <summary>
-    /// Basic tests for <see cref="SphereColliderCastTests"> in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Utils.ColliderCast.SphereColliderCast"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class SphereColliderCastTests : TestBase

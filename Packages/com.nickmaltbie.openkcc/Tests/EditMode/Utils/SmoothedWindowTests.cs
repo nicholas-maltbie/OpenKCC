@@ -26,7 +26,7 @@ using UnityEngine;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 {
     /// <summary>
-    /// Test class for <see cref="SmoothedWindow"/>
+    /// Test class for <see cref="SmoothedWindow{E}"/>
     /// </summary>
     public class SmoothedWindowTest : SmoothedWindow<int>
     {
@@ -42,7 +42,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
     }
 
     /// <summary>
-    /// Basic EditMode tests for the <see cref="SmoothedWindow"/> class.
+    /// Basic EditMode tests for the <see cref="SmoothedWindow{E}"/> class.
     /// </summary>
     [TestFixture]
     public class SmoothedWindowTests : TestBase
