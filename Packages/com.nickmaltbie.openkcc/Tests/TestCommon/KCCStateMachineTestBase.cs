@@ -46,9 +46,9 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         protected InputAction jumpInputAction;
         protected InputAction sprintInputAction;
         protected JumpAction jumpAction;
-        protected KCCGroundedState kccGroundedState;
         protected KCCStateMachine kccStateMachine;
         protected KCCMovementEngine moveEngine;
+        protected KCCGroundedState KCCGroundedState => moveEngine.GroundedState;
 
         [SetUp]
         public override void Setup()
@@ -105,9 +105,9 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             jumpAction.jumpInput = jumpInput;
 
             kccStateMachine = go.AddComponent<KCCStateMachine>();
-            kccStateMachine.config.jumpAction = jumpAction;
-            kccStateMachine.config.moveActionReference = InputActionReference.Create(moveInputAction);
-            kccStateMachine.config.sprintActionReference = InputActionReference.Create(sprintInputAction);
+            kccStateMachine.jumpAction = jumpAction;
+            kccStateMachine.moveActionReference = InputActionReference.Create(moveInputAction);
+            kccStateMachine.sprintActionReference = InputActionReference.Create(sprintInputAction);
             kccStateMachine.Awake();
 
             moveEngine = go.GetComponent<KCCMovementEngine>();

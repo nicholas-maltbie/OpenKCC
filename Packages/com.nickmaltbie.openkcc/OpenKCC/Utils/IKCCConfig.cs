@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.Character;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils
@@ -32,11 +31,6 @@ namespace nickmaltbie.OpenKCC.Utils
         int MaxBounces { get; }
 
         /// <summary>
-        /// Push decay factor for player movement.
-        /// </summary>
-        float PushDecay { get; }
-
-        /// <summary>
         /// Vertical snap up distance the player can snap up.
         /// </summary>
         float VerticalSnapUp { get; }
@@ -45,23 +39,6 @@ namespace nickmaltbie.OpenKCC.Utils
         /// Distance that the character can "snap down" vertical steps.
         /// </summary>
         float VerticalSnapDown { get; }
-
-        /// <summary>
-        /// Delta for distance floating over the ground when snapping down.
-        /// </summary>
-        float MinSnapThreshold { get; }
-
-        /// <summary>
-        /// Maximum distance the player can be pushed out of overlapping
-        /// objects in units per second.
-        /// </summary>
-        float MaxPushSpeed { get; }
-
-        /// <summary>
-        /// Gravity for the kcc config.
-        /// </summary>
-        /// <value></value>
-        Vector3 Gravity { get; }
 
         /// <summary>
         /// Minimum depth required for a stair when moving onto a step.
@@ -87,35 +64,6 @@ namespace nickmaltbie.OpenKCC.Utils
         /// Collider cast for checking what the player is colliding with.
         /// </summary>
         IColliderCast ColliderCast { get; }
-
-        /// <summary>
-        /// Character push for checking if and how the character should push objects.
-        /// </summary>
-        ICharacterPush Push { get; }
-
-        /// <summary>
-        /// Max velocity at which the player can be launched
-        /// when gaining momentum from a floor object without
-        /// an IMovingGround attached to it.
-        /// </summary>
-        float MaxDefaultLaunchVelocity { get; }
-
-        /// <summary>
-        /// Should gravity be applied to player velocity during
-        /// the next movement update.
-        /// </summary>
-        bool ApplyGravity { get; }
-
-        /// <summary>
-        /// Should velocity be applied to the player's position
-        /// during the next movement update.
-        /// </summary>
-        bool ApplyVelocity { get; }
-
-        /// <summary>
-        /// Should the player be snapped down as part of player movement.
-        /// </summary>
-        bool SnapPlayerDown { get; }
     }
 
     /// <summary>
@@ -123,100 +71,31 @@ namespace nickmaltbie.OpenKCC.Utils
     /// </summary>
     public struct KCCConfig : IKCCConfig
     {
-        /// <summary>
-        /// Maximum bounces when moving the player.
-        /// </summary>
-        public int maxBounces;
-
-        /// <summary>
-        /// Push decay factor for player movement.
-        /// </summary>
-        public float pushDecay;
-
-        /// <summary>
-        /// Vertical snap up distance the player can snap up.
-        /// </summary>
-        public float verticalSnapUp;
-
-        /// <summary>
-        /// Minimum depth required for a stair when moving onto a step.
-        /// </summary>
-        public float stepUpDepth;
-
-        /// <summary>
-        /// Angle power for decaying momentum when bouncing off a surface.
-        /// </summary>
-        public float anglePower;
-
-        /// <summary>
-        /// Can the player snap up steps during this movement.
-        /// </summary>
-        public bool canSnapUp;
-
-        /// <summary>
-        /// Position to start player movement from.
-        /// </summary>
-        public Vector3 up;
-
-        /// <summary>
-        /// Collider cast for checking what the player is colliding with.
-        /// </summary>
-        public IColliderCast colliderCast;
-
-        /// <summary>
-        /// Character push for checking if and how the character should push objects.
-        /// </summary>
-        public ICharacterPush push;
+        /// <inheritdoc/>
+        public int MaxBounces { get; set; }
 
         /// <inheritdoc/>
-        public int MaxBounces { get => maxBounces; set => maxBounces = value; }
+        public float PushDecay { get; set; }
 
         /// <inheritdoc/>
-        public float PushDecay { get => pushDecay; set => pushDecay = value; }
-
-        /// <inheritdoc/>
-        public float VerticalSnapUp { get => verticalSnapUp; set => verticalSnapUp = value; }
-
-        /// <inheritdoc/>
-        public float StepUpDepth { get => stepUpDepth; set => stepUpDepth = value; }
-
-        /// <inheritdoc/>
-        public float AnglePower { get => anglePower; set => anglePower = value; }
-
-        /// <inheritdoc/>
-        public bool CanSnapUp { get => canSnapUp; set => canSnapUp = value; }
-
-        /// <inheritdoc/>
-        public Vector3 Up { get => up; set => up = value; }
-
-        /// <inheritdoc/>
-        public IColliderCast ColliderCast { get => colliderCast; set => colliderCast = value; }
-
-        /// <inheritdoc/>
-        public ICharacterPush Push { get => push; set => push = value; }
-
-        /// <inheritdoc/>
-        public float MaxDefaultLaunchVelocity { get; set; }
+        public float VerticalSnapUp { get; set; }
 
         /// <inheritdoc/>
         public float VerticalSnapDown { get; set; }
 
         /// <inheritdoc/>
-        public float MinSnapThreshold { get; set; }
+        public float StepUpDepth { get; set; }
 
         /// <inheritdoc/>
-        public Vector3 Gravity { get; set; }
+        public float AnglePower { get; set; }
 
         /// <inheritdoc/>
-        public float MaxPushSpeed { get; set; }
+        public bool CanSnapUp { get; set; }
 
         /// <inheritdoc/>
-        public bool ApplyGravity { get; set; }
+        public Vector3 Up { get; set; }
 
         /// <inheritdoc/>
-        public bool ApplyVelocity { get; set; }
-
-        /// <inheritdoc/>
-        public bool SnapPlayerDown { get; set; }
+        public IColliderCast ColliderCast { get; set; }
     }
 }

@@ -17,69 +17,46 @@
 // SOFTWARE.
 
 using System;
-using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character.Config
 {
     /// <summary>
-    /// Class to represent the current grounded state of
+    /// Data structure to represent the current grounded state of
     /// a given kinematic character controller.
     /// </summary>
     [Serializable]
-    public class KCCGroundedState : IKCCGrounded, IEquatable<KCCGroundedState>
+    public readonly struct KCCGroundedState : IKCCGrounded
     {
-        /// <summary>
-        /// Distance to ground at which player is considered grounded.
-        /// </summary>
-        [Tooltip("Distance from ground at which a player is considered standing on the ground")]
-        [SerializeField]
-        public float groundedDistance = 0.05f;
-
-        /// <summary>
-        /// Distance to check player distance to ground.
-        /// </summary>
-        [Tooltip("Distance to draw rays down when checking if player is grounded")]
-        [SerializeField]
-        public float groundCheckDistance = 0.25f;
-
-        /// <summary>
-        /// Maximum angle at which the player can walk (in degrees).
-        /// </summary>
-        [Tooltip("Maximum angle at which the player can walk")]
-        [SerializeField]
-        [Range(0, 90)]
-        public float maxWalkAngle = 60f;
-
         /// <summary>
         /// Current distance the player is from the ground.
         /// </summary>
-        public float DistanceToGround { get; set; }
+        public readonly float DistanceToGround { get; }
 
         /// <summary>
-        /// Was the player grounded this frame
+        /// Is the player currently standing on the ground.
         /// </summary>
-        public bool OnGround { get; set; }
+        public readonly bool OnGround { get; }
 
         /// <summary>
         /// Angle between the ground and the player.
         /// </summary>
-        public float Angle { get; private set; }
+        public readonly float Angle { get; }
 
         /// <summary>
         /// The surface normal vector of the ground the player is standing on.
         /// </summary>
-        public Vector3 SurfaceNormal { get; set; }
+        public readonly Vector3 SurfaceNormal { get; }
 
         /// <summary>
         /// The point in which the player is hitting the ground.
         /// </summary>
-        public Vector3 GroundHitPosition { get; private set; }
+        public readonly Vector3 GroundHitPosition { get; }
 
         /// <summary>
         /// What is the player standing on.
         /// </summary>
-        public GameObject Floor { get; private set; }
+        public readonly GameObject Floor { get; }
 
         /// <summary>
         /// Is the player currently standing on the ground?
@@ -88,78 +65,59 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// ground or another object as it is difficult to tell whether they are stuck in a wall
         /// (and would therefore not be on the ground) versus when they are stuck in the floor.
         /// </summary>
-        public bool StandingOnGround => OnGround && DistanceToGround <= groundedDistance && DistanceToGround > 0;
+        public readonly bool StandingOnGround { get; }
 
         /// <summary>
         /// Is the player currently standing on or overlapping with the ground.
         /// </summary>
-        public bool StandingOnGroundOrOverlap => OnGround && DistanceToGround <= groundedDistance;
+        public readonly bool StandingOnGroundOrOverlap { get; }
 
         /// <summary>
         /// Is the player currently falling? this is true if they are either not standing on 
         /// the ground or if the angle between them and the ground is grater than the player's
         /// ability to walk.
         /// </summary>
-        public bool Falling => !StandingOnGround;
+        public readonly bool Falling { get; }
 
         /// <summary>
         /// Check if a player is sliding for a given max walk angle.
         /// </summary>
         /// <returns>True if the player is slipping/falling on the slope they are currently standing on.</returns>
-        public bool Sliding => StandingOnGround && maxWalkAngle < Angle;
+        public readonly bool Sliding { get; }
 
         /// <summary>
-        /// Update the current grounded state of this kinematic character controller.
+        /// Setup a structure of the grounded
+        /// state for a kinematic character controller.
         /// </summary>
-        /// <param name="kccConfig">Configuration of the character controller.</param>
-        /// <param name="position">Character position in the world.</param>
-        /// <param name="rotation">Character rotation in the world.</param>
-        public void CheckGrounded(IKCCConfig kccConfig, Vector3 position, Quaternion rotation)
+        /// <param name="distanceToGround">Current distance the player is from the ground.</param>
+        /// <param name="onGround">Is the player currently standing on the ground.</param>
+        /// <param name="angle">Angle between the ground and the player.</param>
+        /// <param name="surfaceNormal">The surface normal vector of the ground the player is standing on.</param>
+        /// <param name="groundHitPosition">The point in which the player is hitting the ground.</param>
+        /// <param name="floor">What is the player standing on.</param>
+        /// <param name="groundedDistance">Distance at which the player is considered grounded.</param>
+        /// <param name="maxWalkAngle">The maximum surface angle the player can walk at before sliding.</param>
+        public KCCGroundedState(
+            float distanceToGround,
+            bool onGround,
+            float angle,
+            Vector3 surfaceNormal,
+            Vector3 groundHitPosition,
+            GameObject floor,
+            float groundedDistance = 0.01f,
+            float maxWalkAngle = 60.0f)
         {
-            bool didHit = kccConfig.ColliderCast.CastSelf(
-                position,
-                rotation,
-                -kccConfig.Up,
-                groundCheckDistance,
-                out IRaycastHit hit);
+            DistanceToGround = distanceToGround;
+            OnGround = onGround;
+            Angle = angle;
+            SurfaceNormal = surfaceNormal;
+            GroundHitPosition = groundHitPosition;
+            Floor = floor;
 
-            Angle = Vector3.Angle(hit.normal, kccConfig.Up);
-            DistanceToGround = hit.distance;
-            OnGround = didHit;
-            SurfaceNormal = hit.normal;
-            GroundHitPosition = hit.distance > 0 ? hit.point : GroundHitPosition;
-            Floor = hit.collider != null ? hit.collider.gameObject : null;
-        }
-
-        /// <summary>
-        /// Get the movement of the player projected onto the plane
-        /// they are standing on if they are not falling.
-        /// </summary>
-        /// <param name="movement">How the player is attempting to move</param>
-        /// <returns>Projected movement onto the plane the player is standing on.</returns>
-        public Vector3 GetProjectedMovement(Vector3 movement)
-        {
-            // If the player is standing on the ground, project their movement onto the ground plane
-            // This allows them to walk up gradual slopes without facing a hit in movement speed
-            if (StandingOnGround && !Sliding)
-            {
-                Vector3 projectedMovement = Vector3.ProjectOnPlane(movement, SurfaceNormal).normalized *
-                    movement.magnitude;
-                if (projectedMovement.magnitude + KCCUtils.Epsilon >= movement.magnitude)
-                {
-                    movement = projectedMovement;
-                }
-            }
-
-            return movement;
-        }
-
-        public bool Equals(KCCGroundedState other)
-        {
-            return
-                groundedDistance.Equals(other.groundedDistance) &&
-                groundCheckDistance.Equals(other.groundCheckDistance) &&
-                maxWalkAngle.Equals(other.maxWalkAngle);
+            StandingOnGround = OnGround && DistanceToGround <= groundedDistance && DistanceToGround > 0;
+            StandingOnGroundOrOverlap = OnGround && DistanceToGround <= groundedDistance;
+            Falling = !StandingOnGround;
+            Sliding = StandingOnGround && maxWalkAngle < Angle;
         }
     }
 }

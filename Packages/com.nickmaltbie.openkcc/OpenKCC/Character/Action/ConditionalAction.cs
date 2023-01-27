@@ -45,7 +45,7 @@ namespace nickmaltbie.OpenKCC.Character.Action
         /// <summary>
         /// Can this action be performed.
         /// </summary>
-        public bool CanPerform => condition?.Invoke() is true || (coyoteTime > 0 && elapsed <= coyoteTime);
+        public bool CanPerform => condition.Invoke() || (coyoteTime > 0 && elapsed <= coyoteTime);
 
         /// <summary>
         /// Condition for configuring this conditional action.

@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
@@ -252,11 +251,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         /// Verify that player will snap down as expected.
         /// </summary>
         [Test]
-        public void Verify_KCCSnapPlayerDown([Values(0.0f, 0.1f, 0.2f)] float minThreshold)
+        public void Verify_KCCSnapPlayerDown()
         {
-            SetupColliderCast(true, KCCTestUtils.SetupRaycastHitMock(null, Vector3.zero, Vector3.up, 0.01f + minThreshold));
+            SetupColliderCast(true, KCCTestUtils.SetupRaycastHitMock(null, Vector3.zero, Vector3.up, 0.01f));
 
-            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, minThreshold, colliderCastMock.Object);
+            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, colliderCastMock.Object);
 
             Assert.IsTrue(displacement.magnitude > 0.0f, $"Expected displacement to have a magnitude grater than zero but instead found {displacement.ToString("F3")}");
         }
@@ -341,64 +340,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce);
             ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Move);
             ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
-        }
-
-        [Test]
-        public void Validate_KCCGetGroundVelocity(
-            [Values] bool movingGround,
-            [Values] bool avoidTransferMomentum,
-            [Values] bool rigidbody,
-            [Values] bool isKinematic,
-            [Values] bool onGround)
-        {
-            GameObject floor = CreateGameObject();
-            MovingGroundComponent ground = null;
-            Rigidbody rb = null;
-
-            if (movingGround)
-            {
-                ground = floor.AddComponent<MovingGroundComponent>();
-                ground.avoidTransferMomentum = avoidTransferMomentum;
-            }
-
-            if (rigidbody)
-            {
-                rb = floor.AddComponent<Rigidbody>();
-                rb.isKinematic = isKinematic;
-            }
-
-            var kccConfig = new KCCConfig();
-            var grounded = new Mock<IKCCGrounded>();
-
-            kccConfig.MaxDefaultLaunchVelocity = 2.5f;
-            grounded.Setup(e => e.StandingOnGround).Returns(onGround);
-            grounded.Setup(e => e.Floor).Returns(floor);
-
-            Vector3 velocity = KCCUtils.GetGroundVelocity(grounded.Object, kccConfig, Vector3.forward);
-
-            if (movingGround)
-            {
-                if (avoidTransferMomentum)
-                {
-                    Assert.AreEqual(Vector3.zero, velocity);
-                }
-                else
-                {
-                    Assert.AreEqual(ground.GetVelocityAtPoint(Vector3.zero), velocity);
-                }
-            }
-            else if (rigidbody && !isKinematic)
-            {
-                Assert.AreEqual(rb.GetPointVelocity(Vector3.zero), velocity);
-            }
-            else if (onGround)
-            {
-                Assert.AreEqual(Vector3.forward, velocity);
-            }
-            else
-            {
-                Assert.AreEqual(Vector3.zero, velocity);
-            }
         }
 
         /// <summary>
@@ -496,7 +437,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             rotation ??= Quaternion.Euler(Vector3.zero);
             up ??= Vector3.up;
             colliderCast ??= colliderCastMock.Object;
-            push ??= characterPushMock.Object;
+            _ = push ?? characterPushMock.Object;
 
             return KCCUtils.GetBounces(
                 position,
@@ -504,15 +445,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
                 rotation.Value,
                 new KCCConfig
                 {
-                    maxBounces = maxBounces,
-                    pushDecay = pushDecay,
-                    verticalSnapUp = verticalSnapUp,
-                    stepUpDepth = stepUpDepth,
-                    anglePower = anglePower,
-                    canSnapUp = canSnapUp,
-                    up = up.Value,
-                    colliderCast = colliderCast,
-                    push = push
+                    MaxBounces = maxBounces,
+                    PushDecay = pushDecay,
+                    VerticalSnapUp = verticalSnapUp,
+                    StepUpDepth = stepUpDepth,
+                    AnglePower = anglePower,
+                    CanSnapUp = canSnapUp,
+                    Up = up.Value,
+                    ColliderCast = colliderCast,
                 }
             );
         }

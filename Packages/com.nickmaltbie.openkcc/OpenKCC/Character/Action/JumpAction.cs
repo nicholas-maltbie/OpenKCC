@@ -114,8 +114,10 @@ namespace nickmaltbie.OpenKCC.Character.Action
         /// jump and the player can jump.
         /// </summary>
         /// <returns>True if the player jumped, false otherwise.</returns>
-        public bool ApplyJumpIfPossible()
+        public bool ApplyJumpIfPossible(IKCCGrounded grounded)
         {
+            kccGrounded = grounded;
+
             if (AttemptingJump && CanPerform)
             {
                 Jump();
@@ -135,9 +137,8 @@ namespace nickmaltbie.OpenKCC.Character.Action
                 JumpedWhileSliding = true;
             }
 
-            Vector3 upDir = -kccConfig.Gravity.normalized;
-            Vector3 jumpDirection = (kccGrounded.StandingOnGround ? kccGrounded.SurfaceNormal : upDir) *
-                jumpAngleWeightFactor + upDir * (1 - jumpAngleWeightFactor);
+            Vector3 jumpDirection = (kccGrounded.StandingOnGround ? kccGrounded.SurfaceNormal : kccConfig.Up) *
+                jumpAngleWeightFactor + kccConfig.Up * (1 - jumpAngleWeightFactor);
             actor.ApplyJump(jumpVelocity * jumpDirection.normalized);
             jumpInput.Reset();
         }

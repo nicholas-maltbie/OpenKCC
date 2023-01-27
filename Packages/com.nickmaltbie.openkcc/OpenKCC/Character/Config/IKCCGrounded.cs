@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character.Config
@@ -71,13 +70,5 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// Check if a player is sliding for a given max walk angle.
         /// </summary>
         public bool Sliding { get; }
-
-        /// <summary>
-        /// Update the grounded state of the player.
-        /// </summary>
-        /// <param name="kccConfig">Configuration for the kinematic character controller.</param>
-        /// <param name="pos">Current position of the player.</param>
-        /// <param name="rotation">Current rotation of the player.</param>
-        void CheckGrounded(IKCCConfig kccConfig, Vector3 pos, Quaternion rotation);
     }
 }

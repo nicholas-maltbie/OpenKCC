@@ -278,33 +278,10 @@ MonoBehaviour:
   particleOffset: {x: 0, y: -0.5, z: 0}
   avatarDiggingOffset: {x: 0, y: -0.6, z: 0}
   maxDiggingTrails: 10
-  config:
-    moveActionReference: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-    jumpAction:
-      coyoteTime: 0
-      jumpInput:
-        inputActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-        bufferTime: 0
-        cooldown: 0.1
-      jumpVelocity: 10
-      maxJumpAngle: 90
-      jumpAngleWeightFactor: 0.5
-    groundedState:
-      groundedDistance: 0.05
-      groundCheckDistance: 0.25
-      maxWalkAngle: 90
-    gravity: {x: 0, y: -20, z: 0}
-    walkingSpeed: 7.5
-    sprintSpeed: 10
-    maxBounces: 5
-    pushDecay: 0.9
-    maxPushSpeed: 10
-    verticalSnapDown: 0.2
-    minSnapThreshold: 0
-    stepUpDepth: 0.1
-    verticalSnapUp: 0.3
-    snapBufferTime: 0.05
-    maxDefaultLaunchVelocity: 5
+  moveActionReference: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
+  jumpActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
+  walkingSpeed: 7.5
+  jumpVelocity: 10
 --- !u!135 &7851488135037656253
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -342,6 +319,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 161b8645e405ed24c9d21d018eb35a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stepHeight: 0.35
+  maxWalkAngle: 60
+  groundNormal: {x: 0, y: 1, z: 0}
+  overrideGrounded: 0
 --- !u!1001 &3251002686952817105
 PrefabInstance:
   m_ObjectHideFlags: 0

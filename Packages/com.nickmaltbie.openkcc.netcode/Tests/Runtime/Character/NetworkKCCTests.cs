@@ -19,7 +19,6 @@
 using System.Collections;
 using System.Linq;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
-using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Input;
@@ -174,7 +173,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
                     i =>
                     {
                         NetworkKCC networkKCC = GetAttachedNetworkBehaviour(i, i);
-                        return Vector3.Project(networkKCC.GetComponent<KCCMovementEngine>().Velocity, conveyer.push.normalized).magnitude >= 1.0;
+                        return Vector3.Project(networkKCC.Velocity, conveyer.push.normalized).magnitude >= 1.0;
                     }));
         }
 
@@ -223,18 +222,15 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             jumpAction.jumpInput = jumpInput;
 
             // Setup actions
-            networkKCC.config.jumpAction = jumpAction;
-            networkKCC.config.MoveAction = moveInputAction;
-            networkKCC.config.SprintAction = sprintInputAction;
+            networkKCC.jumpAction = jumpAction;
+            networkKCC.MoveAction = moveInputAction;
+            networkKCC.SprintAction = sprintInputAction;
 
             networkKCC.SetupInputs();
         }
 
         public override void SetupPrefab(GameObject go)
         {
-            NetworkKCC kcc = go.GetComponent<NetworkKCC>();
-            kcc.config.maxPushSpeed = 100.0f;
-
             go.AddComponent<CapsuleColliderCast>();
             go.AddComponent<ClientNetworkTransform>();
 

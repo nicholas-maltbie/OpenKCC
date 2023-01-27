@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Refactored existing code to remove the `HumanoidKCCConfig` and moved
+    most functionality to the `KCCMovementEngine`.
+* Removed velocity from the `KCCMovementEngine` and manage this variable
+    in the higher level `KCCStateMachine` or any other consumer
+    of the movement engine features.
+* Refactored the `IKCCConfig` to remove any values not directly
+    used by the KCCUtils.
+* Disabled player pushing and will add into back into the `KCCMovementEngine`
+    at some future point if required.
+* Simplified parameters for the `KCCStateMachine` to be easier to understand
+    for an end user who doesn't want to configure all these values.
 * Refactored debug draw code for character controller.
 * Updated APIs available in the KCCMovementEngine to allow
     for passing a movement in world space to move the player.

@@ -74,7 +74,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             kccGroundedMock = new Mock<IKCCGrounded>();
 
             kccConfigMock.Setup(e => e.Up).Returns(Vector3.up);
-            kccConfigMock.Setup(e => e.Gravity).Returns(Vector3.down);
             jumpingMock.Setup(e => e.ApplyJump(It.IsAny<Vector3>()))
                 .Callback((Vector3 jump) => inputJump = jump);
             jumpAction.jumpInput = bufferedInput;
@@ -127,8 +126,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
 
             jumpAction.Update();
             Assert.IsTrue(jumpAction.AttemptingJump);
-            Assert.IsTrue(jumpAction.ApplyJumpIfPossible());
-            Assert.IsFalse(jumpAction.ApplyJumpIfPossible());
+            Assert.IsTrue(jumpAction.ApplyJumpIfPossible(kccGroundedMock.Object));
+            Assert.IsFalse(jumpAction.ApplyJumpIfPossible(kccGroundedMock.Object));
         }
 
         [Test]
