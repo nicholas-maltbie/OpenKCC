@@ -149,12 +149,30 @@
                 "version": "v0.1.0"
             },
             {
+                "src": "versions/v0.1.0",
+                "files": [
+                    "toc.yml",
+                    "index.md"
+                ],
+                "dest": "v0.1.0",
+                "version": "v0.1.0"
+            },
+            {
                 "src": "versions/v0.1.2/api",
                 "files": [
                     "toc.yml",
                     "*.yml"
                 ],
                 "dest": "v0.1.2/api",
+                "version": "v0.1.2"
+            },
+            {
+                "src": "versions/v0.1.2",
+                "files": [
+                    "toc.yml",
+                    "index.md"
+                ],
+                "dest": "v0.1.2",
                 "version": "v0.1.2"
             },
             {
@@ -167,6 +185,15 @@
                 "version": "v1.0.0"
             },
             {
+                "src": "versions/v1.0.0",
+                "files": [
+                    "toc.yml",
+                    "index.md"
+                ],
+                "dest": "v1.0.0",
+                "version": "v1.0.0"
+            },
+            {
                 "src": "versions/v1.1.0/api",
                 "files": [
                     "toc.yml",
@@ -176,12 +203,30 @@
                 "version": "v1.1.0"
             },
             {
+                "src": "versions/v1.1.0",
+                "files": [
+                    "toc.yml",
+                    "index.md"
+                ],
+                "dest": "v1.1.0",
+                "version": "v1.1.0"
+            },
+            {
                 "src": "versions/v1.2.0/api",
                 "files": [
                     "toc.yml",
                     "*.yml"
                 ],
                 "dest": "v1.2.0/api",
+                "version": "v1.2.0"
+            },
+            {
+                "src": "versions/v1.2.0",
+                "files": [
+                    "toc.yml",
+                    "index.md"
+                ],
+                "dest": "v1.2.0",
                 "version": "v1.2.0"
             }
         ],
@@ -218,6 +263,41 @@
                 "files": [
                     "resources/**/*"
                 ]
+            },
+            {
+                "src": "versions/v0.1.0",
+                "files": [
+                    "resources/**/*"
+                ],
+                "version": "v1.1.0"
+            },
+            {
+                "src": "versions/v0.1.2",
+                "files": [
+                    "resources/**/*"
+                ],
+                "version": "v0.1.2"
+            },
+            {
+                "src": "versions/v1.0.0",
+                "files": [
+                    "resources/**/*"
+                ],
+                "version": "v1.0.0"
+            },
+            {
+                "src": "versions/v1.1.0",
+                "files": [
+                    "resources/**/*"
+                ],
+                "version": "v1.1.0"
+            },
+            {
+                "src": "versions/v1.2.0",
+                "files": [
+                    "resources/**/*"
+                ],
+                "version": "v1.2.0"
             }
         ],
         "sitemap": {
