@@ -36,6 +36,46 @@ namespace nickmaltbie.OpenKCC.Character
     public class KCCMovementEngine : MonoBehaviour, IKCCConfig
     {
         /// <summary>
+        /// Default value for distance from ground player is considered grounded.
+        /// </summary>
+        public const float DefaultGroundedDistance = 0.05f;
+
+        /// <summary>
+        /// Default value for distance to check for ground below player.
+        /// </summary>
+        public const float DefaultGroundCheckDistance = 0.25f;
+
+        /// <summary>
+        /// Default maximum number of bounces for computing player movement.
+        /// </summary>
+        public const float DefaultMaxBounces = 5f;
+
+        /// <summary>
+        /// Default expected depth of a step for walking up staircases.
+        /// </summary>
+        public const float DefaultStepUpDepth = 0.1f;
+
+        /// <summary>
+        /// Default angle power for bouncing and sliding off surfaces.
+        /// </summary>
+        public const float DefaultAnglePower = 2.0f;
+
+        /// <summary>
+        /// Default max push speed when moving the player.
+        /// </summary>
+        public const float DefaultMaxPushSpeed = 100.0f;
+
+        /// <summary>
+        /// Modifier of step height for snapping the player down.
+        /// </summary>
+        public const float SnapDownModifier = 2.0f;
+
+        /// <summary>
+        /// Max launch speed of player form moving ground.
+        /// </summary>
+        public const float DefaultMaxLaunchVelocity = 5.0f;
+
+        /// <summary>
         /// Height of a step that the player can climb up.
         /// </summary>
         [SerializeField]
@@ -102,13 +142,13 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Snap down distance for player snapping down.
         /// </summary>
-        protected float SnapDown => stepHeight * 2f;
+        public float SnapDown => stepHeight * 2f;
 
         /// <summary>
         /// Max default launch velocity for the player from unlabeled
         /// surfaces.
         /// </summary>
-        protected float MaxDefaultLaunchVelocity => 5.0f;
+        public float MaxDefaultLaunchVelocity => 5.0f;
 
         /// <summary>
         /// Relative parent configuration for following the ground.
