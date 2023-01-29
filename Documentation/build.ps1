@@ -56,7 +56,7 @@ foreach ($path in $doc_paths)
     {
         Remove-Item -Force -Recurse "$project_dir\$path" | Out-Null
     }
-    
+
     git reset "$project_dir\$path" | Out-Null
     git checkout "$project_dir\$path" | Out-Null
 }
