@@ -1,5 +1,3 @@
-param([switch]$verify) 
-
 # Setup files for website
 $dir = $PSScriptRoot
 $project_dir = $(Get-Item $dir).Parent
@@ -77,22 +75,16 @@ Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$
 Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"
 Copy-Item "$project_dir\Demo" "$dir\Demo\"-Recurse -Force 
 
-$flags = ""
-if ($verify)
-{
-    $flags = "--warningsAsErrors --logLevel verbose"
-}
-
 # Generate website with docfx
 Write-Host "Building code metadata"
-dotnet docfx metadata "$dir\docfx.json" $flags --force && (
+dotnet docfx metadata "$dir\docfx.json" --force && (
     Write-Host "Successfuly generated metadata for C# code formatting"
 ) || (
     throw "Could not properly generate metadata for C# code formatting"
 )
 
 Write-Host "Generating website"
-dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" $flags && (
+dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" && (
     Write-Host "Successfuly generated website for documentation"
 ) || (
     throw "Could not properly website for documentation"
