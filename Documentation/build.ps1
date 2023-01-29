@@ -19,7 +19,7 @@ Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\"
 $doc_paths = ("Packages", "Assets\Samples", "Documentation\manual", "Documentation\resources")
 
 # Cleanup any previous documentation
-git clean -xdf "$dir\versions"
+Remove-Item -Force -Recurse "$dir\$versions" | Out-Null
 
 # Setup documentation for each version of the api
 foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
@@ -30,8 +30,8 @@ foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
 
     foreach ($path in $doc_paths)
     {
-        git reset "$project_dir\$path"
-        git clean -xdf "$project_dir\$path"
+        Remove-Item -Force -Recurse "$project_dir\$path" | Out-Null
+        git reset "$project_dir\$path" | Out-Null
         Write-Host "Setting up resources for tag '$tag' at path: '$project_dir\$path'"
         git checkout "$tag" -- "$project_dir\$path" | Out-Null
 
@@ -45,9 +45,9 @@ foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
 # Restore packages and samples file from master branch
 foreach ($path in $doc_paths)
 {
-    git reset "$project_dir\$path"
-    git clean -xdf "$project_dir\$path"
-    git checkout "$project_dir\$path"
+    Remove-Item -Force -Recurse "$project_dir\$path" | Out-Null
+    git reset "$project_dir\$path" | Out-Null
+    git checkout "$project_dir\$path" | Out-Null
 }
 
 # Generate website with docfx
