@@ -38,11 +38,10 @@ foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
     }
 }
 
-git clean -xdf
-
 # Restore packages and samples file from master branch
 foreach ($path in $doc_paths)
 {
+    git clean -xdf "$project_dir\$path"
     git reset "$project_dir\$path"
     git checkout "$project_dir\$path"
 }
