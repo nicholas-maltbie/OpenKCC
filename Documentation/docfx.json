@@ -67,6 +67,34 @@
             "filter": "filterConfig.yml",
             "dest": "versions/v1.0.0/api",
             "version": "v1.0.0"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v1.1.0",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v1.1.0/api",
+            "version": "v1.1.0"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v1.2.0",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v1.2.0/api",
+            "version": "v1.2.0"
         }
     ],
     "build": {
@@ -137,6 +165,24 @@
                 ],
                 "dest": "v1.0.0/api",
                 "version": "v1.0.0"
+            },
+            {
+                "src": "versions/v1.1.0/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v1.1.0/api",
+                "version": "v1.1.0"
+            },
+            {
+                "src": "versions/v1.2.0/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v1.2.0/api",
+                "version": "v1.2.0"
             }
         ],
         "overwrite": [
