@@ -21,6 +21,13 @@ foreach ($tag in @('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
     Write-Host "Setting up docs for version '$tag'"
     New-Item -Path "$dir\versions\$tag" -ItemType Directory > $null
 
+    # Make a small toc.yml for each version
+    Add-Content -Path "$dir\versions\$tag\toc.yml" -value @(
+      "- name: Manual",
+      "  href: manual/",
+      "- name: Scripting API",
+      "  href: latest/api/")
+
     foreach ($path in $doc_paths)
     {
         if (Test-Path "$project_dir\$path")

@@ -152,7 +152,9 @@
                 "src": "versions/v0.1.0",
                 "files": [
                     "toc.yml",
-                    "index.md"
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
                 ],
                 "dest": "v0.1.0",
                 "version": "v0.1.0"
@@ -170,7 +172,9 @@
                 "src": "versions/v0.1.2",
                 "files": [
                     "toc.yml",
-                    "index.md"
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
                 ],
                 "dest": "v0.1.2",
                 "version": "v0.1.2"
@@ -188,7 +192,9 @@
                 "src": "versions/v1.0.0",
                 "files": [
                     "toc.yml",
-                    "index.md"
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
                 ],
                 "dest": "v1.0.0",
                 "version": "v1.0.0"
@@ -206,7 +212,9 @@
                 "src": "versions/v1.1.0",
                 "files": [
                     "toc.yml",
-                    "index.md"
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
                 ],
                 "dest": "v1.1.0",
                 "version": "v1.1.0"
@@ -224,7 +232,9 @@
                 "src": "versions/v1.2.0",
                 "files": [
                     "toc.yml",
-                    "index.md"
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
                 ],
                 "dest": "v1.2.0",
                 "version": "v1.2.0"
@@ -267,36 +277,51 @@
             {
                 "src": "versions/v0.1.0",
                 "files": [
-                    "resources/**/*"
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
                 ],
-                "version": "v1.1.0"
+                "dest": "v0.1.0",
+                "version": "v0.1.0"
             },
             {
                 "src": "versions/v0.1.2",
                 "files": [
-                    "resources/**/*"
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
                 ],
+                "dest": "v0.1.2",
                 "version": "v0.1.2"
             },
             {
                 "src": "versions/v1.0.0",
                 "files": [
-                    "resources/**/*"
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
                 ],
+                "dest": "v1.0.0",
                 "version": "v1.0.0"
             },
             {
                 "src": "versions/v1.1.0",
                 "files": [
-                    "resources/**/*"
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
                 ],
+                "dest": "v1.1.0",
                 "version": "v1.1.0"
             },
             {
                 "src": "versions/v1.2.0",
                 "files": [
-                    "resources/**/*"
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
                 ],
+                "dest": "v1.2.0",
                 "version": "v1.2.0"
             }
         ],
