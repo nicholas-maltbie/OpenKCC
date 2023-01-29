@@ -200,5 +200,44 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 Assert.AreEqual(newNormal, engine.GroundedState.SurfaceNormal);
             }
         }
+
+        /// <summary>
+        /// Basic test to verify that the KCCMovementEngine won't
+        /// move into the ground when moving into the ground
+        /// with the relative parent config position.
+        /// </summary>
+        [Test]
+        public void Verify_KCCMovementEngine_NoMoveIntoGround()
+        {
+            // For this test pretend the player is a sphere
+            // with a radius of 0.5 units.
+            GameObject ground = CreateGameObject();
+            BoxCollider box = ground.AddComponent<BoxCollider>();
+            
+            ground.transform.position = new Vector3(0, -0.5f, 0);
+            engine.transform.position = new Vecotr3(0,  1.5f, 0) + Vector3.up * KCCUtils.Epsilon;
+
+            // There should be three calls to the CastSelf
+            // First call is for computing movement, simply return no hit
+            // Second call is for snapping to ground, should also return no hit
+            //   because I don't want to also test that code.
+            // Third call is for CheckGrounded, this is the important one.
+            // To make this similar to the real case, we need to return that the player
+            //   is just floating a little bit off the ground (0.001 units) and we should
+            //   be fine.
+            // We should compute the relative position of the player to be
+            // 0.5 units above the center of the box.
+
+            // Setup a basic collision between the player and the ground
+            // one meter below the player.
+            engine.MovePlayer(Vector3.down);
+
+            // Now assert that the relative position of the player
+            // to the ground is roughly 0.5 units above and that the
+            // absolute position of the player is about (0, 0.5, 0)
+
+            // After calling Update this should be true as well.
+            engine.Update();
+        }
     }
 }
