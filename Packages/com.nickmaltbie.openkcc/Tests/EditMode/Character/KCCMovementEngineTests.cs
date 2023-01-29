@@ -213,10 +213,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             // with a radius of 0.5 units.
             GameObject ground = CreateGameObject();
             BoxCollider box = ground.AddComponent<BoxCollider>();
-            
+
             // Setup positions of ground and player.
             ground.transform.position = new Vector3(0, -0.5f, 0);
-            engine.transform.position = new Vector3(0,  1.5f, 0) + Vector3.up * KCCUtils.Epsilon;
+            engine.transform.position = new Vector3(0, 1.5f, 0) + Vector3.up * KCCUtils.Epsilon;
 
             // There should be three calls to the CastSelf
             // First call is for computing movement, simply return no hit
