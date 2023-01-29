@@ -28,6 +28,34 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
     public static class KCCTestUtils
     {
         /// <summary>
+        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf(Vector3, Quaternion, Vector3, float, out IRaycastHit)"/>
+        /// </summary>
+        /// <param name="position">Position of the object when it is being raycast.</param>
+        /// <param name="rotation">Rotation of the objecting when it is being raycast.</param>
+        /// <param name="direction">Direction of the raycast.</param>
+        /// <param name="distance">Maximum distance of raycast.</param>
+        /// <param name="hit">First object hit and related information, will have a distance of Infinity if none
+        /// is found.</param>
+        /// <param name="skinWidth">Width of skin of object to use when casting a hit. Essentially buffer
+        /// space around the edge of the object.</param>
+        /// <returns>True if an object is hit within distance, false otherwise.</returns>
+        public delegate void CastSelfCallback(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit);
+
+        /// <summary>
+        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf(Vector3, Quaternion, Vector3, float, out IRaycastHit)"/>
+        /// </summary>
+        /// <param name="position">Position of the object when it is being raycast.</param>
+        /// <param name="rotation">Rotation of the objecting when it is being raycast.</param>
+        /// <param name="direction">Direction of the raycast.</param>
+        /// <param name="distance">Maximum distance of raycast.</param>
+        /// <param name="hit">First object hit and related information, will have a distance of Infinity if none
+        /// is found.</param>
+        /// <param name="skinWidth">Width of skin of object to use when casting a hit. Essentially buffer
+        /// space around the edge of the object.</param>
+        /// <returns>True if an object is hit within distance, false otherwise.</returns>
+        public delegate bool CastSelfReturns(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit);
+
+        /// <summary>
         /// Bound range for test utils validation of number in range.
         /// </summary>
         public enum BoundRange

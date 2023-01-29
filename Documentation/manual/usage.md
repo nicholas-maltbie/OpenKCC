@@ -56,10 +56,15 @@ a basic use case.
     via the @nickmaltbie.OpenKCC.Utils.ColliderCast.CapsuleColliderCast
     but there are plans to expand this to include all primitives as well
     as composited colliders of multiple primitives together.
-1. @nickmaltbie.OpenKCC.CameraControls.ICameraControls -
-    This controls the direction the character is looking at and which direction
-    they should move when the player inputs a forward, left, or right
-    input.
+1. @nickmaltbie.OpenKCC.Character.KCCMovementEngine -
+    \- The calls to the lower level APIs to move the player,
+    follow moving platforms, ands other configurations.
+1. @nickmaltbie.OpenKCC.CameraControls.ICameraControls
+    \- This controls the direction the character is looking at and which
+    direction they should move when the player inputs a forward, left,
+    or right input. An example of this has been implemented
+    in the @nickmaltbie.OpenKCC.CameraControls.CameraController
+    for a hybrid first person/third person camera controller.
 
 ### Configurable Properties
 
