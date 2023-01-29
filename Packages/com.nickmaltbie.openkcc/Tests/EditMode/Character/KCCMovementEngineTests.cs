@@ -165,7 +165,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Vector3 startingNormal = Vector3.up;
             Vector3 newNormal = Vector3.down;
             Vector3 currentNormal = startingNormal;
-            
+
             var raycastHitMock = new Mock<IRaycastHit>();
             raycastHitMock.Setup(hit => hit.collider).Returns(collider);
             raycastHitMock.Setup(hit => hit.point).Returns(Vector3.zero);

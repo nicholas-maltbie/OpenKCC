@@ -40,7 +40,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         /// space around the edge of the object.</param>
         /// <returns>True if an object is hit within distance, false otherwise.</returns>
         public delegate void CastSelfCallback(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit);
-        
+
         /// <summary>
         /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf(Vector3, Quaternion, Vector3, float, out IRaycastHit)"/>
         /// </summary>

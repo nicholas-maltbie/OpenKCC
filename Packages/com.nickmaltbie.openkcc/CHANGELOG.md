@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+
+_**Note**_ : This update will not automatically
+copy values for `KCCStateMachine` from the previous
+API version to the current API because they are
+not compatible and have a simplified resource
+values now. Sorry for any inconvenience this causes.
+The latest [Usage](https://nickmaltbie.com/OpenKCC/docs/manual/usage.html)
+notes should provide any necessary information
+on how to update your parameters as needed.
+
+* Added test coverage for `KCCMovementEngine` and refactored code.
 * Removed some unused functions and properties from `KCCMovementEngine`,
     `KCCUtils`, and `IKCCConfig`.
 * Added some tests for the untested behaviors.
