@@ -99,6 +99,7 @@ Assets/**/obj*
 _site/
 Documentation/api/
 Documentation/latest/api/
+Documentation/versions/
 Documentation/Changelog/CHANGELOG*.md
 Documentation/Demo/
 Documentation/index.*
