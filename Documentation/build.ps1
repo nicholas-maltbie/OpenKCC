@@ -45,7 +45,7 @@ foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
         if (Test-Path "$project_dir\$path")
         {
             $parent = Split-Path -parent "$dir\versions\$tag\$path"
-            if (!Test-Path "$project_dir\$path")
+            if (!$(Test-Path "$parent")) 
             {
                 New-Item -Path "$parent" -ItemType Directory
             }
