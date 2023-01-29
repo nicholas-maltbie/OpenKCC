@@ -1,6 +1,6 @@
 # Setup files for website
 $dir = $PSScriptRoot
-$project_dir = $(Get-Item $PSScriptRoot).Parent
+$project_dir = $(Get-Item $dir).Parent
 
 write-Host $project_dir
 
@@ -9,14 +9,7 @@ if ("$(git status --porcelain)" -ne "")
     throw "Found unstanged git changes, exiting"
 }
 
-Write-Host "Setting up website and copying files"
-Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
-Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
-Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$dir\changelog\CHANGELOG.md"
-Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"
-Copy-Item "$project_dir\Demo" "$dir\Demo\"-Recurse -Force 
-
-$doc_paths = @("Packages", "Assets/Samples", "Documentation/manual", "Documentation/resources")
+$doc_paths = @("Packages", "Assets/Samples", "Documentation/manual", "Documentation/resources", "README.md", "Demo")
 
 # Cleanup any previous documentation
 if (Test-Path "$dir\versions")
@@ -52,6 +45,12 @@ foreach ($tag in @('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
                 }
 
                 Move-Item "$project_dir\$path" "$dir\versions\$tag\$path" > $null
+
+                # If the file name is README.md, rename to index.md
+                if ("$path" -eq "README.md")
+                {
+                    Rename-Item -Path "$dir\versions\$tag\$path" -NewName "$dir\versions\$tag\index.md"
+                }
             }
         }
     }
@@ -70,6 +69,13 @@ foreach ($path in $doc_paths)
 
     git checkout "$project_dir/$path" > $null
 }
+
+Write-Host "Setting up website and copying files"
+Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
+Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
+Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$dir\changelog\CHANGELOG.md"
+Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"
+Copy-Item "$project_dir\Demo" "$dir\Demo\"-Recurse -Force 
 
 # Generate website with docfx
 Write-Host "Building code metadata"
