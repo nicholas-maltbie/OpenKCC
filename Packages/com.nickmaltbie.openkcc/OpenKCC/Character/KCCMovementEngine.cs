@@ -78,13 +78,11 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Height of a step that the player can climb up.
         /// </summary>
-        [SerializeField]
         public float stepHeight = 0.35f;
 
         /// <summary>
         /// Max angle the player can walk up before slipping.
         /// </summary>
-        [SerializeField]
         public float maxWalkAngle = 60.0f;
 
         /// <summary>
