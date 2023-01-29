@@ -36,11 +36,6 @@ namespace nickmaltbie.OpenKCC.Utils
         float VerticalSnapUp { get; }
 
         /// <summary>
-        /// Distance that the character can "snap down" vertical steps.
-        /// </summary>
-        float VerticalSnapDown { get; }
-
-        /// <summary>
         /// Minimum depth required for a stair when moving onto a step.
         /// </summary>
         float StepUpDepth { get; }
@@ -79,9 +74,6 @@ namespace nickmaltbie.OpenKCC.Utils
 
         /// <inheritdoc/>
         public float VerticalSnapUp { get; set; }
-
-        /// <inheritdoc/>
-        public float VerticalSnapDown { get; set; }
 
         /// <inheritdoc/>
         public float StepUpDepth { get; set; }

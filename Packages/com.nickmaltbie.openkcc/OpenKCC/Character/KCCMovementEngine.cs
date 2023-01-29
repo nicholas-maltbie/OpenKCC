@@ -79,9 +79,6 @@ namespace nickmaltbie.OpenKCC.Character
         public virtual float VerticalSnapUp => stepHeight;
 
         /// <inheritdoc/>
-        public virtual float VerticalSnapDown => SnapDown;
-
-        /// <inheritdoc/>
         public virtual float StepUpDepth => 0.1f;
 
         /// <inheritdoc/>
@@ -122,9 +119,6 @@ namespace nickmaltbie.OpenKCC.Character
         /// Current grounded state of the character.
         /// </summary>
         public KCCGroundedState GroundedState { get; protected set; }
-
-        /// <inheritdoc/>
-        public bool MoveUpWalls => false;
 
         /// <summary>
         /// Collider cast for player shape.

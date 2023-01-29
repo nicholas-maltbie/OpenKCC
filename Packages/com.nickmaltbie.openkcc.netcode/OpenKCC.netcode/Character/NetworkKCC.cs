@@ -110,12 +110,6 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         private Quaternion HorizPlaneView => Quaternion.Euler(0, CameraControls?.Yaw ?? transform.eulerAngles.y, 0);
 
         /// <summary>
-        /// Player rotated movement that they intend to move.
-        /// </summary>
-        /// <param name="inputMovement">Input movement vector of the player</param>
-        public Vector3 RotatedMovement(Vector3 inputMovement) => HorizPlaneView * inputMovement;
-
-        /// <summary>
         /// Input movement from player input updated each frame.
         /// </summary>
         public Vector3 InputMovement { get; private set; }
