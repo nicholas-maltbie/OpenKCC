@@ -73,14 +73,14 @@ foreach ($path in $doc_paths)
 
 # Generate website with docfx
 Write-Host "Building code metadata"
-docfx metadata "$dir\docfx.json" --warningsAsErrors --logLevel verbose --force && (
+dotnet docfx metadata "$dir\docfx.json" --warningsAsErrors --logLevel verbose --force && (
     Write-Host "Successfuly generated metadata for C# code formatting"
 ) || (
     throw "Could not properly generate metadata for C# code formatting"
 )
 
 Write-Host "Generating website"
-docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" --warningsAsErrors --logLevel verbose && (
+dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" --warningsAsErrors --logLevel verbose && (
     Write-Host "Successfuly generated website for documentation"
 ) || (
     throw "Could not properly website for documentation"

@@ -25,6 +25,48 @@
             "filter": "filterConfig.yml",
             "dest": "latest/api",
             "version": "latest"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v0.1.0",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v0.1.0/api",
+            "version": "v0.1.0"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v0.1.2",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v0.1.2/api",
+            "version": "v0.1.2"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v1.0.0",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v1.0.0/api",
+            "version": "v1.0.0"
         }
     ],
     "build": {
@@ -53,14 +95,6 @@
                 "dest": "latest/api"
             },
             {
-                "src": "v0.0.61/api",
-                "files": [
-                    "toc.yml",
-                    "*.yml"
-                ],
-                "dest": "v0.0.61/api"
-            },
-            {
                 "src": "changelog",
                 "files":
                 [
@@ -76,6 +110,33 @@
                     "**/*.md"
                 ],
                 "dest": "manual"
+            },
+            {
+                "src": "versions/v0.1.0/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v0.1.0/api",
+                "version": "v0.1.0"
+            },
+            {
+                "src": "versions/v0.1.2/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v0.1.2/api",
+                "version": "v0.1.2"
+            },
+            {
+                "src": "versions/v1.0.0/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v1.0.0/api",
+                "version": "v1.0.0"
             }
         ],
         "overwrite": [
