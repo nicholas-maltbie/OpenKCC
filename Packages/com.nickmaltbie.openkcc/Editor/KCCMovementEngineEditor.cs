@@ -28,10 +28,10 @@ namespace nickmaltbie.OpenKCC.Editor
     {
         private bool state = false;
 
-        SerializedProperty stepHeightProp;
-        SerializedProperty maxWalkAngleProp;
+        public SerializedProperty stepHeightProp;
+        public SerializedProperty maxWalkAngleProp;
 
-        void OnEnable()
+        public void OnEnable()
         {
             // Fetch the objects from the GameObject script to display in the inspector
             stepHeightProp = serializedObject.FindProperty("stepHeight");
@@ -42,7 +42,7 @@ namespace nickmaltbie.OpenKCC.Editor
         {
             // Update the serializedProperty - always do this in the beginning of OnInspectorGUI.
             serializedObject.Update();
-            
+
             var engine = target as KCCMovementEngine;
 
             EditorGUILayout.PropertyField(stepHeightProp);
@@ -76,6 +76,5 @@ namespace nickmaltbie.OpenKCC.Editor
             // Apply changes to the serializedProperty - always do this at the end of OnInspectorGUI.
             serializedObject.ApplyModifiedProperties();
         }
-
     }
 }
