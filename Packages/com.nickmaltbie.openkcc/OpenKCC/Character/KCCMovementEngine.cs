@@ -153,7 +153,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Relative parent configuration for following the ground.
         /// </summary>
-        protected RelativeParentConfig relativeParentConfig;
+        internal RelativeParentConfig relativeParentConfig;
 
         /// <summary>
         /// Current grounded state of the character.
