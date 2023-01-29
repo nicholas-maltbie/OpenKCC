@@ -19,7 +19,10 @@ Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\"
 $doc_paths = ("Packages", "Assets\Samples", "Documentation\manual", "Documentation\resources")
 
 # Cleanup any previous documentation
-Remove-Item -Force -Recurse "$dir\$versions" | Out-Null
+if (Test-Path "$dir\$versions")
+{
+    Remove-Item -Force -Recurse "$dir\$versions" | Out-Null
+}
 
 # Setup documentation for each version of the api
 foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
@@ -30,12 +33,16 @@ foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
 
     foreach ($path in $doc_paths)
     {
-        Remove-Item -Force -Recurse "$project_dir\$path" | Out-Null
+        if (Test-Path "$project_dir\$path")
+        {
+            Remove-Item -Force -Recurse "$project_dir\$path" | Out-Null
+        }
+
         git reset "$project_dir\$path" | Out-Null
         Write-Host "Setting up resources for tag '$tag' at path: '$project_dir\$path'"
         git checkout "$tag" -- "$project_dir\$path" | Out-Null
 
-        if ([System.IO.File]::Exists("$project_dir\$path"))
+        if (Test-Path "$project_dir\$path")
         {
             Move-Item "$project_dir\$path" "$dir\versions\$tag\$path" | Out-Null
         }
@@ -45,7 +52,11 @@ foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
 # Restore packages and samples file from master branch
 foreach ($path in $doc_paths)
 {
-    Remove-Item -Force -Recurse "$project_dir\$path" | Out-Null
+    if (Test-Path "$project_dir\$path")
+    {
+        Remove-Item -Force -Recurse "$project_dir\$path" | Out-Null
+    }
+    
     git reset "$project_dir\$path" | Out-Null
     git checkout "$project_dir\$path" | Out-Null
 }
