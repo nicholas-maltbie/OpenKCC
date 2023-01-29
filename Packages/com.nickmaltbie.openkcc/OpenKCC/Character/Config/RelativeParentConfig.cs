@@ -22,18 +22,37 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character.Config
 {
+    /// <summary>
+    /// Relative parent configuration for saving
+    /// the position of an object relative to a given parent object.
+    /// </summary>
     [Serializable]
     public struct RelativeParentConfig
     {
+        /// <summary>
+        /// Relative position in local space.
+        /// </summary>
         public Vector3 relativePos;
+
+        /// <summary>
+        /// Previous parent for saving relative transform position.
+        /// </summary>
         public Transform previousParent;
 
+        /// <summary>
+        /// Reset the relative parent transform.
+        /// </summary>
         public void Reset()
         {
             relativePos = Vector3.zero;
             previousParent = null;
         }
 
+        /// <summary>
+        /// Move the transform's position
+        /// to be the same relative position to parent as the saved position.
+        /// </summary>
+        /// <param name="transform">Transform to move.</param>
         public void FollowGround(Transform transform)
         {
             if (previousParent != null)
@@ -42,6 +61,17 @@ namespace nickmaltbie.OpenKCC.Character.Config
             }
         }
 
+        /// <summary>
+        /// Update the moving ground state for a given
+        /// relative parent for some given movement.
+        /// </summary>
+        /// <param name="position">Position of object before moving.</param>
+        /// <param name="groundedState">Current grounded state of the object.</param>
+        /// <param name="delta">Delta that the object has moved.</param>
+        /// <param name="deltaTime">Delta time for update.</param>
+        /// <returns>The distance the player should be moved based
+        /// on moving ground. Will only be more than Vector3.zero if the ground
+        /// is moving and should not attach.</returns>
         public Vector3 UpdateMovingGround(Vector3 position, IKCCGrounded groundedState, Vector3 delta, float deltaTime)
         {
             if (groundedState.StandingOnGround && groundedState.Floor != null)

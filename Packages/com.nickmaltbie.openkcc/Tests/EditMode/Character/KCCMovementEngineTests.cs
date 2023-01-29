@@ -200,5 +200,81 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 Assert.AreEqual(newNormal, engine.GroundedState.SurfaceNormal);
             }
         }
+
+        /// <summary>
+        /// Basic test to verify that the KCCMovementEngine won't
+        /// move into the ground when moving into the ground
+        /// with the relative parent config position.
+        /// </summary>
+        [Test]
+        public void Verify_KCCMovementEngine_NoMoveIntoGround()
+        {
+            // For this test pretend the player is a sphere
+            // with a radius of 0.5 units.
+            GameObject ground = CreateGameObject();
+            BoxCollider box = ground.AddComponent<BoxCollider>();
+
+            // Setup positions of ground and player.
+            ground.transform.position = new Vector3(0, -0.5f, 0);
+            engine.transform.position = new Vector3(0, 1.5f, 0) + Vector3.up * KCCUtils.Epsilon;
+
+            // There should be three calls to the CastSelf
+            // First call is for computing movement, simply return no hit
+            // Second call is for snapping to ground, should also return no hit
+            //   because I don't want to also test that code.
+            // Third call is for CheckGrounded, this is the important one.
+            // To make this similar to the real case, we need to return that the player
+            //   is just floating a little bit off the ground (0.001 units) and we should
+            //   be fine.
+            // We should compute the relative position of the player to be
+            // 0.5 units above the center of the box.
+            var noHit = new Mock<IRaycastHit>();
+            noHit.Setup(hit => hit.collider).Returns(default(Collider));
+            noHit.Setup(hit => hit.point).Returns(Vector3.zero);
+            noHit.Setup(hit => hit.distance).Returns(Mathf.Infinity);
+            noHit.Setup(hit => hit.normal).Returns(Vector3.zero);
+
+            var groundCheckHit = new Mock<IRaycastHit>();
+            groundCheckHit.Setup(hit => hit.collider).Returns(box);
+            groundCheckHit.Setup(hit => hit.point).Returns(Vector3.zero);
+            groundCheckHit.Setup(hit => hit.distance).Returns(KCCUtils.Epsilon);
+            groundCheckHit.Setup(hit => hit.normal).Returns(Vector3.up);
+
+            int hitIdx = 0;
+
+            colliderCastMock.Setup(e => e.CastSelf(
+                It.IsAny<Vector3>(),
+                It.IsAny<Quaternion>(),
+                It.IsAny<Vector3>(),
+                It.IsAny<float>(),
+                out It.Ref<IRaycastHit>.IsAny))
+                .Returns(new KCCTestUtils.CastSelfReturns((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
+                {
+                    // Only return hit past second cast
+                    if (++hitIdx < 2)
+                    {
+                        hit = noHit.Object;
+                        return false;
+                    }
+
+                    hit = groundCheckHit.Object;
+                    return true;
+                }));
+
+            // Setup a basic collision between the player and the ground
+            // one meter below the player.
+            engine.MovePlayer(Vector3.down);
+
+            // Now assert that the relative position of the player
+            // to the ground is roughly 0.5 units above and that the
+            // absolute position of the player is about (0, 0.5, 0)
+            TestUtils.AssertInBounds(engine.transform.position, Vector3.up * 0.5f, 2 * KCCUtils.Epsilon);
+            TestUtils.AssertInBounds(engine.relativeParentConfig.relativePos, Vector3.up, 2 * KCCUtils.Epsilon);
+
+            // After calling Update this should be true as well.
+            engine.Update();
+            TestUtils.AssertInBounds(engine.transform.position, Vector3.up * 0.5f, 2 * KCCUtils.Epsilon);
+            TestUtils.AssertInBounds(engine.relativeParentConfig.relativePos, Vector3.up, 2 * KCCUtils.Epsilon);
+        }
     }
 }

@@ -153,7 +153,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Relative parent configuration for following the ground.
         /// </summary>
-        protected RelativeParentConfig relativeParentConfig;
+        internal RelativeParentConfig relativeParentConfig;
 
         /// <summary>
         /// Current grounded state of the character.
@@ -309,7 +309,7 @@ namespace nickmaltbie.OpenKCC.Character
             CheckGrounded(snappedUp);
 
             Vector3 delta = transform.position - start;
-            transform.position += relativeParentConfig.UpdateMovingGround(transform.position, GroundedState, delta, unityService.fixedDeltaTime);
+            transform.position += relativeParentConfig.UpdateMovingGround(start, GroundedState, delta, unityService.fixedDeltaTime);
             relativeParentConfig.FollowGround(transform);
 
             previousPosition = transform.position;
