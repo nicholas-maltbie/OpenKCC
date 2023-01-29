@@ -16,7 +16,7 @@ Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$
 Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"
 Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\"
 
-$doc_paths = ("Packages", "Assets\Samples", "Documentation\manual", "Documentation\resources")
+$doc_paths = @("Packages", "Assets\Samples", "Documentation\manual", "Documentation\resources")
 
 # Cleanup any previous documentation
 if (Test-Path "$dir\$versions")
@@ -25,7 +25,7 @@ if (Test-Path "$dir\$versions")
 }
 
 # Setup documentation for each version of the api
-foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
+foreach ($tag in @('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
 {
     Write-Host "Setting up docs for version '$tag'"
 
@@ -44,10 +44,10 @@ foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
 
         if (Test-Path "$project_dir\$path")
         {
-            $parent = Split-Path -parent "$dir\versions\$tag\$path"
+            $parent = "$(Split-Path -parent "$dir\versions\$tag\$path")"
             if (!$(Test-Path "$parent")) 
             {
-                New-Item -Path "$parent" -ItemType Directory
+                New-Item -Path "$parent" -Type Directory
             }
 
             Move-Item "$project_dir\$path" "$dir\versions\$tag\$path" | Out-Null
