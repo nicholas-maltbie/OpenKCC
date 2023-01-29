@@ -32,17 +32,23 @@ foreach ($tag in ('v0.0.61', 'v0.1.0', 'v0.1.2', 'v1.0.0', 'v1.1.0', 'v1.2.0'))
 
     foreach ($path in $doc_paths)
     {
+        git reset "$project_dir\$path"
+        git clean -xdf "$project_dir\$path"
         Write-Host "Setting up resources for tag '$tag' at path: '$project_dir\$path'"
         git checkout "$tag" -- "$project_dir\$path" | Out-Null
-        Move-Item "$project_dir\$path" "$dir\versions\$tag\$path" | Out-Null
+
+        if ([System.IO.File]::Exists("$project_dir\$path"))
+        {
+            Move-Item "$project_dir\$path" "$dir\versions\$tag\$path" | Out-Null
+        }
     }
 }
 
 # Restore packages and samples file from master branch
 foreach ($path in $doc_paths)
 {
-    git clean -xdf "$project_dir\$path"
     git reset "$project_dir\$path"
+    git clean -xdf "$project_dir\$path"
     git checkout "$project_dir\$path"
 }
 
