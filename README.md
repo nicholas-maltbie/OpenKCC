@@ -214,7 +214,7 @@ Documentation/build.sh
 (Or this for windows)
 
 ```cmd
-.\Documentation\build.cmd
+.\Documentation\build-validation.cmd
 ```
 
 The documentation for the project is stored in the folder `/Documentation`

@@ -32,16 +32,24 @@ foreach ($tag in $(git tag))
     git clean -xdf Documentation Assets Packages
     git checkout $tag
 
+    # ensure docfx is installed
+    dotnet install docfx
+
     Write-Host "Setting up website and copying files"
     Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
-    Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
-    Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\"
 
-    if (Test-Path "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" )
+    if (Test-Path "$project_dir\LICENSE.txt")
+    {
+        Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
+    }
+    if (Test-Path "$project_dir\Demo")
+    {
+        Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\"
+    }
+    if (Test-Path "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md")
     {
         Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$dir\changelog\CHANGELOG.md"
     }
-
     if (Test-Path "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md")
     {
         Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"

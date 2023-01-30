@@ -75,4 +75,4 @@ jobs:
       - run: dotnet tool restore
 
       - name: Build Website
-        run: .\Documentation\build.cmd
+        run: .\Documentation\build-validation.cmd
