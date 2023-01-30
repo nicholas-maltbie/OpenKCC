@@ -25,14 +25,14 @@ Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELO
 
 Write-Host "Generating versions file from tags"
 Add-Content -Path "$dir\versions.md" -Value "<!-- markdownlint-disable MD033 -->"
-Add-Content -Path "$dir\versions.md" -Value "- <a href=`"/`">latest</a>"
+Add-Content -Path "$dir\versions.md" -Value "- <a href=`"../`">latest</a>"
 
 foreach ($tag in $(git tag))
 {
     # Check if file exists for branch
     if ($(git cat-file -t "$($tag):Documentation/docfx.json") -eq "blob")
     {
-        Add-Content -Path "$dir\versions.md" -Value "- <a href=`"/$($tag)`">$($tag)</a>"
+        Add-Content -Path "$dir\versions.md" -Value "- <a href=`"../$($tag)`">$($tag)</a>"
     }
 }
 
@@ -54,11 +54,11 @@ foreach ($tag in $(git tag))
 
     Write-Host "Setting up website and copying files"
     
-    if (Test-Path "$dir")
+    if (! Test-Path "$dir")
     {
         New-Item -Path "$dir" -ItemType Directory > $null
     }
-    if (Test-Path "$dir\changelog")
+    if (! Test-Path "$dir\changelog")
     {
         New-Item -Path "$dir\changelog" -ItemType Directory > $null
     }
