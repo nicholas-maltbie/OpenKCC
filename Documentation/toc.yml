@@ -1,7 +1,7 @@
 - name: Manual
   href: manual/
 - name: Scripting API
-  href: latest/api/
+  href: api/
 - name: Changelog
   href: changelog/
 - name: Versions

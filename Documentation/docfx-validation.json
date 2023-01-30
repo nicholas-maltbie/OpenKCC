@@ -23,8 +23,7 @@
             ],
             "globalNamespaceId": "Global",
             "filter": "filterConfig.yml",
-            "dest": "latest/api",
-            "version": "latest"
+            "dest": "api"
         }
     ],
     "build": {
@@ -45,20 +44,12 @@
                 ]
             },
             {
-                "src": "latest/api",
+                "src": "api",
                 "files": [
                     "toc.yml",
                     "*.yml"
                 ],
-                "dest": "latest/api"
-            },
-            {
-                "src": "v0.0.61/api",
-                "files": [
-                    "toc.yml",
-                    "*.yml"
-                ],
-                "dest": "v0.0.61/api"
+                "dest": "api"
             },
             {
                 "src": "changelog",
@@ -117,7 +108,7 @@
             "baseUrl": "https://nickmaltbie.com/OpenKCC/docs",
             "changefreq": "weekly",
             "fileOptions": {
-                "latest/api/*": {
+                "api/*": {
                     "changefreq": "daily"
                 }
             }
