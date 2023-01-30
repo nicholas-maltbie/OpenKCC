@@ -30,7 +30,7 @@ Add-Content -Path "$dir\versions.md" -Value "- <a href=`"/`">latest</a>"
 foreach ($tag in $(git tag))
 {
     # Check if file exists for branch
-    if ($(git cat-file -t "$($tag):$dir/docfx.json") -eq "blob")
+    if ($(git cat-file -t "$($tag):Documentation/docfx.json") -eq "blob")
     {
         Add-Content -Path "$dir\versions.md" -Value "- <a href=`"/$($tag)`">$($tag)</a>"
     }
