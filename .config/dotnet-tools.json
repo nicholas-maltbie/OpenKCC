@@ -1,12 +1,18 @@
 {
-    "version":1,
-    "isRoot":true,
-    "tools":{
-      "dotnet-format":{
-        "version":"5.1.225507",
-        "commands":[
-          "dotnet-format"
-        ]
-      }
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-format": {
+      "version": "5.1.225507",
+      "commands": [
+        "dotnet-format"
+      ]
+    },
+    "docfx": {
+      "version": "2.60.2",
+      "commands": [
+        "docfx"
+      ]
     }
   }
+}

@@ -17,6 +17,7 @@ Here is the companion YouTube video for this design document:
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen></iframe>
 </div>
+<!-- markdownlint-enable MD033 -->
 <!-- markdownlint-enable MD013 -->
 
 ## Physics in Virtual Environment

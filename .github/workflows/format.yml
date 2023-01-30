@@ -71,8 +71,8 @@ jobs:
       - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
 
-      - name: Install DocFX
-        run: choco install -y docfx
+      # Restore dotnet tools. This handles cache implicitly.
+      - run: dotnet tool restore
 
       - name: Build Website
         run: .\Documentation\build.cmd
