@@ -116,8 +116,9 @@ jobs:
       # Restore dotnet tools. This handles cache implicitly.
       - run: dotnet tool restore
 
+      # build full website
       - name: Build Website
-        run: .\Documentation\build.cmd
+        run: .\Documentation\build.ps1
 
       # Upload build to temp_build_docs
       - name: Upload build artifact
