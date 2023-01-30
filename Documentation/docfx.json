@@ -120,7 +120,6 @@
         ],
         "xrefService": [
             "https://xref.docs.microsoft.com/query?uid={uid}"
-        ],
-        "dest": "../_site"
+        ]
     }
 }
