@@ -35,8 +35,16 @@ foreach ($tag in $(git tag))
     dotnet tool install docfx
 
     Write-Host "Setting up website and copying files"
-    New-Item -Path "$dir" -ItemType Directory > $null
-    New-Item -Path "$dir" -ItemType Directory > $null
+    
+    if (Test-Path "$dir")
+    {
+        New-Item -Path "$dir" -ItemType Directory > $null
+    }
+    if (Test-Path "$dir\changelog")
+    {
+        New-Item -Path "$dir\changelog" -ItemType Directory > $null
+    }
+
     Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
 
     if (Test-Path "$project_dir\LICENSE.txt")
