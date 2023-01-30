@@ -32,6 +32,9 @@ foreach ($tag in $(git tag))
     git clean -xdf Documentation Assets Packages
     git checkout $tag
 
+    # ensure docfx is installed
+    dotnet tool install docfx
+
     Write-Host "Setting up website and copying files"
     Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
 
