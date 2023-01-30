@@ -11,7 +11,6 @@ if ("$(git status --porcelain)" -ne "")
 if (Test-Path "_site")
 {
     Remove-Item -LiteralPath "_site" -Force -Recurse > $null
-<<<<<<< Updated upstream
 }
 
 Write-Host "Setting up website and copying files"
