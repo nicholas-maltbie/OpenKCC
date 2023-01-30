@@ -2,6 +2,9 @@
 $dir = $PSScriptRoot
 $project_dir = $(Get-Item $dir).Parent
 
+$current_branch="$(git rev-parse --abbrev-ref HEAD)"
+$current_sha="$(git rev-parse --verify HEAD)"
+
 if ("$(git status --porcelain)" -ne "")
 {
     throw "Found unstanged git changes, exiting"
@@ -13,18 +16,33 @@ if (Test-Path "_site")
     Remove-Item -LiteralPath "_site" -Force -Recurse > $null
 }
 
-# Write-Host "Setting up website and copying files"
-# Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
-# Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
-# Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\"
-# Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$dir\changelog\CHANGELOG.md"
-# Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"
+Write-Host "Setting up website and copying files"
+Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
+Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
+Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\"
+Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$dir\changelog\CHANGELOG.md"
+Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"
 
-# Write-Host "Building code metadata"
-# dotnet docfx metadata "$dir\docfx.json" --force
+Write-Host "Generating versions file from tags"
+Add-Content -Path "$dir\versions.md" -Value "<!-- markdownlint-disable MD033 -->"
+Add-Content -Path "$dir\versions.md" -Value "- <a href=`"/`">latest</a>"
 
-# Write-Host "Generating website"
-# dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" -o "_site"
+foreach ($tag in $(git tag))
+{
+    # Check if file exists for branch
+    if ($(git cat-file -t "$($tag):$dir/docfx.json") -eq "blob")
+    {
+        Add-Content -Path "$dir\versions.md" -Value "- <a href=`"/$($tag)`">$($tag)</a>"
+    }
+}
+
+Add-Content -Path "$dir\versions.md" -Value "<!-- markdownlint-enable MD033 -->"
+
+Write-Host "Building code metadata"
+dotnet docfx metadata "$dir\docfx.json" --force
+
+Write-Host "Generating website"
+dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom"
 
 # Setup documentation for each version of the api
 foreach ($tag in $(git tag))
@@ -85,3 +103,5 @@ foreach ($tag in $(git tag))
     git checkout .
     git clean -xdf Documentation Assets Packages
 }
+
+git checkout "$current_sha" && git checkout "$current_branch"
