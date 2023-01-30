@@ -84,15 +84,7 @@ Copy-Item "$project_dir\Demo" "$dir\Demo\"-Recurse -Force
 
 # Generate website with docfx
 Write-Host "Building code metadata"
-dotnet docfx metadata "$dir\docfx.json" --force && (
-    Write-Host "Successfuly generated metadata for C# code formatting"
-) || (
-    throw "Could not properly generate metadata for C# code formatting"
-)
+dotnet docfx metadata "$dir\docfx.json" --force
 
 Write-Host "Generating website"
-dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" && (
-    Write-Host "Successfuly generated website for documentation"
-) || (
-    throw "Could not properly website for documentation"
-)
+dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom"
