@@ -13,6 +13,8 @@ if (Test-Path "_site")
     Remove-Item -LiteralPath "_site" -Force -Recurse > $null
 }
 
+dotnet tool install -g docfx
+
 Write-Host "Setting up website and copying files"
 Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
 Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
@@ -31,9 +33,6 @@ foreach ($tag in $(git tag))
 {
     git clean -xdf Documentation Assets Packages
     git checkout $tag
-
-    # ensure docfx is installed
-    dotnet install docfx
 
     Write-Host "Setting up website and copying files"
     Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
@@ -57,8 +56,8 @@ foreach ($tag in $(git tag))
 
     # Generate website with docfx
     Write-Host "Building code metadata"
-    dotnet docfx metadata "$dir\docfx.json" --force
+    docfx metadata "$dir\docfx.json" --force
 
     Write-Host "Generating website"
-    dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" -o "_site/$tag"
+    docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" -o "_site/$tag"
 }
