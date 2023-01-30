@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.3.0] 2023-01-29
 
 _**Note**_ : This update will not automatically
 copy values for `KCCStateMachine` from the previous
@@ -14,6 +15,7 @@ The latest [Usage](https://nickmaltbie.com/OpenKCC/docs/manual/usage.html)
 notes should provide any necessary information
 on how to update your parameters as needed.
 
+* Updated docs website to include multiple versions of the API.
 * Added test coverage for `KCCMovementEngine` and refactored code.
 * Removed some unused functions and properties from `KCCMovementEngine`,
     `KCCUtils`, and `IKCCConfig`.

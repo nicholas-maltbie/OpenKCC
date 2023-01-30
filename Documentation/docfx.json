@@ -25,6 +25,90 @@
             "filter": "filterConfig.yml",
             "dest": "latest/api",
             "version": "latest"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v0.1.0",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v0.1.0/api",
+            "version": "v0.1.0"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v0.1.2",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v0.1.2/api",
+            "version": "v0.1.2"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v1.0.0",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v1.0.0/api",
+            "version": "v1.0.0"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v1.1.0",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v1.1.0/api",
+            "version": "v1.1.0"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v1.2.0",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v1.2.0/api",
+            "version": "v1.2.0"
+        },
+        {
+            "src": [
+                {
+                    "src": "versions/v1.3.0",
+                    "files": [
+                        "**/*.cs"
+                    ]
+                }
+            ],
+            "globalNamespaceId": "Global",
+            "filter": "filterConfig.yml",
+            "dest": "versions/v1.3.0/api",
+            "version": "v1.3.0"
         }
     ],
     "build": {
@@ -53,14 +137,6 @@
                 "dest": "latest/api"
             },
             {
-                "src": "v0.0.61/api",
-                "files": [
-                    "toc.yml",
-                    "*.yml"
-                ],
-                "dest": "v0.0.61/api"
-            },
-            {
                 "src": "changelog",
                 "files":
                 [
@@ -76,6 +152,126 @@
                     "**/*.md"
                 ],
                 "dest": "manual"
+            },
+            {
+                "src": "versions/v0.1.0/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v0.1.0/api",
+                "version": "v0.1.0"
+            },
+            {
+                "src": "versions/v0.1.0",
+                "files": [
+                    "toc.yml",
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
+                ],
+                "dest": "v0.1.0",
+                "version": "v0.1.0"
+            },
+            {
+                "src": "versions/v0.1.2/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v0.1.2/api",
+                "version": "v0.1.2"
+            },
+            {
+                "src": "versions/v0.1.2",
+                "files": [
+                    "toc.yml",
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
+                ],
+                "dest": "v0.1.2",
+                "version": "v0.1.2"
+            },
+            {
+                "src": "versions/v1.0.0/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v1.0.0/api",
+                "version": "v1.0.0"
+            },
+            {
+                "src": "versions/v1.0.0",
+                "files": [
+                    "toc.yml",
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
+                ],
+                "dest": "v1.0.0",
+                "version": "v1.0.0"
+            },
+            {
+                "src": "versions/v1.1.0/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v1.1.0/api",
+                "version": "v1.1.0"
+            },
+            {
+                "src": "versions/v1.1.0",
+                "files": [
+                    "toc.yml",
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
+                ],
+                "dest": "v1.1.0",
+                "version": "v1.1.0"
+            },
+            {
+                "src": "versions/v1.2.0/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v1.2.0/api",
+                "version": "v1.2.0"
+            },
+            {
+                "src": "versions/v1.2.0",
+                "files": [
+                    "toc.yml",
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
+                ],
+                "dest": "v1.2.0",
+                "version": "v1.2.0"
+            },
+            {
+                "src": "versions/v1.3.0/api",
+                "files": [
+                    "toc.yml",
+                    "*.yml"
+                ],
+                "dest": "v1.3.0/api",
+                "version": "v1.3.0"
+            },
+            {
+                "src": "versions/v1.3.0",
+                "files": [
+                    "toc.yml",
+                    "index.md",
+                    "Documentation/manual/toc.yml",
+                    "Documentation/manual/**/*.md"
+                ],
+                "dest": "v1.3.0",
+                "version": "v1.3.0"
             }
         ],
         "overwrite": [
@@ -111,6 +307,66 @@
                 "files": [
                     "resources/**/*"
                 ]
+            },
+            {
+                "src": "versions/v0.1.0",
+                "files": [
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
+                ],
+                "dest": "v0.1.0",
+                "version": "v0.1.0"
+            },
+            {
+                "src": "versions/v0.1.2",
+                "files": [
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
+                ],
+                "dest": "v0.1.2",
+                "version": "v0.1.2"
+            },
+            {
+                "src": "versions/v1.0.0",
+                "files": [
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
+                ],
+                "dest": "v1.0.0",
+                "version": "v1.0.0"
+            },
+            {
+                "src": "versions/v1.1.0",
+                "files": [
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
+                ],
+                "dest": "v1.1.0",
+                "version": "v1.1.0"
+            },
+            {
+                "src": "versions/v1.2.0",
+                "files": [
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
+                ],
+                "dest": "v1.2.0",
+                "version": "v1.2.0"
+            },
+            {
+                "src": "versions/v1.3.0",
+                "files": [
+                    "Demo/**/*",
+                    "LICENSE.txt",
+                    "Documentation/resources/**/*"
+                ],
+                "dest": "v1.3.0",
+                "version": "v1.3.0"
             }
         ],
         "sitemap": {

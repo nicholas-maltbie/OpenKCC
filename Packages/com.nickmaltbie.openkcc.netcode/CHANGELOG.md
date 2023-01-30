@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.3.0] 2023-01-29
+
 * Added documentation to the `MoleMovementEngine`.
 * Refactored the `NetworkKCC` and Mole Sample to use the new `KCCMovementEngine`.
     Also simplified parameters to follow the same design as `KCCStateMachine`.
