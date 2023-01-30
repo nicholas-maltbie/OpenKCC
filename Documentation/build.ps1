@@ -68,7 +68,7 @@ foreach ($tag in $(git tag))
     {
         # Change the dest in the docfx.json file
         $paramFile = Get-Content "$dir\docfx.json" | ConvertFrom-Json
-        $paramFile.build | Add-Member -name "dest" -value "_site\$tag" -MemberType NoteProperty -Force
+        $paramFile.build | Add-Member -name "dest" -value "$project_dir/_site/$tag" -MemberType NoteProperty -Force
         $paramFile | ConvertTo-Json -Depth 16 | Set-Content "$dir\docfx.json"
 
         # Generate website with docfx
