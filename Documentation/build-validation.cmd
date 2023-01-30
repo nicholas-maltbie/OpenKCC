@@ -19,6 +19,6 @@ echo Generating website
 dotnet docfx build %~dp0\docfx-validation.json -t default,%~dp0\templates\custom --warningsAsErrors --logLevel verbose && (
     echo Successfuly generated website for documentation
 ) || (
-    echo Could not properly website for documentation
+    echo Could not properly generate website for documentation
     exit /b 1
 )
