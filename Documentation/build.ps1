@@ -66,13 +66,18 @@ foreach ($tag in $(git tag))
 
     if (Test-Path "$dir\docfx.json")
     {
+        # Change the dest in the docfx.json file
+        $paramFile = Get-Content "$dir\docfx.json" | ConvertFrom-Json
+        $paramFile.build | Add-Member -name "dest" -value "_site\$tag" -MemberType NoteProperty -Force
+        $paramFile | ConvertTo-Json -Depth 16 | Set-Content "$dir\docfx.json"
+
         # Generate website with docfx
         Write-Host "Building code metadata"
         dotnet docfx metadata "$dir\docfx.json" --force
     
         Write-Host "Generating website"
         Write-Host "dotnet docfx build `"$dir\docfx.json`" -t `"default,$dir\templates\custom`" -o `"_site\$tag`""
-        dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" -o "_site\$tag"
+        dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom"
     }
 
     # Undo any changes made in previous iteration
