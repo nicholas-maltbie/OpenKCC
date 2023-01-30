@@ -11,6 +11,7 @@
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen></iframe>
 </div>
+<!-- markdownlint-enable MD033 -->
 <!-- markdownlint-enable MD013 -->
 
 The OpenKCC project is a library intended for a variety of use cases.

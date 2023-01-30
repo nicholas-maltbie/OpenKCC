@@ -41,8 +41,7 @@
             {
                 "files": [
                     "toc.yml",
-                    "index.md",
-                    "versions.md"
+                    "index.md"
                 ]
             },
             {

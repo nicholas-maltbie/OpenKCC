@@ -15,6 +15,7 @@ to move the player through a virtual environment.
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen></iframe>
 </div>
+<!-- markdownlint-enable MD033 -->
 <!-- markdownlint-enable MD013 -->
 
 ## Design Goals
