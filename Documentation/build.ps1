@@ -29,7 +29,6 @@ dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" -o "_sit
 # Setup documentation for each version of the api
 foreach ($tag in $(git tag))
 {
-    git clean -xdf Documentation Assets Packages
     git checkout $tag
 
     # ensure docfx is installed
@@ -55,10 +54,18 @@ foreach ($tag in $(git tag))
         Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"
     }
 
-    # Generate website with docfx
-    Write-Host "Building code metadata"
-    dotnet docfx metadata "$dir\docfx.json" --force
+    if (Test-Path "$dir\docfx.json")
+    {
+        # Generate website with docfx
+        Write-Host "Building code metadata"
+        dotnet docfx metadata "$dir\docfx.json" --force
+    
+        Write-Host "Generating website"
+        dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" -o "_site/$tag"
+    }
 
-    Write-Host "Generating website"
-    dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom" -o "_site/$tag"
+    # Undo any changes made in previous iteration
+    git reset .
+    git checkout .
+    git clean -xdf Documentation Assets Packages
 }
