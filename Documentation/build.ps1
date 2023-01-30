@@ -54,11 +54,11 @@ foreach ($tag in $(git tag))
 
     Write-Host "Setting up website and copying files"
     
-    if (! Test-Path "$dir")
+    if (!(Test-Path "$dir"))
     {
         New-Item -Path "$dir" -ItemType Directory > $null
     }
-    if (! Test-Path "$dir\changelog")
+    if (!(Test-Path "$dir\changelog"))
     {
         New-Item -Path "$dir\changelog" -ItemType Directory > $null
     }
