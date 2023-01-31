@@ -57,7 +57,9 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     /// </summary>
     public static string[] GameScenes => new[]
     {
-        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Scenes", "SampleScene.unity")
+        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Scenes", "SampleScene.unity"),
+        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "MoleKCCSample", "MoleScene.unity"),
+        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "NetcodeExample", "NetcodeScene.unity")
     };
 
     /// <summary>
@@ -73,7 +75,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     /// </summary>
     public static string[] NetcodeGameScenes => new[]
     {
-        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "NetcodeExample", "ExampleScene.unity")
+        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "NetcodeExample", "NetcodeScene.unity")
     };
 
     /// <summary>
@@ -97,6 +99,43 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
                 System.IO.Path.Combine(Application.dataPath, "Config", "web.config"),
                 System.IO.Path.Combine(report.summary.outputPath, "Build", "web.config"),
                 true);
+
+            string exportPath = Path.Combine(report.summary.outputPath);
+
+            // Include small files to redirect to each scene
+            string redirectSite = string.Join(
+                "\n",
+                new string[]
+                {
+                    "<script>",
+                    "  var url = new URL(window.location.href);",
+                    "  var base = url.pathname.split(\"/\").slice(0, -2).join('/');",
+                    "  var target = url.origin + base + \"?scene={0}\";",
+                    "  window.location.href = target;",
+                    "</script>"
+                });
+
+            (string, string)[] pairs = new[] { ("Mole", "MoleScene"), ("Netcode", "NetcodeScene") };
+
+            foreach ((string, string) pair in pairs)
+            {
+                string dirName = pair.Item1;
+                string sceneName = pair.Item2;
+                UnityEngine.Debug.Log($"Writing out sample file: {Path.Combine(exportPath, dirName, "index.html")}");
+
+                string dirPath = Path.Combine(exportPath, dirName);
+
+                // If the folder already exists, delete it
+                if (Directory.Exists(dirPath))
+                {
+                    Directory.Delete(dirPath, true);
+                }
+
+                System.IO.Directory.CreateDirectory(dirPath);
+                System.IO.File.AppendAllText(
+                    Path.Combine(exportPath, dirName, "index.html"),
+                    string.Format(redirectSite, sceneName));
+            }
         }
 
         // Restore default settings
@@ -361,10 +400,11 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
         PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
         PlayerSettings.WebGL.decompressionFallback = true;
+        string exportPath = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-WebGL-Netcode");
         var options = new BuildPlayerOptions
         {
             scenes = NetcodeGameScenes,
-            locationPathName = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-WebGL-Netcode"),
+            locationPathName = exportPath,
             target = BuildTarget.WebGL,
         };
 

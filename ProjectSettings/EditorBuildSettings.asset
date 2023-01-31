@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Samples/NetcodeExample/ExampleScene.unity
+    path: Assets/Samples/NetcodeExample/NetcodeScene.unity
     guid: 6108162bd91fd1745939e36b0e117e51
   - enabled: 1
     path: Assets/Samples/MoleKCCSample/MoleScene.unity

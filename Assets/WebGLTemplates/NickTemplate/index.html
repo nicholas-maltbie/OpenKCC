@@ -140,6 +140,12 @@
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
+          var url = new URL(window.location.toLocaleString());
+          if (url.searchParams.has("scene"))
+          {
+            unityInstance.SendMessage("SceneLoader", "LoadScene", url.searchParams.get("scene"))
+          }
+
           loadingBar.style.display = "none";
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
