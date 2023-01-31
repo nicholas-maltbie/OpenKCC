@@ -16,6 +16,9 @@ if (Test-Path "_site")
     Remove-Item -LiteralPath "_site" -Force -Recurse > $null
 }
 
+# Fetch list of tags for website
+git fetch --prune --tags
+
 Write-Host "Setting up website and copying files"
 Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
 Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
