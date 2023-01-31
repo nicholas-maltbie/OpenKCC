@@ -92,6 +92,12 @@
           progressBarEmpty.style.display = "";
           progressBarFull.style.width = `${100 * progress}%`;
         }).then((unityInstance) => {
+          var url = new URL(window.location.toLocaleString());
+          if (url.searchParams.has("scene"))
+          {
+            unityInstance.SendMessage("SceneLoader", "LoadScene", url.searchParams.get("scene"))
+          }
+
           loadingCover.style.display = "none";
           if (canFullscreen) {
             if (!hideFullScreenButton) {
