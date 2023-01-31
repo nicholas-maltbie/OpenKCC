@@ -59,6 +59,9 @@ jobs:
       - uses: ./.github/actions/setvars
       - uses: ./.github/actions/git-lfs-cache
 
+      - name: Fetch all git tags
+          run: git fetch --prune --unshallow --tags
+
       # Restore dotnet tools. This handles cache implicitly.
       - run: dotnet tool restore
 
