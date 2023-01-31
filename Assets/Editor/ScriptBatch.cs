@@ -115,9 +115,9 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
                     "</script>"
                 });
 
-            var pairs = new [] { ("Mole", "MoleScene"), ("Netcode", "NetcodeScene") };
+            (string, string)[] pairs = new[] { ("Mole", "MoleScene"), ("Netcode", "NetcodeScene") };
 
-            foreach (var pair in pairs)
+            foreach ((string, string) pair in pairs)
             {
                 string dirName = pair.Item1;
                 string sceneName = pair.Item2;

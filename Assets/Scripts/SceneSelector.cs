@@ -16,10 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Threading;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace nickmaltbie.openkcc
@@ -30,32 +27,5 @@ namespace nickmaltbie.openkcc
         public static int LoadingScene = 0;
 
         public SceneField targetScene;
-
-        private void Start()
-        {
-            Button button = GetComponent<Button>();
-
-            if (SceneManager.GetSceneByName(targetScene.SceneName) == null)
-            {
-                gameObject.SetActive(false);
-                return;
-            }
-
-            button.onClick.AddListener(() =>
-            {
-                if (Interlocked.CompareExchange(ref LoadingScene, 1, 0) == 0)
-                {
-                    // Destory any network managers because they cause errors
-                    if (NetworkManager.Singleton != null)
-                    {
-                        GameObject.Destroy(NetworkManager.Singleton);
-                    }
-
-                    AsyncOperation op = SceneManager.LoadSceneAsync(targetScene.SceneName);
-                    op.completed += _ => LoadingScene = 0;
-                }
-            });
-        }
     }
-
 }
