@@ -83,7 +83,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <inheritdoc/>
         public override IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance)
         {
-            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation, -KCCUtils.Epsilon);
+            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation);
             return Physics.CapsuleCastAll(top, bottom, radius, direction, distance, ~0, QueryTriggerInteraction.Ignore)
                 .Where(hit => hit.collider.transform != transform);
         }
