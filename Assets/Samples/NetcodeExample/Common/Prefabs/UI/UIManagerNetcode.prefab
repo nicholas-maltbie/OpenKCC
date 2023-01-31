@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8235221732075971616, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
       propertyPath: screenPrefabs.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -8235221732075971616, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
       propertyPath: screenPrefabs.Array.data[0]
@@ -27,6 +27,10 @@ PrefabInstance:
       propertyPath: screenPrefabs.Array.data[3]
       value: 
       objectReference: {fileID: 7721720131060799492, guid: 096f31d0428114a43afc88bce9356f6b, type: 3}
+    - target: {fileID: -8235221732075971616, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
+      propertyPath: screenPrefabs.Array.data[4]
+      value: 
+      objectReference: {fileID: 8240173698627759109, guid: 47ec85f84d85e734b871e75e2a3d14d4, type: 3}
     - target: {fileID: 576314974741431287, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
       propertyPath: m_Name
       value: UIManagerNetcode
