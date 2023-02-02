@@ -2,6 +2,9 @@ name: Create and Publish npm Package
 
 on:
   push:
+    tags:
+      - '*'
+    branches: ['main']
 
 jobs:
   create-openkcc-package:
@@ -31,7 +34,7 @@ jobs:
         id: releaseTagName
 
       # Deploy build to release branch
-      - name: Push package via Release Tag
+      - name: Push package to git branch ${{ matrix.branch_prefix }}/${{ steps.releaseTagName.outputs.tag }}
         if: "${{ steps.releaseTagName.outputs.tag != '' }}"
         uses: ad-m/github-push-action@master
         with:
@@ -40,7 +43,7 @@ jobs:
           force: true
 
       # Deploy build to release branch
-      - name: Push package via Release Tag
+      - name: Push package to git branch ${{ matrix.branch_prefix }}/latest
         if: github.ref == 'refs/heads/main'
         uses: ad-m/github-push-action@master
         with:
