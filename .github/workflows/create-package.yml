@@ -2,9 +2,6 @@ name: Create and Publish npm Package
 
 on:
   push:
-    tags:
-      - '*'
-    branches:
 
 jobs:
   create-openkcc-package:
