@@ -8,7 +8,7 @@ on:
 
 jobs:
   create-openkcc-package:
-    name: Create package for ${{ matrix.name }}
+    name: Create OpenKCC package ${{ matrix.name }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
