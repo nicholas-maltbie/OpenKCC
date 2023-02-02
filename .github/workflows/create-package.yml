@@ -5,8 +5,6 @@ on:
     tags:
       - '*'
     branches: ['main']
-  release:
-    types: [published]
 
 jobs:
   create-openkcc-package:
@@ -83,15 +81,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: release/netcode/${{ steps.releaseTagName.outputs.tag }}
-          force: true
-
-      # Deploy build to release branch
-      - name: Push package via Release Tag
-        if: "${{ steps.releaseTagName.outputs.tag != '' }}"
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/${{ steps.releaseTagName.outputs.tag }}
           force: true
 
       # Deploy build to release branch
