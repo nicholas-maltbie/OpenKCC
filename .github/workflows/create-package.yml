@@ -5,102 +5,50 @@ on:
     tags:
       - '*'
     branches: ['main']
-  release:
-    types: [published]
 
 jobs:
   create-openkcc-package:
+    name: Create OpenKCC package ${{ matrix.name }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: "main"
+            branch_prefix: "release"
+            package_path: "./Packages/com.nickmaltbie.openkcc"
+            samples: "ExampleFirstPersonKCC,SimplifiedDemoKCC"
+          - name: "netcode"
+            branch_prefix: "release/netcode"
+            package_path: "./Packages/com.nickmaltbie.openkcc.netcode"
+            samples: "NetcodeExample,MoleKCCSample"
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/git-lfs-cache
       - uses: ./.github/actions/setvars
 
       - name: Setup Package
-        run: ./setup-package.sh -p ${{ env.PACKAGE_PATH }} -s ${{ env.SAMPLES }}
+        run: ./setup-package.sh -p ${{ matrix.package_path }} -s ${{ matrix.samples }}
 
       - name: Get tag name
         uses: olegtarasov/get-tag@v2.1.1
         id: releaseTagName
 
       # Deploy build to release branch
-      - name: Push package via Release Tag
+      - name: Push package to git branch ${{ matrix.branch_prefix }}/${{ steps.releaseTagName.outputs.tag }}
         if: "${{ steps.releaseTagName.outputs.tag != '' }}"
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/${{ steps.releaseTagName.outputs.tag }}
+          branch: ${{ matrix.branch_prefix }}/${{ steps.releaseTagName.outputs.tag }}
           force: true
 
       # Deploy build to release branch
-      - name: Push package via Release Tag
+      - name: Push package to git branch ${{ matrix.branch_prefix }}/latest
         if: github.ref == 'refs/heads/main'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/latest
-          force: true
-
-      - name: Git lfs Pull
-        run: git lfs pull
-        shell: bash
-
-      # Publish to 
-      - name: Use Node.js 14
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14
-          registry-url: https://registry.npmjs.org/
-      
-      - name: Publish Package to NpmJS
-        if: "${{ steps.releaseTagName.outputs.tag != '' }}"
-        run: npm publish
-        continue-on-error: true
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
-      # Restore back to original branch
-      - uses: actions/checkout@v3
-
-  create-openkcc-netcode-package:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/git-lfs-cache
-      - uses: ./.github/actions/setvars
-
-      - name: Setup Package
-        run: ./setup-package.sh -p ${{ env.NETCODE_PACKAGE_PATH }} -s ${{ env.NETCODE_SAMPLES }}
-
-      - name: Get tag name
-        uses: olegtarasov/get-tag@v2.1.1
-        id: releaseTagName
-
-      # Deploy build to release branch
-      - name: Push package via Release Tag
-        if: "${{ steps.releaseTagName.outputs.tag != '' }}"
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/netcode/${{ steps.releaseTagName.outputs.tag }}
-          force: true
-
-      # Deploy build to release branch
-      - name: Push package via Release Tag
-        if: "${{ steps.releaseTagName.outputs.tag != '' }}"
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/${{ steps.releaseTagName.outputs.tag }}
-          force: true
-
-      # Deploy build to release branch
-      - name: Push package via Release Tag
-        if: github.ref == 'refs/heads/main'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release/netcode/latest
+          branch: ${{ matrix.branch_prefix }}/latest
           force: true
 
       - name: Git lfs Pull

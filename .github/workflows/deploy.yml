@@ -60,7 +60,7 @@ jobs:
       - uses: ./.github/actions/git-lfs-cache
 
       - name: Fetch all git tags
-          run: git fetch --prune --unshallow --tags
+        run: git fetch --prune --unshallow --tags
 
       # Restore dotnet tools. This handles cache implicitly.
       - run: dotnet tool restore
@@ -102,7 +102,7 @@ jobs:
 
   # Deploy job
   deploy-combined-webgl:
-    name: "Deploy Combined Artifacts"
+    name: Deploy Combined Artifacts
     
     # Add a dependency to the build job
     needs: combine-and-deploy-artifact
