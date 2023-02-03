@@ -37,7 +37,7 @@ Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELO
 
 $paramFile = Get-Content "$dir\docfx.json" | ConvertFrom-Json
 $paramFile.build.globalMetadata | Add-Member -name "_version" -value "latest" -MemberType NoteProperty -Force
-$paramFile.build.globalMetadata | Add-Member -name "_versionList" -value "$([System.string]::Join(",", $list))" -MemberType NoteProperty -Force
+$paramFile.build.globalMetadata | Add-Member -name "_versionList" -value "$([System.string]::Join(",", $versions))" -MemberType NoteProperty -Force
 $paramFile | ConvertTo-Json -Depth 16 | Set-Content "$dir\docfx.json"
 
 Write-Host "Building code metadata"
@@ -49,6 +49,9 @@ dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom"
 # Setup documentation for each version of the api
 foreach ($tag in $versions)
 {
+    # Reset any changes and checkout tag
+    git reset .
+    git checkout .
     git checkout $tag
 
     # ensure docfx is installed
@@ -98,6 +101,10 @@ foreach ($tag in $versions)
         dotnet docfx metadata "$dir\docfx.json" --force
     
         # Copy tempalte from main branch to here
+        if (!(Test-Path "$dir\templates\custom"))
+        {
+            New-Item -Path "$dir\templates\custom" -ItemType Directory > $null
+        }
         git checkout $current_sha -- "$dir/templates/custom"
 
         Write-Host "Generating website"
