@@ -17,16 +17,16 @@ if (Test-Path "_site")
 }
 
 # List of supported versions
-$versions = @("v1.0.0")
+$versions = @()
 
-# foreach ($tag in $(git tag))
-# {
-#     # Check if file exists for branch
-#     if ($(git cat-file -t "$($tag):Documentation/docfx.json") -eq "blob")
-#     {
-#         $versions += $tag
-#     }
-# }
+foreach ($tag in $(git tag))
+{
+    # Check if file exists for branch
+    if ($(git cat-file -t "$($tag):Documentation/docfx.json") -eq "blob")
+    {
+        $versions += $tag
+    }
+}
 
 Write-Host "Setting up website and copying files"
 Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
