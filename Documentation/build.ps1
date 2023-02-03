@@ -20,7 +20,7 @@ if (Test-Path "_site")
 # List of supported versions
 $versions = @()
 
-foreach ($tag in $(git tag | Sort-Object -Descending { $_ -as [version]  }))
+foreach ($tag in $(git tag | Sort-Object -Descending { $_.substring(1) -as [version] }))
 {
     # Check if file exists for branch
     if ($(git cat-file -t "$($tag):Documentation/docfx.json") -eq "blob")
