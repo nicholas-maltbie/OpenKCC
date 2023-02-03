@@ -4,6 +4,7 @@ $project_dir = $(Get-Item $dir).Parent
 
 $current_branch="$(git rev-parse --abbrev-ref HEAD)"
 $current_sha="$(git rev-parse --verify HEAD)"
+$location=Get-Location
 
 if ("$(git status --porcelain)" -ne "")
 {
@@ -150,3 +151,4 @@ foreach ($d in $Duplicates)
 }
 
 git checkout "$current_sha" && git checkout "$current_branch"
+Set-Location $location
