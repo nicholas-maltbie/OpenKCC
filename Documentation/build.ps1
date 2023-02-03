@@ -16,6 +16,18 @@ if (Test-Path "_site")
     Remove-Item -LiteralPath "_site" -Force -Recurse > $null
 }
 
+# List of supported versions
+$versions = @()
+
+foreach ($tag in $(git tag))
+{
+    # Check if file exists for branch
+    if ($(git cat-file -t "$($tag):Documentation/docfx.json") -eq "blob")
+    {
+        $versions += $tag
+    }
+}
+
 Write-Host "Setting up website and copying files"
 Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
 Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
@@ -23,20 +35,10 @@ Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\"
 Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$dir\changelog\CHANGELOG.md"
 Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"
 
-Write-Host "Generating versions file from tags"
-Add-Content -Path "$dir\versions.md" -Value "<!-- markdownlint-disable MD033 -->"
-Add-Content -Path "$dir\versions.md" -Value "- <a href=`"../`">latest</a>"
-
-foreach ($tag in $(git tag))
-{
-    # Check if file exists for branch
-    if ($(git cat-file -t "$($tag):Documentation/docfx.json") -eq "blob")
-    {
-        Add-Content -Path "$dir\versions.md" -Value "- <a href=`"../$($tag)`">$($tag)</a>"
-    }
-}
-
-Add-Content -Path "$dir\versions.md" -Value "<!-- markdownlint-enable MD033 -->"
+$paramFile = Get-Content "$dir\docfx.json" | ConvertFrom-Json
+$paramFile.build.globalMetadata | Add-Member -name "_version" -value "latest" -MemberType NoteProperty -Force
+$paramFile.build.globalMetadata | Add-Member -name "_versionList" -value "$([System.string]::Join(",", $list))" -MemberType NoteProperty -Force
+$paramFile | ConvertTo-Json -Depth 16 | Set-Content "$dir\docfx.json"
 
 Write-Host "Building code metadata"
 dotnet docfx metadata "$dir\docfx.json" --force
@@ -45,7 +47,7 @@ Write-Host "Generating website"
 dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom"
 
 # Setup documentation for each version of the api
-foreach ($tag in $(git tag))
+foreach ($tag in $versions)
 {
     git checkout $tag
 
@@ -87,15 +89,23 @@ foreach ($tag in $(git tag))
         # Change the dest in the docfx.json file
         $paramFile = Get-Content "$dir\docfx.json" | ConvertFrom-Json
         $paramFile.build | Add-Member -name "dest" -value "$project_dir/_site/$tag" -MemberType NoteProperty -Force
+        $paramFile.build.globalMetadata | Add-Member -name "_version" -value "$tag" -MemberType NoteProperty -Force
+        $paramFile.build.globalMetadata | Add-Member -name "_versionList" -value "$([System.string]::Join(",", $list))" -MemberType NoteProperty -Force
         $paramFile | ConvertTo-Json -Depth 16 | Set-Content "$dir\docfx.json"
 
         # Generate website with docfx
         Write-Host "Building code metadata"
         dotnet docfx metadata "$dir\docfx.json" --force
     
+        # Copy tempalte from main branch to here
+        git checkout $current_sha -- "$dir/templates/custom"
+
         Write-Host "Generating website"
         Write-Host "dotnet docfx build `"$dir\docfx.json`" -t `"default,$dir\templates\custom`" -o `"_site\$tag`""
         dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom"
+        
+        # Reset template changes
+        git reset "$dir/templates/custom"
     }
 
     # Undo any changes made in previous iteration

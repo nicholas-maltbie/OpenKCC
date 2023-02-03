@@ -3,13 +3,7 @@
         {
             "src": [
                 {
-                    "src": "../Packages/com.nickmaltbie.openkcc",
-                    "files": [
-                        "**/*.cs"
-                    ]
-                },
-                {
-                    "src": "../Packages/com.nickmaltbie.openkcc.netcode",
+                    "src": "../Packages",
                     "files": [
                         "**/*.cs"
                     ]
@@ -34,7 +28,9 @@
         "globalMetadata": {
             "_appTitle": "OpenKCC Documentation",
             "_appFooter": "OpenKCC Documentation",
-            "_enableSearch": true
+            "_enableSearch": true,
+            "_version": "",
+            "_vesrionList": ""
         },
         "content": [
             {
@@ -71,13 +67,7 @@
         ],
         "overwrite": [
             {
-                "src": "../Packages/com.nickmaltbie.openkcc",
-                "files": [
-                    "**/*.cs"
-                ]
-            },
-            {
-                "src": "../Packages/com.nickmaltbie.openkcc.netcode",
+                "src": "../Packages",
                 "files": [
                     "**/*.cs"
                 ]
