@@ -17,7 +17,6 @@ function selectVersion() {
     rootWithVersion = new URL(document.location.href + "/../" + document.querySelector('meta[property="docfx:rel"]').content).href
     leaf = window.location.href.substring(rootWithVersion.length)
 
-    versionPath = selectedVersion == "latest" ? "" : selectedVersion
-    leaf = leaf == "" ? "" : "/" + leaf
+    versionPath = selectedVersion == "latest" ? "" : selectedVersion + "/"
     window.location.href = root + versionPath + leaf
 }
