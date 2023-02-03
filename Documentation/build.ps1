@@ -149,5 +149,6 @@ foreach ($d in $Duplicates)
     }
 }
 
-git checkout "$current_sha" && git checkout "$current_branch"
+git checkout "$current_sha"
+git checkout "$current_branch"
 Set-Location $location
