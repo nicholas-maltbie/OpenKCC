@@ -133,20 +133,18 @@ foreach ($tag in $versions)
 # reduce size of export.
 $Duplicates = Get-ChildItem -Path _site -File -Recurse | Get-FileHash | Group-Object -Property Hash | Where-Object Count -gt 1
 
-If ($duplicates.count -ge 1) {
-    foreach ($d in $duplicates)
-    {
-        # Replace all files with symlink to file with shortest path
-        $shortest = $d.Group.Path | Sort-Object length -desc | Select-Object -last 1
+foreach ($d in $Duplicates)
+{
+    # Replace all files with symlink to file with shortest path
+    $shortest = $d.Group.Path | Sort-Object length -desc | Select-Object -last 1
 
-        foreach ($path in $d.Group.Path)
+    foreach ($path in $d.Group.Path)
+    {
+        if ($path -ne $shortest)
         {
-            if ($path -ne $shortest)
-            {
-                Remove-Item $path
-                Set-Location $(Split-Path -parent $path)
-                New-Item -ItemType SymbolicLink -Path $path -Target $shortest
-            }
+            Remove-Item $path
+            Set-Location $(Split-Path -parent $path)
+            New-Item -ItemType SymbolicLink -Path $path -Target $shortest
         }
     }
 }
