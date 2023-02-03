@@ -20,7 +20,7 @@ if (Test-Path "_site")
 # List of supported versions
 $versions = @()
 
-foreach ($tag in $(git tag | Sort-Object { $_ -as [version]  }))
+foreach ($tag in $(git tag | Sort-Object -Descending { $_ -as [version]  }))
 {
     # Check if file exists for branch
     if ($(git cat-file -t "$($tag):Documentation/docfx.json") -eq "blob")
@@ -51,12 +51,12 @@ dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom"
 foreach ($tag in $versions)
 {
     # Reset any changes and checkout tag
-    git reset .
-    git checkout .
-    git checkout $tag
+    git reset . > $null
+    git checkout . > $null
+    git checkout $tag > $null
 
     # ensure docfx is installed
-    dotnet tool install docfx
+    dotnet tool install docfx > $null
 
     Write-Host "Setting up website and copying files"
     
@@ -69,23 +69,23 @@ foreach ($tag in $versions)
         New-Item -Path "$dir\changelog" -ItemType Directory > $null
     }
 
-    Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
+    Copy-Item -Force "$project_dir\README.md" "$dir\index.md" > $null
 
     if (Test-Path "$project_dir\LICENSE.txt")
     {
-        Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
+        Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt" > $null
     }
     if (Test-Path "$project_dir\Demo")
     {
-        Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\"
+        Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\" > $null
     }
     if (Test-Path "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md")
     {
-        Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$dir\changelog\CHANGELOG.md"
+        Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$dir\changelog\CHANGELOG.md" > $null
     }
     if (Test-Path "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md")
     {
-        Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"
+        Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md" > $null
     }
 
     if (Test-Path "$dir\docfx.json")
@@ -120,8 +120,8 @@ foreach ($tag in $versions)
         dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom"
         
         # Reset template changes
-        Remove-Item -LiteralPath "$dir\templates\custom" -Force -Recurse
-        git reset "$dir/templates/custom"
+        Remove-Item -LiteralPath "$dir\templates\custom" -Force -Recurse > $null
+        git reset "$dir/templates/custom" > $null
     }
 
     # Undo any changes made in previous iteration
@@ -144,8 +144,7 @@ foreach ($d in $Duplicates)
         if ($path -ne $shortest)
         {
             Remove-Item $path
-            Set-Location $(Split-Path -parent $path)
-            New-Item -ItemType SymbolicLink -Path $path -Target $shortest
+            New-Item -ItemType SymbolicLink -Path $path -Target $shortest > $null
         }
     }
 }
