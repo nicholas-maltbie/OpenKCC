@@ -101,6 +101,7 @@ Documentation/versions/*
 Documentation/api/
 Documentation/latest/api/
 Documentation/versions/
+Documentation/templates/tmp
 Documentation/Changelog/CHANGELOG*.md
 Documentation/Demo/
 Documentation/index.*
