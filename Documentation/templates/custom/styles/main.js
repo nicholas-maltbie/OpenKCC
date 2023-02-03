@@ -18,6 +18,5 @@ function selectVersion() {
     leaf = window.location.href.substring(rootWithVersion.length)
 
     versionPath = selectedVersion == "latest" ? "" : selectedVersion
-    leaf = rootWithVersion == window.location.href ? "" : "/" + leaf
     window.location.href = root + versionPath + leaf
 }
