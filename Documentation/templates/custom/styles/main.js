@@ -11,7 +11,7 @@ function versionList()
 
 function selectVersion() {
     selectedVersion = document.getElementById("version-selector").value
-    prefix = currentVersion() == "latest" ? "/.." : "/../.."
+    prefix = currentVersion() == "latest" ? "/../" : "/../../"
     root = new URL(document.location + prefix + document.querySelector('meta[property="docfx:rel"]').content).href
 
     rootWithVersion = new URL(document.location.href + "/../" + document.querySelector('meta[property="docfx:rel"]').content).href
