@@ -93,7 +93,7 @@ foreach ($tag in $versions)
         $paramFile = Get-Content "$dir\docfx.json" | ConvertFrom-Json
         $paramFile.build | Add-Member -name "dest" -value "$project_dir/_site/$tag" -MemberType NoteProperty -Force
         $paramFile.build.globalMetadata | Add-Member -name "_version" -value "$tag" -MemberType NoteProperty -Force
-        $paramFile.build.globalMetadata | Add-Member -name "_versionList" -value "$([System.string]::Join(",", $list))" -MemberType NoteProperty -Force
+        $paramFile.build.globalMetadata | Add-Member -name "_versionList" -value "$([System.string]::Join(",", $versions))" -MemberType NoteProperty -Force
         $paramFile | ConvertTo-Json -Depth 16 | Set-Content "$dir\docfx.json"
 
         # Generate website with docfx
@@ -112,6 +112,7 @@ foreach ($tag in $versions)
         dotnet docfx build "$dir\docfx.json" -t "default,$dir\templates\custom"
         
         # Reset template changes
+        Remove-Item -LiteralPath "$dir\templates\custom" -Force -Recurse
         git reset "$dir/templates/custom"
     }
 
