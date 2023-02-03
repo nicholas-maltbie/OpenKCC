@@ -96,6 +96,13 @@ foreach ($tag in $versions)
         $paramFile.build.globalMetadata | Add-Member -name "_versionList" -value "$([System.string]::Join(",", $versions))" -MemberType NoteProperty -Force
         $paramFile | ConvertTo-Json -Depth 16 | Set-Content "$dir\docfx.json"
 
+        # In previous versions of website, I built to /latest/api
+        # let's just build to api fora ll these vesrions
+        foreach ($filePath in @("$dir\docfx.json", "$dir\toc.yml"))
+        {
+            (Get-Content $filePath).Replace("latest/api","api") | Set-Content $filePath
+        }
+
         # Generate website with docfx
         Write-Host "Building code metadata"
         dotnet docfx metadata "$dir\docfx.json" --force
