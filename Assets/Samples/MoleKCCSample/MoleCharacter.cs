@@ -165,14 +165,9 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <summary>
         /// Rotation of the plane the player is viewing
         /// </summary>
-        private Quaternion HorizPlaneView
-        {
-            get
-            {
-                float rotation = CameraControls?.Yaw ?? transform.eulerAngles.y;
-                return Quaternion.Euler(0, rotation, 0);
-            }
-        }
+        public Quaternion HorizPlaneView => CameraControls != null ?
+            CameraControls.PlayerHeading :
+            Quaternion.Euler(0, transform.eulerAngles.y, 0);
 
         /// <summary>
         /// Player rotated movement that they intend to move.

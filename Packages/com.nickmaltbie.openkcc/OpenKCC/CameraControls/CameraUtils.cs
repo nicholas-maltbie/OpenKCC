@@ -39,7 +39,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
         public static void UpdateCameraController(
             CameraConfig config,
             GameObject go,
-            ICameraControls cameraControls,
+            IManagedCamera cameraControls,
             float deltaTime)
         {
             Vector2 look = config.LookAction?.ReadValue<Vector2>() ?? Vector2.zero;
@@ -115,7 +115,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
             Vector3 cameraDirection,
             CameraConfig config,
             GameObject go,
-            ICameraControls cameraControls,
+            IManagedCamera cameraControls,
             float deltaTime)
         {
             bool hittingSelf = PhysicsUtils.SphereCastAllow(go, config.CameraSource(go.transform) + cameraDirection, 0.01f, -cameraDirection.normalized,

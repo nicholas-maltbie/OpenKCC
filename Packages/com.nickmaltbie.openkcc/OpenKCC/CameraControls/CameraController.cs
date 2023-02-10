@@ -25,7 +25,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
     /// <summary>
     /// Basic hybrid first and third person camera controller.
     /// </summary>
-    public class CameraController : MonoBehaviour, ICameraControls
+    public class CameraController : MonoBehaviour, ICameraControls, IManagedCamera
     {
         /// <summary>
         /// Unity service associated with this game object for testing.
@@ -46,6 +46,9 @@ namespace nickmaltbie.OpenKCC.CameraControls
 
         /// <inheritdoc/>
         public float Yaw { get; set; }
+
+        /// <inheritdoc/>
+        public Quaternion PlayerHeading { get => Quaternion.Euler(0, Yaw, 0); }
 
         public void Start()
         {

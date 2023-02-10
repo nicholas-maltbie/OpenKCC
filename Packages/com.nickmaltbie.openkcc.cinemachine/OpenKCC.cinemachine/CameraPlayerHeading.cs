@@ -16,18 +16,30 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.OpenKCC.CameraControls;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.CameraControls
+namespace nickmaltbie.OpenKCC.cinemachine
 {
     /// <summary>
-    /// Interface for camera controls for a character controller.
+    /// Get player heading based on current main camera rotation.
     /// </summary>
-    public interface ICameraControls
+    public class CameraPlayerHeading : MonoBehaviour, ICameraControls
     {
-        /// <summary>
-        /// Get the heading of the player
-        /// </summary>
-        Quaternion PlayerHeading { get; }
+        public Quaternion PlayerHeading
+        {
+            get
+            {
+                // Check if there is a main camera
+                if (Camera.main != null)
+                {
+                    // Use the horizontal component of the camera's view
+                    // to get the player heading.
+                    return Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
+                }
+
+                return Quaternion.identity;
+            }
+        }
     }
 }

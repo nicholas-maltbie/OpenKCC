@@ -107,7 +107,9 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// <summary>
         /// Rotation of the plane the player is viewing
         /// </summary>
-        private Quaternion HorizPlaneView => Quaternion.Euler(0, CameraControls?.Yaw ?? transform.eulerAngles.y, 0);
+        private Quaternion HorizPlaneView => CameraControls != null ? 
+            CameraControls.PlayerHeading :
+            Quaternion.Euler(0, transform.eulerAngles.y, 0);
 
         /// <summary>
         /// Input movement from player input updated each frame.
