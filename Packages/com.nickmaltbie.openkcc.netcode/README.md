@@ -46,14 +46,10 @@ manager will be able to download it from the registry at
 
 ```json
 "dependencies": {
-  "com.nickmaltbie.openkcc": "1.0.1",
+  "com.nickmaltbie.openkcc": "1.3.0",
   "com.nickmaltbie.openkcc.netcode": "1.0.1",
-  "com.nickmaltbie.screenmanager": "3.0.0",
-  "com.nickmaltbie.statemachineunity": "1.1.0",
   "com.nickmaltbie.networkstatemachineunity": "1.0.0",
-  "com.nickmaltbie.testutilsunity": "0.0.2",
-  "com.unity.inputsystem": "1.0.0",
-  "com.unity.textmeshpro": "3.0.0"
+    "com.unity.netcode.gameobjects": "1.1.0"
 }
 ```
 
@@ -64,13 +60,13 @@ the required projects to the testables
 of the project manifest.
 
 ```json
-  "testables": [
-    "com.nickmaltbie.openkcc",
-    "com.nickmaltbie.openkcc.netcode",
-    "com.nickmaltbie.testutilsunity",
-    "com.unity.inputsystem",
-    "com.unity.netcode.gameobjects"
-  ]
+"testables": [
+  "com.nickmaltbie.openkcc",
+  "com.nickmaltbie.openkcc.netcode",
+  "com.nickmaltbie.testutilsunity",
+  "com.unity.inputsystem",
+  "com.unity.netcode.gameobjects"
+]
 ```
 
 ## Demo

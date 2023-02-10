@@ -1,0 +1,32 @@
+{
+	"name": "nickmaltbie.OpenKCC.Tests.cinemachine.EditMode",
+    "rootNamespace": "nickmaltbie.OpenKCC.Tests.cinemachine.EditMode",
+    "references": [
+      "Cinemachine",
+      "nickmaltbie.OpenKCC",
+      "nickmaltbie.OpenKCC.cinemachine",
+      "nickmaltbie.OpenKCC.Tests.TestCommon",
+      "nickmaltbie.ScreenManager",
+      "nickmaltbie.StateMachineUnity",
+      "nickmaltbie.TestUtilsUnity",
+      "nickmaltbie.TestUtilsUnity.Tests.TestCommon",
+      "Unity.InputSystem",
+      "Unity.InputSystem.TestFramework"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+		"Editor"
+	],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+		"Moq.dll"
+	],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

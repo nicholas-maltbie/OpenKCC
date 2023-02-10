@@ -1,0 +1,29 @@
+{
+	"name": "nickmaltbie.OpenKCC.Tests.cinemachine.Runtime",
+    "rootNamespace": "nickmaltbie.OpenKCC.Tests.cinemachine.Runtime",
+    "references": [
+      "Cinemachine",
+      "nickmaltbie.OpenKCC",
+      "nickmaltbie.OpenKCC.cinemachine",
+      "nickmaltbie.OpenKCC.Tests.TestCommon",
+      "nickmaltbie.ScreenManager",
+      "nickmaltbie.TestUtilsUnity",
+      "nickmaltbie.TestUtilsUnity.Tests.TestCommon",
+      "Unity.InputSystem",
+      "Unity.InputSystem.TestFramework"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+    "Moq.dll"
+  ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

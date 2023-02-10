@@ -1,0 +1,20 @@
+{
+    "name": "nickmaltbie.OpenKCC.cinemachine",
+    "rootNamespace": "nickmaltbie.OpenKCC.cinemachine",
+    "references": [
+        "Cinemachine",
+        "nickmaltbie.OpenKCC",
+        "nickmaltbie.StateMachineUnity",
+        "nickmaltbie.TestUtilsUnity",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

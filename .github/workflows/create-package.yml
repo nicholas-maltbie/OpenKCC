@@ -21,6 +21,10 @@ jobs:
             branch_prefix: "release/netcode"
             package_path: "./Packages/com.nickmaltbie.openkcc.netcode"
             samples: "NetcodeExample,MoleKCCSample"
+          - name: "cinemachine"
+            branch_prefix: "release/cinemachine"
+            package_path: "./Packages/com.nickmaltbie.openkcc.cinemachine"
+            samples: "CinemachineExample"
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/git-lfs-cache

@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.3.0] 2023-1-29
 
 _**Note**_ : This update will not automatically
 copy values for `KCCStateMachine` from the previous
