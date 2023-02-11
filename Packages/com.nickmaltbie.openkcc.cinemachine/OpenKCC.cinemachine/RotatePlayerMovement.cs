@@ -46,14 +46,14 @@ namespace nickmaltbie.OpenKCC.cinemachine
             KCCStateMachine sm = GetComponent<KCCStateMachine>();
             ICameraControls cameraControls = GetComponent<ICameraControls>();
 
-            // Rotate the avatar to follow the direction of the
-            // player's movement if it's grater than some dead zone
-            // with a given turning rate.
-            Quaternion currentHeading = avatarBase.transform.rotation;
-            var desiredHeading = Quaternion.LookRotation(cameraControls.PlayerHeading * sm.InputMovement);
-
             if (sm.InputMovement.magnitude > KCCUtils.Epsilon)
             {
+                // Rotate the avatar to follow the direction of the
+                // player's movement if it's grater than some dead zone
+                // with a given turning rate.
+                Quaternion currentHeading = avatarBase.transform.rotation;
+                var desiredHeading = Quaternion.LookRotation(cameraControls.PlayerHeading * sm.InputMovement);
+
                 // Rotate the current heading towards the desired heading.
                 var rotatedHeading = Quaternion.RotateTowards(currentHeading, desiredHeading, rotationSpeed * Time.deltaTime);
 
