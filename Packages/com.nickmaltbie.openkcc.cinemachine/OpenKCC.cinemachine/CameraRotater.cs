@@ -83,7 +83,7 @@ namespace nickmaltbie.OpenKCC.cinemachine
             Yaw = followTarget.transform.rotation.eulerAngles.y;
         }
 
-        public void FixedUpdate()
+        public void Update()
         {
             float deltaTime = Time.fixedDeltaTime;
 

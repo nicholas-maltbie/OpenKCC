@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &39076872 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 39076872, guid: 6e70b95889762554594e5a920d954870, type: 3}
-  m_PrefabInstance: {fileID: 3750379031515595089}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &39076873 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 39076873, guid: 6e70b95889762554594e5a920d954870, type: 3}
@@ -239,6 +234,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 901835725}
+  - component: {fileID: 901835726}
   m_Layer: 0
   m_Name: Player Cameras
   m_TagString: Untagged
@@ -264,6 +260,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &901835726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 901835724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a90994c458e9b724ead951f4b34404ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameras:
+  - {fileID: 1431890375}
+  - {fileID: 1728522683}
+  - {fileID: 1267049605}
+  toggleCameraActionReference: {fileID: -6455452493726205863, guid: aad4f8d23dfcbe64f8c4ef13d760e5ce, type: 3}
 --- !u!1 &995903222
 GameObject:
   m_ObjectHideFlags: 3
@@ -579,7 +592,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121763820}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.4, z: -4}
+  m_LocalPosition: {x: 0.5, y: 2.4, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -638,8 +651,8 @@ MonoBehaviour:
   m_UpdateMethod: 0
   m_BlendUpdateMethod: 1
   m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
+    m_Style: 2
+    m_Time: 0.75
     m_CustomCurve:
       serializedVersion: 2
       m_Curve: []
@@ -1015,11 +1028,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2973993605422274249, guid: 6e70b95889762554594e5a920d954870, type: 3}
   m_PrefabInstance: {fileID: 3750379031515595089}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1640983915 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2454021725001223283, guid: 6e70b95889762554594e5a920d954870, type: 3}
-  m_PrefabInstance: {fileID: 3750379031515595089}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1728522682
 GameObject:
   m_ObjectHideFlags: 0
@@ -1290,28 +1298,6 @@ MonoBehaviour:
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_ApplyBeforeBody: 0
---- !u!1 &2067463150 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3372921313112048414, guid: 6e70b95889762554594e5a920d954870, type: 3}
-  m_PrefabInstance: {fileID: 3750379031515595089}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1928389238171943513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2067463150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9309f87ae6a41e54bb07d070a145e2dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  avatarBase: {fileID: 1640983915}
-  followTarget: {fileID: 39076872}
-  fadeThreshold: 0.5
-  shadowOnlyDistance: 0.25
-  cameraRadius: 0.1
 --- !u!1001 &3750379031515595089
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1366,10 +1352,6 @@ PrefabInstance:
     - target: {fileID: 3372921313112048414, guid: 6e70b95889762554594e5a920d954870, type: 3}
       propertyPath: m_Name
       value: CinemachinePlayer
-      objectReference: {fileID: 0}
-    - target: {fileID: 3372921313112048414, guid: 6e70b95889762554594e5a920d954870, type: 3}
-      propertyPath: m_TagString
-      value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e70b95889762554594e5a920d954870, type: 3}
