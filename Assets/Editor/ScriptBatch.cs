@@ -116,7 +116,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
                     "</script>"
                 });
 
-            (string, string)[] pairs = new[] { ("Mole", "MoleScene"), ("Netcode", "NetcodeScene") };
+            (string, string)[] pairs = new[] { ("Mole", "MoleScene"), ("Netcode", "NetcodeScene"), ("Cinemachine", "CinemachineExample") };
 
             foreach ((string, string) pair in pairs)
             {
