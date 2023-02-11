@@ -59,7 +59,8 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     {
         System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Scenes", "SampleScene.unity"),
         System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "MoleKCCSample", "MoleScene.unity"),
-        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "NetcodeExample", "NetcodeScene.unity")
+        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "NetcodeExample", "NetcodeScene.unity"),
+        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "CinemachineExample", "CinemachineExample.unity")
     };
 
     /// <summary>
