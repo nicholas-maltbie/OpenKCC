@@ -18,14 +18,14 @@
         "TestAssemblies"
     ],
     "includePlatforms": [
-		"Editor"
-	],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": true,
-    "precompiledReferences": [
-		"Moq.dll"
-	],
+      "Editor"
+    ],
+      "excludePlatforms": [],
+      "allowUnsafeCode": false,
+      "overrideReferences": true,
+      "precompiledReferences": [
+      "Moq.dll"
+    ],
     "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],
