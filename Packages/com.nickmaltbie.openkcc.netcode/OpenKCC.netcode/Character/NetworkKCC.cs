@@ -107,7 +107,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// <summary>
         /// Rotation of the plane the player is viewing
         /// </summary>
-        private Quaternion HorizPlaneView => CameraControls != null ? 
+        private Quaternion HorizPlaneView => CameraControls != null ?
             CameraControls.PlayerHeading :
             Quaternion.Euler(0, transform.eulerAngles.y, 0);
 

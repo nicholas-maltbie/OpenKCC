@@ -59,7 +59,7 @@ namespace nickmaltbie.OpenKCC.netcode.CameraControls
         }
 
         /// <inheritdoc/>
-        public Quaternion PlayerHeading { get => Quaternion.Euler(0, Yaw, 0); }
+        public Quaternion PlayerHeading => Quaternion.Euler(0, Yaw, 0);
 
         public void Start()
         {

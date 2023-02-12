@@ -142,7 +142,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Rotation of the plane the player is viewing
         /// </summary>
-        public Quaternion HorizPlaneView => CameraControls != null ? 
+        public Quaternion HorizPlaneView => CameraControls != null ?
             CameraControls.PlayerHeading :
             Quaternion.Euler(0, transform.eulerAngles.y, 0);
 
@@ -347,7 +347,7 @@ namespace nickmaltbie.OpenKCC.Character
             // and the desired world space input
             Vector3 playerHeading = AttachedAnimator.transform.forward;
             Vector3 movementDir = HorizPlaneView * InputMovement;
-            Quaternion relative = Quaternion.FromToRotation(playerHeading, movementDir);
+            var relative = Quaternion.FromToRotation(playerHeading, movementDir);
             Vector3 relativeMovement = relative * Vector3.forward;
 
             moveX = Mathf.Lerp(moveX, relativeMovement.x, 4 * unityService.deltaTime);
