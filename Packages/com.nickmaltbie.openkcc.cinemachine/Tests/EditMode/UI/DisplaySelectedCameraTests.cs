@@ -35,7 +35,7 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.UI
             DisplaySelectedCamera displayCamera = CreateGameObject().AddComponent<DisplaySelectedCamera>();
 
             CameraSelector selector = CreateGameObject().AddComponent<CameraSelector>();
-            selector.overrideToggleCamera = new InputAction();
+            selector.ToggleCameraAction = new InputAction();
 
             TMP_Text text = CreateGameObject().AddComponent<TextMeshPro>();
             displayCamera.text = text;

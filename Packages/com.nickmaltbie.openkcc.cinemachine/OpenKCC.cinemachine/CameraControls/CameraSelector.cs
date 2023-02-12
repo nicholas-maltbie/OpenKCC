@@ -16,6 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Linq;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -41,7 +42,7 @@ namespace nickmaltbie.OpenKCC.cinemachine.CameraControls
         /// <summary>
         /// Override for the toggle camera action of the player.
         /// </summary>
-        public InputAction overrideToggleCamera;
+        private InputAction overrideToggleCamera;
 
         /// <summary>
         /// Gest or sets the toggle camera action associated with this player.
@@ -54,7 +55,7 @@ namespace nickmaltbie.OpenKCC.cinemachine.CameraControls
 
         public void Awake()
         {
-            if (Instance == null)
+            if (Instance == null || Instance == this)
             {
                 Instance = this;
             }
@@ -64,20 +65,26 @@ namespace nickmaltbie.OpenKCC.cinemachine.CameraControls
                 return;
             }
 
-            foreach (CinemachineVirtualCamera camera in cameras)
+            if (cameras?.Any() is true)
             {
-                camera.gameObject.SetActive(false);
+                foreach (CinemachineVirtualCamera camera in cameras)
+                {
+                    camera.gameObject.SetActive(false);
+                }
+
+                cameras[current].gameObject.SetActive(true);
+                ToggleCameraAction?.Enable();
             }
 
-            cameras[current].gameObject.SetActive(true);
-            ToggleCameraAction.Enable();
-
-            ToggleCameraAction.performed += _ =>
+            if (ToggleCameraAction != null)
             {
-                cameras[current].gameObject.SetActive(false);
-                current = (current + 1) % cameras.Length;
-                cameras[current].gameObject.SetActive(true);
-            };
+                ToggleCameraAction.performed += _ =>
+                {
+                    cameras[current].gameObject.SetActive(false);
+                    current = (current + 1) % cameras.Length;
+                    cameras[current].gameObject.SetActive(true);
+                };
+            }
         }
 
         public void OnDestroy()
