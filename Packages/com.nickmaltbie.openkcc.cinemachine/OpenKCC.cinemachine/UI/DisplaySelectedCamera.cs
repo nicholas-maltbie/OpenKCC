@@ -16,29 +16,21 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.CameraControls;
+using nickmaltbie.OpenKCC.cinemachine.CameraControls;
+using TMPro;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.cinemachine
+namespace nickmaltbie.OpenKCC.cinemachine.UI
 {
-    /// <summary>
-    /// Get player heading based on current main camera rotation.
-    /// </summary>
-    public class CameraPlayerHeading : MonoBehaviour, ICameraControls
+    public class DisplaySelectedCamera : MonoBehaviour
     {
-        public Quaternion PlayerHeading
-        {
-            get
-            {
-                // Check if there is a main camera
-                if (Camera.main != null)
-                {
-                    // Use the horizontal component of the camera's view
-                    // to get the player heading.
-                    return Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
-                }
+        public TMP_Text text;
 
-                return Quaternion.identity;
+        public void Update()
+        {
+            if (CameraSelector.Instance != null)
+            {
+                text.text = "Selected Camera: " + CameraSelector.Instance.CurrentCamera.gameObject.name;
             }
         }
     }

@@ -2,7 +2,7 @@
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.cinemachine
+namespace nickmaltbie.OpenKCC.cinemachine.Player
 {
     public class PlayerFade : MonoBehaviour
     {

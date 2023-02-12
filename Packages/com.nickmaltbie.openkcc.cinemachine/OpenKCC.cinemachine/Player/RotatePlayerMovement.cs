@@ -21,7 +21,7 @@ using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.cinemachine
+namespace nickmaltbie.OpenKCC.cinemachine.Player
 {
     /// <summary>
     /// Rotate a player avatar to face in the

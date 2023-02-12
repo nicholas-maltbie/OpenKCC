@@ -20,7 +20,7 @@ using nickmaltbie.OpenKCC.Character;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace nickmaltbie.OpenKCC.cinemachine
+namespace nickmaltbie.OpenKCC.cinemachine.CameraControls
 {
     public class CameraRotater : MonoBehaviour
     {
