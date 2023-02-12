@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 1928389238171943504}
   - component: {fileID: 1928389238171943512}
   - component: {fileID: 1928389238171943513}
+  - component: {fileID: 1281261006}
   m_Layer: 0
   m_Name: CinemachinePlayer
   m_TagString: Player
@@ -272,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   avatarBase: {fileID: 2454021725001223283}
-  rotationSpeed: 45
+  rotationSpeed: 120
 --- !u!114 &1928389238171943512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,6 +308,20 @@ MonoBehaviour:
   fadeThreshold: 0.5
   shadowOnlyDistance: 0.25
   cameraRadius: 0.1
+--- !u!114 &1281261006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3372921313112048414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 160e03da5be020a4e93ccdc52bff475a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damp: 0.1
+  avatarBase: {fileID: 2454021725001223283}
 --- !u!1001 &3372921312279736610
 PrefabInstance:
   m_ObjectHideFlags: 0

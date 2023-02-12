@@ -1478,7 +1478,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121763820}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 2.4, z: -2}
+  m_LocalPosition: {x: 0, y: 2.4, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1814,7 +1814,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1431890376}
   - component: {fileID: 1431890375}
-  - component: {fileID: 1431890378}
   m_Layer: 0
   m_Name: Over the Shoulder VCam
   m_TagString: Untagged
@@ -1876,36 +1875,6 @@ Transform:
   m_Father: {fileID: 901835725}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 10.511, y: 19.214, z: 3.638}
---- !u!114 &1431890378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1431890374}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e501d18bb52cf8c40b1853ca4904654f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_CollideAgainst:
-    serializedVersion: 2
-    m_Bits: 1
-  m_IgnoreTag: Player
-  m_TransparentLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_MinimumDistanceFromTarget: 0.1
-  m_AvoidObstacles: 1
-  m_DistanceLimit: 0
-  m_MinimumOcclusionTime: 0
-  m_CameraRadius: 0.25
-  m_Strategy: 1
-  m_MaximumEffort: 4
-  m_SmoothingTime: 0.1
-  m_Damping: 0.25
-  m_DampingWhenOccluded: 0
-  m_OptimalTargetDistance: 0
 --- !u!1 &1584980246
 GameObject:
   m_ObjectHideFlags: 3
@@ -1970,8 +1939,8 @@ MonoBehaviour:
   CameraDistance: 2
   CameraCollisionFilter:
     serializedVersion: 2
-    m_Bits: 0
-  IgnoreTag: 
+    m_Bits: 2147483647
+  IgnoreTag: Player
   CameraRadius: 0.2
   DampingIntoCollision: 0
   DampingFromCollision: 2
@@ -5441,7 +5410,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-246322
+  m_Name: pb_Mesh107024
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5775,8 +5744,8 @@ MonoBehaviour:
   m_ScreenX: 0.5
   m_ScreenY: 0.5
   m_CameraDistance: 4
-  m_DeadZoneWidth: 0
-  m_DeadZoneHeight: 0
+  m_DeadZoneWidth: 0.1
+  m_DeadZoneHeight: 0.1
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
   m_SoftZoneWidth: 0.8
@@ -5869,6 +5838,11 @@ MonoBehaviour:
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_ApplyBeforeBody: 0
+--- !u!1 &1938971307 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2454021725001223283, guid: 6e70b95889762554594e5a920d954870, type: 3}
+  m_PrefabInstance: {fileID: 3750379031515595089}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3750379031515595089
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5876,9 +5850,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1928389238171943504, guid: 6e70b95889762554594e5a920d954870, type: 3}
-      propertyPath: rotationSpeed
-      value: 120
+    - target: {fileID: 1281261006, guid: 6e70b95889762554594e5a920d954870, type: 3}
+      propertyPath: damp
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1281261006, guid: 6e70b95889762554594e5a920d954870, type: 3}
+      propertyPath: avatarBase
+      value: 
+      objectReference: {fileID: 1938971307}
+    - target: {fileID: 1281261006, guid: 6e70b95889762554594e5a920d954870, type: 3}
+      propertyPath: transitionTime
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3195248330151296820, guid: 6e70b95889762554594e5a920d954870, type: 3}
+      propertyPath: stepHeight
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 3372921313112048409, guid: 6e70b95889762554594e5a920d954870, type: 3}
       propertyPath: m_RootOrder
@@ -5928,5 +5914,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CinemachinePlayer
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1281261006, guid: 6e70b95889762554594e5a920d954870, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6e70b95889762554594e5a920d954870, type: 3}
