@@ -135,6 +135,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8235221732075971616, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
+      propertyPath: screenPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 6359577580348719276, guid: 743da68aa38a04b468f6e59ff2a18aea, type: 3}
     - target: {fileID: 576314974741431287, guid: 2196a8cb2ba6240408e06ee5f8007dc4, type: 3}
       propertyPath: m_Name
       value: UIManager

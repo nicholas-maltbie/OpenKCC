@@ -7,7 +7,11 @@ namespace nickmaltbie.OpenKCC.cinemachine
 {
     public class CameraSelector : MonoBehaviour
     {
+        public static CameraSelector Instance { get; private set; }
+
         public CinemachineVirtualCamera[] cameras;
+
+        public CinemachineVirtualCamera CurrentCamera => cameras[current];
         private int current = 0;
 
         /// <summary>
@@ -33,6 +37,16 @@ namespace nickmaltbie.OpenKCC.cinemachine
 
         public void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             foreach (var camera in cameras)
             {
                 camera.gameObject.SetActive(false);
@@ -47,6 +61,14 @@ namespace nickmaltbie.OpenKCC.cinemachine
                 current = (current + 1) % cameras.Length;
                 cameras[current].gameObject.SetActive(true);
             };
+        }
+
+        public void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
     }
 }
