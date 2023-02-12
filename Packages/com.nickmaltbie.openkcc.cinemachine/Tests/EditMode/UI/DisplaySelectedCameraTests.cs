@@ -46,7 +46,7 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.UI
             vcam1.name = "VCam 1";
             vcam2.name = "VCam 2";
 
-            selector.cameras = new [] {vcam1, vcam2};
+            selector.cameras = new[] { vcam1, vcam2 };
             selector.Awake();
 
             displayCamera.Update();

@@ -18,7 +18,6 @@
 
 using System.Collections;
 using Moq;
-using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.cinemachine.Player;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
