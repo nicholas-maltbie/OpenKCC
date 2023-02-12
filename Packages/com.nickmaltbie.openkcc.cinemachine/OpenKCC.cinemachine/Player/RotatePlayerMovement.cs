@@ -19,6 +19,7 @@
 using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.cinemachine.Player
@@ -31,6 +32,11 @@ namespace nickmaltbie.OpenKCC.cinemachine.Player
     [RequireComponent(typeof(ICameraControls))]
     public class RotatePlayerMovement : MonoBehaviour
     {
+        /// <summary>
+        /// Unity service for managing testing.
+        /// </summary>
+        public IUnityService unityService = UnityService.Instance;
+
         /// <summary>
         /// Avatar base to rotate.
         /// </summary>
@@ -55,7 +61,7 @@ namespace nickmaltbie.OpenKCC.cinemachine.Player
                 var desiredHeading = Quaternion.LookRotation(cameraControls.PlayerHeading * sm.InputMovement);
 
                 // Rotate the current heading towards the desired heading.
-                var rotatedHeading = Quaternion.RotateTowards(currentHeading, desiredHeading, rotationSpeed * Time.deltaTime);
+                var rotatedHeading = Quaternion.RotateTowards(currentHeading, desiredHeading, rotationSpeed * unityService.deltaTime);
 
                 // set the avatar rotation to be the new rotated heading.
                 avatarBase.transform.rotation = rotatedHeading;

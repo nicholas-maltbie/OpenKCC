@@ -17,12 +17,18 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.cinemachine.Player
 {
     public class PlayerFade : MonoBehaviour
     {
+        /// <summary>
+        /// Unity service for testing the player fading.
+        /// </summary>
+        public IUnityService unityService = UnityService.Instance;
+
         /// <summary>
         /// Game object for fading the avatar
         /// </summary>
@@ -68,7 +74,7 @@ namespace nickmaltbie.OpenKCC.cinemachine.Player
             bool hittingSelf = PhysicsUtils.SphereCastAllow(gameObject, source, cameraRadius, dir, dir.magnitude, ~0, QueryTriggerInteraction.Ignore, out RaycastHit selfHit);
             float actualDistance = hittingSelf ? selfHit.distance : dir.magnitude;
 
-            if (actualDistance < shadowOnlyDistance)
+            if (actualDistance <= shadowOnlyDistance)
             {
                 MaterialUtils.RecursiveSetShadowCastingMode(avatarBase, UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly);
             }
@@ -80,7 +86,7 @@ namespace nickmaltbie.OpenKCC.cinemachine.Player
             if (actualDistance > shadowOnlyDistance && actualDistance < fadeThreshold)
             {
                 float newOpacity = (actualDistance - shadowOnlyDistance) / fadeThreshold;
-                float lerpPosition = fadeTime > 0 ? Time.deltaTime * 1 / fadeTime : 1;
+                float lerpPosition = fadeTime > 0 ? unityService.deltaTime * 1 / fadeTime : 1;
                 PreviousOpacity = Mathf.Lerp(PreviousOpacity, newOpacity, lerpPosition);
                 // Set opacity of character based on how close the camera is
                 MaterialUtils.RecursiveSetFloatProperty(avatarBase, "_Opacity", PreviousOpacity);

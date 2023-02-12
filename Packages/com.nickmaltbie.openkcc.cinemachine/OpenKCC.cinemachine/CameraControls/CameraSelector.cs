@@ -41,7 +41,7 @@ namespace nickmaltbie.OpenKCC.cinemachine.CameraControls
         /// <summary>
         /// Override for the toggle camera action of the player.
         /// </summary>
-        private InputAction overrideToggleCamera;
+        public InputAction overrideToggleCamera;
 
         /// <summary>
         /// Gest or sets the toggle camera action associated with this player.

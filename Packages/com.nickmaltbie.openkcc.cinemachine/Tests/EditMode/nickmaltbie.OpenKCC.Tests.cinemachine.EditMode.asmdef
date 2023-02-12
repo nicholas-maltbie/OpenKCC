@@ -11,7 +11,8 @@
       "nickmaltbie.TestUtilsUnity",
       "nickmaltbie.TestUtilsUnity.Tests.TestCommon",
       "Unity.InputSystem",
-      "Unity.InputSystem.TestFramework"
+      "Unity.InputSystem.TestFramework",
+      "Unity.TextMeshPro"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"

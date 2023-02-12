@@ -575,7 +575,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-251612
+  m_Name: pb_Mesh118008
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1478,7 +1478,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121763820}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.4, z: -4}
+  m_LocalPosition: {x: 0, y: 1.4, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1646,7 +1646,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-250424
+  m_Name: pb_Mesh117934
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5410,7 +5410,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh107024
+  m_Name: pb_Mesh117912
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5633,7 +5633,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1728522682}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.4, z: -4}
+  m_LocalPosition: {x: 0, y: 1.4, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5838,11 +5838,6 @@ MonoBehaviour:
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_ApplyBeforeBody: 0
---- !u!1 &1938971307 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2454021725001223283, guid: 6e70b95889762554594e5a920d954870, type: 3}
-  m_PrefabInstance: {fileID: 3750379031515595089}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3750379031515595089
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5850,22 +5845,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1281261006, guid: 6e70b95889762554594e5a920d954870, type: 3}
-      propertyPath: damp
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1281261006, guid: 6e70b95889762554594e5a920d954870, type: 3}
-      propertyPath: avatarBase
-      value: 
-      objectReference: {fileID: 1938971307}
-    - target: {fileID: 1281261006, guid: 6e70b95889762554594e5a920d954870, type: 3}
-      propertyPath: transitionTime
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3195248330151296820, guid: 6e70b95889762554594e5a920d954870, type: 3}
-      propertyPath: stepHeight
-      value: 0.25
-      objectReference: {fileID: 0}
     - target: {fileID: 3372921313112048409, guid: 6e70b95889762554594e5a920d954870, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -5876,7 +5855,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3372921313112048409, guid: 6e70b95889762554594e5a920d954870, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3372921313112048409, guid: 6e70b95889762554594e5a920d954870, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5914,6 +5893,5 @@ PrefabInstance:
       propertyPath: m_Name
       value: CinemachinePlayer
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1281261006, guid: 6e70b95889762554594e5a920d954870, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e70b95889762554594e5a920d954870, type: 3}
