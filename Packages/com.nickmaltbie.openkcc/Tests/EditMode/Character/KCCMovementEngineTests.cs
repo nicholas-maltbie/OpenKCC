@@ -33,7 +33,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
         public void OnPlayerTeleport(Vector3 destPos, Quaternion destRot)
         {
-            teleportPos = destPos;   
+            teleportPos = destPos;
         }
     }
 

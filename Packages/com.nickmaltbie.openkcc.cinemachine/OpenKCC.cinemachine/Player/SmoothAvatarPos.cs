@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nicholas Maltbie
+﻿// Copyright (C) 2023 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 
@@ -38,7 +37,7 @@ namespace nickmaltbie.OpenKCC.cinemachine.Player
         /// <summary>
         /// Factor to smooth player position by.
         /// </summary>
-        [Range(0.0f, 0.1f)]
+        [Range(0.0f, 1.0f)]
         public float smooth = 0.05f;
 
         /// <summary>

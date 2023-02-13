@@ -312,6 +312,7 @@ namespace nickmaltbie.OpenKCC.Character
                 snappedDown = true;
                 SnapPlayerDown();
             }
+
             CheckGrounded(snappedUp || snappedDown);
 
             Vector3 delta = transform.position - start;
@@ -375,7 +376,7 @@ namespace nickmaltbie.OpenKCC.Character
                     -Up,
                     SnapDown,
                     ColliderCast);
-                
+
                 groundCheckPos += snapDelta;
             }
 

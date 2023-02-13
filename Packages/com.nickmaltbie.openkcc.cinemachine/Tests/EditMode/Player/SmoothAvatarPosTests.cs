@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nicholas Maltbie
+﻿// Copyright (C) 2023 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections;
 using Moq;
 using nickmaltbie.OpenKCC.cinemachine.Player;
 using nickmaltbie.OpenKCC.Utils;
@@ -24,7 +23,6 @@ using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.Player
 {
@@ -43,7 +41,7 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.Player
             smooth.avatarBase = avatar;
             smooth.smooth = smoothFactor;
 
-            Mock<IUnityService> unityServiceMock = new Mock<IUnityService>();
+            var unityServiceMock = new Mock<IUnityService>();
             unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
             smooth.unityService = unityServiceMock.Object;
 

@@ -201,7 +201,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     momentum.normalized,
                     momentum.magnitude,
                     out IRaycastHit forwardHit);
-                
+
                 float forwardDist = didForwardHit ? Mathf.Max(0, forwardHit.distance - KCCUtils.Epsilon) : momentum.magnitude;
                 position += forwardDist * momentum.normalized;
                 momentum = momentum.normalized * remainingMomentum;

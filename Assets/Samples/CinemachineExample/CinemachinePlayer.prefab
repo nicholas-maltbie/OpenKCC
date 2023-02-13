@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 1928389238171943504}
   - component: {fileID: 1928389238171943512}
   - component: {fileID: 1928389238171943513}
+  - component: {fileID: 430482188}
   m_Layer: 0
   m_Name: CinemachinePlayer
   m_TagString: Player
@@ -230,8 +231,8 @@ MonoBehaviour:
   moveActionReference: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   sprintActionReference: {fileID: -6424176782126915535, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   jumpActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-  walkingSpeed: 6.5
-  sprintSpeed: 8.5
+  walkingSpeed: 4
+  sprintSpeed: 6
   jumpVelocity: 6.5
 --- !u!114 &3195248330151296820
 MonoBehaviour:
@@ -307,6 +308,20 @@ MonoBehaviour:
   fadeThreshold: 0.5
   shadowOnlyDistance: 0.25
   cameraRadius: 0.1
+--- !u!114 &430482188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3372921313112048414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15f66b88142720c4aae6d185c2eef28c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  avatarBase: {fileID: 2454021725001223283}
+  smooth: 0.1
 --- !u!1001 &3372921312279736610
 PrefabInstance:
   m_ObjectHideFlags: 0
