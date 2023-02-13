@@ -1,8 +1,11 @@
 # Changelog is populated from 
 # Packages\com.nickmaltbie.openkcc\CHANGELOG.md %~dp0\changelog\CHANGELOG.md
+# Packages\com.nickmaltbie.openkcc.cinemachine\CHANGELOG.md %~dp0\changelog\CHANGELOG.cinemachine.md
 # Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md %~dp0\changelog\CHANGELOG.netcode.md
 
 - name: Changelog OpenKCC
   href: CHANGELOG.md
+- name: Changelog OpenKCC cinemachine
+  href: CHANGELOG.cinemachine.md
 - name: Changelog OpenKCC netcode
   href: CHANGELOG.netcode.md

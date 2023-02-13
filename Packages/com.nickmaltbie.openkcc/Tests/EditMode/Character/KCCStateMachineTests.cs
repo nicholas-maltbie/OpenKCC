@@ -59,6 +59,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             moveEngine._colliderCast = colliderCastMock.Object;
         }
 
+        [TearDown]
+        public override void TearDown()
+        {
+            base.TearDown();
+            PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
+
+        }
+
         [Test]
         public void Validate_KCCStateMachine_Falling_Transition()
         {

@@ -52,6 +52,16 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.CameraControls
             cameraController.LookAction = new InputAction("look", InputActionType.Value, lookAction.path);
             cameraController.LookAction.Enable();
             PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
+
+            cameraController.Awake();
+        }
+
+        [TearDown]
+        public override void TearDown()
+        {
+            base.TearDown();
+            PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
+
         }
 
         [Test]
