@@ -13,8 +13,6 @@ Feel free to use a build of the project for your own work. If you see an error
 in the project or have any suggestions, write an issue or make a pull request,
 I'll happy include any suggestions or ideas into the project.
 
-[![Designing Character Controllers Video Introduction](Demo/sample-kcc.gif)](https://youtu.be/Hv4CQMCxSWE)
-
 You can see a demo of the project running here:
 [https://nickmaltbie.com/OpenKCC/](https://nickmaltbie.com/OpenKCC/).
 The project hosted on the website is up to date with the most recent
@@ -23,7 +21,7 @@ and is automatically deployed with each update to the codebase.
 
 ## Installation
 
-Make sure to add the required dependcies to your project
+Make sure to add the required dependencies to your project
 
 * [com.unity.inputsystem](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.3/manual/index.html)
   version 1.0.0 or newer
@@ -43,11 +41,11 @@ Install the latest version of the project by importing a project via git
 at this URL:
 `git+https://github.com/nicholas-maltbie/OpenKCC.git#release/latest`
 
-If you want to reference a specific tag of the project such as version `v1.0.1`,
-add a `#release/v1.0.1` to the end of the git URL to download the package
-from th auto-generated branch for that release. An example of importing `v1.0.1`
+If you want to reference a specific tag of the project such as version `v1.3.0`,
+add a `#release/v1.3.0` to the end of the git URL to download the package
+from th auto-generated branch for that release. An example of importing `v1.3.0`
 would look like this:
-`git+https://github.com/nicholas-maltbie/openkcc.git#release/v1.0.1`.
+`git+https://github.com/nicholas-maltbie/openkcc.git#release/v1.3.0`.
 
 To use the latest release, simply reference:
 
@@ -57,10 +55,6 @@ git+https://github.com/nicholas-maltbie/openkcc.git#release/latest
 
 For a full list of all tags, check the [OpenKCC Tags](https://github.com/nicholas-maltbie/OpenKCC/tags)
 list on github. I will usually associated a tag with each release of the project.
-
-_Note_: before I started using the package format for the project, I manually
-released a unity package you needed to import. Any version before `v1.0.0`
-will not work to import the project.
 
 If you do not include a tag, this means that your project will update whenever
 you reimport from main. This may cause some errors or problems due to
@@ -100,12 +94,7 @@ manager will be able to download it from the registry at
 
 ```json
 "dependencies": {
-  "com.nickmaltbie.openkcc": "1.0.1",
-  "com.nickmaltbie.screenmanager": "3.0.0",
-  "com.nickmaltbie.statemachineunity": "1.1.0",
-  "com.nickmaltbie.testutilsunity": "1.0.0",
-  "com.unity.inputsystem": "1.0.0",
-  "com.unity.textmeshpro": "3.0.0"
+  "com.nickmaltbie.openkcc": "1.3.0"
 }
 ```
 
@@ -148,22 +137,6 @@ The samples in the project include:
 * ExampleFirstPersonKCC - Example first person character controller with a basic
   test scene.
 * SimplifiedDemoKCC - Simplified character controller with basic movement scripts.
-
-## Netcode Example
-
-Using [Unity's netcode package](https://docs-multiplayer.unity3d.com/netcode/current/about)
-I created another example package called `com.nickmaltbie.openkcc.netcode`
-with a sample `NetcodeExample` for an example of
-setting up the OpenKCC as a networked character controller.
-
-To add the netcode example to your project, you can download it from
-one of the release branches under the pattern `release/netcode/version`
-or from the npm repo with the name `com.nickmaltbie.openkcc.netcode`.
-It contains some useful utility classes in addition to the sample.
-
-The sample is hosted online at [https://nickmaltbie.com/OpenKCC/Netcode/](https://nickmaltbie.com/OpenKCC/Netcode/)
-but you will need to host a server on a windows/linux/mac machine as the
-WebGL build for unity does not support opening a server socket within WebGL.
 
 ## Documentation
 

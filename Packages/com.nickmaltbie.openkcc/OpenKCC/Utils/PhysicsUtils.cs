@@ -163,7 +163,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="radius">Radius spherecast</param>
         /// <param name="direction">Direction of raycast</param>
         /// <param name="distance">Distance of raycast</param>
-        /// <param name="layerMask">Laymask for raycast</param>
+        /// <param name="layerMask">Layer mask for raycast</param>
         /// <param name="queryTriggerInteraction">Query trigger interaction for raycast</param>
         /// <param name="closest">The closest raycast hit event</param>
         /// <returns>True if a hit was detected, false otherwise.</returns>

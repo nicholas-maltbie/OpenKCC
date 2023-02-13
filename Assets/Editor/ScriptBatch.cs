@@ -59,7 +59,8 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     {
         System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Scenes", "SampleScene.unity"),
         System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "MoleKCCSample", "MoleScene.unity"),
-        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "NetcodeExample", "NetcodeScene.unity")
+        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "NetcodeExample", "NetcodeScene.unity"),
+        System.IO.Path.Combine(ScriptBatch.AssetDirectory, "Samples", "CinemachineExample", "CinemachineExample.unity")
     };
 
     /// <summary>
@@ -115,7 +116,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
                     "</script>"
                 });
 
-            (string, string)[] pairs = new[] { ("Mole", "MoleScene"), ("Netcode", "NetcodeScene") };
+            (string, string)[] pairs = new[] { ("Mole", "MoleScene"), ("Netcode", "NetcodeScene"), ("Cinemachine", "CinemachineExample") };
 
             foreach ((string, string) pair in pairs)
             {

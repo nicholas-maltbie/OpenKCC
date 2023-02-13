@@ -49,5 +49,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.UI
             playerMovement.OnScreenLoaded();
             Assert.AreEqual(PlayerInputUtils.playerMovementState, PlayerInputState.Deny);
         }
+
+        [TearDown]
+        public override void TearDown()
+        {
+            base.TearDown();
+            PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
+
+        }
     }
 }

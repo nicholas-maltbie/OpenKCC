@@ -86,6 +86,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             yield return null;
         }
 
+        [TearDown]
+        public override void TearDown()
+        {
+            base.TearDown();
+            PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
+
+        }
+
         [Test]
         public void Validate_CameraController_DisallowMovement()
         {

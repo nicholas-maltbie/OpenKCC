@@ -16,6 +16,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using UnityEngine;
+
 namespace nickmaltbie.OpenKCC.CameraControls
 {
     /// <summary>
@@ -24,18 +26,8 @@ namespace nickmaltbie.OpenKCC.CameraControls
     public interface ICameraControls
     {
         /// <summary>
-        /// Desired pitch of the camera.
+        /// Get the heading of the player
         /// </summary>
-        float Pitch { get; set; }
-
-        /// <summary>
-        /// Desired yaw of the camera.
-        /// </summary>
-        float Yaw { get; set; }
-
-        /// <summary>
-        /// Gets or sets the previous opacity for the third person character base.
-        /// </summary>
-        float PreviousOpacity { get; set; }
+        Quaternion PlayerHeading { get; }
     }
 }

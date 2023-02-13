@@ -142,7 +142,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Rotation of the plane the player is viewing
         /// </summary>
-        public Quaternion HorizPlaneView => Quaternion.Euler(0, CameraControls?.Yaw ?? transform.eulerAngles.y, 0);
+        public Quaternion HorizPlaneView => CameraControls != null ?
+            CameraControls.PlayerHeading :
+            Quaternion.Euler(0, transform.eulerAngles.y, 0);
 
         /// <summary>
         /// Input movement from player input updated each frame.
@@ -339,8 +341,17 @@ namespace nickmaltbie.OpenKCC.Character
 
             float moveX = AttachedAnimator.GetFloat("MoveX");
             float moveY = AttachedAnimator.GetFloat("MoveY");
-            moveX = Mathf.Lerp(moveX, moveVector.x, 4 * unityService.deltaTime);
-            moveY = Mathf.Lerp(moveY, moveVector.y, 4 * unityService.deltaTime);
+
+            // Get the relative moveX and moveY to include
+            // the delta in rotation between the avatar's current heading
+            // and the desired world space input
+            Vector3 playerHeading = AttachedAnimator.transform.forward;
+            Vector3 movementDir = HorizPlaneView * InputMovement;
+            var relative = Quaternion.FromToRotation(playerHeading, movementDir);
+            Vector3 relativeMovement = relative * Vector3.forward;
+
+            moveX = Mathf.Lerp(moveX, relativeMovement.x, 4 * unityService.deltaTime);
+            moveY = Mathf.Lerp(moveY, relativeMovement.z, 4 * unityService.deltaTime);
             AttachedAnimator.SetFloat("MoveX", moveX);
             AttachedAnimator.SetFloat("MoveY", moveY);
 

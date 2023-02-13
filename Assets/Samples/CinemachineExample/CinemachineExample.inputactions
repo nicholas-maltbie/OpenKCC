@@ -1,0 +1,34 @@
+{
+    "name": "CinemachineExample",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "4b80d464-f7f4-4b7e-9dea-29cdd19f01f8",
+            "actions": [
+                {
+                    "name": "Toggle Camera",
+                    "type": "Button",
+                    "id": "91c2a9ca-5d0e-44ce-9956-1520f7010045",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d098fd61-7ad5-4c33-b3aa-8b53a59c79e5",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

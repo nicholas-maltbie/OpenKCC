@@ -1,6 +1,6 @@
 {
   "name": "com.nickmaltbie.openkcc.netcode",
-  "displayName": "Open KCC Netcode",
+  "displayName": "OpenKCC Netcode",
   "version": "1.3.0",
   "unity": "2021.1",
   "unityRelease": "19f1",
@@ -31,14 +31,9 @@
     }
   ],
   "dependencies": {
-    "com.nickmaltbie.openkcc": "1.2.0",
-    "com.nickmaltbie.screenmanager": "3.0.0",
-    "com.nickmaltbie.statemachineunity": "1.1.4",
+    "com.nickmaltbie.openkcc": "1.3.0",
     "com.nickmaltbie.networkstatemachineunity": "1.0.0",
-    "com.nickmaltbie.testutilsunity": "0.0.2",
-    "com.unity.inputsystem": "1.0.0",
-    "com.unity.netcode.gameobjects": "1.1.0",
-    "com.unity.textmeshpro": "3.0.0"
+    "com.unity.netcode.gameobjects": "1.1.0"
   },
   "testables": [
     "com.unity.inputsystem"

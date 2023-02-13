@@ -34,6 +34,7 @@ Copy-Item -Force "$project_dir\README.md" "$dir\index.md"
 Copy-Item -Force "$project_dir\LICENSE.txt" "$dir\LICENSE.txt"
 Copy-Item -Recurse -Force "$project_dir\Demo" "$dir\Demo\"
 Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$dir\changelog\CHANGELOG.md"
+Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.cinemachine\CHANGELOG.md" "$dir\changelog\CHANGELOG.cinemachine.md"
 Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md" "$dir\changelog\CHANGELOG.netcode.md"
 
 $paramFile = Get-Content "$dir\docfx.json" | ConvertFrom-Json
@@ -82,6 +83,10 @@ foreach ($tag in $versions)
     if (Test-Path "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md")
     {
         Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc\CHANGELOG.md" "$dir\changelog\CHANGELOG.md" > $null
+    }
+    if (Test-Path "$project_dir\Packages\com.nickmaltbie.openkcc.cinemachine\CHANGELOG.md")
+    {
+        Copy-Item -Force "$project_dir\Packages\com.nickmaltbie.openkcc.cinemachine\CHANGELOG.md" "$dir\changelog\CHANGELOG.cinemachine.md" > $null
     }
     if (Test-Path "$project_dir\Packages\com.nickmaltbie.openkcc.netcode\CHANGELOG.md")
     {

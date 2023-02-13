@@ -23,11 +23,6 @@ namespace nickmaltbie.OpenKCC.Utils
 {
     public static class UtilityExtensions
     {
-        public static bool EqualOrNull(this object obj, object other)
-        {
-            return (obj == null && other == null) || (obj != null && other != null && obj.Equals(other));
-        }
-
         public static object EvaluateMember(this object obj, string memberName)
         {
             MemberInfo memberInfo = obj.GetType().GetMember(memberName)[0];

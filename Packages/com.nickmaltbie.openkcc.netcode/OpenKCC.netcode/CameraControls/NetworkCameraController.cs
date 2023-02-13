@@ -27,7 +27,7 @@ namespace nickmaltbie.OpenKCC.netcode.CameraControls
     /// <summary>
     /// Basic hybrid first and third person camera controller.
     /// </summary>
-    public class NetworkCameraController : NetworkBehaviour, ICameraControls
+    public class NetworkCameraController : NetworkBehaviour, ICameraControls, IManagedCamera
     {
         /// <summary>
         /// Unity service associated with this game object for testing.
@@ -57,6 +57,9 @@ namespace nickmaltbie.OpenKCC.netcode.CameraControls
             get => playerYaw.Value;
             set => playerYaw.Value = value;
         }
+
+        /// <inheritdoc/>
+        public Quaternion PlayerHeading => Quaternion.Euler(0, Yaw, 0);
 
         public void Start()
         {
