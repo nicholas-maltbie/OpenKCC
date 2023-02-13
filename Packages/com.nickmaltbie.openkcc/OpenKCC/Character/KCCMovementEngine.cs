@@ -156,7 +156,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Relative parent configuration for following the ground.
         /// </summary>
-        internal RelativeParentConfig relativeParentConfig;
+        public RelativeParentConfig RelativeParentConfig { get; protected set; }
 
         /// <summary>
         /// Current grounded state of the character.
@@ -270,7 +270,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public void Update()
         {
-            relativeParentConfig.FollowGround(transform);
+            RelativeParentConfig.FollowGround(transform);
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <param name="moves">Desired player movement in world space.</param>
         public virtual KCCBounce[] MovePlayer(params Vector3[] moves)
         {
-            relativeParentConfig.FollowGround(transform);
+            RelativeParentConfig.FollowGround(transform);
             Vector3 previousVelocity = (transform.position - previousPosition) / unityService.deltaTime;
             worldVelocity.AddSample(previousVelocity);
 
@@ -315,8 +315,8 @@ namespace nickmaltbie.OpenKCC.Character
             CheckGrounded(snappedUp || snappedDown);
 
             Vector3 delta = transform.position - start;
-            transform.position += relativeParentConfig.UpdateMovingGround(start, GroundedState, delta, unityService.fixedDeltaTime);
-            relativeParentConfig.FollowGround(transform);
+            transform.position += RelativeParentConfig.UpdateMovingGround(start, GroundedState, delta, unityService.fixedDeltaTime);
+            RelativeParentConfig.FollowGround(transform);
 
             previousPosition = transform.position;
             return bounces;
@@ -328,8 +328,13 @@ namespace nickmaltbie.OpenKCC.Character
         /// <param name="position">Position to teleport player to.</param>
         public void TeleportPlayer(Vector3 position)
         {
-            relativeParentConfig.Reset();
+            RelativeParentConfig.Reset();
             transform.position = position;
+
+            foreach (IOnPlayerTeleport tele in GetComponents<IOnPlayerTeleport>())
+            {
+                tele.OnPlayerTeleport(position, transform.rotation);
+            }
         }
 
         /// <summary>

@@ -16,13 +16,14 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.cinemachine.Player
 {
-    public class SmoothAvatarPos : MonoBehaviour
+    public class SmoothAvatarPos : MonoBehaviour, IOnPlayerTeleport
     {
         /// <summary>
         /// Unity service for managing testing.
@@ -34,8 +35,20 @@ namespace nickmaltbie.OpenKCC.cinemachine.Player
         /// </summary>
         public GameObject avatarBase;
 
+        /// <summary>
+        /// Factor to smooth player position by.
+        /// </summary>
+        [Range(0.0f, 0.1f)]
         public float smooth = 0.05f;
+
+        /// <summary>
+        /// Saved offset of avatar from current position.
+        /// </summary>
         private Vector3 offset;
+
+        /// <summary>
+        /// Previous position of player.
+        /// </summary>
         private Vector3 previousPos;
 
         public void Awake()
@@ -48,6 +61,11 @@ namespace nickmaltbie.OpenKCC.cinemachine.Player
         {
             previousPos = Vector3.Lerp(transform.position, previousPos, smooth);
             avatarBase.transform.position = previousPos + offset;
+        }
+
+        public void OnPlayerTeleport(Vector3 destPos, Quaternion destRot)
+        {
+            previousPos = destPos;
         }
     }
 }

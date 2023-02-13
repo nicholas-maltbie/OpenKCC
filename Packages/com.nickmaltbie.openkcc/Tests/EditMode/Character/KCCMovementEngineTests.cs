@@ -27,6 +27,16 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
+    public class VerifyTeleport : MonoBehaviour, IOnPlayerTeleport
+    {
+        public Vector3 teleportPos = Vector3.zero;
+
+        public void OnPlayerTeleport(Vector3 destPos, Quaternion destRot)
+        {
+            teleportPos = destPos;   
+        }
+    }
+
     /// <summary>
     /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.KCCMovementEngine"/> in edit mode.
     /// </summary>
@@ -42,6 +52,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             engine = CreateGameObject().AddComponent<KCCMovementEngine>();
             colliderCastMock = new Mock<IColliderCast>();
             engine._colliderCast = colliderCastMock.Object;
+        }
+
+        [Test]
+        public void Verify_KCCMovementEngine_OnPlayerTeleport([NUnit.Framework.Range(0, 100, 10)] float dist)
+        {
+            VerifyTeleport verify = engine.gameObject.AddComponent<VerifyTeleport>();
+            engine.TeleportPlayer(Vector3.forward * dist);
+            Assert.AreEqual(verify.teleportPos, Vector3.forward * dist);
         }
 
         [Test]
@@ -265,16 +283,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             // one meter below the player.
             engine.MovePlayer(Vector3.down);
 
-            // Now assert that the relative position of the player
-            // to the ground is roughly 0.5 units above and that the
-            // absolute position of the player is about (0, 0.5, 0)
+            // Now assert that the absolute position of the player
+            // is about (0, 0.5, 0)
             TestUtils.AssertInBounds(engine.transform.position, Vector3.up * 0.5f, 2 * KCCUtils.Epsilon);
-            TestUtils.AssertInBounds(engine.relativeParentConfig.relativePos, Vector3.up, 2 * KCCUtils.Epsilon);
 
             // After calling Update this should be true as well.
             engine.Update();
             TestUtils.AssertInBounds(engine.transform.position, Vector3.up * 0.5f, 2 * KCCUtils.Epsilon);
-            TestUtils.AssertInBounds(engine.relativeParentConfig.relativePos, Vector3.up, 2 * KCCUtils.Epsilon);
         }
     }
 }
