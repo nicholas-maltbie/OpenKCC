@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,6 +25,8 @@ namespace nickmaltbie.OpenKCC.cinemachine.CameraControls
 {
     public class CameraRotater : MonoBehaviour
     {
+        public IUnityService unityService = UnityService.Instance;
+
         /// <summary>
         /// Object to rotate for camera to follow.
         /// </summary>
@@ -70,12 +73,12 @@ namespace nickmaltbie.OpenKCC.cinemachine.CameraControls
         /// <summary>
         /// Current pitch of the camera.
         /// </summary>
-        private float Pitch { get; set; }
+        public float Pitch { get; private set; }
 
         /// <summary>
         /// Current Yaw of the camera.
         /// </summary>
-        private float Yaw { get; set; }
+        public float Yaw { get; private set; }
 
         public void Awake()
         {
@@ -85,7 +88,7 @@ namespace nickmaltbie.OpenKCC.cinemachine.CameraControls
 
         public void Update()
         {
-            float deltaTime = Time.fixedDeltaTime;
+            float deltaTime = unityService.deltaTime;
 
             Vector2 look = LookAction?.ReadValue<Vector2>() ?? Vector2.zero;
             look *= PlayerInputUtils.mouseSensitivity;
