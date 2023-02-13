@@ -165,32 +165,46 @@ namespace nickmaltbie.OpenKCC.Utils
         /// </summary>
         /// <param name="distanceToSnap">Distance that the player is teleported up.</param>
         /// <param name="momentum">The remaining momentum of the player.</param>
-        /// <param name="rotation">Rotation of the player.</param>
         /// <param name="position">Position of the player.</param>
+        /// <param name="rotation">Rotation of the player.</param>
         /// <param name="config">Config for controlling player movement.</param>
         /// <returns>True if the player had space on the ledge and was able to move, false if
         /// there was not enough room the player is moved back to their original position</returns>
         public static bool AttemptSnapUp(
             float distanceToSnap,
-            Vector3 momentum,
-            Quaternion rotation,
+            ref Vector3 momentum,
             ref Vector3 position,
+            Quaternion rotation,
             IKCCConfig config)
         {
             // If we were to snap the player up and they moved forward, would they hit something?
             Vector3 snapPos = position + distanceToSnap * config.Up;
-            bool didSnapHit = config.ColliderCast
-                .CastSelf(
-                    snapPos,
-                    rotation,
-                    momentum.normalized,
-                    config.StepUpDepth + Epsilon,
-                    out IRaycastHit snapHit);
+            bool didSnapHit = config.ColliderCast.CastSelf(
+                snapPos,
+                rotation,
+                momentum.normalized,
+                config.StepUpDepth + Epsilon,
+                out IRaycastHit snapHit);
 
             // If they can move without instantly hitting something, then snap them up
             if (!didSnapHit || (snapHit.distance >= Epsilon && snapHit.distance > config.StepUpDepth))
             {
-                position = snapPos;
+                // Have the player move up up to the remaining momentum
+                float distanceMove = Mathf.Min(momentum.magnitude, distanceToSnap);
+                float remainingMomentum = Mathf.Max(0, momentum.magnitude - distanceMove);
+                position += distanceMove * Vector3.up;
+
+                // Also move the player forward however far they can move
+                bool didForwardHit = config.ColliderCast.CastSelf(
+                    position,
+                    rotation,
+                    momentum.normalized,
+                    momentum.magnitude,
+                    out IRaycastHit forwardHit);
+                
+                float forwardDist = didForwardHit ? Mathf.Max(0, forwardHit.distance - KCCUtils.Epsilon) : momentum.magnitude;
+                position += forwardDist * momentum.normalized;
+                momentum = momentum.normalized * remainingMomentum;
                 return true;
             }
             // Otherwise move the player back down
@@ -225,7 +239,8 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="colliderCast">Collider cast associated with the player.</param>
         /// <param name="hit">Hit event where player collided with the step.</param>
         /// <param name="up">Up direction for the player.</param>
-        /// <param name="momentum">Player's remaining movement.</param>
+        /// <param name="momentum">Player's remaining movement, will be reduced by the amount
+        /// the player moves up the current step.</param>
         /// <param name="position">Player's current position, modify if the player moves while walking up the step.</param>
         /// <param name="rotation">Player's current rotation.</param>
         /// <param name="verticalSnapUp">Maximum distance player can snap up.</param>
@@ -233,7 +248,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <returns>True if the player snapped up, false otherwise.</returns>
         public static bool AttemptSnapUp(
             IRaycastHit hit,
-            Vector3 momentum,
+            ref Vector3 momentum,
             ref Vector3 position,
             Quaternion rotation,
             IKCCConfig config)
@@ -255,9 +270,9 @@ namespace nickmaltbie.OpenKCC.Utils
                 // snap them up the minimum vertical distance
                 snappedUp = AttemptSnapUp(
                     distanceToFeet + Epsilon,
-                    momentum,
-                    rotation,
+                    ref momentum,
                     ref position,
+                    rotation,
                     config);
 
                 if (!snappedUp)
@@ -265,9 +280,9 @@ namespace nickmaltbie.OpenKCC.Utils
                     // If that movement doesn't work, Attempt to snap up the maximum vertical distance
                     snappedUp = AttemptSnapUp(
                         config.VerticalSnapUp,
-                        momentum,
-                        rotation,
+                        ref momentum,
                         ref position,
+                        rotation,
                         config);
                 }
             }
@@ -363,7 +378,7 @@ namespace nickmaltbie.OpenKCC.Utils
             // Check if the player is running into a perpendicular surface
             bool perpendicularBounce = CheckPerpendicularBounce(hit, remainingMomentum, config);
 
-            if (perpendicularBounce && config.CanSnapUp && AttemptSnapUp(hit, remainingMomentum, ref position, rotation, config))
+            if (perpendicularBounce && AttemptSnapUp(hit, ref remainingMomentum, ref position, rotation, config))
             {
                 return new KCCBounce
                 {
@@ -419,7 +434,6 @@ namespace nickmaltbie.OpenKCC.Utils
 
             // current number of bounces
             int bounces = 0;
-
             bool didSnapUp = false;
 
             // Continue computing while there is momentum and bounces remaining
@@ -434,7 +448,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 }
                 else if (bounce.action == MovementAction.SnapUp)
                 {
-                    didSnapUp = true;
+                    didSnapUp = momentum.magnitude > KCCUtils.Epsilon;
                 }
                 else if (Vector3.Dot(bounce.Movement, movement) < 0)
                 {

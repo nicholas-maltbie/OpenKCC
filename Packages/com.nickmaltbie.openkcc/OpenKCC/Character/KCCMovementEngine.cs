@@ -149,6 +149,11 @@ namespace nickmaltbie.OpenKCC.Character
         public float MaxDefaultLaunchVelocity => 5.0f;
 
         /// <summary>
+        /// Maximum speed at which the player can snap down surfaces.
+        /// </summary>
+        public float MaxSnapDownSpeed => 5.0f;
+
+        /// <summary>
         /// Relative parent configuration for following the ground.
         /// </summary>
         internal RelativeParentConfig relativeParentConfig;
@@ -192,12 +197,13 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         protected void SnapPlayerDown()
         {
-            transform.position = KCCUtils.SnapPlayerDown(
+            Vector3 delta = KCCUtils.GetSnapDelta(
                 transform.position,
                 transform.rotation,
                 -Up,
                 SnapDown,
                 ColliderCast);
+            transform.position += Vector3.ClampMagnitude(delta, MaxSnapDownSpeed * unityService.fixedDeltaTime);
         }
 
         /// <summary>
@@ -292,19 +298,21 @@ namespace nickmaltbie.OpenKCC.Character
             {
                 KCCBounce[] bounces = GetMovement(move).ToArray();
 
-                // Only snap down if the player was grounded before they started
-                // moving and are not currently trying to move upwards.
-                if (GroundedState.StandingOnGround && !GroundedState.Sliding && !MovingUp(move))
-                {
-                    SnapPlayerDown();
-                }
-
                 return bounces;
             }).ToArray();
 
             // Compute player relative movement state based on final pos
+            bool snappedDown = false;
             bool snappedUp = bounces.Any(bounce => bounce.action == KCCUtils.MovementAction.SnapUp);
-            CheckGrounded(snappedUp);
+
+            // Only snap down if the player was grounded before they started
+            // moving and are not currently trying to move upwards.
+            if (!snappedUp && GroundedState.StandingOnGround && !GroundedState.Sliding && !moves.Any(move => MovingUp(move)))
+            {
+                snappedDown = true;
+                SnapPlayerDown();
+            }
+            CheckGrounded(snappedUp || snappedDown);
 
             Vector3 delta = transform.position - start;
             transform.position += relativeParentConfig.UpdateMovingGround(start, GroundedState, delta, unityService.fixedDeltaTime);
@@ -351,8 +359,23 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public KCCGroundedState CheckGrounded(bool snapped)
         {
+            Vector3 groundCheckPos = transform.position;
+
+            // If snapped up, use the snapped position to check grounded
+            if (snapped)
+            {
+                Vector3 snapDelta = KCCUtils.GetSnapDelta(
+                    transform.position,
+                    transform.rotation,
+                    -Up,
+                    SnapDown,
+                    ColliderCast);
+                
+                groundCheckPos += snapDelta;
+            }
+
             bool didHit = ColliderCast.CastSelf(
-                transform.position,
+                groundCheckPos,
                 transform.rotation,
                 -Up,
                 GroundCheckDistance,
