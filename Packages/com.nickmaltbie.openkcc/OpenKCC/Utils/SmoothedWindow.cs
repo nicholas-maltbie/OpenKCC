@@ -16,14 +16,16 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils
 {
     /// <summary>
-    /// Smoothed window of some numeric value.
+    /// Smoothed window of some value.
     /// </summary>
-    public abstract class SmoothedWindow<E>
+    public class SmoothedWindow<E>
     {
         /// <summary>
         /// Gets the sample values.
@@ -34,6 +36,12 @@ namespace nickmaltbie.OpenKCC.Utils
         /// Gets the current selected index.
         /// </summary>
         protected int CurrentIdx { get; private set; }
+
+        /// <summary>
+        /// Get values for debugging.
+        /// </summary>
+        internal IEnumerable<E> Values =>
+            Enumerable.Range(0, Count).Select(index => Samples[(CurrentIdx + index) % Count]);
 
         /// <summary>
         /// Count of 

@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using System.Linq;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
@@ -25,22 +24,6 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 {
-    /// <summary>
-    /// Test class for <see cref="SmoothedWindow{E}"/>
-    /// </summary>
-    public class SmoothedWindowTest : SmoothedWindow<int>
-    {
-        /// <summary>
-        /// Smoothed window tests.
-        /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        public SmoothedWindowTest(int size) : base(size) { }
-
-        public IEnumerable<int> Values =>
-            Enumerable.Range(0, Count).Select(index => Samples[(CurrentIdx + index) % Count]);
-    }
-
     /// <summary>
     /// Basic EditMode tests for the <see cref="SmoothedWindow{E}"/> class.
     /// </summary>
@@ -71,21 +54,20 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         [Test]
         public void Validate_SmoothedWindow_Samples([NUnit.Framework.Range(0, 100, 10)] int size)
         {
-            var smoothed = new SmoothedWindowTest(size);
-            SmoothedWindow<int> window = smoothed;
+            var smoothed = new SmoothedWindow<int>(size);
 
             for (int i = 0; i < size; i++)
             {
-                window.AddSample(i);
+                smoothed.AddSample(i);
 
-                Assert.AreEqual(i + 1, window.Count);
+                Assert.AreEqual(i + 1, smoothed.Count);
                 Assert.IsTrue(smoothed.Values.SequenceEqual(Enumerable.Range(0, i + 1)));
             }
 
             for (int i = 0; i < size / 2; i++)
             {
-                window.AddSample(size + i);
-                Assert.AreEqual(size, window.Count);
+                smoothed.AddSample(size + i);
+                Assert.AreEqual(size, smoothed.Count);
                 Assert.IsTrue(smoothed.Values.SequenceEqual(Enumerable.Range(i + 1, size)));
             }
         }

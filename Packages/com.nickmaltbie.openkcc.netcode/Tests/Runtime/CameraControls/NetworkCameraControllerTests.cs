@@ -73,18 +73,21 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.CameraControls
 
                 Assert.AreEqual(0, cameraController.Pitch);
                 Assert.AreEqual(0, cameraController.Yaw);
+                Assert.AreEqual(0, cameraController.PlayerHeading.eulerAngles.y);
 
                 input.Set(testable.GetControl<StickControl>(LookActionName), Vector3.up);
                 yield return null;
 
                 Assert.LessOrEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
                 Assert.AreEqual(0, cameraController.Yaw);
+                Assert.AreEqual(0, cameraController.PlayerHeading.eulerAngles.y);
 
                 input.Set(testable.GetControl<StickControl>(LookActionName), Vector3.left);
                 yield return null;
 
                 Assert.LessOrEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
                 Assert.LessOrEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Yaw);
+                Assert.LessOrEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.PlayerHeading.eulerAngles.y);
             }
         }
     }
