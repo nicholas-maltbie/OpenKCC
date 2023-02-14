@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Small update to cinemachine example settings for first person vcam.
+
 ## [1.3.1] 2023-2-13
 
 * Added basic `SmoothAvatarPos` to smooth avatar position based on some damping
