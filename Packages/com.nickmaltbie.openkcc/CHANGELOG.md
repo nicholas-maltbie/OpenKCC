@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.3.2] 2023-2-14
+
 * Changed `RelativeParentConfig` to be a class to better persist information
     between updates instead of having data reset improperly.
 
