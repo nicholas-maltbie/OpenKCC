@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.3.1] 2023-2-13
+
 * Adjusted how stairs and snap down are handled in `KCCMovementEngine`
     and `KCCUtils` to make player slowly move up or down stairs based on
     the remaining movement speed of the player.
