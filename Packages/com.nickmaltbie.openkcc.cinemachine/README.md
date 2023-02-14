@@ -65,7 +65,7 @@ manager will be able to download it from the registry at
 
 ```json
 "dependencies": {
-  "com.nickmaltbie.openkcc": "1.3.0",
+  "com.nickmaltbie.openkcc": "1.3.1",
   "com.nickmaltbie.openkcc.cinemachine": "1.3.1",
   "com.unity.cinemachine": "2.8.9"
 }

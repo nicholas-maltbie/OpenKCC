@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.3.1] 2023-2-13
+
 * Added basic `SmoothAvatarPos` to smooth avatar position based on some damping
     factor to smooth out any jittery movements of the player when snapping
     up or down surfaces.
