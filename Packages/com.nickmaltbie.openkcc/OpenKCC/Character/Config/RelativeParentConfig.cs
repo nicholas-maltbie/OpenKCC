@@ -27,7 +27,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
     /// the position of an object relative to a given parent object.
     /// </summary>
     [Serializable]
-    public struct RelativeParentConfig
+    public class RelativeParentConfig
     {
         /// <summary>
         /// Relative position in local space.
@@ -81,7 +81,6 @@ namespace nickmaltbie.OpenKCC.Character.Config
 
                 if (ground == null || ground.ShouldAttach())
                 {
-
                     if (parent != previousParent)
                     {
                         relativePos = position + delta - parent.position;

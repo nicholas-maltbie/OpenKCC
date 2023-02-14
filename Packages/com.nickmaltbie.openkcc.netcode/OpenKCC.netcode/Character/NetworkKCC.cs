@@ -164,7 +164,7 @@ namespace nickmaltbie.OpenKCC.netcode.Character
         /// <summary>
         /// Relative parent configuration for following the ground.
         /// </summary>
-        private RelativeParentConfig relativeParentConfig;
+        public RelativeParentConfig relativeParentConfig { get; protected set; } = new RelativeParentConfig();
 
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]

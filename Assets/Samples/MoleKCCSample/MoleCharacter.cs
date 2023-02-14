@@ -193,7 +193,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <summary>
         /// Relative parent configuration for following the ground.
         /// </summary>
-        private RelativeParentConfig relativeParentConfig;
+        public RelativeParentConfig relativeParentConfig { get; protected set; } = new RelativeParentConfig();
 
         /// <summary>
         /// Previous parent for spawning burrowing particles.
