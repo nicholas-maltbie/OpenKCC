@@ -207,7 +207,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
             // Simulate bounces
-            var bounces = GetBounces(Vector3.zero, Vector3.forward, verticalSnapUp: snapUpDistance).ToList();
+            var bounces = GetBounces(Vector3.zero, Vector3.forward * 10, verticalSnapUp: snapUpDistance).ToList();
 
             // Validate bounce properties
             Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounce but instead found {bounces.Count}");

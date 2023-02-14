@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Adjusted how stairs and snap down are handled in `KCCMovementEngine`
+    and `KCCUtils` to make player slowly move up or down stairs based on
+    the remaining movement speed of the player.
+* Adjusted `KCCMovementEngine` to have a max speed for snapping down
+    to stop the player from teleporting down harshly and making player camera
+    jitter.
+* Added `IOnPlayerTeleport` to listen to teleport events from
+    the `KCCMovementEngine` and respond accordingly.
+
 ## [1.3.0] 2023-1-29
 
 _**Note**_ : This update will not automatically
