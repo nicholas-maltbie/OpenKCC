@@ -101,18 +101,21 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             Assert.AreEqual(0, cameraController.Pitch);
             Assert.AreEqual(0, cameraController.Yaw);
+            Assert.AreEqual(0, cameraController.PlayerHeading.eulerAngles.y);
 
             Set(lookAction, Vector3.up);
             cameraController.Update();
 
             Assert.AreEqual(0, cameraController.Pitch);
             Assert.AreEqual(0, cameraController.Yaw);
+            Assert.AreEqual(0, cameraController.PlayerHeading.eulerAngles.y);
 
             Set(lookAction, Vector3.left);
             cameraController.Update();
 
             Assert.AreEqual(0, cameraController.Pitch);
             Assert.AreEqual(0, cameraController.Yaw);
+            Assert.AreEqual(0, cameraController.PlayerHeading.eulerAngles.y);
         }
 
         [Test]
@@ -120,18 +123,21 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             Assert.AreEqual(0, cameraController.Pitch);
             Assert.AreEqual(0, cameraController.Yaw);
+            Assert.AreEqual(0, cameraController.PlayerHeading.eulerAngles.y);
 
             Set(lookAction, Vector3.up);
             cameraController.Update();
 
             Assert.AreEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
             Assert.AreEqual(0, cameraController.Yaw);
+            Assert.AreEqual(0, cameraController.PlayerHeading.eulerAngles.y);
 
             Set(lookAction, Vector3.left);
             cameraController.Update();
 
             Assert.AreEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
             Assert.AreEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Yaw);
+            Assert.AreEqual((-cameraController.config.rotationRate * 0.1f * 0.25f + 360) % 360, (cameraController.PlayerHeading.eulerAngles.y + 360) % 360);
         }
 
         [Test]
