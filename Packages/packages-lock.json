@@ -40,7 +40,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.nickmaltbie.openkcc": "1.3.0",
+        "com.nickmaltbie.openkcc": "1.3.3",
         "com.nickmaltbie.statemachineunity.netcode": "1.2.1",
         "com.unity.netcode.gameobjects": "1.1.0"
       }
