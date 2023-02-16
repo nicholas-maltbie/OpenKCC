@@ -1,5 +1,5 @@
 {
-	"name": "nickmaltbie.OpenKCC.Tests.cinemachine.Runtime",
+    "name": "nickmaltbie.OpenKCC.Tests.cinemachine.Runtime",
     "rootNamespace": "nickmaltbie.OpenKCC.Tests.cinemachine.Runtime",
     "references": [
       "Cinemachine",

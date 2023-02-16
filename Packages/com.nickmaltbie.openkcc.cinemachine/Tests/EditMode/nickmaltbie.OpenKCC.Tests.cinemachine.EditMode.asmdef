@@ -1,5 +1,5 @@
 {
-	"name": "nickmaltbie.OpenKCC.Tests.cinemachine.EditMode",
+    "name": "nickmaltbie.OpenKCC.Tests.cinemachine.EditMode",
     "rootNamespace": "nickmaltbie.OpenKCC.Tests.cinemachine.EditMode",
     "references": [
       "Cinemachine",
