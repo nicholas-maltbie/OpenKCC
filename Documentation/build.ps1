@@ -57,7 +57,7 @@ foreach ($tag in $versions)
     git checkout $tag > $null
 
     # ensure docfx is installed
-    dotnet tool install docfx > $null
+    dotnet tool install docfx --version 2.60.2 > $null
 
     Write-Host "Setting up website and copying files"
     
@@ -132,7 +132,7 @@ foreach ($tag in $versions)
     # Undo any changes made in previous iteration
     git reset .
     git checkout .
-    git clean -xdf Documentation Assets Packages
+    git clean -xdf --exclude "_site" > $null
 }
 
 # Do some work to cleanup duplicate files in exported _site folder to
