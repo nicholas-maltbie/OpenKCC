@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.3.3] 2023-2-16
+
+* Updated package to use statemachineunity.netcode instead of statemachineunity.netcode
+    package.
+
 ## [1.3.0] 2023-1-29
 
 * Added documentation to the `MoleMovementEngine`.

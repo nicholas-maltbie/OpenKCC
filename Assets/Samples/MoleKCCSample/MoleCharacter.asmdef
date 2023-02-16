@@ -6,9 +6,9 @@
         "nickmaltbie.OpenKCC",
         "nickmaltbie.OpenKCC.netcode",
         "nickmaltbie.StateMachineUnity",
-        "nickmaltbie.NetworkStateMachineUnity",
-        "Unity.InputSystem",
-        "nickmaltbie.TestUtilsUnity"
+        "nickmaltbie.StateMachineUnity.netcode",
+        "nickmaltbie.TestUtilsUnity",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

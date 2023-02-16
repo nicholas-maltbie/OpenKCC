@@ -48,7 +48,7 @@ manager will be able to download it from the registry at
 "dependencies": {
   "com.nickmaltbie.openkcc": "1.3.0",
   "com.nickmaltbie.openkcc.netcode": "1.0.1",
-  "com.nickmaltbie.networkstatemachineunity": "1.0.0",
+  "com.nickmaltbie.statemachineunity.netcode": "1.2.1",
     "com.unity.netcode.gameobjects": "1.1.0"
 }
 ```

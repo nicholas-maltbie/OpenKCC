@@ -5,7 +5,7 @@
         "WebSocket Transport for Netcode for GameObjects",
         "Unity.Netcode.Components",
         "Unity.Netcode.Runtime",
-        "nickmaltbie.NetworkStateMachineUnity",
+        "nickmaltbie.statemachineunity.netcode",
         "nickmaltbie.ScreenManager",
         "nickmaltbie.StateMachineUnity",
         "nickmaltbie.ScreenManager.TestCommon",

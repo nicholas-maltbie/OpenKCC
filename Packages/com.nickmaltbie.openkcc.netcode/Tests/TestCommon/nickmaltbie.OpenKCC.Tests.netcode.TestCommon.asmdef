@@ -2,7 +2,7 @@
 	"name": "nickmaltbie.OpenKCC.Tests.netcode.TestCommon",
     "rootNamespace": "nickmaltbie.OpenKCC.Tests.netcode.TestCommon",
     "references": [
-		"nickmaltbie.NetworkStateMachineUnity",
+		"nickmaltbie.statemachineunity.netcode",
 		"nickmaltbie.OpenKCC",
 		"nickmaltbie.OpenKCC.netcode",
 		"nickmaltbie.OpenKCC.Tests.TestCommon",
