@@ -1,7 +1,7 @@
 {
   "name": "com.nickmaltbie.openkcc",
   "displayName": "OpenKCC",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "unity": "2021.1",
   "unityRelease": "19f1",
   "description": "Open Source Kinematic Character Controller project.",
@@ -30,7 +30,7 @@
   ],
   "dependencies": {
     "com.nickmaltbie.screenmanager": "3.0.0",
-    "com.nickmaltbie.statemachineunity": "1.1.4",
+    "com.nickmaltbie.statemachineunity": "1.2.1",
     "com.nickmaltbie.testutilsunity": "1.0.0",
     "com.unity.inputsystem": "1.0.0",
     "com.unity.textmeshpro": "3.0.0"

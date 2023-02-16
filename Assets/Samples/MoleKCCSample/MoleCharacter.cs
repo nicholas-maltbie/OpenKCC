@@ -18,7 +18,6 @@
 
 using System;
 using System.Linq;
-using nickmaltbie.NetworkStateMachineUnity;
 using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
@@ -31,6 +30,7 @@ using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.StateMachineUnity;
 using nickmaltbie.StateMachineUnity.Attributes;
 using nickmaltbie.StateMachineUnity.Event;
+using nickmaltbie.StateMachineUnity.netcode;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;

@@ -14,25 +14,13 @@
       "dependencies": {},
       "hash": "c7246c713392424c1388fd516f2c6a1debaea14d"
     },
-    "com.nickmaltbie.networkstatemachineunity": {
-      "version": "1.0.0",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.nickmaltbie.testutilsunity": "0.0.2",
-        "com.nickmaltbie.statemachineunity": "1.1.2",
-        "com.unity.inputsystem": "1.0.0",
-        "com.unity.netcode.gameobjects": "1.1.0"
-      },
-      "url": "https://registry.npmjs.org"
-    },
     "com.nickmaltbie.openkcc": {
       "version": "file:com.nickmaltbie.openkcc",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
         "com.nickmaltbie.screenmanager": "3.0.0",
-        "com.nickmaltbie.statemachineunity": "1.1.4",
+        "com.nickmaltbie.statemachineunity": "1.2.1",
         "com.nickmaltbie.testutilsunity": "1.0.0",
         "com.unity.inputsystem": "1.0.0",
         "com.unity.textmeshpro": "3.0.0"
@@ -52,8 +40,8 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.nickmaltbie.openkcc": "1.3.0",
-        "com.nickmaltbie.networkstatemachineunity": "1.0.0",
+        "com.nickmaltbie.openkcc": "1.3.3",
+        "com.nickmaltbie.statemachineunity.netcode": "1.2.1",
         "com.unity.netcode.gameobjects": "1.1.0"
       }
     },
@@ -75,12 +63,24 @@
       "url": "https://registry.npmjs.org"
     },
     "com.nickmaltbie.statemachineunity": {
-      "version": "1.1.4",
+      "version": "1.2.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.nickmaltbie.testutilsunity": "0.0.2",
         "com.unity.inputsystem": "1.0.0"
+      },
+      "url": "https://registry.npmjs.org"
+    },
+    "com.nickmaltbie.statemachineunity.netcode": {
+      "version": "1.2.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.nickmaltbie.testutilsunity": "0.0.2",
+        "com.nickmaltbie.statemachineunity": "1.2.1",
+        "com.unity.inputsystem": "1.0.0",
+        "com.unity.netcode.gameobjects": "1.1.0"
       },
       "url": "https://registry.npmjs.org"
     },

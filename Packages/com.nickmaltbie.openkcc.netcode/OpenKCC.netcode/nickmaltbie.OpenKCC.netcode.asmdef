@@ -2,10 +2,10 @@
     "name": "nickmaltbie.OpenKCC.netcode",
     "rootNamespace": "nickmaltbie.OpenKCC.netcode",
     "references": [
-        "nickmaltbie.NetworkStateMachineUnity",
         "nickmaltbie.OpenKCC",
         "nickmaltbie.ScreenManager",
         "nickmaltbie.StateMachineUnity",
+        "nickmaltbie.StateMachineUnity.netcode",
         "nickmaltbie.TestUtilsUnity",
         "Unity.InputSystem",
         "Unity.Netcode.Components",
