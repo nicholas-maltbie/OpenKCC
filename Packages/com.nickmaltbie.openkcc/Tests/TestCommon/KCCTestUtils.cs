@@ -28,7 +28,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
     public static class KCCTestUtils
     {
         /// <summary>
-        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf(Vector3, Quaternion, Vector3, float, out IRaycastHit)"/>
+        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf"/>
         /// </summary>
         /// <param name="position">Position of the object when it is being raycast.</param>
         /// <param name="rotation">Rotation of the objecting when it is being raycast.</param>
@@ -42,7 +42,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         public delegate void CastSelfCallback(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
 
         /// <summary>
-        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf(Vector3, Quaternion, Vector3, float, out IRaycastHit)"/>
+        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf"/>
         /// </summary>
         /// <param name="position">Position of the object when it is being raycast.</param>
         /// <param name="rotation">Rotation of the objecting when it is being raycast.</param>
