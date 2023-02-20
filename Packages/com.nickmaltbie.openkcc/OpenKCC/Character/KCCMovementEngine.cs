@@ -33,7 +33,7 @@ namespace nickmaltbie.OpenKCC.Character
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(IColliderCast))]
-    public class KCCMovementEngine : MonoBehaviour, IKCCConfig
+    public class KCCMovementEngine : MonoBehaviour, IKCCConfig, ISerializationCallbackReceiver
     {
         /// <summary>
         /// Default value for distance from ground player is considered grounded.
@@ -74,6 +74,18 @@ namespace nickmaltbie.OpenKCC.Character
         /// Max launch speed of player form moving ground.
         /// </summary>
         public const float DefaultMaxLaunchVelocity = 5.0f;
+
+        /// <summary>
+        /// Serialization version for the KCCMovementEngine.
+        /// </summary>
+        public const string CurrentSerializationVersion = "v1.0.0";
+
+        /// <summary>
+        /// Current serialization version of this serialized KCCMovementEngine.
+        /// </summary>
+        [HideInInspector]
+        [SerializeField]
+        internal string serializationVersion;
 
         /// <summary>
         /// Height of a step that the player can climb up.
@@ -131,7 +143,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Layermask for computing player collisions.
         /// </summary>
-        public LayerMask layerMask = ~0;
+        public LayerMask layerMask = IColliderCast.DefaultLayerMask;
 
         /// <inheritdoc/>
         public bool CanSnapUp => GroundedState.OnGround;
@@ -416,6 +428,26 @@ namespace nickmaltbie.OpenKCC.Character
                 maxWalkAngle: MaxWalkAngle);
 
             return GroundedState;
+        }
+
+        public void OnBeforeSerialize()
+        {
+            // Nothing needed here.
+        }
+
+        public void OnAfterDeserialize()
+        {
+            // If the serialization version is unset, update it.
+            if (string.IsNullOrEmpty(serializationVersion))
+            {
+                serializationVersion = CurrentSerializationVersion;
+
+                // Set default value for layer mask
+                if (layerMask == default)
+                {
+                    layerMask = ~0;
+                }
+            }
         }
     }
 }

@@ -297,5 +297,19 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             engine.Update();
             TestUtils.AssertInBounds(engine.transform.position, Vector3.up * 0.5f, 2 * KCCUtils.Epsilon);
         }
+
+        [Test]
+        public void SerializationValidationTests()
+        {
+            KCCMovementEngine movementEngine = CreateGameObject().AddComponent<KCCMovementEngine>();
+            movementEngine.serializationVersion = "";
+            movementEngine.layerMask = 0;
+
+            movementEngine.OnBeforeSerialize();
+            movementEngine.OnAfterDeserialize();
+
+            Assert.AreEqual(movementEngine.serializationVersion, KCCMovementEngine.CurrentSerializationVersion);
+            Assert.AreEqual(movementEngine.layerMask.value, IColliderCast.DefaultLayerMask);
+        }
     }
 }

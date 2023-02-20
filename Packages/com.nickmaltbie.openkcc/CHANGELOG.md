@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 * Updated `KCCMovementEngine` to support layer masks for deciding what
     the player can and cannot collide with.
+
+    _Note_ this may cause problems with existing instances of the `KCCMovementEngine`
+    so I included an updated configuration to serialize a version number
+    for the `KCCMovementEngine`, if this serialized version number is not set,
+    it will update the `KCCMovementEngine` to use a default value of
+    colliding with everything which was the previous behaviour.
+
 * Updated the `IColliderCast` and `KCCUtils` apis to support passing
     an optional `LayerMask` and `QueryTriggerInteraction` parameters.
 
