@@ -58,19 +58,29 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation)
+        public override IEnumerable<Collider> GetOverlapping(
+            Vector3 position,
+            Quaternion rotation,
+            int layerMask = IColliderCast.DefaultLayerMask,
+            QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, float radius) = GetParams(position, rotation);
             return Physics
-                .OverlapSphere(center, radius, ~0, QueryTriggerInteraction.Ignore)
+                .OverlapSphere(center, radius, layerMask, queryTriggerInteraction)
                 .Where(c => c.transform != transform);
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance)
+        public override IEnumerable<RaycastHit> GetHits(
+            Vector3 position,
+            Quaternion rotation,
+            Vector3 direction,
+            float distance,
+            int layerMask = IColliderCast.DefaultLayerMask,
+            QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, float radius) = GetParams(position, rotation, -KCCUtils.Epsilon);
-            return Physics.SphereCastAll(center, radius, direction, distance, ~0, QueryTriggerInteraction.Ignore)
+            return Physics.SphereCastAll(center, radius, direction, distance, layerMask, queryTriggerInteraction)
                 .Where(hit => hit.collider.transform != transform);
         }
 

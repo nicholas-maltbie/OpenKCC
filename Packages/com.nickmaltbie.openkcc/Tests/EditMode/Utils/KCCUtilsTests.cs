@@ -171,7 +171,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
             IRaycastHit wallCollision = KCCTestUtils.SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
-            colliderCastMock.Setup(mock => mock.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out wallCollision)).Returns(true);
+            colliderCastMock.Setup(mock => mock.DoRaycastInDirection(
+                It.IsAny<Vector3>(),
+                It.IsAny<Vector3>(),
+                It.IsAny<float>(),
+                out wallCollision,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>())).Returns(true);
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
             // Simulate bounces
@@ -203,7 +209,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
             IRaycastHit wallCollision = KCCTestUtils.SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
-            colliderCastMock.Setup(mock => mock.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out wallCollision)).Returns(true);
+            colliderCastMock.Setup(mock => mock.DoRaycastInDirection(
+                It.IsAny<Vector3>(),
+                It.IsAny<Vector3>(),
+                It.IsAny<float>(),
+                out wallCollision,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>())).Returns(true);
             colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
 
             // Simulate bounces
@@ -368,7 +380,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             Assert.IsTrue(initialMomentum == null || bounce.initialMomentum == initialMomentum, $"Expected {nameof(bounce.initialMomentum)} to be {initialMomentum} but instead found {bounce.initialMomentum}");
         }
 
-        private delegate void RaycastHitCallback(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit);
+        private delegate void RaycastHitCallback(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
 
         private delegate void RaycastHitReturns(out IRaycastHit hit);
 
@@ -381,8 +393,15 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             IEnumerator<(bool, IRaycastHit)> hitEnumerator = hitData.GetEnumerator();
             (bool, IRaycastHit) nextHit = (false, null);
             colliderCastMock.Setup(
-                mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny))
-                .Callback(new RaycastHitCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
+                mock => mock.CastSelf(
+                    It.IsAny<Vector3>(),
+                    It.IsAny<Quaternion>(),
+                    It.IsAny<Vector3>(),
+                    It.IsAny<float>(),
+                    out It.Ref<IRaycastHit>.IsAny,
+                    It.IsAny<int>(),
+                    It.IsAny<QueryTriggerInteraction>()))
+                .Callback(new RaycastHitCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layetMask, QueryTriggerInteraction query) =>
                 {
                     hit = nextHit.Item2;
                     if (hitEnumerator.MoveNext())
@@ -401,7 +420,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         /// <param name="raycastHit">Raycast hit object to return.</param>
         public void SetupColliderCast(bool didHit, IRaycastHit raycastHit)
         {
-            colliderCastMock.Setup(mock => mock.CastSelf(It.IsAny<Vector3>(), It.IsAny<Quaternion>(), It.IsAny<Vector3>(), It.IsAny<float>(), out raycastHit)).Returns(didHit);
+            colliderCastMock.Setup(mock => mock.CastSelf(
+                It.IsAny<Vector3>(),
+                It.IsAny<Quaternion>(),
+                It.IsAny<Vector3>(),
+                It.IsAny<float>(),
+                out raycastHit,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>())).Returns(didHit);
         }
 
         /// <summary>
@@ -446,7 +472,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
                 new KCCConfig
                 {
                     MaxBounces = maxBounces,
-                    PushDecay = pushDecay,
                     VerticalSnapUp = verticalSnapUp,
                     StepUpDepth = stepUpDepth,
                     AnglePower = anglePower,

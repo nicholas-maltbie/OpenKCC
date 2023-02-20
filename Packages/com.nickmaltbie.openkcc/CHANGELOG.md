@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Updated `KCCMovementEngine` to support layer masks for deciding what
+    the player can and cannot collide with.
+
+    _Note_ this may cause problems with existing instances of the `KCCMovementEngine`
+    so I included an updated configuration to serialize a version number
+    for the `KCCMovementEngine`, if this serialized version number is not set,
+    it will update the `KCCMovementEngine` to use a default value of
+    colliding with everything which was the previous behaviour.
+
+* Updated the `IColliderCast` and `KCCUtils` apis to support passing
+    an optional `LayerMask` and `QueryTriggerInteraction` parameters.
+
 ## [1.3.2] 2023-2-14
 
 * Changed `RelativeParentConfig` to be a class to better persist information

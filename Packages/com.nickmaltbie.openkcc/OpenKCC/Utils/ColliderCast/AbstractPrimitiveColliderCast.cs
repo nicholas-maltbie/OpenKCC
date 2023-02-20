@@ -33,11 +33,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             Quaternion rotation,
             Vector3 direction,
             float distance,
-            out IRaycastHit hit)
+            out IRaycastHit hit,
+            int layerMask = IColliderCast.DefaultLayerMask,
+            QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
         {
             var closest = new RaycastHit() { distance = Mathf.Infinity };
             bool hitSomething = false;
-            foreach (RaycastHit objHit in GetHits(position, rotation, direction, distance))
+            foreach (RaycastHit objHit in GetHits(position, rotation, direction, distance, layerMask, queryTriggerInteraction))
             {
                 if (objHit.collider.gameObject.transform != gameObject.transform)
                 {
@@ -55,10 +57,10 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         }
 
         /// <inheritdoc/>
-        public Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance)
+        public Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = IColliderCast.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
         {
             Vector3 pushed = Vector3.zero;
-            foreach (Collider overlap in GetOverlapping(position, rotation))
+            foreach (Collider overlap in GetOverlapping(position, rotation, layerMask, queryTriggerInteraction))
             {
                 Physics.ComputePenetration(
                     Collider, position, rotation,
@@ -76,9 +78,9 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         }
 
         /// <inheritdoc/>
-        public bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit)
+        public bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit, int layerMask = IColliderCast.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
         {
-            bool didHit = Physics.Raycast(new Ray(source, direction), out RaycastHit hit, distance);
+            bool didHit = Physics.Raycast(new Ray(source, direction), out RaycastHit hit, distance, layerMask, queryTriggerInteraction);
             stepHit = new RaycastHitWrapper(hit);
             return didHit;
         }
@@ -92,9 +94,9 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public abstract Vector3 GetBottom(Vector3 position, Quaternion rotation);
 
         /// <inheritdoc/>
-        public abstract IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation);
+        public abstract IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation, int layerMask = IColliderCast.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction);
 
         /// <inheritdoc/>
-        public abstract IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance);
+        public abstract IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = IColliderCast.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction);
     }
 }

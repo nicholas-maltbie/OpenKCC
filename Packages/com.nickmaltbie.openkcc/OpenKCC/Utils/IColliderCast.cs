@@ -26,6 +26,9 @@ namespace nickmaltbie.OpenKCC.Utils
     /// </summary>
     public interface IColliderCast
     {
+        public const int DefaultLayerMask = ~0;
+        public const QueryTriggerInteraction DefaultQueryTriggerInteraction = QueryTriggerInteraction.Ignore;
+
         /// <summary>
         /// Gets the bottom of the bounds of the collider.
         /// </summary>
@@ -39,8 +42,10 @@ namespace nickmaltbie.OpenKCC.Utils
         /// </summary>
         /// <param name="position">Position of the object when it is being checked.</param>
         /// <param name="rotation">Rotation of the objecting when it is being checked.</param>
+        /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
+        /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
         /// <returns>The list of overlapping objects with this object.</returns>
-        IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation);
+        IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation, int layerMask = DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = DefaultQueryTriggerInteraction);
 
         /// <summary>
         /// Cast self and get the objects hit that exclude this object.
@@ -49,8 +54,10 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="distance">Distance to cast self collider.</param>
         /// <param name="position">Position of the object when it is being raycast.</param>
         /// <param name="rotation">Rotation of the objecting when it is being raycast.</param>
+        /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
+        /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
         /// <returns>List of objects this hits when it is being raycast</returns>
-        IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance);
+        IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = DefaultQueryTriggerInteraction);
 
         /// <summary>
         /// Cast self in a given direction and get the first object hit.
@@ -63,8 +70,10 @@ namespace nickmaltbie.OpenKCC.Utils
         /// is found.</param>
         /// <param name="skinWidth">Width of skin of object to use when casting a hit. Essentially buffer
         /// space around the edge of the object.</param>
+        /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
+        /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
         /// <returns>True if an object is hit within distance, false otherwise.</returns>
-        bool CastSelf(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit);
+        bool CastSelf(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask = DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = DefaultQueryTriggerInteraction);
 
         /// <summary>
         /// Get the vector to push this object out of overlapping objects with a max distance.
@@ -72,8 +81,10 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="position">Position of the object when it is being raycast.</param>
         /// <param name="rotation">Rotation of the objecting when it is being raycast.</param>
         /// <param name="maxDistance">Maximum distance the player can be pushed</param>
+        /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
+        /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
         /// <returns>Direction to push the object, distance player was pushed.</returns>
-        Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance);
+        Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = DefaultQueryTriggerInteraction);
 
         /// <summary>
         /// Do a raycast in a given direction ignoring this object.
@@ -82,7 +93,9 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="direction">Direction to search for step.</param>
         /// <param name="distance">Distance to search for step ahead of player.</param>
         /// <param name="stepHit">Information bout step hit ahead.</param>
+        /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
+        /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
         /// <returns>Is something ahead hit.</returns>
-        bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit);
+        bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit, int layerMask = DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = DefaultQueryTriggerInteraction);
     }
 }

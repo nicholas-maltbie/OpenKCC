@@ -246,8 +246,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 958f6019d666515419c7bf4b6a76110a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationVersion: v1.0.0
   stepHeight: 0.25
   maxWalkAngle: 60
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 2147483647
 --- !u!114 &1928389238171943503
 MonoBehaviour:
   m_ObjectHideFlags: 0

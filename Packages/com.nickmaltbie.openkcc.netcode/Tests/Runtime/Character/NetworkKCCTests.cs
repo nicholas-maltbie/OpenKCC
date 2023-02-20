@@ -185,7 +185,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             yield return new WaitForFixedUpdate();
             floor.transform.rotation = Quaternion.Euler(70.0f, 0, 0);
 
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.zero));
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.up));
 
             // Wait until players are in sliding satte
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(SlidingState) == player.CurrentState));

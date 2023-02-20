@@ -125,8 +125,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 It.IsAny<Quaternion>(),
                 It.IsAny<Vector3>(),
                 It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny))
-                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
+                out It.Ref<IRaycastHit>.IsAny,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>()))
+                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     hit = raycastHitMock.Object;
                 }))
@@ -195,8 +197,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 It.IsAny<Quaternion>(),
                 It.IsAny<Vector3>(),
                 It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny))
-                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
+                out It.Ref<IRaycastHit>.IsAny,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>()))
+                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     hit = raycastHitMock.Object;
                 }))
@@ -265,8 +269,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 It.IsAny<Quaternion>(),
                 It.IsAny<Vector3>(),
                 It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny))
-                .Returns(new KCCTestUtils.CastSelfReturns((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
+                out It.Ref<IRaycastHit>.IsAny,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>()))
+                .Returns(new KCCTestUtils.CastSelfReturns((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     // Only return hit past second cast
                     if (++hitIdx < 2)
@@ -290,6 +296,20 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             // After calling Update this should be true as well.
             engine.Update();
             TestUtils.AssertInBounds(engine.transform.position, Vector3.up * 0.5f, 2 * KCCUtils.Epsilon);
+        }
+
+        [Test]
+        public void SerializationValidationTests()
+        {
+            KCCMovementEngine movementEngine = CreateGameObject().AddComponent<KCCMovementEngine>();
+            movementEngine.serializationVersion = "";
+            movementEngine.layerMask = 0;
+
+            movementEngine.OnBeforeSerialize();
+            movementEngine.OnAfterDeserialize();
+
+            Assert.AreEqual(movementEngine.serializationVersion, KCCMovementEngine.CurrentSerializationVersion);
+            Assert.AreEqual(movementEngine.layerMask.value, IColliderCast.DefaultLayerMask);
         }
     }
 }
