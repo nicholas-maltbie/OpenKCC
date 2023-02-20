@@ -59,6 +59,11 @@ namespace nickmaltbie.OpenKCC.Utils
         /// Collider cast for checking what the player is colliding with.
         /// </summary>
         IColliderCast ColliderCast { get; }
+
+        /// <summary>
+        /// Get the layer mask for computing player collisions.
+        /// </summary>
+        LayerMask LayerMask { get; }
     }
 
     /// <summary>
@@ -89,5 +94,8 @@ namespace nickmaltbie.OpenKCC.Utils
 
         /// <inheritdoc/>
         public IColliderCast ColliderCast { get; set; }
+
+        /// <inheritdoc/>
+        public LayerMask LayerMask { get; set; }
     }
 }

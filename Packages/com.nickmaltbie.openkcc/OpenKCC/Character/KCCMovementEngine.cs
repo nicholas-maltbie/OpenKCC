@@ -128,6 +128,11 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public float MaxPushSpeed => 100.0f;
 
+        /// <summary>
+        /// Layermask for computing player collisions.
+        /// </summary>
+        public LayerMask layerMask = ~0;
+
         /// <inheritdoc/>
         public bool CanSnapUp => GroundedState.OnGround;
 
@@ -162,6 +167,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// Current grounded state of the character.
         /// </summary>
         public KCCGroundedState GroundedState { get; protected set; }
+
+        /// <inheritdoc/>
+        public LayerMask LayerMask => layerMask;
 
         /// <summary>
         /// Collider cast for player shape.
@@ -202,7 +210,8 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.rotation,
                 -Up,
                 SnapDown,
-                ColliderCast);
+                ColliderCast,
+                layerMask);
             transform.position += Vector3.ClampMagnitude(delta, MaxSnapDownSpeed * unityService.fixedDeltaTime);
         }
 
@@ -291,7 +300,9 @@ namespace nickmaltbie.OpenKCC.Character
             transform.position += ColliderCast.PushOutOverlapping(
                 transform.position,
                 transform.rotation,
-                MaxPushSpeed * unityService.fixedDeltaTime);
+                MaxPushSpeed * unityService.fixedDeltaTime,
+                layerMask,
+                QueryTriggerInteraction.Ignore);
 
             // Allow player to move
             KCCBounce[] bounces = moves.SelectMany(move =>
@@ -373,7 +384,8 @@ namespace nickmaltbie.OpenKCC.Character
                     transform.rotation,
                     -Up,
                     SnapDown,
-                    ColliderCast);
+                    ColliderCast,
+                    layerMask);
 
                 groundCheckPos += snapDelta;
             }
@@ -383,7 +395,8 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.rotation,
                 -Up,
                 GroundCheckDistance,
-                out IRaycastHit hit);
+                out IRaycastHit hit,
+                layerMask);
 
             Vector3 normal = hit.normal;
 

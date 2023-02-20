@@ -302,6 +302,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepHeight: 0.35
   maxWalkAngle: 60
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 2147483647
 --- !u!1001 &1928389239579011581
 PrefabInstance:
   m_ObjectHideFlags: 0

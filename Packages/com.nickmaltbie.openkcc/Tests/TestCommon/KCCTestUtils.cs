@@ -99,7 +99,9 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
                 It.IsAny<Quaternion>(),
                 It.IsAny<Vector3>(),
                 It.IsAny<float>(),
-                out raycastHit
+                out raycastHit,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>()
             )).Returns(didHit);
 
             return raycastHit;

@@ -114,20 +114,24 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
+        /// <param name="layerMask">Layer mask for computing player collisions.</param>
         /// <returns></returns>
         public static Vector3 GetSnapDelta(
             Vector3 position,
             Quaternion rotation,
             Vector3 dir,
             float dist,
-            IColliderCast colliderCast)
+            IColliderCast colliderCast,
+            int layerMask = IColliderCast.DefaultLayerMask)
         {
             bool didHit = colliderCast.CastSelf(
                 position + dir * Epsilon,
                 rotation,
                 dir,
                 dist,
-                out IRaycastHit hit);
+                out IRaycastHit hit,
+                layerMask,
+                queryTriggerInteraction: QueryTriggerInteraction.Ignore);
 
             if (didHit && hit.distance > Epsilon)
             {
@@ -145,15 +149,17 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
-        /// <returns></returns>
+        /// <param name="layerMask">Layer mask for computing player collisions.</param>
+        /// <returns>Final position of player after snapping.</returns>
         public static Vector3 SnapPlayerDown(
             Vector3 position,
             Quaternion rotation,
             Vector3 dir,
             float dist,
-            IColliderCast colliderCast)
+            IColliderCast colliderCast,
+            int layerMask = IColliderCast.DefaultLayerMask)
         {
-            return position + GetSnapDelta(position, rotation, dir, dist, colliderCast);
+            return position + GetSnapDelta(position, rotation, dir, dist, colliderCast, layerMask);
         }
 
         /// <summary>
@@ -184,7 +190,9 @@ namespace nickmaltbie.OpenKCC.Utils
                 rotation,
                 momentum.normalized,
                 config.StepUpDepth + Epsilon,
-                out IRaycastHit snapHit);
+                out IRaycastHit snapHit,
+                config.LayerMask,
+                queryTriggerInteraction: QueryTriggerInteraction.Ignore);
 
             // If they can move without instantly hitting something, then snap them up
             if (!didSnapHit || (snapHit.distance >= Epsilon && snapHit.distance > config.StepUpDepth))
@@ -200,7 +208,9 @@ namespace nickmaltbie.OpenKCC.Utils
                     rotation,
                     momentum.normalized,
                     momentum.magnitude,
-                    out IRaycastHit forwardHit);
+                    out IRaycastHit forwardHit,
+                    config.LayerMask,
+                    queryTriggerInteraction: QueryTriggerInteraction.Ignore);
 
                 float forwardDist = didForwardHit ? Mathf.Max(0, forwardHit.distance - KCCUtils.Epsilon) : momentum.magnitude;
                 position += forwardDist * momentum.normalized;
@@ -229,7 +239,9 @@ namespace nickmaltbie.OpenKCC.Utils
                 hit.point - config.Up * Epsilon + hit.normal * Epsilon,
                 momentum.normalized,
                 momentum.magnitude,
-                out IRaycastHit stepHit);
+                out IRaycastHit stepHit,
+                config.LayerMask,
+                QueryTriggerInteraction.Ignore);
             return hitStep && Vector3.Dot(stepHit.normal, config.Up) <= Epsilon;
         }
 
@@ -338,7 +350,9 @@ namespace nickmaltbie.OpenKCC.Utils
                 rotation,
                 remainingMomentum.normalized,
                 distance,
-                out IRaycastHit hit))
+                out IRaycastHit hit,
+                config.LayerMask,
+                queryTriggerInteraction: QueryTriggerInteraction.Ignore))
             {
                 // If there is no hit, move to desired position
                 return new KCCBounce
@@ -466,7 +480,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didSnapUp)
             {
-                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp, config.ColliderCast);
+                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp, config.ColliderCast, config.LayerMask);
             }
 
             // We're done, player was moved as part of loop

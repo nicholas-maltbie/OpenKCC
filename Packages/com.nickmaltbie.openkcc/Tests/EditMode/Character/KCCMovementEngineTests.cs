@@ -125,7 +125,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 It.IsAny<Quaternion>(),
                 It.IsAny<Vector3>(),
                 It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny))
+                out It.Ref<IRaycastHit>.IsAny,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>()))
                 .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
                 {
                     hit = raycastHitMock.Object;
@@ -195,7 +197,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 It.IsAny<Quaternion>(),
                 It.IsAny<Vector3>(),
                 It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny))
+                out It.Ref<IRaycastHit>.IsAny,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>()))
                 .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
                 {
                     hit = raycastHitMock.Object;
@@ -265,7 +269,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 It.IsAny<Quaternion>(),
                 It.IsAny<Vector3>(),
                 It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny))
+                out It.Ref<IRaycastHit>.IsAny,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>()))
                 .Returns(new KCCTestUtils.CastSelfReturns((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
                 {
                     // Only return hit past second cast
