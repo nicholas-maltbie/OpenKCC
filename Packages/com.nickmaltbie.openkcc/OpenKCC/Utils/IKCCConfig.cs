@@ -67,35 +67,32 @@ namespace nickmaltbie.OpenKCC.Utils
     }
 
     /// <summary>
-    /// fixed structure for configuration for controlling KCC Movement.
+    /// fixed configuration for controlling KCC Movement.
     /// </summary>
-    public struct KCCConfig : IKCCConfig
+    public class KCCConfig : IKCCConfig
     {
         /// <inheritdoc/>
-        public int MaxBounces { get; set; }
+        public int MaxBounces { get; set; } = 5;
 
         /// <inheritdoc/>
-        public float PushDecay { get; set; }
+        public float VerticalSnapUp { get; set; } = 0.3f;
 
         /// <inheritdoc/>
-        public float VerticalSnapUp { get; set; }
+        public float StepUpDepth { get; set; } = 0.3f;
 
         /// <inheritdoc/>
-        public float StepUpDepth { get; set; }
+        public float AnglePower { get; set; } = 0.8f;
 
         /// <inheritdoc/>
-        public float AnglePower { get; set; }
+        public bool CanSnapUp { get; set; } = true;
 
         /// <inheritdoc/>
-        public bool CanSnapUp { get; set; }
-
-        /// <inheritdoc/>
-        public Vector3 Up { get; set; }
+        public Vector3 Up { get; set; } = Vector3.up;
 
         /// <inheritdoc/>
         public IColliderCast ColliderCast { get; set; }
 
         /// <inheritdoc/>
-        public LayerMask LayerMask { get; set; }
+        public LayerMask LayerMask { get; set; } = ~0;
     }
 }

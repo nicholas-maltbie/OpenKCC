@@ -128,7 +128,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 out It.Ref<IRaycastHit>.IsAny,
                 It.IsAny<int>(),
                 It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
+                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     hit = raycastHitMock.Object;
                 }))
@@ -200,7 +200,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 out It.Ref<IRaycastHit>.IsAny,
                 It.IsAny<int>(),
                 It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
+                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     hit = raycastHitMock.Object;
                 }))
@@ -272,7 +272,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 out It.Ref<IRaycastHit>.IsAny,
                 It.IsAny<int>(),
                 It.IsAny<QueryTriggerInteraction>()))
-                .Returns(new KCCTestUtils.CastSelfReturns((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
+                .Returns(new KCCTestUtils.CastSelfReturns((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     // Only return hit past second cast
                     if (++hitIdx < 2)

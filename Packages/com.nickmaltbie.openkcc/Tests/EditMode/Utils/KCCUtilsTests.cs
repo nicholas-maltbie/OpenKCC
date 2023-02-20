@@ -380,7 +380,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             Assert.IsTrue(initialMomentum == null || bounce.initialMomentum == initialMomentum, $"Expected {nameof(bounce.initialMomentum)} to be {initialMomentum} but instead found {bounce.initialMomentum}");
         }
 
-        private delegate void RaycastHitCallback(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit);
+        private delegate void RaycastHitCallback(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
 
         private delegate void RaycastHitReturns(out IRaycastHit hit);
 
@@ -401,7 +401,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
                     out It.Ref<IRaycastHit>.IsAny,
                     It.IsAny<int>(),
                     It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new RaycastHitCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit) =>
+                .Callback(new RaycastHitCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layetMask, QueryTriggerInteraction query) =>
                 {
                     hit = nextHit.Item2;
                     if (hitEnumerator.MoveNext())
@@ -472,7 +472,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
                 new KCCConfig
                 {
                     MaxBounces = maxBounces,
-                    PushDecay = pushDecay,
                     VerticalSnapUp = verticalSnapUp,
                     StepUpDepth = stepUpDepth,
                     AnglePower = anglePower,
