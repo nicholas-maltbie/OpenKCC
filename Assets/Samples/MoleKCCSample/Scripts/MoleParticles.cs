@@ -8,6 +8,11 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 {
     public class MoleParticles : MonoBehaviour
     {
+        /// <summary>
+        /// Default color for particles.
+        /// </summary>
+        public static Color DefaultParticleColor = new Color(153 / 255.0f, 102 / 255.0f, 0 / 255.0f);
+
         [SerializeField]
         public ParticleSystem diggingTrailParticlePrefab;
 
@@ -15,6 +20,16 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         public ParticleSystem burrowParticlePrefab;
 
         public bool DrawParticles { get; set; }
+
+        public Color GroundParticleColor(GameObject parent)
+        {
+            if (parent?.GetComponent<DiggingParticleColor>() is DiggingParticleColor dig)
+            {
+                return Color.Lerp(DefaultParticleColor, dig.diggingColor, 0.25f);
+            }
+
+            return DefaultParticleColor;
+        }
 
         [SerializeField]
         public int maxDiggingTrails = 10;
@@ -102,11 +117,14 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 ParticleSystem.MainModule trailParticles = NextTrail.main;
                 trailParticles.simulationSpace = ParticleSystemSimulationSpace.Custom;
                 trailParticles.customSimulationSpace = currentParent;
+                
             }
 
             if (!CurrentTrail.isPlaying)
             {
                 CurrentTrail.Play();
+                CurrentTrail?.GetComponent<ParticleSystemRenderer>()
+                    .material?.SetColor("_BaseColor", GroundParticleColor(currentParent?.gameObject));
             }
 
             if (!burrowParticles.isPlaying)
@@ -116,6 +134,9 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 burrowSettings.simulationSpace = ParticleSystemSimulationSpace.Local;
                 burrowParticles.transform.localPosition = particleOffset;
             }
+
+            burrowParticles?.GetComponent<ParticleSystemRenderer>()
+                .material.SetColor("_BaseColor", GroundParticleColor(currentParent?.gameObject));
 
             previousParent = currentParent;
         }

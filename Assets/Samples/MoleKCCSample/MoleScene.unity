@@ -1314,10 +1314,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 3988828967
       objectReference: {fileID: 0}
-    - target: {fileID: 598309288828770141, guid: b6dfd7ace8d17c843b78fbc0e5f0a07d, type: 3}
-      propertyPath: linearSpeed
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 3338652870361394586, guid: b6dfd7ace8d17c843b78fbc0e5f0a07d, type: 3}
       propertyPath: m_Name
       value: Network Push Block (1)
@@ -1674,8 +1670,7 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 0}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d58058a0cb4dcdb4eb5ce90905e2f100, type: 3}
 --- !u!4 &257695706 stripped
 Transform:
@@ -2376,7 +2371,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1320
+  m_Name: pb_Mesh-11290
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3347,7 +3342,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh31294
+  m_Name: pb_Mesh46740
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3742,7 +3737,7 @@ PrefabInstance:
       objectReference: {fileID: 443410628}
     - target: {fileID: 7027148876223954014, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
       propertyPath: m_VersionIndex
-      value: 981
+      value: 984
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
@@ -4245,7 +4240,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1484
+  m_Name: pb_Mesh-11862
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -12068,7 +12063,7 @@ PrefabInstance:
       objectReference: {fileID: 978709721}
     - target: {fileID: 7027148876223954014, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
       propertyPath: m_VersionIndex
-      value: 981
+      value: 984
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}

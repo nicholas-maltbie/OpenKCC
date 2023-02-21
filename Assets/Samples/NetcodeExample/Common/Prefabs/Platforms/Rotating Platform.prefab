@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7027148876223953990}
   - component: {fileID: 4730952189568250202}
   - component: {fileID: -5766680589049076982}
+  - component: {fileID: 6001180926601557340}
   m_Layer: 0
   m_Name: Rotating Platform
   m_TagString: Untagged
@@ -1557,3 +1558,16 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &6001180926601557340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7027148876223953991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ea6eaa70bc7eac4399180ad1d2d8172, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diggingColor: {r: 0, g: 0.26666668, b: 1, a: 0}
