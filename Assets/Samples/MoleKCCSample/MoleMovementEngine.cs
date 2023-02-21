@@ -18,6 +18,7 @@
 
 using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
@@ -38,7 +39,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <summary>
         /// Allow the player to snap down at any speed.
         /// </summary>
-        public override float MaxSnapDownSpeed => Mathf.Infinity;
+        public override float MaxSnapDownSpeed => 1000.0f;
 
         /// <summary>
         /// Surface normal for overriding up direction.
@@ -88,6 +89,12 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             {
                 if (bounce.action == KCCUtils.MovementAction.Bounce || bounce.action == KCCUtils.MovementAction.Stop)
                 {
+                    float speed = bounce.remainingMomentum.magnitude;
+                    if (bounce.action == KCCUtils.MovementAction.Stop)
+                    {
+                        speed = bounce.initialMomentum.magnitude;
+                    }
+
                     if (bounce.hit == null)
                     {
                         yield return bounce;
@@ -100,8 +107,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                     {
                         // Rotate the remaining movement
                         bounce.remainingMomentum = Quaternion.LookRotation(bounce.hit.normal) *
-                            bounce.initialMomentum.normalized *
-                            bounce.remainingMomentum.magnitude;
+                            bounce.initialMomentum.normalized * speed;
                     }
 
                     SetNormal(bounce.hit.normal);
@@ -113,6 +119,31 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             // Compute the new grounded state
             CheckGrounded(false);
             SetNormal(GroundedState.SurfaceNormal);
+        }
+
+        /// <summary>
+        /// Update the current grounded state of this kinematic character controller.
+        /// </summary>
+        public override KCCGroundedState CheckGrounded(bool snapped)
+        {
+            bool didHit = ColliderCast.CastSelf(
+                transform.position,
+                transform.rotation,
+                -Up,
+                GroundCheckDistance,
+                out IRaycastHit hit);
+
+            GroundedState = new KCCGroundedState(
+                distanceToGround: hit.distance,
+                onGround: didHit,
+                angle: Vector3.Angle(hit.normal, Up),
+                surfaceNormal: hit.normal,
+                groundHitPosition: hit.distance > 0 ? hit.point : GroundedState.GroundHitPosition,
+                floor: hit.collider?.gameObject,
+                groundedDistance: GroundedDistance,
+                maxWalkAngle: MaxWalkAngle);
+
+            return GroundedState;
         }
     }
 }

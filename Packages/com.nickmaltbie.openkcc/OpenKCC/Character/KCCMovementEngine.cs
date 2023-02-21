@@ -215,7 +215,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Snap the player down onto the ground
         /// </summary>
-        protected void SnapPlayerDown()
+        protected virtual void SnapPlayerDown()
         {
             Vector3 delta = KCCUtils.GetSnapDelta(
                 transform.position,
@@ -249,7 +249,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Gets the velocity of the ground the player is standing on where the player is currently
         /// </summary>
         /// <returns>The velocity of the ground at the point the player is standing on</returns>
-        public Vector3 GetGroundVelocity()
+        public virtual Vector3 GetGroundVelocity()
         {
             Vector3 groundVelocity = Vector3.zero;
             IMovingGround movingGround = GroundedState.Floor?.GetComponent<IMovingGround>();
@@ -348,7 +348,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Teleport player to a given position.
         /// </summary>
         /// <param name="position">Position to teleport player to.</param>
-        public void TeleportPlayer(Vector3 position)
+        public virtual void TeleportPlayer(Vector3 position)
         {
             RelativeParentConfig.Reset();
             transform.position = position;
@@ -365,7 +365,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         /// <param name="movement">How the player is attempting to move.</param>
         /// <returns>Projected movement onto the plane the player is standing on.</returns>
-        public Vector3 GetProjectedMovement(Vector3 movement)
+        public virtual Vector3 GetProjectedMovement(Vector3 movement)
         {
             // If the player is standing on the ground, project their movement onto the ground plane
             // This allows them to walk up gradual slopes without facing a hit in movement speed
@@ -384,7 +384,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Update the current grounded state of this kinematic character controller.
         /// </summary>
-        public KCCGroundedState CheckGrounded(bool snapped)
+        public virtual KCCGroundedState CheckGrounded(bool snapped)
         {
             Vector3 groundCheckPos = transform.position;
 
