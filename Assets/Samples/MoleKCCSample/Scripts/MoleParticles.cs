@@ -1,4 +1,4 @@
-
+﻿
 
 using System.Linq;
 using nickmaltbie.OpenKCC.Character;
@@ -140,7 +140,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             {
                 CurrentTrail.Play();
                 ParticleSystem.MainModule trailParticles = CurrentTrail.main;
-                trailParticles.startColor = new ParticleSystem.MinMaxGradient(dirtColor, GroundParticleColor(currentParent.gameObject));
+                trailParticles.startColor = new ParticleSystem.MinMaxGradient(dirtColor, GroundParticleColor(currentParent?.gameObject));
             }
 
             if (!burrowParticles.isPlaying || currentParent != previousParent)
