@@ -13,6 +13,8 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// </summary>
         public static Color DefaultParticleColor = new Color(153 / 255.0f, 102 / 255.0f, 0 / 255.0f);
 
+        public static Color dirtColor = DefaultParticleColor;
+
         [SerializeField]
         public ParticleSystem diggingTrailParticlePrefab;
 
@@ -117,6 +119,8 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 ParticleSystem.MainModule trailParticles = NextTrail.main;
                 trailParticles.simulationSpace = ParticleSystemSimulationSpace.World;
                 trailParticles.customSimulationSpace = null;
+                var emissionSettings = CurrentTrail.emission;
+                emissionSettings.rateOverDistanceMultiplier = 10;
             }
             else if (movementEngine.GroundedState.StandingOnGround && previousParent != currentParent)
             {
@@ -124,26 +128,29 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 ParticleSystem.MainModule trailParticles = NextTrail.main;
                 trailParticles.simulationSpace = ParticleSystemSimulationSpace.Custom;
                 trailParticles.customSimulationSpace = currentParent;
-                
+                var emissionSettings = CurrentTrail.emission;
+                emissionSettings.rateOverDistanceMultiplier = 10 * Mathf.Max(
+                    currentParent.lossyScale.x,
+                    currentParent.lossyScale.y,
+                    currentParent.lossyScale.z
+                );
             }
 
             if (!CurrentTrail.isPlaying)
             {
                 CurrentTrail.Play();
-                CurrentTrail?.GetComponent<ParticleSystemRenderer>()
-                    .material?.SetColor("_BaseColor", GroundParticleColor(currentParent?.gameObject));
+                ParticleSystem.MainModule trailParticles = CurrentTrail.main;
+                trailParticles.startColor = new ParticleSystem.MinMaxGradient(dirtColor, GroundParticleColor(currentParent.gameObject));
             }
 
-            if (!burrowParticles.isPlaying)
+            if (!burrowParticles.isPlaying || currentParent != previousParent)
             {
                 burrowParticles.Play();
                 ParticleSystem.MainModule burrowSettings = burrowParticles.main;
                 burrowSettings.simulationSpace = ParticleSystemSimulationSpace.Local;
+                burrowSettings.startColor = new ParticleSystem.MinMaxGradient(dirtColor, GroundParticleColor(currentParent.gameObject));
                 burrowParticles.transform.localPosition = particleOffset;
             }
-
-            burrowParticles?.GetComponent<ParticleSystemRenderer>()
-                .material.SetColor("_BaseColor", GroundParticleColor(currentParent?.gameObject));
 
             previousParent = currentParent;
         }
