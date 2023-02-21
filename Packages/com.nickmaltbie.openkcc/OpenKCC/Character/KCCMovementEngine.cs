@@ -213,6 +213,20 @@ namespace nickmaltbie.OpenKCC.Character
         }
 
         /// <summary>
+        /// Should the player snap down after a movement.
+        /// </summary>
+        /// <param name="snappedUp">Did the player snap up during their movement.</param>
+        /// <param name="moves">Movement bounces of the player.</param>
+        /// <returns>True if the player should snap down, false otherwise.</returns>
+        protected virtual bool ShouldSnapDown(bool snappedUp, IEnumerable<Vector3> moves)
+        {
+            return !snappedUp &&
+                GroundedState.StandingOnGround &&
+                !GroundedState.Sliding &&
+                !moves.Any(move => MovingUp(move));
+        }
+
+        /// <summary>
         /// Snap the player down onto the ground
         /// </summary>
         protected virtual void SnapPlayerDown()
@@ -330,7 +344,7 @@ namespace nickmaltbie.OpenKCC.Character
 
             // Only snap down if the player was grounded before they started
             // moving and are not currently trying to move upwards.
-            if (!snappedUp && GroundedState.StandingOnGround && !GroundedState.Sliding && !moves.Any(move => MovingUp(move)))
+            if (ShouldSnapDown(snappedUp, moves))
             {
                 snappedDown = true;
                 SnapPlayerDown();

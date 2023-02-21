@@ -1,0 +1,123 @@
+
+
+using System.Linq;
+using nickmaltbie.OpenKCC.Character;
+using UnityEngine;
+
+namespace nickmaltbie.OpenKCC.MoleKCCSample
+{
+    public class MoleParticles : MonoBehaviour
+    {
+        [SerializeField]
+        public ParticleSystem diggingTrailParticlePrefab;
+
+        [SerializeField]
+        public ParticleSystem burrowParticlePrefab;
+
+        public bool DrawParticles { get; set; }
+
+        [SerializeField]
+        public int maxDiggingTrails = 10;
+
+        [SerializeField]
+        public Vector3 particleOffset = new Vector3(0, -0.5f, 0);
+
+        /// <summary>
+        /// Previous parent for spawning burrowing particles.
+        /// </summary>
+        private Transform previousParent;
+
+        private ParticleSystem burrowParticles;
+        private ParticleSystem[] diggingTrails;
+        private int currentTrail;
+
+        private ParticleSystem CurrentTrail => diggingTrails[currentTrail];
+        private ParticleSystem NextTrail
+        {
+            get
+            {
+                currentTrail = (currentTrail + 1) % diggingTrails.Length;
+
+                if (CurrentTrail.isPlaying)
+                {
+                    CurrentTrail.Stop();
+                }
+
+                CurrentTrail.Clear();
+                return CurrentTrail;
+            }
+        }
+
+        public void Awake()
+        {
+            burrowParticles = Instantiate(burrowParticlePrefab, transform);
+            diggingTrails = Enumerable.Range(0, maxDiggingTrails)
+                .Select(_ => Instantiate(diggingTrailParticlePrefab, transform))
+                .ToArray();
+
+            burrowParticles.transform.localPosition = particleOffset;
+            burrowParticles.Stop();
+            foreach (ParticleSystem trail in diggingTrails)
+            {
+                trail.transform.localPosition = particleOffset;
+                trail.Stop();
+            }
+        }
+
+        public void Update()
+        {
+            if (DrawParticles)
+            {
+                UpdateParticles();
+            }
+            else
+            {
+                ClearParticles();
+            }
+        }
+
+        public void ClearParticles()
+        {
+            previousParent = null;
+            CurrentTrail.Stop();
+            burrowParticles.Stop();
+            burrowParticles.Clear();
+        }
+
+        public void UpdateParticles()
+        {
+            KCCMovementEngine movementEngine = GetComponent<KCCMovementEngine>();
+            Transform currentParent = movementEngine.GroundedState.Floor?.transform;
+
+            if (currentParent == null)
+            {
+                CurrentTrail.Stop();
+                ParticleSystem.MainModule trailParticles = NextTrail.main;
+                trailParticles.simulationSpace = ParticleSystemSimulationSpace.World;
+                trailParticles.customSimulationSpace = null;
+            }
+            else if (movementEngine.GroundedState.StandingOnGround && previousParent != currentParent)
+            {
+                CurrentTrail.Stop();
+                ParticleSystem.MainModule trailParticles = NextTrail.main;
+                trailParticles.simulationSpace = ParticleSystemSimulationSpace.Custom;
+                trailParticles.customSimulationSpace = currentParent;
+            }
+
+            if (!CurrentTrail.isPlaying)
+            {
+                CurrentTrail.Play();
+            }
+
+            if (!burrowParticles.isPlaying)
+            {
+                burrowParticles.Play();
+                ParticleSystem.MainModule burrowSettings = burrowParticles.main;
+                burrowSettings.simulationSpace = ParticleSystemSimulationSpace.Local;
+                burrowParticles.transform.localPosition = particleOffset;
+            }
+
+            previousParent = currentParent;
+        }
+    }
+}
