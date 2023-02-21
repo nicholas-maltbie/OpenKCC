@@ -37,11 +37,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         public override float AnglePower => 1.0f;
 
         /// <summary>
-        /// Allow the player to snap down at any speed.
-        /// </summary>
-        public override float MaxSnapDownSpeed => 1000.0f;
-
-        /// <summary>
         /// Surface normal for overriding up direction.
         /// </summary>
         protected Vector3 groundNormal = Vector3.up;
@@ -89,12 +84,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             {
                 if (bounce.action == KCCUtils.MovementAction.Bounce || bounce.action == KCCUtils.MovementAction.Stop)
                 {
-                    float speed = bounce.remainingMomentum.magnitude;
-                    if (bounce.action == KCCUtils.MovementAction.Stop)
-                    {
-                        speed = bounce.initialMomentum.magnitude;
-                    }
-
                     if (bounce.hit == null)
                     {
                         yield return bounce;
@@ -103,14 +92,31 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
                     // If we bounce off a wall perpendicular to the current surface
                     Vector3 normal = bounce.hit.normal;
+
+                    if (normal == Vector3.zero)
+                    {
+                        normal = groundNormal;
+                    }
+
                     if (normal != Vector3.zero)
                     {
                         // Rotate the remaining movement
                         bounce.remainingMomentum = Quaternion.LookRotation(bounce.hit.normal) *
-                            bounce.initialMomentum.normalized * speed;
+                            bounce.initialMomentum.normalized *
+                            bounce.remainingMomentum.magnitude;
                     }
 
-                    SetNormal(bounce.hit.normal);
+                    SetNormal(normal);
+                }
+
+                if (bounce.action == KCCUtils.MovementAction.Stop)
+                {
+                    bounce.finalPosition += KCCUtils.GetSnapDelta(
+                        bounce.finalPosition,
+                        transform.rotation,
+                        -groundNormal,
+                        movement.magnitude,
+                        ColliderCast);
                 }
 
                 yield return bounce;
@@ -126,8 +132,10 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// </summary>
         public override KCCGroundedState CheckGrounded(bool snapped)
         {
+            Vector3 groundCheckPos = transform.position;
+
             bool didHit = ColliderCast.CastSelf(
-                transform.position,
+                groundCheckPos,
                 transform.rotation,
                 -Up,
                 GroundCheckDistance,
