@@ -331,7 +331,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             
             if (!IsOwner)
             {
-                movementEngine.SetNormal(relativeUp.Value);
+                // movementEngine.SetNormal(relativeUp.Value);
                 movementEngine.CheckGrounded(false);
             }
 

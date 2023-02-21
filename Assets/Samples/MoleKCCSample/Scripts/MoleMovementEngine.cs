@@ -40,12 +40,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <summary>
         /// Surface normal for overriding up direction.
         /// </summary>
-        protected Vector3 groundNormal = Vector3.up;
-
-        /// <summary>
-        /// Should the grounded angle be overwritten.
-        /// </summary>
-        protected bool overrideGrounded = false;
+        protected Vector3 GroundNormal { get; set; } = -Physics.gravity.normalized;
 
         /// <summary>
         /// Max speed that the player can snap down at.
@@ -53,19 +48,9 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         public override float MaxSnapDownSpeed => Mathf.Infinity;
 
         /// <summary>
-        /// Set the normal vector for the ground the mole is standing on.
-        /// </summary>
-        /// <param name="normal"></param>
-        public void SetNormal(Vector3 normal)
-        {
-            groundNormal = normal;
-            overrideGrounded = true;
-        }
-
-        /// <summary>
         /// Override the up direction for the mole.
         /// </summary>
-        public override Vector3 Up => groundNormal;
+        public override Vector3 Up => GroundNormal;
 
         /// <inheritdoc/>
         protected override IEnumerable<KCCBounce> GetMovement(Vector3 movement)
@@ -85,114 +70,37 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                     float remainingSpeed = bounce.initialMomentum.magnitude - bounce.Movement.magnitude;
                     if (normal == Vector3.zero)
                     {
-                        normal = groundNormal;
+                        normal = GroundNormal;
                     }
 
-                    // Rotate the remaining movement
-                    bounce.remainingMomentum = Quaternion.LookRotation(bounce.hit.normal) *
-                        bounce.initialMomentum.normalized * remainingSpeed;
+                    bool perpendicular = Vector3.Dot(normal, bounce.initialMomentum) <= KCCUtils.Epsilon;
+                    if (perpendicular)
+                    {
+                        bounce.remainingMomentum = GroundNormal * remainingSpeed;
+                    }
+                    else
+                    {
+                        // Rotate the remaining movement
+                        bounce.remainingMomentum = Quaternion.LookRotation(bounce.hit.normal) *
+                            bounce.initialMomentum.normalized * remainingSpeed;
+                    }
 
-                    SetNormal(normal);
+                    GroundNormal = normal;
                 }
 
                 yield return bounce;
             }
 
-            // Compute the new grounded state
-            CheckGrounded(false);
-            SetNormal(GroundedState.SurfaceNormal);
-        }
-
-        /// <summary>
-        /// Snap the player down onto the ground
-        /// </summary>
-        protected override void SnapPlayerDown()
-        {
-            transform.position = KCCUtils.SnapPlayerDown(
-                transform.position,
-                transform.rotation,
-                -Up,
-                SnapDown,
-                ColliderCast);
-        }
-
-        /// <summary>
-        /// Applies player movement based current configuration.
-        /// Includes pushing out overlapping objects, updating grounded state, jumping,
-        /// moving the player, and updating the grounded state.
-        /// </summary>
-        /// <param name="moves">Desired player movement in world space.</param>
-        public override KCCBounce[] MovePlayer(params Vector3[] moves)
-        {
-            RelativeParentConfig.FollowGround(transform);
-            Vector3 previousVelocity = (transform.position - previousPosition) / unityService.deltaTime;
-            worldVelocity.AddSample(previousVelocity);
-
-            Vector3 start = transform.position;
-
-            // Push player out of overlapping objects
-            transform.position += ColliderCast.PushOutOverlapping(
-                transform.position,
-                transform.rotation,
-                MaxPushSpeed * unityService.fixedDeltaTime);
-
-            // Allow player to move
-            KCCBounce[] bounces = moves.SelectMany(move =>
+            // Only snap down if the player was grounded before they started
+            // moving and are not currently trying to move upwards.
+            if (GroundedState.StandingOnGround && !GroundedState.Sliding && !MovingUp(movement))
             {
-                KCCBounce[] bounces = GetMovement(move).ToArray();
-
-                // Only snap down if the player was grounded before they started
-                // moving and are not currently trying to move upwards.
-                if (GroundedState.StandingOnGround && !GroundedState.Sliding && !MovingUp(move))
-                {
-                    SnapPlayerDown();
-                }
-
-                return bounces;
-            }).ToArray();
-
-            // Compute player relative movement state based on final pos
-            bool snappedUp = bounces.Any(bounce => bounce.action == KCCUtils.MovementAction.SnapUp);
-            CheckGrounded(snappedUp);
-
-            Vector3 delta = transform.position - start;
-            transform.position += RelativeParentConfig.UpdateMovingGround(start, GroundedState, delta, unityService.fixedDeltaTime);
-            RelativeParentConfig.FollowGround(transform);
-
-            previousPosition = transform.position;
-            return bounces;
-        }
-
-        /// <summary>
-        /// Update the current grounded state of this kinematic character controller.
-        /// </summary>
-        public override KCCGroundedState CheckGrounded(bool snapped)
-        {
-            bool didHit = ColliderCast.CastSelf(
-                transform.position,
-                transform.rotation,
-                -Up,
-                GroundCheckDistance,
-                out IRaycastHit hit);
-
-            Vector3 normal = hit.normal;
-
-            if (snapped)
-            {
-                normal = GroundedState.SurfaceNormal;
+                SnapPlayerDown();
             }
 
-            GroundedState = new KCCGroundedState(
-                distanceToGround: hit.distance,
-                onGround: didHit,
-                angle: Vector3.Angle(normal, Up),
-                surfaceNormal: normal,
-                groundHitPosition: hit.distance > 0 ? hit.point : GroundedState.GroundHitPosition,
-                floor: hit.collider?.gameObject,
-                groundedDistance: GroundedDistance,
-                maxWalkAngle: MaxWalkAngle);
-
-            return GroundedState;
+            // Compute the new grounded state
+            CheckGrounded(false);
+            GroundNormal = GroundedState.SurfaceNormal;
         }
     }
 }
