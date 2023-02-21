@@ -17,9 +17,7 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using System.Linq;
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 

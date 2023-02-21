@@ -269,8 +269,10 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// ground.</returns>
         public Vector3 GetDesiredMovement()
         {
-            var moveDir = Quaternion.FromToRotation(Vector3.up, movementEngine.GroundedState.SurfaceNormal);
-            Vector3 rotatedMovement = moveDir * (HorizPlaneView * InputMovement);
+            Vector3 desiredMovement = HorizPlaneView * InputMovement;
+            Vector3 surfaceNormal = movementEngine.GroundedState.SurfaceNormal;
+            Quaternion moveDir = Quaternion.FromToRotation(Vector3.up, surfaceNormal);
+            Vector3 rotatedMovement = moveDir * desiredMovement;
             float speed = MovementSettingsAttribute.GetSpeed(CurrentState, this);
             Vector3 scaledMovement = rotatedMovement * speed;
             return scaledMovement;
@@ -316,7 +318,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             }
 
             previousPosition = transform.position;
-
             GetComponent<NetworkRelativeTransform>()?.UpdateState(relativeParentConfig);
             base.FixedUpdate();
         }
