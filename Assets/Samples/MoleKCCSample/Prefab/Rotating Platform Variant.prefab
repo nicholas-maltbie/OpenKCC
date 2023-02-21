@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1868350879035298093
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4730952189568250202, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 951099334
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223953991, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_Name
+      value: Rotating Platform Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954008, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954010, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954011, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954014, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7027148876223954014, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+      propertyPath: m_VersionIndex
+      value: 984
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+--- !u!1 &8676401914523233642 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7027148876223953991, guid: e659fe383a444144c8a4edcd00909eaf, type: 3}
+  m_PrefabInstance: {fileID: 1868350879035298093}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8250447943830509122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8676401914523233642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ea6eaa70bc7eac4399180ad1d2d8172, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diggingColor: {r: 0, g: 0.26666668, b: 1, a: 0}

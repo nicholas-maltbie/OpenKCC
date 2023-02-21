@@ -46,7 +46,6 @@ GameObject:
   - component: {fileID: 598309288828770141}
   - component: {fileID: 598309288828770140}
   - component: {fileID: 4570809273658655462}
-  - component: {fileID: 194468607094601660}
   m_Layer: 0
   m_Name: Block
   m_TagString: Untagged
@@ -190,19 +189,6 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
---- !u!114 &194468607094601660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3338652869938218644}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ea6eaa70bc7eac4399180ad1d2d8172, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  diggingColor: {r: 0.039215688, g: 0.7372549, b: 0.18431373, a: 0}
 --- !u!1 &3338652870361394586
 GameObject:
   m_ObjectHideFlags: 0

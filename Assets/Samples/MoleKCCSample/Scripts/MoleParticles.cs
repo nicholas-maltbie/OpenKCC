@@ -25,7 +25,14 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         {
             if (parent?.GetComponent<DiggingParticleColor>() is DiggingParticleColor dig)
             {
-                return Color.Lerp(DefaultParticleColor, dig.diggingColor, 0.25f);
+                return dig.diggingColor;
+            }
+            else if (parent?.GetComponentInParent<Renderer>() is Renderer renderer)
+            {
+                if (renderer.material.HasColor("_BaseColor"))
+                {
+                    return renderer.material.GetColor("_BaseColor");
+                }
             }
 
             return DefaultParticleColor;
