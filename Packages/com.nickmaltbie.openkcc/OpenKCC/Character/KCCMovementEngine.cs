@@ -157,18 +157,18 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Snap down distance for player snapping down.
         /// </summary>
-        public float SnapDown => stepHeight * 2f;
+        public virtual float SnapDown => stepHeight * 2f;
 
         /// <summary>
         /// Max default launch velocity for the player from unlabeled
         /// surfaces.
         /// </summary>
-        public float MaxDefaultLaunchVelocity => 5.0f;
+        public virtual float MaxDefaultLaunchVelocity => 5.0f;
 
         /// <summary>
         /// Maximum speed at which the player can snap down surfaces.
         /// </summary>
-        public float MaxSnapDownSpeed => 5.0f;
+        public virtual float MaxSnapDownSpeed => 5.0f;
 
         /// <summary>
         /// Relative parent configuration for following the ground.
@@ -181,7 +181,7 @@ namespace nickmaltbie.OpenKCC.Character
         public KCCGroundedState GroundedState { get; protected set; }
 
         /// <inheritdoc/>
-        public LayerMask LayerMask => layerMask;
+        public virtual LayerMask LayerMask => layerMask;
 
         /// <summary>
         /// Collider cast for player shape.

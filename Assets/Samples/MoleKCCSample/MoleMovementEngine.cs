@@ -36,6 +36,11 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         public override float AnglePower => 1.0f;
 
         /// <summary>
+        /// Allow the player to snap down at any speed.
+        /// </summary>
+        public override float MaxSnapDownSpeed => Mathf.Infinity;
+
+        /// <summary>
         /// Surface normal for overriding up direction.
         /// </summary>
         protected Vector3 groundNormal = Vector3.up;
