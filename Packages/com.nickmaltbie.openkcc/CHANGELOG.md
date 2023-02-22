@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Small fix to `BufferedInput` to allow for resetting cooldown timer.
 * Updated `KCCMovementEngine` to support layer masks for deciding what
     the player can and cannot collide with.
 

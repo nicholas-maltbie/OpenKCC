@@ -86,7 +86,7 @@ namespace nickmaltbie.OpenKCC.Input
         /// <summary>
         /// Is the input currently active.
         /// </summary>
-        public bool Pressed => elapsedSinceReset > cooldown && elapsedSincePressed <= bufferTime;
+        public bool Pressed => elapsedSinceReset > cooldown && elapsedSincePressed < bufferTime;
 
         /// <summary>
         /// Add delta time to update the buffered input state.
@@ -100,6 +100,17 @@ namespace nickmaltbie.OpenKCC.Input
             if (InputAction?.IsPressed() ?? false)
             {
                 elapsedSincePressed = 0.0f;
+            }
+        }
+
+        /// <summary>
+        /// Reset the cooldown for this button.
+        /// </summary>
+        public void ResetCooldown()
+        {
+            if (cooldown > 0)
+            {
+                elapsedSinceReset = 0;
             }
         }
 
