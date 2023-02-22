@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Significantly improved the mole example and added color changing particles.
+* Fixed a bug where the mole would fall off walls.
+
 ## [1.3.3] 2023-2-16
 
 * Updated package to use statemachineunity.netcode instead of statemachineunity.netcode

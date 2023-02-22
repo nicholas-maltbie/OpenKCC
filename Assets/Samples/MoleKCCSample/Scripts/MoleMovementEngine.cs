@@ -38,50 +38,24 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <summary>
         /// Surface normal for overriding up direction.
         /// </summary>
-        protected Vector3 groundNormal = Vector3.up;
+        protected Vector3 GroundNormal { get; set; } = -Physics.gravity.normalized;
 
         /// <summary>
-        /// Should the grounded angle be overwritten.
+        /// Max speed that the player can snap down at.
         /// </summary>
-        public bool overrideGrounded = false;
-
-        /// <summary>
-        /// Set the normal vector for the ground the mole is standing on.
-        /// </summary>
-        /// <param name="normal"></param>
-        public void SetNormal(Vector3 normal)
-        {
-            groundNormal = normal;
-            overrideGrounded = true;
-        }
+        public override float MaxSnapDownSpeed => Mathf.Infinity;
 
         /// <summary>
         /// Override the up direction for the mole.
         /// </summary>
-        public override Vector3 Up
-        {
-            get
-            {
-                if (overrideGrounded)
-                {
-                    return groundNormal;
-                }
-
-                if (GroundedState.StandingOnGround)
-                {
-                    return GroundedState.SurfaceNormal;
-                }
-
-                return Vector3.up;
-            }
-        }
+        public override Vector3 Up => GroundNormal;
 
         /// <inheritdoc/>
         protected override IEnumerable<KCCBounce> GetMovement(Vector3 movement)
         {
             foreach (KCCBounce bounce in base.GetMovement(movement))
             {
-                if (bounce.action == KCCUtils.MovementAction.Bounce || bounce.action == KCCUtils.MovementAction.Stop)
+                if (bounce.action == KCCUtils.MovementAction.Bounce)
                 {
                     if (bounce.hit == null)
                     {
@@ -91,23 +65,40 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
                     // If we bounce off a wall perpendicular to the current surface
                     Vector3 normal = bounce.hit.normal;
-                    if (normal != Vector3.zero)
+                    float remainingSpeed = bounce.initialMomentum.magnitude - bounce.Movement.magnitude;
+                    if (normal == Vector3.zero)
+                    {
+                        normal = GroundNormal;
+                    }
+
+                    bool perpendicular = Vector3.Dot(normal, bounce.initialMomentum) <= KCCUtils.Epsilon;
+                    if (perpendicular)
+                    {
+                        bounce.remainingMomentum = GroundNormal * remainingSpeed;
+                    }
+                    else
                     {
                         // Rotate the remaining movement
                         bounce.remainingMomentum = Quaternion.LookRotation(bounce.hit.normal) *
-                            bounce.initialMomentum.normalized *
-                            bounce.remainingMomentum.magnitude;
+                            bounce.initialMomentum.normalized * remainingSpeed;
                     }
 
-                    SetNormal(bounce.hit.normal);
+                    GroundNormal = normal;
                 }
 
                 yield return bounce;
             }
 
+            // Only snap down if the player was grounded before they started
+            // moving and are not currently trying to move upwards.
+            if (GroundedState.StandingOnGround && !GroundedState.Sliding && !MovingUp(movement))
+            {
+                SnapPlayerDown();
+            }
+
             // Compute the new grounded state
             CheckGrounded(false);
-            SetNormal(GroundedState.SurfaceNormal);
+            GroundNormal = GroundedState.SurfaceNormal;
         }
     }
 }

@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 7851488135037656253}
   - component: {fileID: 8044744690027935780}
   - component: {fileID: 1595728926935731059}
+  - component: {fileID: 2602389310489390243}
   m_Layer: 0
   m_Name: MolePlayer
   m_TagString: Untagged
@@ -273,11 +274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _attachedAnimator: {fileID: 8968764803127016512}
-  diggingTrailParticlePrefab: {fileID: 6848717913279412209, guid: 466adbb08eb9df34aa7284070d660232, type: 3}
-  burrowParticlePrefab: {fileID: 7473199888666396088, guid: 796eac02c7916814697664456b40db6d, type: 3}
-  particleOffset: {x: 0, y: -0.5, z: 0}
   avatarDiggingOffset: {x: 0, y: -0.6, z: 0}
-  maxDiggingTrails: 10
   moveActionReference: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   jumpActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   walkingSpeed: 7.5
@@ -325,6 +322,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2147483647
   overrideGrounded: 0
+--- !u!114 &2602389310489390243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7761971533017685566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221de4cab6455704c90a546fb49ff938, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diggingTrailParticlePrefab: {fileID: 6848717913279412209, guid: 466adbb08eb9df34aa7284070d660232, type: 3}
+  burrowParticlePrefab: {fileID: 7473199888666396088, guid: 796eac02c7916814697664456b40db6d, type: 3}
+  maxDiggingTrails: 10
+  particleOffset: {x: 0, y: -0.5, z: 0}
 --- !u!1001 &3251002686952817105
 PrefabInstance:
   m_ObjectHideFlags: 0

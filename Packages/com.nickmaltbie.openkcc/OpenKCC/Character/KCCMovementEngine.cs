@@ -157,18 +157,18 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Snap down distance for player snapping down.
         /// </summary>
-        public float SnapDown => stepHeight * 2f;
+        public virtual float SnapDown => stepHeight * 2f;
 
         /// <summary>
         /// Max default launch velocity for the player from unlabeled
         /// surfaces.
         /// </summary>
-        public float MaxDefaultLaunchVelocity => 5.0f;
+        public virtual float MaxDefaultLaunchVelocity => 5.0f;
 
         /// <summary>
         /// Maximum speed at which the player can snap down surfaces.
         /// </summary>
-        public float MaxSnapDownSpeed => 5.0f;
+        public virtual float MaxSnapDownSpeed => 5.0f;
 
         /// <summary>
         /// Relative parent configuration for following the ground.
@@ -181,7 +181,7 @@ namespace nickmaltbie.OpenKCC.Character
         public KCCGroundedState GroundedState { get; protected set; }
 
         /// <inheritdoc/>
-        public LayerMask LayerMask => layerMask;
+        public virtual LayerMask LayerMask => layerMask;
 
         /// <summary>
         /// Collider cast for player shape.
@@ -213,9 +213,23 @@ namespace nickmaltbie.OpenKCC.Character
         }
 
         /// <summary>
+        /// Should the player snap down after a movement.
+        /// </summary>
+        /// <param name="snappedUp">Did the player snap up during their movement.</param>
+        /// <param name="moves">Movement bounces of the player.</param>
+        /// <returns>True if the player should snap down, false otherwise.</returns>
+        protected virtual bool ShouldSnapDown(bool snappedUp, IEnumerable<Vector3> moves)
+        {
+            return !snappedUp &&
+                GroundedState.StandingOnGround &&
+                !GroundedState.Sliding &&
+                !moves.Any(move => MovingUp(move));
+        }
+
+        /// <summary>
         /// Snap the player down onto the ground
         /// </summary>
-        protected void SnapPlayerDown()
+        protected virtual void SnapPlayerDown()
         {
             Vector3 delta = KCCUtils.GetSnapDelta(
                 transform.position,
@@ -249,7 +263,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Gets the velocity of the ground the player is standing on where the player is currently
         /// </summary>
         /// <returns>The velocity of the ground at the point the player is standing on</returns>
-        public Vector3 GetGroundVelocity()
+        public virtual Vector3 GetGroundVelocity()
         {
             Vector3 groundVelocity = Vector3.zero;
             IMovingGround movingGround = GroundedState.Floor?.GetComponent<IMovingGround>();
@@ -330,7 +344,7 @@ namespace nickmaltbie.OpenKCC.Character
 
             // Only snap down if the player was grounded before they started
             // moving and are not currently trying to move upwards.
-            if (!snappedUp && GroundedState.StandingOnGround && !GroundedState.Sliding && !moves.Any(move => MovingUp(move)))
+            if (ShouldSnapDown(snappedUp, moves))
             {
                 snappedDown = true;
                 SnapPlayerDown();
@@ -348,7 +362,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Teleport player to a given position.
         /// </summary>
         /// <param name="position">Position to teleport player to.</param>
-        public void TeleportPlayer(Vector3 position)
+        public virtual void TeleportPlayer(Vector3 position)
         {
             RelativeParentConfig.Reset();
             transform.position = position;
@@ -365,7 +379,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         /// <param name="movement">How the player is attempting to move.</param>
         /// <returns>Projected movement onto the plane the player is standing on.</returns>
-        public Vector3 GetProjectedMovement(Vector3 movement)
+        public virtual Vector3 GetProjectedMovement(Vector3 movement)
         {
             // If the player is standing on the ground, project their movement onto the ground plane
             // This allows them to walk up gradual slopes without facing a hit in movement speed
@@ -384,7 +398,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Update the current grounded state of this kinematic character controller.
         /// </summary>
-        public KCCGroundedState CheckGrounded(bool snapped)
+        public virtual KCCGroundedState CheckGrounded(bool snapped)
         {
             Vector3 groundCheckPos = transform.position;
 

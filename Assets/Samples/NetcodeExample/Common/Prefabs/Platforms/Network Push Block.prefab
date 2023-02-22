@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90aeeb615eabd594da4cbbc1a8e0999e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  linearSpeed: 1
+  linearSpeed: 3
   targetsList:
   - {fileID: 3338652869850866857}
   - {fileID: 3338652870474657397}

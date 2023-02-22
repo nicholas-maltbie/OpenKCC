@@ -23,7 +23,7 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Editor
 {
-    [CustomEditor(typeof(KCCMovementEngine))]
+    [CustomEditor(typeof(KCCMovementEngine), true)]
     public class KCCMovementEngineEditor : UnityEditor.Editor
     {
         private bool state = false;
