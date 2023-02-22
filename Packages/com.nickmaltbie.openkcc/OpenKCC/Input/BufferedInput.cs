@@ -104,6 +104,17 @@ namespace nickmaltbie.OpenKCC.Input
         }
 
         /// <summary>
+        /// Reset the cooldown for this button.
+        /// </summary>
+        public void ResetCooldown()
+        {
+            if (cooldown > 0)
+            {
+                elapsedSincePressed = 0;
+            }
+        }
+
+        /// <summary>
         /// Reset the active state for this button.
         /// </summary>
         public void Reset()

@@ -109,6 +109,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
             mockUnityService.Setup(e => e.deltaTime).Returns(1000);
             bufferedInput.Update();
             Assert.IsTrue(bufferedInput.Pressed);
+
+            mockUnityService.Setup(e => e.deltaTime).Returns(1000);
+            bufferedInput.Update();
+            bufferedInput.ResetCooldown();
+            Assert.IsFalse(bufferedInput.Pressed);
+            bufferedInput.Update();
+            Assert.IsTrue(bufferedInput.Pressed);
         }
     }
 }
