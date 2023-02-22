@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System;
-using System.Linq;
 using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
@@ -271,7 +270,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         {
             Vector3 desiredMovement = HorizPlaneView * InputMovement;
             Vector3 surfaceNormal = movementEngine.GroundedState.SurfaceNormal;
-            Quaternion moveDir = Quaternion.FromToRotation(Vector3.up, surfaceNormal);
+            var moveDir = Quaternion.FromToRotation(Vector3.up, surfaceNormal);
             Vector3 rotatedMovement = moveDir * desiredMovement;
             float speed = MovementSettingsAttribute.GetSpeed(CurrentState, this);
             Vector3 scaledMovement = rotatedMovement * speed;
@@ -329,7 +328,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             {
                 ReadPlayerMovement();
             }
-            
+
             if (!IsOwner)
             {
                 // movementEngine.SetNormal(relativeUp.Value);
