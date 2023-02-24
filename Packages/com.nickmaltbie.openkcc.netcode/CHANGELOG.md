@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Small fixes to mole example movement, need to re-design the camera and mole
+    movement interactions so they work together better.
 * Significantly improved the mole example and added color changing particles.
 * Fixed a bug where the mole would fall off walls.
 
