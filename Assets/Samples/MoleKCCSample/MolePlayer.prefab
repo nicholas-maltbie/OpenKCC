@@ -279,6 +279,7 @@ MonoBehaviour:
   jumpActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   walkingSpeed: 7.5
   jumpVelocity: 10
+  cameraTransform: {fileID: 7761971533017685876}
 --- !u!135 &7851488135037656253
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -316,12 +317,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 161b8645e405ed24c9d21d018eb35a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationVersion: v1.0.0
   stepHeight: 0.35
   maxWalkAngle: 60
   layerMask:
     serializedVersion: 2
     m_Bits: 2147483647
-  overrideGrounded: 0
 --- !u!114 &2602389310489390243
 MonoBehaviour:
   m_ObjectHideFlags: 0

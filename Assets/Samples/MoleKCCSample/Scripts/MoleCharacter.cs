@@ -120,29 +120,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         public float FallingTime { get; private set; }
 
         /// <summary>
-        /// Camera controls associated with the player.
-        /// </summary>
-        protected ICameraControls _cameraControls;
-
-        /// <summary>
-        /// Get the camera controls associated with the state machine.
-        /// </summary>
-        public ICameraControls CameraControls { get => _cameraControls; internal set => _cameraControls = value; }
-
-        /// <summary>
-        /// Rotation of the plane the player is viewing
-        /// </summary>
-        public Quaternion HorizPlaneView => CameraControls != null ?
-            CameraControls.PlayerHeading :
-            Quaternion.Euler(0, transform.eulerAngles.y, 0);
-
-        /// <summary>
-        /// Player rotated movement that they intend to move.
-        /// </summary>
-        /// <param name="inputMovement">Input movement vector of the player</param>
-        public Vector3 RotatedMovement(Vector3 inputMovement) => HorizPlaneView * inputMovement;
-
-        /// <summary>
         /// Player velocity in world space.
         /// </summary>
         public Vector3 Velocity { get; protected set; }
@@ -237,7 +214,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             GetComponent<Rigidbody>().isKinematic = true;
 
             movementEngine = GetComponent<MoleMovementEngine>();
-            _cameraControls = GetComponent<ICameraControls>();
             SetupInputs();
         }
 
@@ -268,9 +244,8 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// ground.</returns>
         public Vector3 GetDesiredMovement()
         {
-            Vector3 desiredMovement = HorizPlaneView * InputMovement;
-            Vector3 surfaceNormal = movementEngine.GroundedState.SurfaceNormal;
-            var moveDir = Quaternion.FromToRotation(Vector3.up, surfaceNormal);
+            Vector3 desiredMovement = GetComponent<ICameraControls>().PlayerHeading * InputMovement;
+            var moveDir = Quaternion.FromToRotation(Vector3.up, movementEngine.Up);
             Vector3 rotatedMovement = moveDir * desiredMovement;
             float speed = MovementSettingsAttribute.GetSpeed(CurrentState, this);
             Vector3 scaledMovement = rotatedMovement * speed;
