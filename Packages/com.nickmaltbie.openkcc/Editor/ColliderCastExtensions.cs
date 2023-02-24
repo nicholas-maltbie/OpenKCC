@@ -46,6 +46,23 @@ namespace nickmaltbie.OpenKCC.Editor
             {
                 DrawCapsuleCollider(colliderCast as CapsuleColliderCast, outlineColor, fillColor, position, rotation);
             }
+            if (colliderCast is SphereColliderCast)
+            {
+                DrawCapsuleCollider(colliderCast as SphereColliderCast, outlineColor, fillColor, position, rotation);
+            }
+        }
+
+        public static void DrawCapsuleCollider(
+            SphereColliderCast sphereColliderCast,
+            Color outlineColor,
+            Color fillColor,
+            Vector3 position,
+            Quaternion rotation)
+        {
+            Gizmos.color = fillColor;
+            Gizmos.DrawSphere(position + sphereColliderCast.SphereCollider.center, sphereColliderCast.SphereCollider.radius);
+            Gizmos.color = outlineColor;
+            Gizmos.DrawWireSphere(position + sphereColliderCast.SphereCollider.center, sphereColliderCast.SphereCollider.radius);
         }
 
         /// <summary>

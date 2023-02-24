@@ -27,7 +27,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
     /// MovementEngine for the mole character to allow the player to
     /// walk up and down walls directly.
     /// </summary>
-    [RequireComponent(typeof(Rigidbody))]
     public class MoleMovementEngine : KCCMovementEngine
     {
         /// <summary>
@@ -51,7 +50,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         public override Vector3 Up => GroundNormal;
 
         /// <inheritdoc/>
-        protected override IEnumerable<KCCBounce> GetMovement(Vector3 movement)
+        public override IEnumerable<KCCBounce> GetMovement(Vector3 movement)
         {
             foreach (KCCBounce bounce in base.GetMovement(movement))
             {

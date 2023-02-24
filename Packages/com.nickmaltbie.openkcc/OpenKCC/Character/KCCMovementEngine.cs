@@ -246,7 +246,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         /// <param name="movement">Movement to move the player.</param>
         /// <returns>Bounces that the player makes when hitting objects as part of it's movement.</returns>
-        protected virtual IEnumerable<KCCBounce> GetMovement(Vector3 movement)
+        public virtual IEnumerable<KCCBounce> GetMovement(Vector3 movement)
         {
             foreach (KCCBounce bounce in KCCUtils.GetBounces(transform.position, movement, transform.rotation, this))
             {
