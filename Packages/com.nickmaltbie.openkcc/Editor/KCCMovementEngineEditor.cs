@@ -54,7 +54,6 @@ namespace nickmaltbie.OpenKCC.Editor
                 EditorGUILayout.Toggle("Standing on Ground or Overlap", grounded.StandingOnGroundOrOverlap);
                 EditorGUILayout.Toggle("Falling", grounded.Falling);
                 EditorGUILayout.Toggle("Sliding", grounded.Sliding);
-
                 EditorGUILayout.Vector3Field("Ground Velocity", engine.GetGroundVelocity());
             }
 

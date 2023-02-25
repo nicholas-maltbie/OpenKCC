@@ -18,6 +18,7 @@
 
 using System.Linq;
 using com.nickmaltbie.OpenKCC.Debug;
+using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -31,29 +32,18 @@ namespace nickmaltbie.OpenKCC.Editor
     public static class DrawKCCBouncesGizmos
     {
         [DrawGizmo(GizmoType.Selected | GizmoType.Active)]
-        public static void DrawGizmoForMyScript(DrawKCCBounces source, GizmoType gizmoType)
+        public static void DrawGizmoForDrawKCCBounces(DrawKCCBounces source, GizmoType gizmoType)
         {
             Transform transform = source.gameObject.transform;
 
             Vector3 movement = transform.forward * source.movementDistance;
+            KCCMovementEngine movementEngine = source.GetComponent<KCCMovementEngine>();
             IColliderCast colliderCast = source.GetComponent<IColliderCast>();
 
             // Get the bounces the player's movement would make
-            var bounces = KCCUtils.GetBounces(
-                    transform.position,
-                    movement,
-                    transform.rotation,
-                    new KCCConfig
-                    {
-                        MaxBounces = source.maxBounces,
-                        VerticalSnapUp = source.stepHeight,
-                        StepUpDepth = source.stepDepth,
-                        AnglePower = 1.0f,
-                        CanSnapUp = true,
-                        Up = Vector3.up,
-                        ColliderCast = colliderCast,
-                    }).ToList();
-
+            Vector3 start = transform.position;
+            var bounces = movementEngine.GetMovement(movement).ToArray();
+            transform.position = start;
             int bounce = 0;
             _ = transform.position;
 
@@ -62,8 +52,7 @@ namespace nickmaltbie.OpenKCC.Editor
                 Color orderColor = source.bounceColors[bounce > 0 ? 0 : bounce % source.bounceColors.Length];
 
                 if (bounceData.action == MovementAction.Move ||
-                    bounceData.action == MovementAction.Bounce ||
-                    bounceData.action == MovementAction.SnapUp)
+                    bounceData.action == MovementAction.Bounce)
                 {
                     if (bounce == 0 && !source.drawInitialCollider)
                     {
@@ -109,6 +98,7 @@ namespace nickmaltbie.OpenKCC.Editor
                         new Color(orderColor.r, orderColor.g, orderColor.b, source.fillAlpha),
                         bounceData.finalPosition,
                         transform.rotation);
+                    Handles.PositionHandle(bounceData.finalPosition, transform.rotation);
                 }
 
                 // If the type is a move, draw a capsule from start to end

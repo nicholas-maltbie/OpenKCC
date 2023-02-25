@@ -16,12 +16,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
 namespace com.nickmaltbie.OpenKCC.Debug
 {
-    [RequireComponent(typeof(IColliderCast))]
+    [RequireComponent(typeof(KCCMovementEngine))]
     public class DrawKCCBounces : MonoBehaviour
     {
         /// <summary>
@@ -37,13 +38,6 @@ namespace com.nickmaltbie.OpenKCC.Debug
         [SerializeField]
         [Tooltip("Should the overlapping colliders be drawn.")]
         public bool drawOverlapColliders = true;
-
-        /// <summary>
-        /// Should the colliders be drawn when the player is not moving
-        /// </summary>
-        [SerializeField]
-        [Tooltip("Should the colliders be drawn when the player is not moving.")]
-        public bool drawWhenStill = true;
 
         /// <summary>
         /// Total distance to move player when drawing colliders.
@@ -69,13 +63,6 @@ namespace com.nickmaltbie.OpenKCC.Debug
         public float outlineAlpha = 1.0f;
 
         /// <summary>
-        /// Should the movement vector be projected onto the ground before moving?
-        /// </summary>
-        [SerializeField]
-        [Tooltip("Should the movement vector be projected onto the ground before moving")]
-        public bool useProjectedMovement = true;
-
-        /// <summary>
         /// Colors for various iterations of drawing, will loop back to start if this runs out.
         /// </summary>
         [SerializeField]
@@ -92,25 +79,6 @@ namespace com.nickmaltbie.OpenKCC.Debug
             new Color(125 / 255f, 201 / 255f, 248 / 255f),
             new Color(160 / 255f, 195 / 255f, 234 / 255f),
         };
-
-        /// <summary>
-        /// Maximum bounces when calculating movement.
-        /// </summary>
-        [SerializeField]
-        [Tooltip("Maximum bounces when calculating movement.")]
-        public int maxBounces = 5;
-
-        /// <summary>
-        /// Step up height for stairs.
-        /// </summary>
-        [SerializeField]
-        public float stepHeight = 0.35f;
-
-        /// <summary>
-        /// Step depth for stairs.
-        /// </summary>
-        [SerializeField]
-        public float stepDepth = 0.1f;
 
         /// <summary>
         /// Color of overlapping objects for the character collider gizmo.
