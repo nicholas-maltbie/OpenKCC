@@ -16,6 +16,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using UnityEngine;
+
 namespace nickmaltbie.OpenKCC.CameraControls
 {
     public interface IManagedCamera
@@ -34,5 +36,10 @@ namespace nickmaltbie.OpenKCC.CameraControls
         /// Gets or sets the previous opacity for the third person character base.
         /// </summary>
         float PreviousOpacity { get; set; }
+
+        /// <summary>
+        /// Transform representing where the camera origin originates from.
+        /// </summary>
+        Transform CameraBase { get; }
     }
 }
