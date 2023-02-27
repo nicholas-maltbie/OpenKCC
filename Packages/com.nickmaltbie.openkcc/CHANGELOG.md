@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Small patch to accessability modifiers for `CameraConfig.CameraDistance`
+* Added parameter to `IManagedCamera.CameraBase`
 * Small updates to DrawKCCBounces to improve the debug view.
 * Small fix to `BufferedInput` to allow for resetting cooldown timer.
 * Updated `KCCMovementEngine` to support layer masks for deciding what
