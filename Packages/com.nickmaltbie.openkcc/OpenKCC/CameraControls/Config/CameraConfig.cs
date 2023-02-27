@@ -158,7 +158,7 @@ namespace nickmaltbie.OpenKCC.CameraControls.Config
         /// <summary>
         /// Get the current distance of the camera from the player camera location.
         /// </summary>
-        public float CameraDistance { get; internal set; }
+        public float CameraDistance { get; set; }
 
         /// <summary>
         /// Source camera position in real world space, this is where the head of 
