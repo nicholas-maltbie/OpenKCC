@@ -61,6 +61,9 @@ namespace nickmaltbie.OpenKCC.netcode.CameraControls
         /// <inheritdoc/>
         public Quaternion PlayerHeading => Quaternion.Euler(0, Yaw, 0);
 
+        /// <inheritdoc/>
+        public Transform CameraBase => config.cameraTransform;
+
         public void Start()
         {
             config.Setup(gameObject);

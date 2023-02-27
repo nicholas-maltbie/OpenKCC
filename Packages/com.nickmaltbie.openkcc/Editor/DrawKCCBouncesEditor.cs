@@ -42,7 +42,7 @@ namespace nickmaltbie.OpenKCC.Editor
 
             // Get the bounces the player's movement would make
             Vector3 start = transform.position;
-            var bounces = movementEngine.GetMovement(movement).ToArray();
+            KCCBounce[] bounces = movementEngine.GetMovement(movement).ToArray();
             transform.position = start;
             int bounce = 0;
             _ = transform.position;

@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
 namespace com.nickmaltbie.OpenKCC.Debug

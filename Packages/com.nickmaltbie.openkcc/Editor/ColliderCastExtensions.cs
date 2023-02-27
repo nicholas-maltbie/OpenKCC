@@ -46,6 +46,7 @@ namespace nickmaltbie.OpenKCC.Editor
             {
                 DrawCapsuleCollider(colliderCast as CapsuleColliderCast, outlineColor, fillColor, position, rotation);
             }
+
             if (colliderCast is SphereColliderCast)
             {
                 DrawCapsuleCollider(colliderCast as SphereColliderCast, outlineColor, fillColor, position, rotation);
