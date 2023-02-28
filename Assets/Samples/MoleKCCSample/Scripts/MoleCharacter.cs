@@ -144,6 +144,8 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// </summary>
         private Vector3 previousPosition;
 
+        private Vector3 previousForward;
+
         [InitialState]
         [Animation("Idle")]
         [Transition(typeof(StartMoveInput), typeof(WalkingState))]
@@ -254,6 +256,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             IManagedCamera camera = GetComponent<IManagedCamera>();
             Quaternion heading = Quaternion.Euler(camera.Pitch, camera.Yaw, 0);
             Vector3 headingForward = heading * Vector3.forward;
+            Vector3 planeUp = Vector3.ProjectOnPlane(up, planeNormal).normalized;
 
             // If the mole is moving towards the wall, have the mole move "up"
             // the surface. If the mole is looking away from the wall, have the
@@ -267,11 +270,10 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             // the surface the player is standing on.
             // On the plane of the normal, forward is the direction
             // the camera is looking in.
-            // TODO: Fix this for perpendicular surfaces.
+            // TODO: fix this for perpendicular headingForward and planeNormal
             Vector3 movementForward = Vector3.ProjectOnPlane(headingForward, planeNormal).normalized;
 
             // Get the horizontal and vertical component of this surface
-            Vector3 planeUp = Vector3.ProjectOnPlane(up, planeNormal).normalized;
             Vector3 verticalComponent = Vector3.Project(movementForward, planeUp);
             Vector3 horizontalComponent = movementForward - verticalComponent;
 
@@ -291,7 +293,13 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                 factor = lookingUp ? 1 : -1;
             }
 
-            if (!surfaceFacingUp)
+
+            if (surfaceFacingUp)
+            {
+                movementForward = Quaternion.AngleAxis(camera.Yaw, planeNormal) * Vector3.forward;
+                movementForward = Vector3.ProjectOnPlane(movementForward, planeNormal).normalized * movementForward.magnitude;
+            }
+            else
             {
                 movementForward = factor * verticalComponent.normalized * verticalComponent.magnitude + horizontalComponent;
             }
@@ -302,11 +310,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             Debug.DrawRay(transform.position, planeNormal, Color.red, 0);
             Debug.DrawRay(transform.position, movementForward, Color.blue, 0);
 
-            if (surfaceFacingUp)
-            {
-                movementForward = Quaternion.AngleAxis(camera.Yaw, planeNormal) * Vector3.forward;
-                movementForward = Vector3.ProjectOnPlane(movementForward, planeNormal).normalized * movementForward.magnitude;
-            }
+            previousForward = movementForward;
 
             // Apply the player's two axis movement to the movement input
             UnityEngine.Debug.Log($"movementForward:{movementForward} planeNormal:{planeNormal}");
