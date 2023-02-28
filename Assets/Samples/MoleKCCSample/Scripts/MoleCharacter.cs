@@ -244,12 +244,78 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// ground.</returns>
         public Vector3 GetDesiredMovement()
         {
-            Vector3 desiredMovement = GetComponent<ICameraControls>().PlayerHeading * InputMovement;
-            var moveDir = Quaternion.FromToRotation(Vector3.up, movementEngine.Up);
-            Vector3 rotatedMovement = moveDir * desiredMovement;
+            // If the player is not on the ground, simply have them move
+            // along the plane perpendicular to gravity.
+            Vector3 up = -Physics.gravity.normalized;
+            Vector3 planeNormal = movementEngine.Up;
+
+            // Compare the direction the player is looking with
+            // the surface the mole is standing on.
+            IManagedCamera camera = GetComponent<IManagedCamera>();
+            Quaternion heading = Quaternion.Euler(camera.Pitch, camera.Yaw, 0);
+            Vector3 headingForward = heading * Vector3.forward;
+
+            // If the mole is moving towards the wall, have the mole move "up"
+            // the surface. If the mole is looking away from the wall, have the
+            // mole move "down" the surface.
+            bool lookingTowardsSurface = Vector3.Dot(headingForward, planeNormal) <= 0;
+            bool lookingUp = Vector3.Dot(headingForward, up) >= 0;
+            bool surfaceFacingUp = Vector3.Dot(planeNormal, up) > 0;
+
+            // The quaternion for player movement is decided by the
+            // combination of the way the camera is facing and the normal of
+            // the surface the player is standing on.
+            // On the plane of the normal, forward is the direction
+            // the camera is looking in.
+            // TODO: Fix this for perpendicular surfaces.
+            Vector3 movementForward = Vector3.ProjectOnPlane(headingForward, planeNormal).normalized;
+
+            // Get the horizontal and vertical component of this surface
+            Vector3 planeUp = Vector3.ProjectOnPlane(up, planeNormal).normalized;
+            Vector3 verticalComponent = Vector3.Project(movementForward, planeUp);
+            Vector3 horizontalComponent = movementForward - verticalComponent;
+
+            // Ensure vertical component always faces up
+            if (Vector3.Dot(verticalComponent, up) < 0)
+            {
+                verticalComponent *= -1;
+            }
+
+            // Move the player up the surface if they are looking towards it.
+            int factor = lookingTowardsSurface ? 1 : -1;
+
+            // If looking perpendicular to the surface, move in the direction
+            // the player is looking
+            if (Mathf.Abs(Vector3.Dot(headingForward, planeNormal)) <= KCCUtils.Epsilon)
+            {
+                factor = lookingUp ? 1 : -1;
+            }
+
+            if (!surfaceFacingUp)
+            {
+                movementForward = factor * verticalComponent.normalized * verticalComponent.magnitude + horizontalComponent;
+            }
+
+            Debug.DrawRay(transform.position, planeUp, Color.green, 0);
+            Debug.DrawRay(transform.position, horizontalComponent, Color.magenta, 0);
+            Debug.DrawRay(transform.position, verticalComponent, Color.yellow, 0);
+            Debug.DrawRay(transform.position, planeNormal, Color.red, 0);
+            Debug.DrawRay(transform.position, movementForward, Color.blue, 0);
+
+            if (surfaceFacingUp)
+            {
+                movementForward = Quaternion.AngleAxis(camera.Yaw, planeNormal) * Vector3.forward;
+                movementForward = Vector3.ProjectOnPlane(movementForward, planeNormal).normalized * movementForward.magnitude;
+            }
+
+            // Apply the player's two axis movement to the movement input
+            UnityEngine.Debug.Log($"movementForward:{movementForward} planeNormal:{planeNormal}");
+            var movementRotation = Quaternion.LookRotation(movementForward, planeNormal);
+            Vector3 axisMovement = movementRotation * InputMovement;
+
+            // Scale movement by speed
             float speed = MovementSettingsAttribute.GetSpeed(CurrentState, this);
-            Vector3 scaledMovement = rotatedMovement * speed;
-            return scaledMovement;
+            return speed * axisMovement;
         }
 
         public override void FixedUpdate()

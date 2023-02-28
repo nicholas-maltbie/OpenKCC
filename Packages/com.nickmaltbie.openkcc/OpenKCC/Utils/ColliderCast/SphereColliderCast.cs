@@ -79,7 +79,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             int layerMask = IColliderCast.DefaultLayerMask,
             QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
         {
-            (Vector3 center, float radius) = GetParams(position, rotation, -KCCUtils.Epsilon);
+            (Vector3 center, float radius) = GetParams(position, rotation);
             return Physics.SphereCastAll(center, radius, direction, distance, layerMask, queryTriggerInteraction)
                 .Where(hit => hit.collider.transform != transform);
         }

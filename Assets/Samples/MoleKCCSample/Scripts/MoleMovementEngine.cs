@@ -52,6 +52,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <inheritdoc/>
         public override IEnumerable<KCCBounce> GetMovement(Vector3 movement)
         {
+            Vector3 initial = transform.position;
             foreach (KCCBounce bounce in base.GetMovement(movement))
             {
                 if (bounce.action == KCCUtils.MovementAction.Bounce)
@@ -90,7 +91,8 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
             // Only snap down if the player was grounded before they started
             // moving and are not currently trying to move upwards.
-            if (GroundedState.StandingOnGround && !GroundedState.Sliding && !MovingUp(movement))
+            if (Vector3.Distance(initial, transform.position) >= KCCUtils.Epsilon &&
+                GroundedState.StandingOnGround && !GroundedState.Sliding && !MovingUp(movement))
             {
                 SnapPlayerDown();
             }
