@@ -261,59 +261,72 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             // If the mole is moving towards the wall, have the mole move "up"
             // the surface. If the mole is looking away from the wall, have the
             // mole move "down" the surface.
-            bool lookingTowardsSurface = Vector3.Dot(headingForward, planeNormal) <= 0;
-            bool lookingUp = Vector3.Dot(headingForward, up) >= 0;
-            bool surfaceFacingUp = Vector3.Dot(planeNormal, up) > 0;
+            bool lookingTowardsSurface = Vector3.Dot(headingForward, planeNormal) < KCCUtils.Epsilon;
+            bool lookingUp = Vector3.Dot(headingForward, up) > KCCUtils.Epsilon;
+            bool surfaceFacingUp = Vector3.Dot(planeNormal, up) > KCCUtils.Epsilon;
+            bool perpendicularToUp = MathF.Abs(Vector3.Dot(planeNormal, up)) <= KCCUtils.Epsilon;
+            bool surfaceFacingDown = Vector3.Dot(planeNormal, up) < -KCCUtils.Epsilon;
+            Vector3 movementForward;
 
-            // The quaternion for player movement is decided by the
-            // combination of the way the camera is facing and the normal of
-            // the surface the player is standing on.
-            // On the plane of the normal, forward is the direction
-            // the camera is looking in.
-            // TODO: fix this for perpendicular headingForward and planeNormal
-            Vector3 movementForward = Vector3.ProjectOnPlane(headingForward, planeNormal).normalized;
-
-            // Get the horizontal and vertical component of this surface
-            Vector3 verticalComponent = Vector3.Project(movementForward, planeUp);
-            Vector3 horizontalComponent = movementForward - verticalComponent;
-
-            // Ensure vertical component always faces up
-            if (Vector3.Dot(verticalComponent, up) < 0)
-            {
-                verticalComponent *= -1;
-            }
-
-            // Move the player up the surface if they are looking towards it.
-            int factor = lookingTowardsSurface ? 1 : -1;
-
-            // If looking perpendicular to the surface, move in the direction
-            // the player is looking
-            if (Mathf.Abs(Vector3.Dot(headingForward, planeNormal)) <= KCCUtils.Epsilon)
-            {
-                factor = lookingUp ? 1 : -1;
-            }
-
-
-            if (surfaceFacingUp)
+            // If the surface is facing up, skip all that complex math and just move the direction the player
+            // is looking.
+            if (surfaceFacingUp && !perpendicularToUp)
             {
                 movementForward = Quaternion.AngleAxis(camera.Yaw, planeNormal) * Vector3.forward;
                 movementForward = Vector3.ProjectOnPlane(movementForward, planeNormal).normalized * movementForward.magnitude;
             }
             else
             {
-                movementForward = factor * verticalComponent.normalized * verticalComponent.magnitude + horizontalComponent;
-            }
+                // The quaternion for player movement is decided by the
+                // combination of the way the camera is facing and the normal of
+                // the surface the player is standing on.
+                // On the plane of the normal, forward is the direction
+                // the camera is looking in.
+                // TODO: fix this for perpendicular headingForward and planeNormal
+                movementForward = Vector3.ProjectOnPlane(headingForward, planeNormal).normalized;
 
-            Debug.DrawRay(transform.position, planeUp, Color.green, 0);
-            Debug.DrawRay(transform.position, horizontalComponent, Color.magenta, 0);
-            Debug.DrawRay(transform.position, verticalComponent, Color.yellow, 0);
-            Debug.DrawRay(transform.position, planeNormal, Color.red, 0);
-            Debug.DrawRay(transform.position, movementForward, Color.blue, 0);
+                if (Mathf.Abs(Vector3.Dot(headingForward, planeNormal)) <= KCCUtils.Epsilon)
+                {
+                    movementForward = headingForward;
+                }
+
+                // Get the horizontal and vertical component of this surface
+                Vector3 verticalComponent = Vector3.Project(movementForward, planeUp);
+                Vector3 horizontalComponent = movementForward - verticalComponent;
+
+                // Ensure vertical component always faces up
+                if (Vector3.Dot(verticalComponent, up) < 0)
+                {
+                    verticalComponent *= -1;
+                }
+
+                // Move the player up the surface if they are looking towards it.
+                int factor = lookingTowardsSurface ? 1 : -1;
+
+                // Edge case, if the surface is facing down, invert the horizontal component
+                if (surfaceFacingDown && lookingTowardsSurface)
+                {
+                    horizontalComponent *= -1;
+                }
+
+                // If looking perpendicular to the surface, move in the direction
+                // the player is looking
+                if (Mathf.Abs(Vector3.Dot(headingForward, planeNormal)) <= KCCUtils.Epsilon)
+                {
+                    factor = lookingUp ? 1 : -1;
+                }
+
+                movementForward = factor * verticalComponent.normalized * verticalComponent.magnitude + horizontalComponent;
+
+                Debug.DrawRay(transform.position, horizontalComponent, Color.red, 0);
+                Debug.DrawRay(transform.position, verticalComponent, Color.blue, 0);
+                Debug.DrawRay(transform.position, planeNormal, Color.green, 0);
+                Debug.DrawRay(transform.position, movementForward, Color.magenta, 0);
+            }
 
             previousForward = movementForward;
 
             // Apply the player's two axis movement to the movement input
-            UnityEngine.Debug.Log($"movementForward:{movementForward} planeNormal:{planeNormal}");
             var movementRotation = Quaternion.LookRotation(movementForward, planeNormal);
             Vector3 axisMovement = movementRotation * InputMovement;
 
