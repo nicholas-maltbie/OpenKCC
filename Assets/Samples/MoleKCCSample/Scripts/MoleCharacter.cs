@@ -88,6 +88,13 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         [SerializeField]
         public float jumpVelocity = 6.5f;
 
+        [Tooltip("Threshold angle for deciding between up and down")]
+        [SerializeField]
+        [Range(0, 90)]
+        public float upFlipThreshold = 80.0f;
+
+        private bool previousFacingUp = true;
+
         /// <summary>
         /// Action reference for jumping.
         /// </summary>
@@ -244,12 +251,49 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// ground.</returns>
         public Vector3 GetDesiredMovement()
         {
-            Vector3 desiredMovement = GetComponent<ICameraControls>().PlayerHeading * InputMovement;
-            var moveDir = Quaternion.FromToRotation(Vector3.up, movementEngine.Up);
-            Vector3 rotatedMovement = moveDir * desiredMovement;
+            // If the player is not on the ground, simply have them move
+            // along the plane perpendicular to gravity.
+            Vector3 planeNormal = movementEngine.Up;
+
+            // Compare the direction the player is looking with
+            // the surface the mole is standing on.
+            IManagedCamera camera = GetComponent<IManagedCamera>();
+            float yaw = camera.Yaw;
+
+            float dot = Vector3.Dot(Vector3.Project(planeNormal, Vector3.up), Vector3.up);
+            bool facingUp = dot > 0 || Mathf.Approximately(dot, 0);
+
+            if (previousFacingUp != facingUp)
+            {
+                float angle = Vector3.Angle(planeNormal, Vector3.up);
+                if (Mathf.Abs(angle % 90) < upFlipThreshold)
+                {
+                    facingUp = previousFacingUp;
+                }
+            }
+
+            previousFacingUp = facingUp;
+            Vector3 worldUp = facingUp ? Vector3.up : Vector3.down;
+
+            if (Mathf.Approximately(dot, -1))
+            {
+                yaw *= -1;
+            }
+
+            var planeRotation = Quaternion.FromToRotation(worldUp, planeNormal);
+            var playerRotation = Quaternion.AngleAxis(yaw, worldUp);
+            Vector3 movementForward = planeRotation * playerRotation * Vector3.forward;
+
+            Debug.DrawRay(transform.position, planeNormal, Color.green, 0);
+            Debug.DrawRay(transform.position, movementForward, Color.blue, 0);
+
+            // Apply the player's two axis movement to the movement input
+            var movementRotation = Quaternion.LookRotation(movementForward, planeNormal);
+            Vector3 axisMovement = movementRotation * InputMovement;
+
+            // Scale movement by speed
             float speed = MovementSettingsAttribute.GetSpeed(CurrentState, this);
-            Vector3 scaledMovement = rotatedMovement * speed;
-            return scaledMovement;
+            return speed * axisMovement;
         }
 
         public override void FixedUpdate()

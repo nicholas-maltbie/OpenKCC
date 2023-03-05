@@ -90,9 +90,16 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
             // Only snap down if the player was grounded before they started
             // moving and are not currently trying to move upwards.
-            if (GroundedState.StandingOnGround && !GroundedState.Sliding && !MovingUp(movement))
+            if (GroundedState.StandingOnGround && !MovingUp(movement))
             {
-                SnapPlayerDown();
+                Vector3 delta = KCCUtils.GetSnapDelta(
+                    transform.position,
+                    transform.rotation,
+                    -Up,
+                    1.0f,
+                    ColliderCast,
+                    layerMask);
+                transform.position += Vector3.ClampMagnitude(delta, MaxSnapDownSpeed * unityService.fixedDeltaTime);
             }
 
             // Compute the new grounded state
