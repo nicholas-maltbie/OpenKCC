@@ -262,7 +262,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
             float dot = Vector3.Dot(Vector3.Project(planeNormal, Vector3.up), Vector3.up);
             bool facingUp = dot > 0 || Mathf.Approximately(dot, 0);
-            
+
             if (previousFacingUp != facingUp)
             {
                 float angle = Vector3.Angle(planeNormal, Vector3.up);

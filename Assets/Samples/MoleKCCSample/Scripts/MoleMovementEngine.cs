@@ -52,7 +52,6 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
         /// <inheritdoc/>
         public override IEnumerable<KCCBounce> GetMovement(Vector3 movement)
         {
-            Vector3 initial = transform.position;
             foreach (KCCBounce bounce in base.GetMovement(movement))
             {
                 if (bounce.action == KCCUtils.MovementAction.Bounce)
