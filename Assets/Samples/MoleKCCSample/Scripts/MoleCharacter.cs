@@ -265,8 +265,8 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
 
             if (previousFacingUp != facingUp)
             {
-                float angle = Vector3.Angle(planeNormal, Vector3.up);
-                if (Mathf.Abs(angle % 90) < upFlipThreshold)
+                float angle = Vector3.Angle(planeNormal, previousFacingUp ? Vector3.up : Vector3.down);
+                if (Mathf.Abs(angle % 90) <= upFlipThreshold && !Mathf.Approximately(angle, 180))
                 {
                     facingUp = previousFacingUp;
                 }
