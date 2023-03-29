@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Refactored common assets (like UI) to `ExampleFirstPersonKCC` sample 
 * Small patch to accessability modifiers for `CameraConfig.CameraDistance`
 * Added parameter to `IManagedCamera.CameraBase`
 * Small updates to DrawKCCBounces to improve the debug view.
