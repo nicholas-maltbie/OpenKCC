@@ -16,7 +16,7 @@ jobs:
           - name: "main"
             branch_prefix: "release"
             package_path: "./Packages/com.nickmaltbie.openkcc"
-            samples: "ExampleFirstPersonKCC,SimplifiedDemoKCC"
+            samples: "ExampleFirstPersonKCC,SimplifiedDemoKCC,ExampleColliderShapes"
           - name: "netcode"
             branch_prefix: "release/netcode"
             package_path: "./Packages/com.nickmaltbie.openkcc.netcode"
