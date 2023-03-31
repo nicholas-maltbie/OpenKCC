@@ -69,6 +69,11 @@ namespace nickmaltbie.OpenKCC.CameraControls
             // Bound the current distance between minimum and maximum
             config.currentDistance = Mathf.Clamp(config.currentDistance + zoomChange, config.minCameraDistance, config.maxCameraDistance);
 
+            if (config.rotatePlayer)
+            {
+                cameraControls.PlayerBase.transform.rotation = Quaternion.Euler(0, cameraControls.Yaw, 0);
+            }
+
             if (config.cameraTransform != null)
             {
                 // Set the player's rotation to be that of the camera's yaw

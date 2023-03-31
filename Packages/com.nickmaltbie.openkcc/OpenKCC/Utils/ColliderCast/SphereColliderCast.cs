@@ -44,6 +44,23 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Gets transformed parameters describing this sphere collider for a given position and rotation
         /// </summary>
+        /// <param name="sphereCenter">Relative position of sphere center.</param>
+        /// <param name="sphereRadius">Radius of the sphere.</param>
+        /// <param name="position">Position of the object.</param>
+        /// <param name="rotation">Rotation of the object.</param>
+        /// <param name="radiusMod">Modifier to add to radius when computing shape of collider.</param>
+        /// <returns>Returns the center of the sphere in world space and the modified radius.</returns>
+        public static (Vector3, float) GetParams(Vector3 sphereCenter, float sphereRadius, Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
+        {
+            Vector3 center = rotation * sphereCenter + position;
+            float radius = sphereRadius + radiusMod;
+
+            return (center, radius);
+        }
+
+        /// <summary>
+        /// Gets transformed parameters describing this sphere collider for a given position and rotation
+        /// </summary>
         /// <param name="position">Position of the object.</param>
         /// <param name="rotation">Rotation of the object.</param>
         /// <param name="radiusMod">Modifier to add to radius when computing shape of collider.</param>
@@ -51,10 +68,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// and the modified radius.</returns>
         public (Vector3, float) GetParams(Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
         {
-            Vector3 center = rotation * SphereCollider.center + position;
-            float radius = SphereCollider.radius + radiusMod;
-
-            return (center, radius);
+            return GetParams(SphereCollider.center, SphereCollider.radius, position, rotation, radiusMod);
         }
 
         /// <inheritdoc/>

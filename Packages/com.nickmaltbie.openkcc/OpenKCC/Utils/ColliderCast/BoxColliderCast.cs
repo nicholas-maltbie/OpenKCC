@@ -44,6 +44,25 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Gets transformed parameters describing this sphere collider for a given position and rotation
         /// </summary>
+        /// <param name="boxCenter">Center of box relative to position.</param>
+        /// <param name="boxSize">Size of the box collider.</param>
+        /// <param name="position">Position of the object.</param>
+        /// <param name="rotation">Rotation of the object.</param>
+        /// <param name="buffer">Buffer space around the object.</param>
+        /// <returns>Returns the center of the collider in world space
+        /// and the size along each axis.</returns>
+        public static (Vector3, Vector3) GetParams(Vector3 boxCenter, Vector3 boxSize, Vector3 position, Quaternion rotation, float buffer = 0)
+        {
+            Vector3 center = rotation * boxCenter + position;
+            Vector3 size = boxSize + Vector3.one * buffer * 2;
+
+            return (center, size);
+        }
+
+
+        /// <summary>
+        /// Gets transformed parameters describing this sphere collider for a given position and rotation
+        /// </summary>
         /// <param name="position">Position of the object.</param>
         /// <param name="rotation">Rotation of the object.</param>
         /// <param name="buffer">Buffer space around the object.</param>
@@ -51,10 +70,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// and the size along each axis.</returns>
         public (Vector3, Vector3) GetParams(Vector3 position, Quaternion rotation, float buffer = 0)
         {
-            Vector3 center = rotation * BoxCollider.center + position;
-            Vector3 size = BoxCollider.size + Vector3.one * buffer * 2;
-
-            return (center, size);
+            return GetParams(BoxCollider.center, BoxCollider.size, position, rotation, buffer);
         }
 
         /// <inheritdoc/>

@@ -41,5 +41,10 @@ namespace nickmaltbie.OpenKCC.CameraControls
         /// Transform representing where the camera origin originates from.
         /// </summary>
         Transform CameraBase { get; }
+
+        /// <summary>
+        /// Transform of the player.
+        /// </summary>
+        Transform PlayerBase { get; }
     }
 }

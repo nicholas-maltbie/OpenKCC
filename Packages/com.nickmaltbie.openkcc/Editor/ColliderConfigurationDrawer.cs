@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nicholas Maltbie
+﻿// Copyright (C) 2023 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,12 +16,9 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace nickmaltbie.OpenKCC.Editor
 {
@@ -37,19 +34,24 @@ namespace nickmaltbie.OpenKCC.Editor
             EditorGUILayout.PropertyField(typeProp, label);
             
             ColliderType col = (ColliderType) typeProp.enumValueIndex;
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("center"), new GUIContent("Center"));
             switch (col)
             {
                 case ColliderType.Box:
-                    EditorGUILayout.PropertyField(property.FindPropertyRelative("size"), new GUIContent("size"));
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("boxCenter"), new GUIContent("Center"));
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("boxSize"), new GUIContent("Size"));
                     break;
                 case ColliderType.Sphere:
-                    EditorGUILayout.PropertyField(property.FindPropertyRelative("radius"), new GUIContent("radius"));
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("sphereCenter"), new GUIContent("Center"));
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("sphereRadius"), new GUIContent("Radius"));
                     break;
                 case ColliderType.Capsule:
-                    EditorGUILayout.PropertyField(property.FindPropertyRelative("radius"), new GUIContent("radius"));
-                    EditorGUILayout.PropertyField(property.FindPropertyRelative("height"), new GUIContent("height"));
-                    EditorGUILayout.PropertyField(property.FindPropertyRelative("capsuleDirection"), new GUIContent("capsuleDirection"));
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("capsuleCenter"), new GUIContent("Center"));
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("capsuleRadius"), new GUIContent("Radius"));
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("capsuleHeight"), new GUIContent("Height"));
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("capsuleDirection"), new GUIContent("Capsule Direction"));
+                    break;
+                case ColliderType.Point:
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("pointCenter"), new GUIContent("Center"));
                     break;
             }
 

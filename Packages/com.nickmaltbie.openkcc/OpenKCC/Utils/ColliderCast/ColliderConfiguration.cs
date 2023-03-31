@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System;
-using System.Linq;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils.ColliderCast
@@ -40,6 +39,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         Box,
         Sphere,
         Capsule,
+        Point,
     }
 
     /// <summary>
@@ -51,32 +51,151 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Type of collider for this configuration.
         /// </summary>
-        public ColliderType type;
+        public ColliderType type = ColliderType.Box;
 
         /// <summary>
-        /// Center of the collider (applies to Box, Sphere, or Capsule).
+        /// Center of box collider.
         /// </summary>
-        public Vector3 center;
+        public Vector3 boxCenter = Vector3.zero;
 
         /// <summary>
-        /// Size of the collider (applies to Box).
+        /// Size of the box collider.
         /// </summary>
-        public Vector3 size;
+        public Vector3 boxSize = Vector3.one;
 
         /// <summary>
-        /// Radius fo the collider (applies to Sphere or Capsule).
+        /// Center of sphere collider.
         /// </summary>
-        public float radius;
+        public Vector3 sphereCenter = Vector3.zero;
 
         /// <summary>
-        /// Height of the collider (applies to Capsule).
+        /// Radius of the sphere collider.
         /// </summary>
-        public float height;
+        public float sphereRadius = 0.5f;
 
         /// <summary>
-        /// Direction of capsule collider.
+        /// Center of capsule collider
         /// </summary>
-        public CapsuleDirection capsuleDirection;
+        public Vector3 capsuleCenter = Vector3.zero;
+
+        /// <summary>
+        /// Radius of the capsule collider.
+        /// </summary>
+        public float capsuleRadius = 0.5f;
+
+        /// <summary>
+        /// Height of the capsule collider.
+        /// </summary>
+        public float capsuleHeight = 2.0f;
+
+        /// <summary>
+        /// Direction fo the capsule collider.
+        /// </summary>
+        public CapsuleDirection capsuleDirection = CapsuleDirection.Y;
+
+        /// <summary>
+        /// Center of point collider.
+        /// </summary>
+        public Vector3 pointCenter = Vector3.zero;
+
+        /// <summary>
+        /// Gets or sets the radius fo the collider (applies to Sphere or Capsule).
+        /// </summary>
+        public float Radius
+        {
+            get
+            {
+                switch (type)
+                {
+                    case ColliderType.Sphere:
+                        return sphereRadius;
+                    case ColliderType.Capsule:
+                        return capsuleRadius;
+                    default:
+                        return 0;
+                }
+            }
+            set
+            {
+                switch (type)
+                {
+                    case ColliderType.Sphere:
+                        sphereRadius = value;
+                        break;
+                    case ColliderType.Capsule:
+                        capsuleRadius = value;
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the center of the collider (applies to Box, Sphere, or Capsule).
+        /// </summary>
+        public Vector3 Center
+        {
+            get
+            {
+                switch (type)
+                {
+                    case ColliderType.Sphere:
+                        return sphereCenter;
+                    case ColliderType.Capsule:
+                        return capsuleCenter;
+                    case ColliderType.Box:
+                        return boxCenter;
+                    default:
+                    case ColliderType.Point:
+                        return pointCenter;
+                }
+            }
+            set
+            {
+                switch (type)
+                {
+                    case ColliderType.Sphere:
+                        sphereCenter = value;
+                        break;
+                    case ColliderType.Capsule:
+                        capsuleCenter = value; ;
+                        break;
+                    case ColliderType.Box:
+                        boxCenter = value;
+                        break;
+                    default:
+                    case ColliderType.Point:
+                        pointCenter = value;
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the size of the collider (applies to Box).
+        /// </summary>
+        public Vector3 Size
+        {
+            get => boxSize;
+            set => boxSize = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the height of the collider (applies to Capsule).
+        /// </summary>
+        public float Height
+        {
+            get => capsuleHeight;
+            set => capsuleHeight = value;
+        }
+
+        /// <summary>
+        /// Gets or Sets Direction of capsule collider.
+        /// </summary>
+        public CapsuleDirection CapsuleDirection
+        {
+            get => capsuleDirection;
+            set => capsuleDirection = value;
+        }
 
         /// <summary>
         /// Constructs an instance of Collider configuration.
@@ -96,11 +215,12 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             CapsuleDirection capsuleDirection = CapsuleDirection.Y)
         {
             this.type = type;
-            this.center = center ?? Vector3.zero;
-            this.size = size ?? Vector3.one;
-            this.radius = radius;
-            this.height = height;
-            this.capsuleDirection = capsuleDirection;
+
+            Center = center ?? Vector3.zero;
+            Size = size ?? Vector3.one;
+            Radius = radius;
+            Height = height;
+            CapsuleDirection = capsuleDirection;
         }
 
         /// <summary>
@@ -132,20 +252,20 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             {
                 case ColliderType.Box:
                     BoxCollider box = go.AddComponent<BoxCollider>();
-                    box.size = size;
-                    box.center = center;
+                    box.size = Size;
+                    box.center = Center;
                     return box;
                 case ColliderType.Sphere:
                     SphereCollider sphere = go.AddComponent<SphereCollider>();
-                    sphere.center = center;
-                    sphere.radius = radius;
+                    sphere.center = Center;
+                    sphere.radius = Radius;
                     return sphere;
                 case ColliderType.Capsule:
                     CapsuleCollider capsule = go.AddComponent<CapsuleCollider>();
-                    capsule.center = center;
-                    capsule.radius = radius;
-                    capsule.height = height;
-                    capsule.direction = (int)capsuleDirection;
+                    capsule.center = Center;
+                    capsule.radius = Radius;
+                    capsule.height = Height;
+                    capsule.direction = (int)CapsuleDirection;
                     return capsule;
             }
 

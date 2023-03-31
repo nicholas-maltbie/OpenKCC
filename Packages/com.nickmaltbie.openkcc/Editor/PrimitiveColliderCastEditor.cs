@@ -30,7 +30,7 @@ namespace nickmaltbie.OpenKCC.Editor
 
         public void OnEnable()
         {
-            colliderConfig = serializedObject.FindProperty("colliderConfig");
+            colliderConfig = serializedObject.FindProperty("config");
         }
 
         public override void OnInspectorGUI()

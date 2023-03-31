@@ -5,8 +5,13 @@ All notable changes to this project will be documented in this file.
 ## In Progress
 
 * Refactored common assets (like UI) to `ExampleFirstPersonKCC` sample 
+* Added new type of `IColliderCast` in `PrimitiveColliderCast` which can select
+    between different parameters via the `ColliderConfiguration` which includes
+    a property drawer and custom editor for making it easier to
+    configure and see changes reflected in the game.
 * Small patch to accessability modifiers for `CameraConfig.CameraDistance`
-* Added parameter to `IManagedCamera.CameraBase`
+* Added parameters to `IManagedCamera`:
+    `CameraBase` and `PlayerBase`
 * Small updates to DrawKCCBounces to improve the debug view.
 * Small fix to `BufferedInput` to allow for resetting cooldown timer.
 * Updated `KCCMovementEngine` to support layer masks for deciding what

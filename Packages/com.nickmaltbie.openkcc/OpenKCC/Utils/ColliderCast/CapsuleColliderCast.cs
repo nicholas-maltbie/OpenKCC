@@ -55,20 +55,35 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Gets transformed parameters describing this capsule collider for a given position and rotation
         /// </summary>
+        /// <param name="capsuleCenter">Center of the capsule collider in relative position.</param>
+        /// <param name="capsuleRadius">Radius of the capsule</param>
+        /// <param name="capsuleHeight">height of the capsule.</param>
+        /// <param name="position">Position of the object.</param>
+        /// <param name="rotation">Rotation of the object.</param>
+        /// <param name="radiusMod">Modifier to add to radius when computing shape of collider.</param>
+        /// <returns>The top, bottom, radius, and height of the capsule collider</returns>
+        public static (Vector3, Vector3, float, float) GetParams(Vector3 capsuleCenter, float capsuleRadius, float capsuleHeight, Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
+        {
+            Vector3 center = rotation * capsuleCenter + position;
+            float radius = capsuleRadius + radiusMod;
+            float height = capsuleHeight + radiusMod * 2;
+
+            Vector3 bottom = center + rotation * Vector3.down * (height / 2 - radius);
+            Vector3 top = center + rotation * Vector3.up * (height / 2 - radius);
+
+            return (top, bottom, radius, height);
+        }
+        
+        /// <summary>
+        /// Gets transformed parameters describing this capsule collider for a given position and rotation
+        /// </summary>
         /// <param name="position">Position of the object.</param>
         /// <param name="rotation">Rotation of the object.</param>
         /// <param name="radiusMod">Modifier to add to radius when computing shape of collider.</param>
         /// <returns>The top, bottom, radius, and height of the capsule collider</returns>
         public (Vector3, Vector3, float, float) GetParams(Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
         {
-            Vector3 center = rotation * CapsuleCollider.center + position;
-            float radius = CapsuleCollider.radius + radiusMod;
-            float height = CapsuleCollider.height + radiusMod * 2;
-
-            Vector3 bottom = center + rotation * Vector3.down * (height / 2 - radius);
-            Vector3 top = center + rotation * Vector3.up * (height / 2 - radius);
-
-            return (top, bottom, radius, height);
+            return GetParams(CapsuleCollider.center, CapsuleCollider.radius, CapsuleCollider.height, position, rotation, radiusMod);
         }
 
         /// <inheritdoc/>

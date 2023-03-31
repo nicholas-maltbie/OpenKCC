@@ -17,7 +17,6 @@ GameObject:
   - component: {fileID: 7302728892010667456}
   - component: {fileID: 7476057024634496287}
   - component: {fileID: 6690048273425853709}
-  - component: {fileID: 655440614}
   m_Layer: 0
   m_Name: VariableShapePlayer
   m_TagString: Untagged
@@ -73,6 +72,7 @@ MonoBehaviour:
     ditherDistance: 1
     thirdPersonCharacterBase: {fileID: 7609369152641226328}
     transitionTime: 0.1
+    rotatePlayer: 0
 --- !u!54 &7302728890703124785
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -261,26 +261,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57479934d78b0c5439b941594a151bca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colliderConfig:
-    type: 0
+  config:
+    type: 3
     center: {x: 0, y: 1, z: 0}
     size: {x: 1, y: 2, z: 1}
-    radius: 1
+    radius: 0.5
     height: 0
     capsuleDirection: 0
---- !u!65 &655440614
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7302728890703124789}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2, z: 1}
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &7302728891450753470
 GameObject:
   m_ObjectHideFlags: 0

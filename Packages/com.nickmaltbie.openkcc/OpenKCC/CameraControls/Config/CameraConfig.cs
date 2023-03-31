@@ -146,6 +146,11 @@ namespace nickmaltbie.OpenKCC.CameraControls.Config
         public float transitionTime = 0.1f;
 
         /// <summary>
+        /// Should this camera config rotate the avatar along the yaw.
+        /// </summary>
+        public bool rotatePlayer = false;
+
+        /// <summary>
         /// Objects to ignore when drawing raycast for camera.
         /// </summary>
         private List<GameObject> ignoreObjects = new List<GameObject>();

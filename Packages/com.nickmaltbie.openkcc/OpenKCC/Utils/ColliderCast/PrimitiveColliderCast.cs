@@ -16,8 +16,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils.ColliderCast
@@ -28,39 +28,111 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
     /// </summary>
     public class PrimitiveColliderCast : AbstractPrimitiveColliderCast
     {
+        /// <summary>
+        /// Selected collider configuration.
+        /// </summary>
         [Tooltip("Collider type selected for casting.")]
         [SerializeField]
-        public ColliderConfiguration colliderConfig;
+        public ColliderConfiguration config;
 
+        /// <summary>
+        /// Generated collider for this primitive collider cast.
+        /// </summary>
+        /// <value></value>
         private Collider GeneratedCollider { get; set; }
 
+        /// <summary>
+        /// Get the collider for this primitive collider cast.
+        /// </summary>
         public override Collider Collider => GeneratedCollider;
-
-        internal IEnumerable<Collider> ExtraColliders { get; private set; } = new Collider[0];
 
         public void Awake()
         {
             ConfigureColliders();
         }
 
+        /// <summary>
+        /// Create the collider for this primitive collider cast.
+        /// </summary>
         public void ConfigureColliders()
         {
-            GeneratedCollider = colliderConfig.AttachCollider(gameObject, true);
+            GeneratedCollider = config.AttachCollider(gameObject, true);
         }
 
+        /// <inheritdoc/>
         public override Vector3 GetBottom(Vector3 position, Quaternion rotation)
         {
-            return Vector3.zero;
+            switch (config.type)
+            {
+                case ColliderType.Box:
+                    (Vector3 boxCenter, Vector3 boxSize) = BoxColliderCast.GetParams(config.Center, config.Size, position, rotation, -KCCUtils.Epsilon);
+                    return boxCenter + rotation * Vector3.down * boxSize.y / 2;
+                case ColliderType.Sphere:
+                    (Vector3 sphereCenter, float sphereRadius) = SphereColliderCast.GetParams(config.Center, config.Radius, position, rotation);
+                    return sphereCenter - sphereRadius * (rotation * transform.up);
+                case ColliderType.Capsule:
+                    (_, Vector3 capsuleBottom, float capsuleRadius, _) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, position, rotation);
+                    return capsuleBottom + capsuleRadius * (rotation * Vector3.down);
+                case ColliderType.Point:
+                default:
+                    return position + rotation * (config.Center + Vector3.down * KCCUtils.Epsilon);
+            }
         }
 
+        /// <inheritdoc/>
         public override IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
         {
-            yield break;
+            IEnumerable<RaycastHit> hits;
+            switch (config.type)
+            {
+                case ColliderType.Box:
+                    (Vector3 boxCenter, Vector3 boxSize) = BoxColliderCast.GetParams(config.Center, config.Size, position, rotation, -KCCUtils.Epsilon);
+                    hits = Physics.BoxCastAll(boxCenter, boxSize / 2, direction, rotation, distance, layerMask, queryTriggerInteraction);
+                    break;
+                case ColliderType.Sphere:
+                    (Vector3 sphereCenter, float sphereRadius) = SphereColliderCast.GetParams(config.Center, config.Radius, position, rotation);
+                    hits = Physics.SphereCastAll(sphereCenter, sphereRadius, direction, distance, layerMask, queryTriggerInteraction);
+                    break;
+                case ColliderType.Capsule:
+                    (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, position, rotation);
+                    hits = Physics.CapsuleCastAll(capsuleTop, capsuleBottom, capsuleRadius, direction, distance, layerMask, queryTriggerInteraction);
+                    break;
+                case ColliderType.Point:
+                default:
+                    Vector3 origin = position + rotation * config.Center;
+                    hits = Physics.RaycastAll(origin, direction, distance, layerMask, queryTriggerInteraction);
+                    break;
+            }
+
+            return hits.Where(hit => hit.collider.transform != transform);
         }
 
+        /// <inheritdoc/>
         public override IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
         {
-            yield break;
+            IEnumerable<Collider> overlap;
+            switch (config.type)
+            {
+                case ColliderType.Box:
+                    (Vector3 boxCenter, Vector3 boxSize) = BoxColliderCast.GetParams(config.Center, config.Size, position, rotation, -KCCUtils.Epsilon);
+                    overlap = Physics.OverlapBox(boxCenter, boxSize / 2, rotation, layerMask, queryTriggerInteraction);
+                    break;
+                case ColliderType.Sphere:
+                    (Vector3 sphereCenter, float sphereRadius) = SphereColliderCast.GetParams(config.Center, config.Radius, position, rotation);
+                    overlap = Physics.OverlapSphere(sphereCenter, sphereRadius, layerMask, queryTriggerInteraction);
+                    break;
+                case ColliderType.Capsule:
+                    (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, position, rotation);
+                    overlap = Physics.OverlapCapsule(capsuleTop, capsuleBottom, capsuleRadius, layerMask, queryTriggerInteraction);
+                    break;
+                case ColliderType.Point:
+                default:
+                    Vector3 origin = position + rotation * config.Center;
+                    overlap = Physics.OverlapSphere(origin, KCCUtils.Epsilon / 2, layerMask, queryTriggerInteraction);
+                    break;
+            }
+
+            return overlap.Where(collider => collider.transform != transform);
         }
     }
 }

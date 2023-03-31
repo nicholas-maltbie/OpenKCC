@@ -53,6 +53,9 @@ namespace nickmaltbie.OpenKCC.CameraControls
         /// <inheritdoc/>
         public Transform CameraBase => config.cameraTransform;
 
+        /// <inheritdoc/>
+        public Transform PlayerBase => transform;
+
         public void Start()
         {
             config.Setup(gameObject);
