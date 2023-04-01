@@ -57,6 +57,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public void ConfigureColliders()
         {
             GeneratedCollider = config.AttachCollider(gameObject, true);
+            if (config.type == ColliderType.Point)
+            {
+                SphereCollider sphere = gameObject.AddComponent<SphereCollider>();
+                sphere.radius = KCCUtils.Epsilon / 2;
+                sphere.center = config.pointCenter;
+                GeneratedCollider = sphere;
+            }
         }
 
         /// <inheritdoc/>

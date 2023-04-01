@@ -57,7 +57,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         }
 
         /// <inheritdoc/>
-        public Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = IColliderCast.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
+        public virtual Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = IColliderCast.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
         {
             Vector3 pushed = Vector3.zero;
             foreach (Collider overlap in GetOverlapping(position, rotation, layerMask, queryTriggerInteraction))
