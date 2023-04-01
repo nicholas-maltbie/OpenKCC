@@ -20,6 +20,7 @@ using System.Collections;
 using System.Linq;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
 using nickmaltbie.OpenKCC.Character.Action;
+using nickmaltbie.OpenKCC.Character.Animation;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.netcode.Character;
@@ -76,7 +77,6 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         public const string MoveControlName = "Move";
         public const string JumpControlName = "Jump";
         public const string SprintControlName = "Sprint";
-        public const string AnimControllerPath = "Packages/com.nickmaltbie.openkcc/Common/Animations/CharacterAnimationController.controller";
 
         protected override int NumberOfClients => 2;
         private GameObject floor;
@@ -241,7 +241,21 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
 
             // Setup animation controller.
             Animator anim = go.AddComponent<Animator>();
-            anim.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath(AnimControllerPath, typeof(AnimatorController)) as AnimatorController;
+            var controller = new AnimatorController();
+            controller.AddLayer("base");
+            AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
+            controller.AddParameter("MoveX", AnimatorControllerParameterType.Float);
+            controller.AddParameter("MoveY", AnimatorControllerParameterType.Float);
+
+            rootStateMachine.AddState(HumanoidKCCAnim.IdleAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.JumpAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.LandingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.WalkingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.SlidingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.FallingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.SprintingAnimState);
+            rootStateMachine.AddState(HumanoidKCCAnim.LongFallingAnimState);
+            anim.runtimeAnimatorController = controller;
 
             // setup capsule collider
             CapsuleCollider capsuleCollider = go.GetComponent<CapsuleCollider>();
