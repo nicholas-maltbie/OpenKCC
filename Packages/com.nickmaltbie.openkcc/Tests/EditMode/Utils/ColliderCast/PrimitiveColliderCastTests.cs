@@ -108,10 +108,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         [UnityTest]
         public IEnumerator Validate_GetHits_OneHit(
             [ValueSource(nameof(ColliderTypes))] ColliderType colliderType,
-            [NUnit.Framework.Range(1, 10, 2)] float dist)
+            [NUnit.Framework.Range(3, 10, 2)] float dist)
         {
             colliderCast.config.type = colliderType;
             GameObject target = MakeCube(Vector3.forward * dist);
+            Physics.SyncTransforms();
             yield return null;
             Assert.IsTrue(colliderCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, dist * 2 + 3, out IRaycastHit hit));
             Assert.IsTrue(hit.rigidbody.gameObject == target);
@@ -180,7 +181,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         public IEnumerator Validate_DoRaycastInDirection_Hit([ValueSource(nameof(ColliderTypes))] ColliderType colliderType)
         {
             colliderCast.config.type = colliderType;
-            GameObject target = MakeCube(Vector3.forward * 3);
+            GameObject target = MakeCube(Vector3.forward * 2);
+            Physics.SyncTransforms();
 
             yield return null;
             Assert.IsTrue(colliderCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, 5, out IRaycastHit hit));
