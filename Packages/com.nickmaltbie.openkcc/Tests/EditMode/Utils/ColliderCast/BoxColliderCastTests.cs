@@ -24,62 +24,49 @@ using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
+namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
 {
     /// <summary>
-    /// Basic tests for CapsuleColliderCast in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Utils.ColliderCast.BoxColliderCast"/> in edit mode.
     /// </summary>
     [TestFixture]
-    public class CapsuleColliderCastTests : TestBase
+    public class BoxColliderCastTests : TestBase
     {
-        private CapsuleColliderCast colliderCast;
+        private BoxColliderCast boxCast;
 
-        private CapsuleCollider collider;
+        private BoxCollider box;
 
         [SetUp]
         public void SetUp()
         {
             GameObject go = CreateGameObject();
-            collider = go.AddComponent<CapsuleCollider>();
-            collider.radius = 0.5f;
-            collider.center = Vector3.zero;
-            collider.height = 2;
-            colliderCast = go.AddComponent<CapsuleColliderCast>();
-        }
-
-        [Test]
-        public void Validate_GetParams()
-        {
-            (Vector3 top, Vector3 bottom, float radius, float height) =
-                colliderCast.GetParams(Vector3.zero, Quaternion.Euler(Vector3.zero));
-
-            Assert.AreEqual(new Vector3(0, collider.height / 2 - collider.radius, 0), top);
-            Assert.AreEqual(new Vector3(0, -collider.height / 2 + collider.radius, 0), bottom);
-            Assert.AreEqual(collider.radius, radius);
-            Assert.AreEqual(collider.height, height);
+            box = go.AddComponent<BoxCollider>();
+            box.size = Vector3.one;
+            box.center = Vector3.zero;
+            boxCast = go.AddComponent<BoxColliderCast>();
         }
 
         [Test]
         public void Validate_GetBottom()
         {
             TestUtils.AssertInBounds(
-                colliderCast.GetBottom(Vector3.zero, Quaternion.identity),
-                new Vector3(0, -collider.height / 2, 0),
+                boxCast.GetBottom(Vector3.zero, Quaternion.identity),
+                new Vector3(0, -(box.size / 2).y, 0),
                 0.05f);
             TestUtils.AssertInBounds(
-                colliderCast.GetBottom(Vector3.zero, Quaternion.Euler(0, 0, 180)),
-                new Vector3(0, collider.height / 2, 0),
+                boxCast.GetBottom(Vector3.zero, Quaternion.Euler(0, 0, 180)),
+                new Vector3(0, (box.size / 2).y, 0),
                 0.05f);
             TestUtils.AssertInBounds(
-                colliderCast.GetBottom(Vector3.zero, Quaternion.Euler(0, 0, 90)),
-                new Vector3(collider.height / 2, 0, 0),
+                boxCast.GetBottom(Vector3.zero, Quaternion.Euler(0, 0, 90)),
+                new Vector3((box.size / 2).x, 0, 0),
                 0.05f);
         }
 
         [Test]
         public void Validate_GetHits_NoHits()
         {
-            bool didHit = colliderCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, 1, out _);
+            bool didHit = boxCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, 1, out _);
             Assert.IsFalse(didHit);
         }
 
@@ -87,7 +74,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         public void Validate_GetHits_OneHit([NUnit.Framework.Range(1, 10, 2)] float dist)
         {
             GameObject target = MakeCube(Vector3.forward * dist);
-            Assert.IsTrue(colliderCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, dist + 1, out IRaycastHit hit));
+            Assert.IsTrue(boxCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, dist + 1, out IRaycastHit hit));
             Assert.IsTrue(hit.rigidbody.gameObject == target);
         }
 
@@ -95,7 +82,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         public void Validate_GetOverlapping([NUnit.Framework.Range(1, 10, 2)] int numOverlap)
         {
             GameObject[] targets = Enumerable.Range(0, numOverlap).Select(_ => MakeCube()).ToArray();
-            IEnumerable<Collider> overlapping = colliderCast.GetOverlapping(Vector3.zero, Quaternion.identity);
+            IEnumerable<Collider> overlapping = boxCast.GetOverlapping(Vector3.zero, Quaternion.identity);
             Assert.IsTrue(new HashSet<GameObject>(overlapping.Select(o => o.gameObject)).SetEquals(targets));
         }
 
@@ -103,7 +90,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         public void Validate_PushOutOverlapping_NoOverlap()
         {
             TestUtils.AssertInBounds(
-                colliderCast.PushOutOverlapping(Vector3.zero, Quaternion.identity, 10.0f),
+                boxCast.PushOutOverlapping(Vector3.zero, Quaternion.identity, 10.0f),
                 Vector3.zero,
                 0.01f);
         }
@@ -113,7 +100,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         {
             MakeCube();
             TestUtils.AssertInBounds(
-                colliderCast.PushOutOverlapping(Vector3.zero, Quaternion.identity, 10.0f).magnitude,
+                boxCast.PushOutOverlapping(Vector3.zero, Quaternion.identity, 10.0f).magnitude,
                 1.0f,
                 0.01f);
         }
@@ -126,7 +113,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             target1.transform.localScale = Vector3.one * 3;
             RegisterGameObject(target1);
             TestUtils.AssertInBounds(
-                colliderCast.PushOutOverlapping(Vector3.zero, Quaternion.identity, 10.0f).magnitude,
+                boxCast.PushOutOverlapping(Vector3.zero, Quaternion.identity, 10.0f).magnitude,
                 1.0f,
                 0.01f);
         }
@@ -134,21 +121,15 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         [Test]
         public void Validate_DoRaycastInDirection_NoHit()
         {
-            Assert.IsFalse(colliderCast.DoRaycastInDirection(Vector3.zero, Vector3.forward, 1, out IRaycastHit _));
+            Assert.IsFalse(boxCast.DoRaycastInDirection(Vector3.zero, Vector3.forward, 1, out IRaycastHit _));
         }
 
         [Test]
         public void Validate_DoRaycastInDirection_Hit()
         {
             GameObject target = MakeCube(Vector3.forward * 1);
-            Assert.IsTrue(colliderCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, 5, out IRaycastHit hit));
+            Assert.IsTrue(boxCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, 5, out IRaycastHit hit));
             Assert.IsTrue(hit.rigidbody.gameObject == target);
-        }
-
-        [Test]
-        public void Validate_DebugCapsuleMesh()
-        {
-            Assert.AreEqual(colliderCast.DebugCapsuleMesh, colliderCast.DebugCapsuleMesh);
         }
 
         private GameObject MakeCube(Vector3? position = null)

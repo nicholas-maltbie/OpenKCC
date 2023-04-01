@@ -23,39 +23,40 @@ using UnityEngine;
 namespace nickmaltbie.OpenKCC.Utils.ColliderCast
 {
     /// <summary>
-    /// ColliderCast behaviour intended to work with any sphere collider shape.
+    /// ColliderCast behaviour intended to work with any box collider shape.
     /// </summary>
-    [RequireComponent(typeof(SphereCollider))]
-    public class SphereColliderCast : AbstractPrimitiveColliderCast
+    [RequireComponent(typeof(BoxCollider))]
+    public class BoxColliderCast : AbstractPrimitiveColliderCast
     {
         /// <summary>
-        /// Sphere collider associated with this object.
+        /// Box collider associated with this object.
         /// </summary>
-        private SphereCollider _sphereCollider;
+        private BoxCollider _boxCollider;
 
         /// <summary>
-        /// Sphere Collider associated with this object.
+        /// Box Collider associated with this object.
         /// </summary>
-        internal SphereCollider SphereCollider => _sphereCollider ??= GetComponent<SphereCollider>();
+        internal BoxCollider BoxCollider => _boxCollider ??= GetComponent<BoxCollider>();
 
         /// <inheritdoc/>
-        public override Collider Collider => SphereCollider;
+        public override Collider Collider => BoxCollider;
 
         /// <summary>
         /// Gets transformed parameters describing this sphere collider for a given position and rotation
         /// </summary>
-        /// <param name="sphereCenter">Relative position of sphere center.</param>
-        /// <param name="sphereRadius">Radius of the sphere.</param>
+        /// <param name="boxCenter">Center of box relative to position.</param>
+        /// <param name="boxSize">Size of the box collider.</param>
         /// <param name="position">Position of the object.</param>
         /// <param name="rotation">Rotation of the object.</param>
-        /// <param name="radiusMod">Modifier to add to radius when computing shape of collider.</param>
-        /// <returns>Returns the center of the sphere in world space and the modified radius.</returns>
-        public static (Vector3, float) GetParams(Vector3 sphereCenter, float sphereRadius, Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
+        /// <param name="buffer">Buffer space around the object.</param>
+        /// <returns>Returns the center of the collider in world space
+        /// and the size along each axis.</returns>
+        public static (Vector3, Vector3) GetParams(Vector3 boxCenter, Vector3 boxSize, Vector3 position, Quaternion rotation, float buffer = 0)
         {
-            Vector3 center = rotation * sphereCenter + position;
-            float radius = sphereRadius + radiusMod;
+            Vector3 center = rotation * boxCenter + position;
+            Vector3 size = boxSize + Vector3.one * buffer * 2;
 
-            return (center, radius);
+            return (center, size);
         }
 
         /// <summary>
@@ -63,12 +64,12 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// </summary>
         /// <param name="position">Position of the object.</param>
         /// <param name="rotation">Rotation of the object.</param>
-        /// <param name="radiusMod">Modifier to add to radius when computing shape of collider.</param>
+        /// <param name="buffer">Buffer space around the object.</param>
         /// <returns>Returns the center of the collider in world space
-        /// and the modified radius.</returns>
-        public (Vector3, float) GetParams(Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
+        /// and the size along each axis.</returns>
+        public (Vector3, Vector3) GetParams(Vector3 position, Quaternion rotation, float buffer = 0)
         {
-            return GetParams(SphereCollider.center, SphereCollider.radius, position, rotation, radiusMod);
+            return GetParams(BoxCollider.center, BoxCollider.size, position, rotation, buffer);
         }
 
         /// <inheritdoc/>
@@ -78,9 +79,9 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             int layerMask = IColliderCast.DefaultLayerMask,
             QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
         {
-            (Vector3 center, float radius) = GetParams(position, rotation);
+            (Vector3 center, Vector3 size) = GetParams(position, rotation);
             return Physics
-                .OverlapSphere(center, radius, layerMask, queryTriggerInteraction)
+                .OverlapBox(center, size / 2, rotation, layerMask, queryTriggerInteraction)
                 .Where(c => c.transform != transform);
         }
 
@@ -93,16 +94,16 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             int layerMask = IColliderCast.DefaultLayerMask,
             QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
         {
-            (Vector3 center, float radius) = GetParams(position, rotation);
-            return Physics.SphereCastAll(center, radius, direction, distance, layerMask, queryTriggerInteraction)
+            (Vector3 center, Vector3 size) = GetParams(position, rotation, -KCCUtils.Epsilon);
+            return Physics.BoxCastAll(center, size / 2, direction, rotation, distance, layerMask, queryTriggerInteraction)
                 .Where(hit => hit.collider.transform != transform);
         }
 
         /// <inheritdoc/>
         public override Vector3 GetBottom(Vector3 position, Quaternion rotation)
         {
-            (Vector3 center, float radius) = GetParams(position, rotation);
-            return center - radius * (rotation * transform.up);
+            (Vector3 center, Vector3 size) = GetParams(position, rotation, -KCCUtils.Epsilon);
+            return center + rotation * Vector3.down * size.y / 2;
         }
     }
 }

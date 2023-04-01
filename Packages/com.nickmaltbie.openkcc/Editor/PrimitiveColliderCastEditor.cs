@@ -16,35 +16,33 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using UnityEngine;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
+using UnityEditor;
 
-namespace nickmaltbie.OpenKCC.CameraControls
+namespace nickmaltbie.OpenKCC.Editor
 {
-    public interface IManagedCamera
+    [CustomEditor(typeof(PrimitiveColliderCast), true)]
+    public class PrimitiveColliderCastEditor : UnityEditor.Editor
     {
-        /// <summary>
-        /// Desired pitch of the camera.
-        /// </summary>
-        float Pitch { get; set; }
+        private SerializedProperty colliderConfig;
 
-        /// <summary>
-        /// Desired yaw of the camera.
-        /// </summary>
-        float Yaw { get; set; }
+        public void OnEnable()
+        {
+            colliderConfig = serializedObject.FindProperty("config");
+        }
 
-        /// <summary>
-        /// Gets or sets the previous opacity for the third person character base.
-        /// </summary>
-        float PreviousOpacity { get; set; }
+        public override void OnInspectorGUI()
+        {
+            // Update the serializedProperty - always do this in the beginning of OnInspectorGUI.
+            serializedObject.Update();
 
-        /// <summary>
-        /// Transform representing where the camera origin originates from.
-        /// </summary>
-        Transform CameraBase { get; }
+            EditorGUILayout.PropertyField(colliderConfig);
 
-        /// <summary>
-        /// Transform of the player.
-        /// </summary>
-        Transform PlayerBase { get; }
+            // Apply changes to the serializedProperty - always do this at the end of OnInspectorGUI.
+            if (serializedObject.ApplyModifiedProperties())
+            {
+                (target as PrimitiveColliderCast).ConfigureColliders();
+            }
+        }
     }
 }

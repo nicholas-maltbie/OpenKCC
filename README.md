@@ -148,6 +148,7 @@ The samples in the project include:
 * ExampleFirstPersonKCC - Example first person character controller with a basic
   test scene.
 * SimplifiedDemoKCC - Simplified character controller with basic movement scripts.
+* ExampleColliderShapes - Example of different collider shapes for players.
 
 ## Netcode Example
 

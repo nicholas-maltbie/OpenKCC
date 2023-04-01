@@ -1,0 +1,22 @@
+{
+    "name": "ExampleShapes",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Netcode.Runtime",
+        "nickmaltbie.OpenKCC",
+        "nickmaltbie.OpenKCC.netcode",
+        "nickmaltbie.StateMachineUnity",
+        "nickmaltbie.StateMachineUnity.netcode",
+        "nickmaltbie.TestUtilsUnity",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
