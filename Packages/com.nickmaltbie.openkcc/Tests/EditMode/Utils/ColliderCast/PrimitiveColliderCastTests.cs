@@ -47,7 +47,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
             colliderCast.config = new ColliderConfiguration
             {
                 type = ColliderType.Box,
-                
+
                 boxCenter = Vector3.zero,
                 boxSize = Vector3.one,
 
@@ -85,12 +85,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
                 colliderCast.GetBottom(Vector3.zero, Quaternion.identity),
                 bottom,
                 0.05f);
-            Quaternion flipped = Quaternion.Euler(0, 0, 180);
+            var flipped = Quaternion.Euler(0, 0, 180);
             TestUtils.AssertInBounds(
                 colliderCast.GetBottom(Vector3.zero, flipped),
                 flipped * bottom,
                 0.05f);
-            Quaternion rotate = Quaternion.Euler(0, 0, 90);
+            var rotate = Quaternion.Euler(0, 0, 90);
             TestUtils.AssertInBounds(
                 colliderCast.GetBottom(Vector3.zero, Quaternion.Euler(0, 0, 90)),
                 rotate * bottom,

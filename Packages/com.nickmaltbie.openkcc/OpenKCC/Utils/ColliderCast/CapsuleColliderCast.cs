@@ -73,7 +73,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
 
             return (top, bottom, radius, height);
         }
-        
+
         /// <summary>
         /// Gets transformed parameters describing this capsule collider for a given position and rotation
         /// </summary>

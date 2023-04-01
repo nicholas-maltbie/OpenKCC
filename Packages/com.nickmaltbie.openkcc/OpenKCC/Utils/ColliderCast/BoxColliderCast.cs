@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nicholas Maltbie
+﻿// Copyright (C) 2023 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -58,7 +58,6 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
 
             return (center, size);
         }
-
 
         /// <summary>
         /// Gets transformed parameters describing this sphere collider for a given position and rotation

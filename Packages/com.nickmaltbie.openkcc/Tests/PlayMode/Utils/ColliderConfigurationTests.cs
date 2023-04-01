@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nicholas Maltbie
+﻿// Copyright (C) 2023 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -35,10 +35,10 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils.ColliderCast
         [Test]
         public void Verify_ColliderConfigSettings([ValueSource(nameof(ColliderTypes))] ColliderType type)
         {
-            ColliderConfiguration config = new ColliderConfiguration
+            var config = new ColliderConfiguration
             {
                 type = type,
-                
+
                 boxCenter = Vector3.zero,
                 boxSize = Vector3.one,
 

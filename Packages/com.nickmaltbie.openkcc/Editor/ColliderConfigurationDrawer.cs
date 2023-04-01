@@ -30,10 +30,10 @@ namespace nickmaltbie.OpenKCC.Editor
             EditorGUI.BeginProperty(position, label, property);
 
             // Draw fields - pass GUIContent.none to each so they are drawn without labels\
-            var typeProp = property.FindPropertyRelative("type");
+            SerializedProperty typeProp = property.FindPropertyRelative("type");
             EditorGUILayout.PropertyField(typeProp, label);
-            
-            ColliderType col = (ColliderType) typeProp.enumValueIndex;
+
+            var col = (ColliderType)typeProp.enumValueIndex;
             switch (col)
             {
                 case ColliderType.Box:
