@@ -30,7 +30,7 @@ using UnityEngine.TestTools;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
 {
     /// <summary>
-    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Utils.ColliderCast.PrimitiveColliderCastTests"/> in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Utils.ColliderCast.PrimitiveColliderCast"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class PrimitiveColliderCastTests : TestBase
