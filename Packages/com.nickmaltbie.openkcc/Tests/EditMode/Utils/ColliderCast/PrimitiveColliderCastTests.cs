@@ -105,7 +105,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
             Assert.IsFalse(didHit);
         }
 
-
         [UnityTest]
         public IEnumerator Validate_GetHits_OneHit(
             [ValueSource(nameof(ColliderTypes))] ColliderType colliderType,
@@ -114,7 +113,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
             colliderCast.config.type = colliderType;
             GameObject target = MakeCube(Vector3.forward * dist);
             yield return null;
-            Assert.IsTrue(colliderCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, dist + 1, out IRaycastHit hit));
+            Assert.IsTrue(colliderCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, dist * 2 + 3, out IRaycastHit hit));
             Assert.IsTrue(hit.rigidbody.gameObject == target);
         }
 

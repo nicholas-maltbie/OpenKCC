@@ -22,7 +22,7 @@ using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
+namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils.ColliderCast
 {
     /// <summary>
     /// Basic tests for <see cref="nickmaltbie.OpenKCC.Utils.ColliderCast.ColliderConfiguration"/> in edit mode.
