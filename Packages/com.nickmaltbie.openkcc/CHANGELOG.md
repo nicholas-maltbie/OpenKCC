@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.3.4] 2023-04-01
+
 * Refactored common assets (like UI) to `ExampleFirstPersonKCC` sample 
 * Added new type of `IColliderCast` in `PrimitiveColliderCast` which can select
     between different parameters via the `ColliderConfiguration` which includes
