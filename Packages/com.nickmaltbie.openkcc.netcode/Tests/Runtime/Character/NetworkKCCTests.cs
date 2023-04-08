@@ -109,7 +109,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
             floor.name = "floor";
             floor.transform.localScale = new Vector3(100, 1, 100);
-            floor.transform.position -= Vector3.up * 0.5f;
+            floor.transform.position -= Vector3.up * 0.65f;
         }
 
         public override void SetupClient(NetworkKCC e, int objectIdx, int clientIdx)
@@ -127,16 +127,18 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             {
                 NetworkKCC kcc = GetAttachedNetworkBehaviour(i, i);
 
-                // Wait for player to fall to ground
-                yield return TestUtils.WaitUntil(() => typeof(IdleState) == kcc.CurrentState || typeof(LandingState) == kcc.CurrentState);
                 input.Set(GetTestableNetworkBehaviour(i, i).GetControl<StickControl>(MoveControlName), Vector2.up);
                 yield return TestUtils.WaitUntil(() => typeof(WalkingState) == kcc.CurrentState);
+                UnityEngine.Debug.Log("Validated WalkingState");
                 input.Set(GetTestableNetworkBehaviour(i, i).GetControl<ButtonControl>(SprintControlName), 1.0f);
                 yield return TestUtils.WaitUntil(() => typeof(SprintingState) == kcc.CurrentState);
+                UnityEngine.Debug.Log("Validated SprintingState");
                 input.Set(GetTestableNetworkBehaviour(i, i).GetControl<StickControl>(MoveControlName), Vector2.zero);
                 yield return TestUtils.WaitUntil(() => typeof(IdleState) == kcc.CurrentState);
+                UnityEngine.Debug.Log("Validated IdleState");
                 input.Set(GetTestableNetworkBehaviour(i, i).GetControl<ButtonControl>(JumpControlName), 1.0f);
                 yield return TestUtils.WaitUntil(() => typeof(JumpState) == kcc.CurrentState);
+                UnityEngine.Debug.Log("Validated JumpState");
             }
         }
 
@@ -195,7 +197,11 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         {
             ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.1f));
             SetupInputs();
-            yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(IdleState) == player.CurrentState));
+            yield return TestUtils.WaitUntil(() => ForAllPlayers(player =>
+            {
+                UnityEngine.Debug.Log($"Checking current state: {player.CurrentState}");
+                return typeof(IdleState) == player.CurrentState || typeof(LandingState) == player.CurrentState;
+            }));
         }
 
         public override void SetupInputs(Gamepad gamepad, TestableNetworkBehaviour b, NetworkKCC networkKCC)

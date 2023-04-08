@@ -47,7 +47,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
             float yawChange = look.x;
             float pitchChange = look.y;
 
-            float zoomAxis = config.ZoomAction?.ReadValue<Vector2>().y ?? 0;
+            float zoomAxis = config.ZoomAction?.ReadValue<float>() ?? 0;
 
             // bound pitch between -180 and 180
             float zoomChange = 0;
