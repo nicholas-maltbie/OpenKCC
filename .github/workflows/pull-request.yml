@@ -10,6 +10,7 @@ jobs:
   build-verification:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Verify build for project
         uses: ./.github/workflows/build-verification.yml
         with:
@@ -23,6 +24,7 @@ jobs:
   project-lint:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Project linting
         uses: ./.github/workflows/format.yml
         with:

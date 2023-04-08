@@ -9,6 +9,7 @@ jobs:
   create-release-package:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Create Latest Release Package
         uses: ./.github/workflows/create-package.yml
         with:
