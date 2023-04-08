@@ -26,7 +26,7 @@ jobs:
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          unityVersion: ${{ env.UNITY_VERSION }}
+          unityVersion: ${{ secrets.UNITY_VERSION }}
           buildMethod: Packages.Rider.Editor.RiderScriptEditor.SyncSolution
 
       - name: Set up .NET

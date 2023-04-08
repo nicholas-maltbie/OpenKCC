@@ -3,21 +3,18 @@ name: Pull Request Validation
 on:
   pull_request:
 
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-
 jobs:
   build-validation:
     uses: ./.github/workflows/build-validation.yml
     secrets:
-      UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
       
   test-verification:
     uses: ./.github/workflows/tests-validation.yml
     secrets:
-      UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   
   project-lint:
     uses: ./.github/workflows/format.yml
     secrets:
-      UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}

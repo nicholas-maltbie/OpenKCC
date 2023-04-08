@@ -31,12 +31,12 @@ jobs:
   tests-validation:
     uses: ./.github/workflows/tests-validation.yml
     secrets:
-      UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   
   project-linting:
     uses: ./.github/workflows/format.yml
     secrets:
-      UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
   # Build the WebGL Unity application.
   build-webgl-app:
