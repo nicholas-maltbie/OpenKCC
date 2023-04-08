@@ -28,8 +28,8 @@ jobs:
     uses: ./.github/workflows/create-package.yml
 
   # Verify build will perform as expected
-  test-validation:
-    uses: ./.github/workflows/test-validation.yml
+  tests-validation:
+    uses: ./.github/workflows/tests-validation.yml
     secrets:
       UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
   
@@ -41,7 +41,7 @@ jobs:
   # Build the WebGL Unity application.
   build-webgl-app:
     name: Build WebGL App
-    needs: [project-linting, test-validation]
+    needs: [project-linting, tests-validation]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

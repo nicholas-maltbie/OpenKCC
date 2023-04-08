@@ -13,7 +13,7 @@ jobs:
       UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
       
   test-verification:
-    uses: ./.github/workflows/test-validation.yml
+    uses: ./.github/workflows/tests-validation.yml
     secrets:
       UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
   
