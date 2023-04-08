@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Latest Release Package
-        uses: ./.github/actions/create-package
+        uses: ./.github/workflows/create-package.yml
         with:
           latest-publish: false
           release-publish: true

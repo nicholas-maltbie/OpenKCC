@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Create Latest Release Package
-        uses: ./.github/actions/create-package
+        uses: ./.github/workflows/create-package.yml
 
   # Verify build will perform as expected
   build-verification:
@@ -47,7 +47,7 @@ jobs:
           UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
 
       - name: Project linting
-        uses: ./.github/actions/format
+        uses: ./.github/workflows/format.yml
         with:
           UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
 

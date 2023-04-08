@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Verify build for project
-        uses: ./.github/actions/build-verification
+        uses: ./.github/workflows/build-verification.yml
         with:
           UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
       
       - name: Test Verification
-        uses: ./github/actions/test-validation
+        uses: ./github/workflows/test-validation.yml
         with:
           UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
   
@@ -24,6 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Project linting
-        uses: ./.github/actions/format
+        uses: ./.github/workflows/format.yml
         with:
           UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
