@@ -7,12 +7,8 @@ on:
 
 jobs:
   create-release-package:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Create Latest Release Package
-        uses: ./.github/workflows/create-package.yml
-        with:
-          latest-publish: false
-          release-publish: true
-          version-name: ${{ github.ref }}
+    uses: ./.github/workflows/create-package.yml
+    with:
+      latest-publish: false
+      release-publish: true
+      version-name: ${{ github.ref }}

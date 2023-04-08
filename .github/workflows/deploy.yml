@@ -25,38 +25,23 @@ env:
 jobs:
   create-package:
     name: Setup package for project
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Create Latest Release Package
-        uses: ./.github/workflows/create-package.yml
+    uses: ./.github/workflows/create-package.yml
 
   # Verify build will perform as expected
-  build-verification:
-    name: Build Verification
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    
-    steps:
-      - uses: actions/checkout@v3
-      - name: Test Verification
-        uses: ./.github/workflows/test-validation.yml
-        with:
-          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
-
-      - name: Project linting
-        uses: ./.github/workflows/format.yml
-        with:
-          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+  test-validation:
+    uses: ./.github/workflows/test-validation.yml
+    secrets:
+      UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+  
+  project-linting:
+    uses: ./.github/workflows/format.yml
+    secrets:
+      UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
 
   # Build the WebGL Unity application.
   build-webgl-app:
     name: Build WebGL App
-    needs: [build-verification]
+    needs: [project-linting, test-validation]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

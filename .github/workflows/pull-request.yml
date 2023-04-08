@@ -8,24 +8,16 @@ env:
 
 jobs:
   build-verification:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Verify build for project
-        uses: ./.github/workflows/build-verification.yml
-        with:
-          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+    uses: ./.github/workflows/build-verification.yml
+    secrets:
+      UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
       
-      - name: Test Verification
-        uses: ./github/workflows/test-validation.yml
-        with:
-          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+  test-verification:
+    uses: ./.github/workflows/test-validation.yml
+    secrets:
+      UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
   
   project-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Project linting
-        uses: ./.github/workflows/format.yml
-        with:
-          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+    uses: ./.github/workflows/format.yml
+    secrets:
+      UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
