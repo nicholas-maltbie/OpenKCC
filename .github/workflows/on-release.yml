@@ -1,0 +1,17 @@
+name: Create and Publish npm Package
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  create-release-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Latest Release Package
+        uses: ./.github/actions/create-package
+        with:
+          latest-publish: false
+          release-publish: true
+          version-name: ${{ github.ref }}

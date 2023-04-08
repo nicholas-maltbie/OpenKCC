@@ -1,0 +1,29 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+jobs:
+  build-verification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify build for project
+        uses: ./.github/actions/build-verification
+        with:
+          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+      
+      - name: Test Verification
+        uses: ./github/actions/test-validation
+        with:
+          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+  
+  project-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Project linting
+        uses: ./.github/actions/format
+        with:
+          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}

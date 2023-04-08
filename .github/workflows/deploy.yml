@@ -23,8 +23,38 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
+  create-package:
+    name: Setup package for project
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Create Latest Release Package
+        uses: ./.github/actions/create-package
+
+  # Verify build will perform as expected
+  build-verification:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    
+    steps:
+      - name: Test Verification
+        uses: ./github/actions/test-validation
+        with:
+          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+
+      - name: Project linting
+        uses: ./.github/actions/format
+        with:
+          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+
+  # Build the WebGL Unity application.
   build-webgl-app:
     name: Build WebGL App
+    needs: [build-verification]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -37,7 +67,7 @@ jobs:
           target_platform: WebGL
 
       # Build the game deployment at build
-      - uses: game-ci/unity-builder@v2.0.4
+      - uses: game-ci/unity-builder@v2
         with:
           unityVersion: ${{ env.UNITY_VERSION }}
           targetPlatform: WebGL

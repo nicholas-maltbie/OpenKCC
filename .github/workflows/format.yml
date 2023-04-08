@@ -1,14 +1,10 @@
 name: Code and Docs Lint
 
-# Controls when the action will run. Triggers the workflow on push or pull request
 on:
-  pull_request:
-  push:
-    branches:
-      - 'main'
-
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  workflow_call:
+    secrets:
+      UNITY_LICENSE:
+        required: true
 
 jobs:
   dotnet-code-format:
@@ -26,7 +22,9 @@ jobs:
           target_platform: WebGL
 
       - name: Ensure .sln file is generated
-        uses: game-ci/unity-builder@v2.0.4
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           unityVersion: ${{ env.UNITY_VERSION }}
           buildMethod: Packages.Rider.Editor.RiderScriptEditor.SyncSolution

@@ -1,16 +1,13 @@
 name: Tests Validation
 
 on:
-  pull_request:
-  push:
-    branches:
-      - 'main'
-
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  workflow_call:
+    secrets:
+      UNITY_LICENSE:
+        required: true
 
 jobs:
-  test-validation-pull-request:
+  test-validation:
     strategy:
       fail-fast: false
     name: Test Validation for Pull Request
@@ -25,7 +22,9 @@ jobs:
 
       - name: Run All Tests for Unity ${{ env.UNITY_VERSION }}
         id: tests
-        uses: game-ci/unity-test-runner@v2.0.2
+        uses: game-ci/unity-test-runner@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           unityVersion: ${{ env.UNITY_VERSION }}
           testMode: All
