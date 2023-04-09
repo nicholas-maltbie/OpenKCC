@@ -18,8 +18,6 @@ on:
     secrets:
       token:
         required: false
-        type: string
-        default: ""
 
 jobs:
   create-openkcc-package:
