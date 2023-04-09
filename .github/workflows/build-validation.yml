@@ -1,10 +1,10 @@
 name: Build Verification
 
 on:
-  pull_request:
-
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  workflow_call:
+    secrets:
+      UNITY_LICENSE:
+        required: true
 
 jobs:
   build-verification:
@@ -21,7 +21,9 @@ jobs:
         with:
           target_platform: WebGL
 
-      - uses: game-ci/unity-builder@v2.0.4
+      - uses: game-ci/unity-builder@v2
         with:
           unityVersion: ${{ env.UNITY_VERSION }}
           buildMethod: ScriptBatch.TestBuild_WebGL
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}

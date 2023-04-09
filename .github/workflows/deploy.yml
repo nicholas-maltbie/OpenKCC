@@ -23,8 +23,25 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
+  create-package:
+    name: Setup package for project
+    uses: ./.github/workflows/create-package.yml
+
+  # Verify build will perform as expected
+  tests-validation:
+    uses: ./.github/workflows/tests-validation.yml
+    secrets:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  
+  project-linting:
+    uses: ./.github/workflows/format.yml
+    secrets:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+  # Build the WebGL Unity application.
   build-webgl-app:
     name: Build WebGL App
+    needs: [project-linting, tests-validation]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -37,11 +54,13 @@ jobs:
           target_platform: WebGL
 
       # Build the game deployment at build
-      - uses: game-ci/unity-builder@v2.0.4
+      - uses: game-ci/unity-builder@v2
         with:
           unityVersion: ${{ env.UNITY_VERSION }}
           targetPlatform: WebGL
           buildMethod: ScriptBatch.OfficialBuild_WebGL
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
       # save build to temp_build_webgl
       - name: Upload build artifact
