@@ -59,6 +59,8 @@ jobs:
           unityVersion: ${{ env.UNITY_VERSION }}
           targetPlatform: WebGL
           buildMethod: ScriptBatch.OfficialBuild_WebGL
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
       # save build to temp_build_webgl
       - name: Upload build artifact

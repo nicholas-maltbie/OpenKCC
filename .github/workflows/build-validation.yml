@@ -25,3 +25,5 @@ jobs:
         with:
           unityVersion: ${{ env.UNITY_VERSION }}
           buildMethod: ScriptBatch.TestBuild_WebGL
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
