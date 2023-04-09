@@ -26,6 +26,8 @@ jobs:
   create-package:
     name: Setup package for project
     uses: ./.github/workflows/create-package.yml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
 
   # Verify build will perform as expected
   tests-validation:

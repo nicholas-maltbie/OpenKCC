@@ -25,3 +25,5 @@ jobs:
       version-name: "test"
       release-publish: false
       latest-publish: false
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}

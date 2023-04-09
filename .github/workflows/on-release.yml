@@ -8,6 +8,8 @@ on:
 jobs:
   create-release-package:
     uses: ./.github/workflows/create-package.yml
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
     with:
       latest-publish: false
       release-publish: true
