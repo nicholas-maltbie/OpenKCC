@@ -15,6 +15,9 @@ on:
         required: false
         type: boolean
         default: true
+    secrets:
+      token:
+        required: false
 
 jobs:
   create-openkcc-package:
@@ -48,7 +51,7 @@ jobs:
         if: ${{ inputs.release-publish }}
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.token }}
           branch: ${{ matrix.branch_prefix }}/${{ inputs.version-name }}
           force: true
 
@@ -57,7 +60,7 @@ jobs:
         if: ${{ inputs.latest-publish }}
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.token }}
           branch: ${{ matrix.branch_prefix }}/latest
           force: true
 
