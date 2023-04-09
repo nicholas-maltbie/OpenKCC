@@ -9,11 +9,11 @@ on:
         default: ""
       release-publish:
         required: false
-        type: bool
+        type: boolean
         default: false
       latest-publish:
         required: false
-        type: bool
+        type: boolean
         default: true
 
 jobs:

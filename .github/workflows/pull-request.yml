@@ -18,3 +18,10 @@ jobs:
     uses: ./.github/workflows/format.yml
     secrets:
       UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  
+  package-verification:
+    uses: ./.github/workflows/create-package.yml
+    with:
+      version-name: "test"
+      release-publish: false
+      latest-publish: false
