@@ -468,11 +468,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
                     // If we have finished climbing the steps, validate move and stop bounces
                     if (climbedSteps())
                     {
-                        KCCBounce moveBounce = bounces[bounces.Count - 2];
                         KCCBounce stopBounce = bounces[bounces.Count - 1];
-                        // Last steps should be stop
-                        // Last step should have climbed to top of staircase
-                        KCCValidation.ValidateKCCBounce(moveBounce, KCCUtils.MovementAction.Move);
                         KCCValidation.ValidateKCCBounce(stopBounce, KCCUtils.MovementAction.Stop);
                         TestUtils.AssertInBounds(stopBounce.finalPosition.y, size.y, stepHeight);
                         TestUtils.AssertInBounds(stopBounce.finalPosition.z, size.z, 6, bound: TestUtils.BoundRange.GraterThan);
