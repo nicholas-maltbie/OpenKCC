@@ -206,7 +206,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     position,
                     rotation,
                     momentum.normalized,
-                    momentum.magnitude - distanceMove,
+                    momentum.magnitude,
                     out IRaycastHit forwardHit,
                     config.LayerMask,
                     queryTriggerInteraction: QueryTriggerInteraction.Ignore);
