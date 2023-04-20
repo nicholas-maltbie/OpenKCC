@@ -291,15 +291,37 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "65be4679-cf19-42f2-ba82-87a224159c07",
-                    "path": "<Mouse>/scroll",
+                    "name": "Scroll",
+                    "id": "ecf94f16-bb58-4056-a531-50efcf4b9de3",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "positive",
+                    "id": "e8802f66-909b-4482-8ead-f051a9b4ca19",
+                    "path": "<Mouse>/scroll/up",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Zoom",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "negative",
+                    "id": "d9c7dbd6-8f15-4fa3-8caa-f107f7dc21b2",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 },
                 {
                     "name": "Gamepad",

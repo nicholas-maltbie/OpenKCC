@@ -199,7 +199,6 @@ namespace nickmaltbie.OpenKCC.Utils
             {
                 // Have the player move up up to the remaining momentum
                 float distanceMove = Mathf.Min(momentum.magnitude, distanceToSnap);
-                float remainingMomentum = Mathf.Max(0, momentum.magnitude - distanceMove);
                 position += distanceMove * Vector3.up;
 
                 // Also move the player forward however far they can move
@@ -213,6 +212,7 @@ namespace nickmaltbie.OpenKCC.Utils
                     queryTriggerInteraction: QueryTriggerInteraction.Ignore);
 
                 float forwardDist = didForwardHit ? Mathf.Max(0, forwardHit.distance - KCCUtils.Epsilon) : momentum.magnitude;
+                float remainingMomentum = Mathf.Max(0, momentum.magnitude - (distanceMove + forwardDist));
                 position += forwardDist * momentum.normalized;
                 momentum = momentum.normalized * remainingMomentum;
                 return true;
