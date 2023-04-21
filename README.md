@@ -11,7 +11,7 @@ OpenKCC is an open source project hosted at
 This is an open source project licensed under a [MIT License](LICENSE.txt).
 Feel free to use a build of the project for your own work. If you see an error
 in the project or have any suggestions, write an issue or make a pull request,
-I'll happy include any suggestions or ideas into the project.
+I'll happily include any suggestions or ideas into the project.
 
 [![Designing Character Controllers Video Introduction](Demo/sample-kcc.gif)](https://youtu.be/Hv4CQMCxSWE)
 
