@@ -24258,10 +24258,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lockFeetPos: 1
-  strideLength: 1.25
-  deltaRotation: 30
+  strideLength: 0.25
+  deltaRotation: 60
   groundCheckDist: 0.75
   footHeight: 0.1
+  strideTime: 0.1
+  strideHeight: 0.15
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
