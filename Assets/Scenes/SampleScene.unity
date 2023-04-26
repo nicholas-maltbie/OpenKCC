@@ -24240,6 +24240,28 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1 &703394919 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1585946679658927276, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
+  m_PrefabInstance: {fileID: 682926171}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &703394922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703394919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b344b2a98d47beb4ea143c2a8f2942b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockFeetPos: 1
+  strideLength: 1.25
+  deltaRotation: 30
+  groundCheckDist: 0.75
+  footHeight: 0.1
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
