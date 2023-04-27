@@ -16,10 +16,19 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Animation
 {
+    [Serializable]
+    public class FootIKWeight : UnityEngine.Object
+    {
+        public float leftFootIKWeight;
+        public float rightFootIKWeight;
+    }
+
     /// <summary>
     /// Script to attach player feet to ground.
     /// </summary>
@@ -34,26 +43,29 @@ namespace nickmaltbie.OpenKCC.Animation
 
         public class FootTarget
         {
-            private Vector3 previousTargetPosition;
-            private Quaternion previousTargetRotation;
+            private Vector3 previousTargetPosition = Vector3.zero;
+            private Quaternion previousTargetRotation = Quaternion.identity;
 
-            public Vector3 TargetPosition { get; private set; }
-            public Quaternion TargetRotation { get; private set; }
+            public Vector3 TargetPosition { get; private set; } = Vector3.zero;
+            public Quaternion TargetRotation { get; private set; } = Quaternion.identity;
 
             private float lastUpdateTime = Mathf.NegativeInfinity;
             public float stepTime = 0.25f;
             public float strideHeight = 0.25f;
             public float footHeight = 0.1f;
 
-            public void UpdateTarget(Vector3 newPos, Quaternion newRotation)
+            public void UpdateTarget(Vector3 newPos, Quaternion newRotation, bool resetStride = true)
             {
-                previousTargetPosition = TargetPosition;
-                previousTargetRotation = TargetRotation;
-
                 TargetPosition = newPos;
                 TargetRotation = newRotation;
 
-                lastUpdateTime = Time.time;
+                if (resetStride)
+                {
+                    previousTargetPosition = TargetPosition;
+                    previousTargetRotation = TargetRotation;
+
+                    lastUpdateTime = Time.time;
+                }
             }
 
             public Vector3 GetInterpolatedPosition(float t)
@@ -155,7 +167,7 @@ namespace nickmaltbie.OpenKCC.Animation
             Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
 
             Vector3 heightOffset = Vector3.Project(kneeTransform.position - footTransform.position, Vector3.up);
-            Vector3 source = kneeTransform.position;
+            Vector3 source = footTransform.position + heightOffset;
 
             bool heelGrounded = Physics.Raycast(source, Vector3.down, out RaycastHit kneeHitInfo, groundCheckDist);
             Debug.DrawLine(source, source + Vector3.down * groundCheckDist);
@@ -195,9 +207,14 @@ namespace nickmaltbie.OpenKCC.Animation
             bool distanceThreshold = Vector3.Distance(currentPos, groundedPos) >= strideLength;
             bool rotationThreshold = Quaternion.Angle(currentRotation, groundedRotation) >= deltaRotation;
 
-            if (!target.InStride() && grounded && (distanceThreshold || rotationThreshold))
+
+            if (grounded && (distanceThreshold || rotationThreshold))
             {
                 target.UpdateTarget(groundedPos, groundedRotation);
+            }
+            else if (grounded && target.InStride())
+            {
+                target.UpdateTarget(groundedPos, groundedRotation, false);
             }
         }
     }

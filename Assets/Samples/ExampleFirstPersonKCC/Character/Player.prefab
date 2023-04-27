@@ -104,6 +104,7 @@ MonoBehaviour:
     ditherDistance: 1
     thirdPersonCharacterBase: {fileID: 1585946679658927276}
     transitionTime: 0.1
+    rotatePlayer: 0
 --- !u!54 &1928389238801210309
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -300,6 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 958f6019d666515419c7bf4b6a76110a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationVersion: v1.0.0
   stepHeight: 0.35
   maxWalkAngle: 60
   layerMask:
@@ -375,6 +377,25 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f9a65e0222533fa4292d5c9cce96ca3c, type: 3}
   m_PrefabInstance: {fileID: 1928389239579011581}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1833340540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585946679658927276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b344b2a98d47beb4ea143c2a8f2942b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockFeetPos: 1
+  strideLength: 0.25
+  deltaRotation: 45
+  groundCheckDist: 1.5
+  footHeight: 0.1
+  strideTime: 0.25
+  strideHeight: 0.25
 --- !u!4 &2110423193989123606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f9a65e0222533fa4292d5c9cce96ca3c, type: 3}
