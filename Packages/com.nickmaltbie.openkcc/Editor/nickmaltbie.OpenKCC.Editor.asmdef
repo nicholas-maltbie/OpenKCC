@@ -5,7 +5,8 @@
         "nickmaltbie.OpenKCC",
         "nickmaltbie.OpenKCC.Debug",
         "Unity.InputSystem",
-        "nickmaltbie.StateMachineUnity"
+        "nickmaltbie.StateMachineUnity",
+        "Unity.EditorCoroutines.Editor"
     ],
     "includePlatforms": [
         "Editor"
