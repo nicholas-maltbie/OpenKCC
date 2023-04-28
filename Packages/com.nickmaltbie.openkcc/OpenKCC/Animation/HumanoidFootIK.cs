@@ -114,6 +114,8 @@ namespace nickmaltbie.OpenKCC.Animation
         public float strideTime = 0.1f;
         public float strideHeight = 0.25f;
 
+        public float footGroundedHeight = 0.05f;
+
         protected bool LockLeftFoot => lockFeetPos;
         protected bool LockRightFoot => lockFeetPos;
 

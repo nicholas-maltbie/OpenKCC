@@ -16,30 +16,26 @@ namespace nickmaltbie.OpenKCC.Editor
         public const string LeftFootIKWeight = "LeftFootIKWeight";
         public const string RightFootIKWeight = "RightFootIKWeight";
 
-        public float groundedHeight = 0.15f;
         int taskId = -1;
 
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
-            groundedHeight = EditorGUILayout.FloatField("Grounded Height", groundedHeight);
-
             if (GUILayout.Button("Bake Animation Curves"))
             {
                 var footIK = target as HumanoidFootIK;
-                EditorCoroutineUtility.StartCoroutine(BakeAnimations(footIK.gameObject, footIK.GetComponent<Animator>()), this);
+                EditorCoroutineUtility.StartCoroutine(BakeAnimations(footIK.gameObject, footIK.GetComponent<Animator>(), footIK), this);
             }
         }
 
-        public bool IsFootGrounded(GameObject go, Animator animator, HumanBodyBones bone)
+        public bool IsFootGrounded(GameObject go, Animator animator, HumanBodyBones bone, float footGroundedHeight)
         {
             Transform transform = animator.GetBoneTransform(bone);
-            UnityEngine.Debug.Log($"localPos:{transform.position.ToString("F3")}");
-            return transform.position.y <= 0.15f;
+            return transform.position.y <= footGroundedHeight;
         }
 
-        public IEnumerator BakeAnimations(GameObject go, Animator animator)
+        public IEnumerator BakeAnimations(GameObject go, Animator animator, HumanoidFootIK footIK)
         {
             taskId = Progress.Start("FootIKCurves", "Baking Foot IK Curves", Progress.Options.None, -1);
 
@@ -56,43 +52,55 @@ namespace nickmaltbie.OpenKCC.Editor
                 current++;
                 var assetPath = AssetDatabase.GetAssetPath(clip);
 
-                ClipAnimationInfoCurve infoCurve = new ClipAnimationInfoCurve();
-                infoCurve.name = LeftFootIKWeight;
-                var importer = AssetImporter.GetAtPath(assetPath) as ModelImporter;
+                ClipAnimationInfoCurve leftInfoCurve = new ClipAnimationInfoCurve();
+                ClipAnimationInfoCurve rightInfoCurve = new ClipAnimationInfoCurve();
+                leftInfoCurve.name = LeftFootIKWeight;
+                rightInfoCurve.name = RightFootIKWeight;
 
-                List<Keyframe> keys = new List<Keyframe>();
+                var importer = AssetImporter.GetAtPath(assetPath) as ModelImporter;
                 
                 // Sample for each frame and check if foot is grounded
                 int frames = Mathf.CeilToInt(clip.length * clip.frameRate);
-                float time = 0.0f;
-                yield return null;
-                clip.SampleAnimation(go, time);
-                bool grounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot);
-                keys.Add(new Keyframe(time, grounded ? 1.0f : 0.0f));
 
-                for (int i = 1; i < frames; i++)
+                Keyframe[] leftFootKeys = new Keyframe[frames];
+                Keyframe[] rightFootKeys = new Keyframe[frames];
+
+                yield return null;
+                float time = 0.0f;
+                clip.SampleAnimation(go, time);
+                bool leftGrounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
+                bool rightGrounded = IsFootGrounded(go, animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
+                leftFootKeys[0] = new Keyframe(time, leftGrounded ? 1.0f : 0.0f);
+                rightFootKeys[0] = new Keyframe(time, rightGrounded ? 1.0f : 0.0f);
+                yield return null;
+
+                for (int i = 1; i < frames - 1; i++)
                 {
                     time = i / clip.frameRate;
                     clip.SampleAnimation(go, time);
-                    bool newGrounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot);
-                    UnityEngine.Debug.Log($"time:{time} newGrounded:{newGrounded} grounded:{grounded}");
-                    if (newGrounded != grounded)
-                    {
-                        keys.Add(new Keyframe(time, grounded ? 1.0f : 0.0f));
-                    }
-
-                    Progress.Report(taskId, clipPercent + (float) i / frames / clipCount);
-
-                    grounded = newGrounded;
+                    leftGrounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
+                    rightGrounded = IsFootGrounded(go, animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
+                    leftFootKeys[i] = new Keyframe(time, leftGrounded ? 1.0f : 0.0f);
+                    rightFootKeys[i] = new Keyframe(time, rightGrounded ? 1.0f : 0.0f);
+                    yield return null;
                 }
 
-                keys.Add(new Keyframe(clip.length, grounded ? 1.0f : 0.0f));
-                var curve = new AnimationCurve(keys.ToArray());
-                infoCurve.curve = curve;
+                time = clip.length;
+                clip.SampleAnimation(go, time);
+                leftGrounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
+                rightGrounded = IsFootGrounded(go, animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
+
+                leftFootKeys[frames - 1] = new Keyframe(clip.length, leftGrounded ? 1.0f : 0.0f);
+                rightFootKeys[frames - 1] = new Keyframe(clip.length, rightGrounded ? 1.0f : 0.0f);
+                yield return null;
+
+                leftInfoCurve.curve = new AnimationCurve(leftFootKeys);
+                rightInfoCurve.curve = new AnimationCurve(rightFootKeys);
+
                 ModelImporterClipAnimation[] anims = importer.clipAnimations;
-                anims[0].curves = Enumerable.Append(
-                    anims[0].curves.Where(c => c.name != LeftFootIKWeight),
-                    infoCurve).ToArray();
+                anims[0].curves = Enumerable.Concat(
+                    anims[0].curves.Where(c => c.name != LeftFootIKWeight && c.name != RightFootIKWeight),
+                    new [] { leftInfoCurve, rightInfoCurve }).ToArray();
                 importer.clipAnimations = anims;
 
                 yield return null;
