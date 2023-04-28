@@ -396,6 +396,7 @@ MonoBehaviour:
   footHeight: 0.1
   strideTime: 0.25
   strideHeight: 0.25
+  footGroundedHeight: 0.1125
 --- !u!4 &2110423193989123606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f9a65e0222533fa4292d5c9cce96ca3c, type: 3}

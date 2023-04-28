@@ -35,8 +35,29 @@ namespace nickmaltbie.OpenKCC.Editor
             return transform.position.y <= footGroundedHeight;
         }
 
+        public Dictionary<Transform, (Vector3, Quaternion)> GetPoses(Animator animator)
+        {
+            Dictionary<Transform, (Vector3, Quaternion)> state = new Dictionary<Transform, (Vector3, Quaternion)>();
+            foreach (Transform transform in animator.GetComponentsInChildren<Transform>())
+            {
+                state[transform] = (transform.position, transform.rotation);
+            }
+
+            return state;
+        }
+
+        public void ResetPlayerPose(Dictionary<Transform, (Vector3, Quaternion)> poses)
+        {
+            foreach(var kvp in poses)
+            {
+                kvp.Key.position = kvp.Value.Item1;
+                kvp.Key.rotation = kvp.Value.Item2;
+            }
+        }
+
         public IEnumerator BakeAnimations(GameObject go, Animator animator, HumanoidFootIK footIK)
         {
+            var pose = GetPoses(animator);
             taskId = Progress.Start("FootIKCurves", "Baking Foot IK Curves", Progress.Options.None, -1);
 
             var clips = animator.runtimeAnimatorController.animationClips;
@@ -101,7 +122,7 @@ namespace nickmaltbie.OpenKCC.Editor
                         int after = i + 1;
                         bool sameBefore = before >= 0 && leftFootKeys[before].value == leftFootKeys[i].value;
                         bool sameAfter = after < frames && leftFootKeys[after].value == leftFootKeys[i].value;
-                        return sameBefore && sameAfter;
+                        return !sameBefore || !sameAfter;
                     }
                 ).Select(i => leftFootKeys[i]).ToArray();
                 rightFootKeys = Enumerable.Range(0, rightFootKeys.Length).Where(
@@ -111,7 +132,7 @@ namespace nickmaltbie.OpenKCC.Editor
                         int after = i + 1;
                         bool sameBefore = before >= 0 && rightFootKeys[before].value == rightFootKeys[i].value;
                         bool sameAfter = after < frames && rightFootKeys[after].value == rightFootKeys[i].value;
-                        return sameBefore && sameAfter;
+                        return !sameBefore || !sameAfter;
                     }
                 ).Select(i => rightFootKeys[i]).ToArray();
 
@@ -127,6 +148,7 @@ namespace nickmaltbie.OpenKCC.Editor
                 yield return null;
                 Progress.Report(taskId, (float) current / clipCount, $"Saving results for clip:{clip.name}");
                 importer.SaveAndReimport();
+                ResetPlayerPose(pose);
                 yield return null;
             }
 
