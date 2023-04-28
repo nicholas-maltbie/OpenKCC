@@ -94,6 +94,27 @@ namespace nickmaltbie.OpenKCC.Editor
                 rightFootKeys[frames - 1] = new Keyframe(clip.length, rightGrounded ? 1.0f : 0.0f);
                 yield return null;
 
+                leftFootKeys = Enumerable.Range(0, leftFootKeys.Length).Where(
+                    i =>
+                    {
+                        int before = i - 1;
+                        int after = i + 1;
+                        bool sameBefore = before >= 0 && leftFootKeys[before].value == leftFootKeys[i].value;
+                        bool sameAfter = after < frames && leftFootKeys[after].value == leftFootKeys[i].value;
+                        return sameBefore && sameAfter;
+                    }
+                ).Select(i => leftFootKeys[i]).ToArray();
+                rightFootKeys = Enumerable.Range(0, rightFootKeys.Length).Where(
+                    i =>
+                    {
+                        int before = i - 1;
+                        int after = i + 1;
+                        bool sameBefore = before >= 0 && rightFootKeys[before].value == rightFootKeys[i].value;
+                        bool sameAfter = after < frames && rightFootKeys[after].value == rightFootKeys[i].value;
+                        return sameBefore && sameAfter;
+                    }
+                ).Select(i => rightFootKeys[i]).ToArray();
+
                 leftInfoCurve.curve = new AnimationCurve(leftFootKeys);
                 rightInfoCurve.curve = new AnimationCurve(rightFootKeys);
 
