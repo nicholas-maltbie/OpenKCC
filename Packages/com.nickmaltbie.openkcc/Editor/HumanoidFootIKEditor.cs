@@ -74,7 +74,6 @@ namespace nickmaltbie.OpenKCC.Editor
                 float clipPercent = (float) current / clipCount;
                 Progress.Report(taskId, clipPercent, $"Working on clip:{clip.name}");
 
-                current++;
                 var assetPath = AssetDatabase.GetAssetPath(clip);
 
                 ClipAnimationInfoCurve leftInfoCurve = new ClipAnimationInfoCurve();
@@ -83,6 +82,15 @@ namespace nickmaltbie.OpenKCC.Editor
                 rightInfoCurve.name = RightFootIKWeight;
 
                 var importer = AssetImporter.GetAtPath(assetPath) as ModelImporter;
+                ModelImporterClipAnimation[] anims = importer.clipAnimations;
+                anims[0].curves = anims[0].curves.Where(c => c.name != LeftFootIKWeight && c.name != RightFootIKWeight).ToArray();
+                importer.clipAnimations = anims;
+
+                yield return null;
+                Progress.Report(taskId, (float) current / clipCount, $"Cleaning up existing curves for:{clip.name}");
+                importer.SaveAndReimport();
+                ResetPlayerPose(pose);
+                yield return null;
                 
                 // Sample for each frame and check if foot is grounded
                 int frames = Mathf.CeilToInt(clip.length * samplingRate);
@@ -98,6 +106,7 @@ namespace nickmaltbie.OpenKCC.Editor
                 leftFootKeys[0] = new Keyframe(time, leftGrounded ? 1.0f : 0.0f);
                 rightFootKeys[0] = new Keyframe(time, rightGrounded ? 1.0f : 0.0f);
                 yield return null;
+                Progress.Report(taskId, (float) current / clipCount, $"Processing frame:0 for clip:{clip.name}.");
 
                 for (int i = 1; i < frames - 1; i++)
                 {
@@ -107,6 +116,7 @@ namespace nickmaltbie.OpenKCC.Editor
                     rightGrounded = IsFootGrounded(go, animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
                     leftFootKeys[i] = new Keyframe(time, leftGrounded ? 1.0f : 0.0f);
                     rightFootKeys[i] = new Keyframe(time, rightGrounded ? 1.0f : 0.0f);
+                    Progress.Report(taskId, (float) current / clipCount + (float) i / frames * 1 / clipCount, $"Processing frame:{i} for clip:{clip.name}.");
                     yield return null;
                 }
 
@@ -114,6 +124,8 @@ namespace nickmaltbie.OpenKCC.Editor
                 clip.SampleAnimation(go, time);
                 leftGrounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
                 rightGrounded = IsFootGrounded(go, animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
+                current++;
+                Progress.Report(taskId, (float) current / clipCount, $"Processing frame:end for clip:{clip.name}.");
 
                 leftFootKeys[frames - 1] = new Keyframe(clip.length, leftGrounded ? 1.0f : 0.0f);
                 rightFootKeys[frames - 1] = new Keyframe(clip.length, rightGrounded ? 1.0f : 0.0f);
@@ -143,7 +155,6 @@ namespace nickmaltbie.OpenKCC.Editor
                 leftInfoCurve.curve = new AnimationCurve(leftFootKeys);
                 rightInfoCurve.curve = new AnimationCurve(rightFootKeys);
 
-                ModelImporterClipAnimation[] anims = importer.clipAnimations;
                 anims[0].curves = Enumerable.Concat(
                     anims[0].curves.Where(c => c.name != LeftFootIKWeight && c.name != RightFootIKWeight),
                     new [] { leftInfoCurve, rightInfoCurve }).ToArray();
