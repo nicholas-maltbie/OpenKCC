@@ -83,9 +83,13 @@ namespace nickmaltbie.OpenKCC.Editor
 
                 var importer = AssetImporter.GetAtPath(assetPath) as ModelImporter;
                 ModelImporterClipAnimation[] anims = importer.clipAnimations;
-                anims[0].curves = anims[0].curves.Where(c => c.name != LeftFootIKWeight && c.name != RightFootIKWeight).ToArray();
+                int animIndex = Enumerable.Range(0, anims.Length).FirstOrDefault(i => anims[i].name == clip.name);
+
+                anims[animIndex].curves = anims[animIndex].curves.Where(c => c.name != LeftFootIKWeight && c.name != RightFootIKWeight).ToArray();
                 importer.clipAnimations = anims;
 
+                // So you actually need to cleanup the animations first...
+                // otherwise it will fail to save.
                 yield return null;
                 Progress.Report(taskId, (float) current / clipCount, $"Cleaning up existing curves for:{clip.name}");
                 importer.SaveAndReimport();
@@ -155,8 +159,8 @@ namespace nickmaltbie.OpenKCC.Editor
                 leftInfoCurve.curve = new AnimationCurve(leftFootKeys);
                 rightInfoCurve.curve = new AnimationCurve(rightFootKeys);
 
-                anims[0].curves = Enumerable.Concat(
-                    anims[0].curves.Where(c => c.name != LeftFootIKWeight && c.name != RightFootIKWeight),
+                anims[animIndex].curves = Enumerable.Concat(
+                    anims[animIndex].curves.Where(c => c.name != LeftFootIKWeight && c.name != RightFootIKWeight),
                     new [] { leftInfoCurve, rightInfoCurve }).ToArray();
                 importer.clipAnimations = anims;
 
