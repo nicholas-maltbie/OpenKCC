@@ -118,8 +118,9 @@ namespace nickmaltbie.OpenKCC.Editor
                     clip.SampleAnimation(go, time);
                     leftGrounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
                     rightGrounded = IsFootGrounded(go, animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
-                    leftFootKeys[i] = new Keyframe(time, leftGrounded ? 1.0f : 0.0f);
-                    rightFootKeys[i] = new Keyframe(time, rightGrounded ? 1.0f : 0.0f);
+                    float keyframeTime = (float) i / frames;
+                    leftFootKeys[i] = new Keyframe(keyframeTime, leftGrounded ? 1.0f : 0.0f);
+                    rightFootKeys[i] = new Keyframe(keyframeTime, rightGrounded ? 1.0f : 0.0f);
                     Progress.Report(taskId, (float) current / clipCount + (float) i / frames * 1 / clipCount, $"Processing frame:{i} for clip:{clip.name}.");
                     yield return null;
                 }
@@ -131,8 +132,8 @@ namespace nickmaltbie.OpenKCC.Editor
                 current++;
                 Progress.Report(taskId, (float) current / clipCount, $"Processing frame:end for clip:{clip.name}.");
 
-                leftFootKeys[frames - 1] = new Keyframe(clip.length, leftGrounded ? 1.0f : 0.0f);
-                rightFootKeys[frames - 1] = new Keyframe(clip.length, rightGrounded ? 1.0f : 0.0f);
+                leftFootKeys[frames - 1] = new Keyframe(1.0f, leftGrounded ? 1.0f : 0.0f);
+                rightFootKeys[frames - 1] = new Keyframe(1.0f, rightGrounded ? 1.0f : 0.0f);
                 yield return null;
 
                 leftFootKeys = Enumerable.Range(0, leftFootKeys.Length).Where(

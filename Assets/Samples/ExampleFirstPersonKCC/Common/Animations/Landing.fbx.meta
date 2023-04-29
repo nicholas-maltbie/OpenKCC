@@ -73,7 +73,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.23333333
+            time: 0.1627907
             value: 0
             inSlope: 0
             outSlope: 0
@@ -82,7 +82,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.26666668
+            time: 0.18604651
             value: 1
             inSlope: 0
             outSlope: 0
@@ -91,7 +91,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 1.4333334
+            time: 1
             value: 1
             inSlope: 0
             outSlope: 0
@@ -116,7 +116,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.2
+            time: 0.13953489
             value: 0
             inSlope: 0
             outSlope: 0
@@ -125,7 +125,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.23333333
+            time: 0.1627907
             value: 1
             inSlope: 0
             outSlope: 0
@@ -134,7 +134,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 1.4333334
+            time: 1
             value: 1
             inSlope: 0
             outSlope: 0
