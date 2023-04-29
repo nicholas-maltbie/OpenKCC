@@ -18,9 +18,13 @@ namespace nickmaltbie.OpenKCC.Editor
 
         int taskId = -1;
 
+        int samplingRate = 30;
+
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
+
+            samplingRate = EditorGUILayout.IntField("Sampling Rate", samplingRate);
 
             if (GUILayout.Button("Bake Animation Curves"))
             {
@@ -81,7 +85,7 @@ namespace nickmaltbie.OpenKCC.Editor
                 var importer = AssetImporter.GetAtPath(assetPath) as ModelImporter;
                 
                 // Sample for each frame and check if foot is grounded
-                int frames = Mathf.CeilToInt(clip.length * clip.frameRate);
+                int frames = Mathf.CeilToInt(clip.length * samplingRate);
 
                 Keyframe[] leftFootKeys = new Keyframe[frames];
                 Keyframe[] rightFootKeys = new Keyframe[frames];
@@ -97,7 +101,7 @@ namespace nickmaltbie.OpenKCC.Editor
 
                 for (int i = 1; i < frames - 1; i++)
                 {
-                    time = i / clip.frameRate;
+                    time = (float) i / samplingRate;
                     clip.SampleAnimation(go, time);
                     leftGrounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
                     rightGrounded = IsFootGrounded(go, animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
