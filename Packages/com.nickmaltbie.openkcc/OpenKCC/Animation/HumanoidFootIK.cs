@@ -22,13 +22,6 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Animation
 {
-    [Serializable]
-    public class FootIKWeight : UnityEngine.Object
-    {
-        public float leftFootIKWeight;
-        public float rightFootIKWeight;
-    }
-
     /// <summary>
     /// Script to attach player feet to ground.
     /// </summary>
@@ -38,28 +31,6 @@ namespace nickmaltbie.OpenKCC.Animation
         public static readonly Foot[] Feet = new Foot[]{Foot.LeftFoot, Foot.RightFoot};
         public const string LeftFootIKWeight = "LeftFootIKWeight";
         public const string RightFootIKWeight = "RightFootIKWeight";
-
-        private State leftFootState = State.Released;
-        private State rightFootState = State.Released;
-
-        private bool OverGroundThreshold(Foot foot) => GetFootAnimationWeight(foot) >= 0.6f;
-        private bool UnderReleaseThreshold(Foot foot) => GetFootAnimationWeight(foot) <= 0.4f;
-
-        private float GetFootAnimationWeight(Foot foot) => foot == Foot.LeftFoot ? animator.GetFloat(LeftFootIKWeight) : animator.GetFloat(RightFootIKWeight);
-
-        private State GetFootState(Foot foot) => foot == Foot.LeftFoot ? leftFootState : rightFootState;
-        private void SetFootState(Foot foot, State state)
-        {
-            switch (foot)
-            {
-                case Foot.LeftFoot:
-                    leftFootState = state;
-                    break;
-                case Foot.RightFoot:
-                    rightFootState = state;
-                    break;
-            }
-        }
 
         public enum State
         {
@@ -73,6 +44,65 @@ namespace nickmaltbie.OpenKCC.Animation
             RightFoot,
         }
 
+        public class FootTarget
+        {
+            public const float MinFootGroundedWeight = 0.9f;
+            public const float MaxFootReleasedWeight = 0.1f;
+
+            private Foot foot;
+            private Vector3 footPosition;
+            private Quaternion footRotation;
+            private Animator animator;
+            private float velocityLerp;
+            private float smoothTime = 0.1f;
+
+            public FootTarget(Foot foot, Animator animator)
+            {
+                this.foot = foot;
+                this.animator = animator;
+            }
+
+            public float FootIKWeight { get; private set; }
+            public State FootState { get; private set; }
+
+            public float GetFootAnimationWeight() => foot == Foot.LeftFoot ? animator.GetFloat(LeftFootIKWeight) : animator.GetFloat(RightFootIKWeight);
+
+            public bool OverGroundThreshold() => GetFootAnimationWeight() >= 0.5f;
+            public bool UnderReleaseThreshold() => GetFootAnimationWeight() <= 0.5f;
+
+            public void ReleaseFoot()
+            {
+                FootState = State.Released;
+            }
+
+            public Vector3 FootIKTargetPos()
+            {
+                return footPosition;
+            }
+
+            public Quaternion FootIKTargetRot()
+            {
+                return footRotation;
+            }
+
+            public void LerpFootIKWeight()
+            {
+                float currentWeight = FootIKWeight;
+                float targetWeight = GetFootAnimationWeight();
+                float lerpValue = Mathf.Clamp(Time.deltaTime * 10, 0, 1);
+                FootIKWeight = Mathf.SmoothDamp(currentWeight, targetWeight, ref velocityLerp, smoothTime, 2.5f, Time.deltaTime);
+            }
+
+            public void GroundFoot(Vector3 pos, Quaternion rot)
+            {
+                FootState = State.Grounded;
+                footPosition = pos;
+                footRotation = rot;
+            }
+        }
+
+        public FootTarget leftFootTarget, rightFootTarget;
+
         public bool lockFeetPos;
         public float deltaRotation = 30.0f;
         public float groundCheckDist = 1.5f;
@@ -81,94 +111,54 @@ namespace nickmaltbie.OpenKCC.Animation
 
         private Animator animator;
 
-        private Vector3 leftFootTargetPos;
-        private Vector3 rightFootTargetPos;
-        private Quaternion leftFootTargetRot;
-        private Quaternion rightFootTargetRot;
-        private float leftFootIKWeight;
-        private float rightFootIKWeight;
-
-        public void SetFootTarget(Foot foot, Vector3 pos, Quaternion rot)
-        {
-            switch(foot)
-            {
-                case Foot.LeftFoot:
-                    leftFootTargetPos = pos;
-                    leftFootTargetRot = rot;
-                    break;
-                case Foot.RightFoot:
-                    rightFootTargetPos = pos;
-                    rightFootTargetRot = rot;
-                    break;
-            }
-        }
-
-        public float GetFootIKWeight(Foot foot)
-        {
-            return foot == Foot.LeftFoot ? leftFootIKWeight : rightFootIKWeight;
-        }
-
-        public void LerpFootIKWeight(Foot foot)
-        {
-            float currentWeight = GetFootIKWeight(foot);
-            float targetWeight = GetFootAnimationWeight(foot);
-
-            switch (GetFootState(foot))
-            {
-                case State.Grounded:
-                    targetWeight = Mathf.Clamp(targetWeight, 0.9f, 1.0f);
-                    break;
-                case State.Released:
-                    targetWeight = Mathf.Clamp(targetWeight, 0.0f, 0.1f);
-                    break;
-            }
-
-            float lerpValue = Mathf.Clamp(Time.deltaTime * 10, 0, 1);
-            float newWeight = Mathf.Lerp(currentWeight, targetWeight, lerpValue);
-            switch (foot)
-            {
-                case Foot.LeftFoot:
-                    leftFootIKWeight = newWeight;
-                    break;
-                case Foot.RightFoot:
-                    rightFootIKWeight = newWeight;
-                    break;
-            }
-        }
-
         public void Awake()
         {
             animator = GetComponent<Animator>();
+            leftFootTarget = new FootTarget(Foot.LeftFoot, animator);
+            rightFootTarget = new FootTarget(Foot.RightFoot, animator);
+        }
+
+        public FootTarget GetFootTarget(Foot foot)
+        {
+            if (foot == Foot.LeftFoot)
+            {
+                return leftFootTarget;
+            }
+            else if (foot == Foot.RightFoot)
+            {
+                return rightFootTarget;
+            }
+
+            return null;
         }
 
         public void OnAnimatorIK(int layerIndex)
         {
             foreach (Foot foot in Feet)
             {
-                LerpFootIKWeight(foot);
-
-                State currentState = GetFootState(foot);
-                
-                switch (currentState)
+                FootTarget target = GetFootTarget(foot);
+                target.LerpFootIKWeight();                
+                switch (target.FootState)
                 {
                     case State.Grounded:
-                        bool shouldRelease = UnderReleaseThreshold(foot);
+                        bool shouldRelease = target.UnderReleaseThreshold();
                         if (shouldRelease)
                         {
-                            SetFootState(foot, State.Released);
+                            UnityEngine.Debug.Log($"Releasing Foot:{foot}");
+                            target.ReleaseFoot();
                         }
 
                         break;
                     case State.Released:
-                        bool shouldGround = OverGroundThreshold(foot);
+                        bool shouldGround = target.OverGroundThreshold();
                         if (shouldGround)
                         {
                             bool onGround = GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot);
                             if (onGround)
                             {
+                                UnityEngine.Debug.Log($"Grounding Foot:{foot}");
                                 groundedPos += Vector3.up * footGroundedHeight;
-                                SetFootTarget(foot, groundedPos, groundedRot);
-                                SetFootState(foot, State.Grounded);
+                                target.GroundFoot(groundedPos, groundedRot);
                             }
                         }
 
@@ -176,12 +166,9 @@ namespace nickmaltbie.OpenKCC.Animation
                 }
 
                 AvatarIKGoal goal = foot == Foot.LeftFoot ? AvatarIKGoal.LeftFoot : AvatarIKGoal.RightFoot;
-                Vector3 target = foot == Foot.LeftFoot ? leftFootTargetPos : rightFootTargetPos;
-                Quaternion rotation = foot == Foot.LeftFoot ? leftFootTargetRot : rightFootTargetRot;
-                float weight = GetFootIKWeight(foot);
-
-                animator.SetIKPosition(goal, target);
-                animator.SetIKRotation(goal, rotation);
+                float weight = target.FootIKWeight;
+                animator.SetIKPosition(goal, target.FootIKTargetPos());
+                animator.SetIKRotation(goal, target.FootIKTargetRot());
                 animator.SetIKPositionWeight(goal, weight);
                 animator.SetIKRotationWeight(goal, weight);
             }
