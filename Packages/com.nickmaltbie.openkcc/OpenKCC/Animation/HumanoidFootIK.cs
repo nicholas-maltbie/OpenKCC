@@ -35,108 +35,105 @@ namespace nickmaltbie.OpenKCC.Animation
     [RequireComponent(typeof(Animator))]
     public class HumanoidFootIK : MonoBehaviour
     {
+        public static readonly Foot[] Feet = new Foot[]{Foot.LeftFoot, Foot.RightFoot};
+        public const string LeftFootIKWeight = "LeftFootIKWeight";
+        public const string RightFootIKWeight = "RightFootIKWeight";
+
+        private State leftFootState = State.Released;
+        private State rightFootState = State.Released;
+
+        private bool OverGroundThreshold(Foot foot) => GetFootAnimationWeight(foot) >= 0.6f;
+        private bool UnderReleaseThreshold(Foot foot) => GetFootAnimationWeight(foot) <= 0.4f;
+
+        private float GetFootAnimationWeight(Foot foot) => foot == Foot.LeftFoot ? animator.GetFloat(LeftFootIKWeight) : animator.GetFloat(RightFootIKWeight);
+
+        private State GetFootState(Foot foot) => foot == Foot.LeftFoot ? leftFootState : rightFootState;
+        private void SetFootState(Foot foot, State state)
+        {
+            switch (foot)
+            {
+                case Foot.LeftFoot:
+                    leftFootState = state;
+                    break;
+                case Foot.RightFoot:
+                    rightFootState = state;
+                    break;
+            }
+        }
+
+        public enum State
+        {
+            Released,
+            Grounded
+        }
+
         public enum Foot
         {
             LeftFoot,
             RightFoot,
         }
 
-        public class FootTarget
-        {
-            private Vector3 previousTargetPosition = Vector3.zero;
-            private Quaternion previousTargetRotation = Quaternion.identity;
-
-            public Vector3 TargetPosition { get; private set; } = Vector3.zero;
-            public Quaternion TargetRotation { get; private set; } = Quaternion.identity;
-
-            private float lastUpdateTime = Mathf.NegativeInfinity;
-            public float stepTime = 0.25f;
-            public float strideHeight = 0.25f;
-            public float footHeight = 0.1f;
-
-            public void UpdateTarget(Vector3 newPos, Quaternion newRotation, bool resetStride = true)
-            {
-                TargetPosition = newPos;
-                TargetRotation = newRotation;
-
-                if (resetStride)
-                {
-                    previousTargetPosition = TargetPosition;
-                    previousTargetRotation = TargetRotation;
-
-                    lastUpdateTime = Time.time;
-                }
-            }
-
-            public Vector3 GetInterpolatedPosition(float t)
-            {
-                return Vector3.Lerp(previousTargetPosition, TargetPosition, t) + Vector3.up * Mathf.Sin(Mathf.PI * t) * strideHeight;
-            }
-
-            public Quaternion GetInterpolatedRotation(float t)
-            {
-                return Quaternion.Lerp(previousTargetRotation, TargetRotation, t);
-            }
-
-            public Vector3 GetTargetPosition()
-            {
-                float transitionTime = lastUpdateTime + stepTime - Time.time;
-                if (transitionTime > 0)
-                {
-                    return GetInterpolatedPosition(1 - transitionTime / stepTime) + Vector3.up * footHeight;
-                }
-
-                return TargetPosition + Vector3.up * footHeight;
-            }
-
-            public Quaternion GetTargetRotation()
-            {
-                float transitionTime = lastUpdateTime + stepTime - Time.time;
-                if (transitionTime > 0)
-                {
-                    return GetInterpolatedRotation(1 - transitionTime / stepTime);
-                }
-
-                return TargetRotation;
-            }
-
-            public bool InStride()
-            {
-                return lastUpdateTime + stepTime - Time.time > 0;
-            }
-        }
-
         public bool lockFeetPos;
-        public float strideLength = 1.25f;
         public float deltaRotation = 30.0f;
-        public float groundCheckDist = 0.35f;
-        public float footHeight = 0.1f;
-        public float strideTime = 0.1f;
-        public float strideHeight = 0.25f;
+        public float groundCheckDist = 1.5f;
 
         public float footGroundedHeight = 0.05f;
 
-        protected bool LockLeftFoot => lockFeetPos;
-        protected bool LockRightFoot => lockFeetPos;
-
-        protected float LeftFootWeight => LockLeftFoot ? 1.0f : 0.0f;
-        protected float RightFootWeight => LockRightFoot ? 1.0f : 0.0f;
-
-        protected FootTarget LeftFootTarget = new FootTarget();
-        protected FootTarget RightFootTarget = new FootTarget();
-
         private Animator animator;
 
-        public void OnValidate()
+        private Vector3 leftFootTargetPos;
+        private Vector3 rightFootTargetPos;
+        private Quaternion leftFootTargetRot;
+        private Quaternion rightFootTargetRot;
+        private float leftFootIKWeight;
+        private float rightFootIKWeight;
+
+        public void SetFootTarget(Foot foot, Vector3 pos, Quaternion rot)
         {
-            LeftFootTarget.stepTime = strideTime;
-            RightFootTarget.stepTime = strideTime;
+            switch(foot)
+            {
+                case Foot.LeftFoot:
+                    leftFootTargetPos = pos;
+                    leftFootTargetRot = rot;
+                    break;
+                case Foot.RightFoot:
+                    rightFootTargetPos = pos;
+                    rightFootTargetRot = rot;
+                    break;
+            }
+        }
 
-            LeftFootTarget.strideHeight = strideHeight;
-            RightFootTarget.strideHeight = strideHeight;
+        public float GetFootIKWeight(Foot foot)
+        {
+            return foot == Foot.LeftFoot ? leftFootIKWeight : rightFootIKWeight;
+        }
 
-            LeftFootTarget.footHeight = footHeight;
-            RightFootTarget.footHeight = footHeight;
+        public void LerpFootIKWeight(Foot foot)
+        {
+            float currentWeight = GetFootIKWeight(foot);
+            float targetWeight = GetFootAnimationWeight(foot);
+
+            switch (GetFootState(foot))
+            {
+                case State.Grounded:
+                    targetWeight = Mathf.Clamp(targetWeight, 0.9f, 1.0f);
+                    break;
+                case State.Released:
+                    targetWeight = Mathf.Clamp(targetWeight, 0.0f, 0.1f);
+                    break;
+            }
+
+            float lerpValue = Mathf.Clamp(Time.deltaTime * 10, 0, 1);
+            float newWeight = Mathf.Lerp(currentWeight, targetWeight, lerpValue);
+            switch (foot)
+            {
+                case Foot.LeftFoot:
+                    leftFootIKWeight = newWeight;
+                    break;
+                case Foot.RightFoot:
+                    rightFootIKWeight = newWeight;
+                    break;
+            }
         }
 
         public void Awake()
@@ -146,18 +143,48 @@ namespace nickmaltbie.OpenKCC.Animation
 
         public void OnAnimatorIK(int layerIndex)
         {
-            UpdateFootIKState(Foot.LeftFoot);
-            UpdateFootIKState(Foot.RightFoot);
+            foreach (Foot foot in Feet)
+            {
+                LerpFootIKWeight(foot);
 
-            animator.SetIKPosition(AvatarIKGoal.LeftFoot, LeftFootTarget.GetTargetPosition());
-            animator.SetIKPosition(AvatarIKGoal.RightFoot, RightFootTarget.GetTargetPosition());
-            animator.SetIKRotation(AvatarIKGoal.LeftFoot, LeftFootTarget.GetTargetRotation());
-            animator.SetIKRotation(AvatarIKGoal.RightFoot, RightFootTarget.GetTargetRotation());
+                State currentState = GetFootState(foot);
+                
+                switch (currentState)
+                {
+                    case State.Grounded:
+                        bool shouldRelease = UnderReleaseThreshold(foot);
+                        if (shouldRelease)
+                        {
+                            SetFootState(foot, State.Released);
+                        }
 
-            animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, LeftFootWeight);
-            animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, RightFootWeight);
-            animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, LeftFootWeight);
-            animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, RightFootWeight);
+                        break;
+                    case State.Released:
+                        bool shouldGround = OverGroundThreshold(foot);
+                        if (shouldGround)
+                        {
+                            bool onGround = GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot);
+                            if (onGround)
+                            {
+                                groundedPos += Vector3.up * footGroundedHeight;
+                                SetFootTarget(foot, groundedPos, groundedRot);
+                                SetFootState(foot, State.Grounded);
+                            }
+                        }
+
+                        break;
+                }
+
+                AvatarIKGoal goal = foot == Foot.LeftFoot ? AvatarIKGoal.LeftFoot : AvatarIKGoal.RightFoot;
+                Vector3 target = foot == Foot.LeftFoot ? leftFootTargetPos : rightFootTargetPos;
+                Quaternion rotation = foot == Foot.LeftFoot ? leftFootTargetRot : rightFootTargetRot;
+                float weight = GetFootIKWeight(foot);
+
+                animator.SetIKPosition(goal, target);
+                animator.SetIKRotation(goal, rotation);
+                animator.SetIKPositionWeight(goal, weight);
+                animator.SetIKRotationWeight(goal, weight);
+            }
         }
 
         private bool GetFootGroundedTransform(Foot foot, out Vector3 groundedPos, out Quaternion rotation)
@@ -184,40 +211,6 @@ namespace nickmaltbie.OpenKCC.Animation
             }
 
             return heelGrounded;
-        }
-
-        private FootTarget GetFootTarget(Foot foot)
-        {
-            switch (foot)
-            {
-                case Foot.RightFoot:
-                    return RightFootTarget;
-                case Foot.LeftFoot:
-                    return LeftFootTarget;
-            }
-
-            return default;
-        }
-
-        private void UpdateFootIKState(Foot foot)
-        {
-            FootTarget target = GetFootTarget(foot);
-            Vector3 currentPos = target.TargetPosition;
-            Quaternion currentRotation = target.TargetRotation;
-            bool grounded = GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRotation);
-
-            bool distanceThreshold = Vector3.Distance(currentPos, groundedPos) >= strideLength;
-            bool rotationThreshold = Quaternion.Angle(currentRotation, groundedRotation) >= deltaRotation;
-
-
-            if (grounded && (distanceThreshold || rotationThreshold))
-            {
-                target.UpdateTarget(groundedPos, groundedRotation);
-            }
-            else if (grounded && target.InStride())
-            {
-                target.UpdateTarget(groundedPos, groundedRotation, false);
-            }
         }
     }
 }

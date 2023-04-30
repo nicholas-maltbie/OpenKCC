@@ -13,9 +13,6 @@ namespace nickmaltbie.OpenKCC.Editor
     [CustomEditor(typeof(HumanoidFootIK), true)]
     public class HumanoidFootIKEditor : UnityEditor.Editor
     {
-        public const string LeftFootIKWeight = "LeftFootIKWeight";
-        public const string RightFootIKWeight = "RightFootIKWeight";
-
         int taskId = -1;
 
         int samplingRate = 30;
@@ -78,14 +75,14 @@ namespace nickmaltbie.OpenKCC.Editor
 
                 ClipAnimationInfoCurve leftInfoCurve = new ClipAnimationInfoCurve();
                 ClipAnimationInfoCurve rightInfoCurve = new ClipAnimationInfoCurve();
-                leftInfoCurve.name = LeftFootIKWeight;
-                rightInfoCurve.name = RightFootIKWeight;
+                leftInfoCurve.name = HumanoidFootIK.LeftFootIKWeight;
+                rightInfoCurve.name = HumanoidFootIK.RightFootIKWeight;
 
                 var importer = AssetImporter.GetAtPath(assetPath) as ModelImporter;
                 ModelImporterClipAnimation[] anims = importer.clipAnimations;
                 int animIndex = Enumerable.Range(0, anims.Length).FirstOrDefault(i => anims[i].name == clip.name);
 
-                anims[animIndex].curves = anims[animIndex].curves.Where(c => c.name != LeftFootIKWeight && c.name != RightFootIKWeight).ToArray();
+                anims[animIndex].curves = anims[animIndex].curves.Where(c => c.name != HumanoidFootIK.LeftFootIKWeight && c.name != HumanoidFootIK.RightFootIKWeight).ToArray();
                 importer.clipAnimations = anims;
 
                 // So you actually need to cleanup the animations first...
@@ -161,7 +158,7 @@ namespace nickmaltbie.OpenKCC.Editor
                 rightInfoCurve.curve = new AnimationCurve(rightFootKeys);
 
                 anims[animIndex].curves = Enumerable.Concat(
-                    anims[animIndex].curves.Where(c => c.name != LeftFootIKWeight && c.name != RightFootIKWeight),
+                    anims[animIndex].curves.Where(c => c.name != HumanoidFootIK.LeftFootIKWeight && c.name != HumanoidFootIK.RightFootIKWeight),
                     new [] { leftInfoCurve, rightInfoCurve }).ToArray();
                 importer.clipAnimations = anims;
 

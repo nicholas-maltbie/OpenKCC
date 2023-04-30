@@ -39,7 +39,7 @@ ModelImporter:
       name: Jumping
       takeName: mixamo.com
       internalID: 0
-      firstFrame: 0
+      firstFrame: 13.2
       lastFrame: 25
       wrapMode: 0
       orientationOffsetY: 0
@@ -50,7 +50,7 @@ ModelImporter:
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
-      loopBlendPositionY: 1
+      loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
@@ -73,8 +73,8 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.56
-            value: 1
+            time: 0.05
+            value: 1.002353
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -82,8 +82,8 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.6
-            value: 0
+            time: 0.1
+            value: 0.0023529418
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -116,7 +116,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.6
+            time: 0.05
             value: 1
             inSlope: 0
             outSlope: 0
@@ -125,7 +125,7 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.64
+            time: 0.1
             value: 0
             inSlope: 0
             outSlope: 0
