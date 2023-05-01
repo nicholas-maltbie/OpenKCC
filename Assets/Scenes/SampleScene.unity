@@ -19187,10 +19187,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: strideThresholdDegrees
-      value: 60
-      objectReference: {fileID: 0}
     - target: {fileID: 1928389238801210305, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
       propertyPath: m_Name
       value: Player
@@ -19205,7 +19201,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1928389238801210310, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1928389238801210310, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
       propertyPath: m_LocalPosition.z

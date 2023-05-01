@@ -131,7 +131,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.45
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -389,9 +389,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b344b2a98d47beb4ea143c2a8f2942b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockFeetPos: 1
-  deltaRotation: 45
   groundCheckDist: 1.5
+  stepHeight: 0.165
+  strideThresholdDistance: 0.65
+  strideThresholdDegrees: 60
+  strideTime: 0.15
   footGroundedHeight: 0.135
 --- !u!4 &2110423193989123606 stripped
 Transform:
