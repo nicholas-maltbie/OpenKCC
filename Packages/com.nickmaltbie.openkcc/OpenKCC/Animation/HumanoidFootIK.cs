@@ -75,6 +75,7 @@ namespace nickmaltbie.OpenKCC.Animation
             public Quaternion TargetFootRotation { get; private set; }
             public float FootIKWeight { get; private set; }
             public State FootState { get; private set; }
+            public bool UseBump { get; set; }
             public bool MidStride => RemainingStrideTime > 0;
             protected float RemainingStrideTime => StrideStartTime != Mathf.NegativeInfinity ? (StrideStartTime + strideTime) - Time.time : -1;
 
@@ -92,7 +93,7 @@ namespace nickmaltbie.OpenKCC.Animation
 
                 float fraction = 1 - Mathf.Clamp(RemainingStrideTime / strideTime, 0, 1);
                 Vector3 lerpPos = Vector3.Lerp(fromFootPosition, TargetFootPosition, fraction);
-                Vector3 verticalOffset = GroundNormal * strideHeight * Mathf.Sin(fraction * Mathf.PI);
+                Vector3 verticalOffset = UseBump ? Vector3.up * strideHeight * Mathf.Sin(fraction * Mathf.PI) : Vector3.zero;;
                 return lerpPos + verticalOffset + GroundNormal * footGroundedHeight;
             }
 
@@ -204,6 +205,7 @@ namespace nickmaltbie.OpenKCC.Animation
                         bool shouldRelease = target.UnderReleaseThreshold();
                         if (!target.MidStride && shouldRelease)
                         {
+                            target.UseBump = false;
                             target.ReleaseFoot();
                         }
                         else if (GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot, out Vector3 groundNormal))
@@ -216,6 +218,7 @@ namespace nickmaltbie.OpenKCC.Animation
 
                             if (!target.MidStride && (distThreshold || turnThreshold) && CanTakeStride)
                             {
+                                target.UseBump = true;
                                 target.StartStride(groundedPos, groundedRot, groundNormal);
                             }
                             else if (target.MidStride)
@@ -233,6 +236,7 @@ namespace nickmaltbie.OpenKCC.Animation
                             if (onGround)
                             {
                                 Transform footTransform = GetFootTransform(foot);
+                                target.UseBump = false;
                                 target.StartStride(groundedPos, groundedRot, footTransform.position, footTransform.rotation, groundNormal);
                             }
                         }
