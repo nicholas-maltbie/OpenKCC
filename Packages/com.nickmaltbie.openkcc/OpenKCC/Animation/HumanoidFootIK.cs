@@ -52,11 +52,11 @@ namespace nickmaltbie.OpenKCC.Animation
             private Foot foot;
             private Animator animator;
             private float footIKWeightVelocityLerp;
-            private float smoothTime = 0.1f;
 
             private Vector3 fromFootPosition;
             private Quaternion fromFootRotation;
             private float strideStartTime = Mathf.NegativeInfinity;
+            private float lastReleaseTime = Mathf.NegativeInfinity;
 
             public FootTarget(Foot foot, Animator animator)
             {
@@ -107,13 +107,13 @@ namespace nickmaltbie.OpenKCC.Animation
             {
                 float currentWeight = FootIKWeight;
                 float targetWeight = GetFootAnimationWeight();
-                float lerpValue = Mathf.Clamp(Time.deltaTime * 10, 0, 1);
-                FootIKWeight = Mathf.SmoothDamp(currentWeight, targetWeight, ref footIKWeightVelocityLerp, smoothTime, 2.5f, Time.deltaTime);
+                FootIKWeight = Mathf.SmoothDamp(currentWeight, targetWeight, ref footIKWeightVelocityLerp, StrideTime, maxSpeed: Mathf.Infinity, deltaTime: Time.deltaTime);
             }
 
             public void ReleaseFoot()
             {
                 FootState = State.Released;
+                lastReleaseTime = Time.time;
 
                 // Mark as not taking a stride
                 strideStartTime = Mathf.NegativeInfinity;
@@ -136,6 +136,13 @@ namespace nickmaltbie.OpenKCC.Animation
                 TargetFootPosition = toPos;
                 TargetFootRotation = toRot;
                 strideStartTime = Time.time;
+                lastReleaseTime = Time.time;
+            }
+
+            public void UpdateStrideTarget(Vector3 toPos, Quaternion toRot)
+            {
+                TargetFootPosition = toPos;
+                TargetFootRotation = toRot;
             }
         }
 
@@ -197,11 +204,11 @@ namespace nickmaltbie.OpenKCC.Animation
                 {
                     case State.Grounded:
                         bool shouldRelease = target.UnderReleaseThreshold();
-                        if (shouldRelease)
+                        if (!target.MidStride && shouldRelease)
                         {
                             target.ReleaseFoot();
                         }
-                        else if (!target.MidStride && GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot))
+                        else if (GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot))
                         {
                             // Check if we have exceeded the target angle or target distance
                             float deltaDist = Vector3.Distance(groundedPos, target.TargetFootPosition);
@@ -211,7 +218,14 @@ namespace nickmaltbie.OpenKCC.Animation
 
                             if (distThreshold || turnThreshold)
                             {
-                                target.StartStride(groundedPos, groundedRot);
+                                if (!target.MidStride)
+                                {
+                                    target.StartStride(groundedPos, groundedRot);
+                                }
+                                else
+                                {
+                                    target.UpdateStrideTarget(groundedPos, groundedRot);
+                                }
                             }
                         }
 
@@ -223,6 +237,7 @@ namespace nickmaltbie.OpenKCC.Animation
                             bool onGround = GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot);
                             if (onGround)
                             {
+                                Transform footTransform = GetFootTransform(foot);
                                 target.GroundFoot(groundedPos, groundedRot);
                             }
                         }
