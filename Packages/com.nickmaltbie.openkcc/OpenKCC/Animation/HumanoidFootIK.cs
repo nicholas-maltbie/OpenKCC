@@ -58,7 +58,6 @@ namespace nickmaltbie.OpenKCC.Animation
             private float strideHeight;
             private float strideTime;
             private float footGroundedHeight;
-            private float strideStartTime = Mathf.NegativeInfinity;
 
             public FootTarget(Foot foot, Animator animator, float strideHeight, float strideTime, float footGroundedHeight)
             {
@@ -69,13 +68,15 @@ namespace nickmaltbie.OpenKCC.Animation
                 this.strideTime = strideTime;
                 this.footGroundedHeight = footGroundedHeight;
             }
+
+            public float StrideStartTime { get; private set; } = Mathf.NegativeInfinity;
             public Vector3 GroundNormal { get; private set; } = Vector3.up;
             public Vector3 TargetFootPosition { get; private set; }
             public Quaternion TargetFootRotation { get; private set; }
             public float FootIKWeight { get; private set; }
             public State FootState { get; private set; }
             public bool MidStride => RemainingStrideTime > 0;
-            protected float RemainingStrideTime => strideStartTime != Mathf.NegativeInfinity ? (strideStartTime + strideTime) - Time.time : -1;
+            protected float RemainingStrideTime => StrideStartTime != Mathf.NegativeInfinity ? (StrideStartTime + strideTime) - Time.time : -1;
 
             public float GetFootAnimationWeight() => foot == Foot.LeftFoot ? animator.GetFloat(LeftFootIKWeight) : animator.GetFloat(RightFootIKWeight);
 
@@ -119,7 +120,7 @@ namespace nickmaltbie.OpenKCC.Animation
                 FootState = State.Released;
 
                 // Mark as not taking a stride
-                strideStartTime = Mathf.NegativeInfinity;
+                StrideStartTime = Mathf.NegativeInfinity;
             }
 
             public void StartStride(Vector3 toPos, Quaternion toRot, Vector3 groundNormal)
@@ -136,7 +137,7 @@ namespace nickmaltbie.OpenKCC.Animation
                 fromFootRotation = fromRot;
                 TargetFootPosition = toPos;
                 TargetFootRotation = toRot;
-                strideStartTime = Time.time;
+                StrideStartTime = Time.time;
             }
 
             public void UpdateStrideTarget(Vector3 toPos, Quaternion toRot)
@@ -153,8 +154,12 @@ namespace nickmaltbie.OpenKCC.Animation
         public float strideThresholdDegrees = 45;
         public float strideTime = 0.15f;
         public float footGroundedHeight = 0.05f;
+        public float delayBetweenStrides = 0.25f;
 
         private Animator animator;
+
+        public float MostRecentStrideTime => Mathf.Max(leftFootTarget.StrideStartTime, rightFootTarget.StrideStartTime);
+        public bool CanTakeStride => (MostRecentStrideTime + delayBetweenStrides) <= Time.time;
 
         public void Awake()
         {
@@ -209,7 +214,7 @@ namespace nickmaltbie.OpenKCC.Animation
                             bool distThreshold = deltaDist >= strideThresholdDistance;
                             bool turnThreshold = deltaAngle >= strideThresholdDegrees;
 
-                            if (!target.MidStride && (distThreshold || turnThreshold))
+                            if (!target.MidStride && (distThreshold || turnThreshold) && CanTakeStride)
                             {
                                 target.StartStride(groundedPos, groundedRot, groundNormal);
                             }
