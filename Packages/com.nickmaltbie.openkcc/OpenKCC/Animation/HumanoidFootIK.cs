@@ -76,8 +76,8 @@ namespace nickmaltbie.OpenKCC.Animation
 
             public float StrideStartTime { get; private set; } = Mathf.NegativeInfinity;
             public Vector3 GroundNormal { get; private set; } = Vector3.up;
-            public Vector3 TargetFootPosition { get; private set; }
-            public Quaternion TargetFootRotation { get; private set; }
+            public Vector3 TargetFootPosition { get; private set; } = Vector3.zero;
+            public Quaternion TargetFootRotation { get; private set; } = Quaternion.identity;
             public float FootIKWeight { get; private set; }
             public State FootState { get; private set; }
             public bool UseBump { get; set; }
@@ -110,6 +110,11 @@ namespace nickmaltbie.OpenKCC.Animation
 
             public Vector3 FootIKTargetPos()
             {
+                if (RemainingStrideTime <= 0)
+                {
+                    return TargetFootPosition + GroundNormal * footGroundedHeight;
+                }
+
                 float fraction = 1 - Mathf.Clamp(RemainingStrideTime / strideTime, 0, 1);
                 Vector3 lerpPos = Vector3.Lerp(fromFootPosition, TargetFootPosition, fraction);
                 Vector3 verticalOffset = UseBump ? Vector3.up * strideHeight * Mathf.Sin(fraction * Mathf.PI) : Vector3.zero;;
@@ -118,6 +123,11 @@ namespace nickmaltbie.OpenKCC.Animation
 
             public Quaternion FootIKTargetRot()
             {
+                if (RemainingStrideTime <= 0)
+                {
+                    return TargetFootRotation;
+                }
+
                 float fraction = 1 - Mathf.Clamp(RemainingStrideTime / strideTime, 0, 1);
                 return Quaternion.Lerp(fromFootRotation, TargetFootRotation, fraction);
             }
