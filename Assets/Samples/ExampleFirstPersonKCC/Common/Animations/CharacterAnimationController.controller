@@ -212,7 +212,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Walking
-  m_Speed: 1
+  m_Speed: 1.15
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -605,7 +605,7 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: afc049d69fdc32747847e3440f84f645, type: 3}
     m_Threshold: 0.33333334
     m_Position: {x: -1, y: 0}
-    m_TimeScale: 1.35
+    m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
@@ -613,7 +613,7 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: 270560595b57f2e4daa1e60056fa4a42, type: 3}
     m_Threshold: 0.40625
     m_Position: {x: 1, y: 0}
-    m_TimeScale: 1.35
+    m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
