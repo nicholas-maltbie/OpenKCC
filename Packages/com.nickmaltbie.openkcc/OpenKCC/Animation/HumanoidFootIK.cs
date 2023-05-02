@@ -147,9 +147,8 @@ namespace nickmaltbie.OpenKCC.Animation
                 }
                 else
                 {
-                    footIKWeightVelocityLerp = 0.0f;
-                    fromFootPosition = toPos;
-                    fromFootRotation = toRot;
+                    fromFootPosition = TargetFootPosition;
+                    fromFootRotation = TargetFootRotation;
                 }
 
                 TargetFootPosition = toPos;
@@ -270,10 +269,8 @@ namespace nickmaltbie.OpenKCC.Animation
                         }
                         else
                         {
-                            if (GetFootTargetPosViaHips(foot, out Vector3 groundedPos, out Quaternion groundedRot, out groundNormal))
-                            {
-                                // target.UpdateStrideTarget(groundedPos, groundedRot, Vector3.up);
-                            }
+                            Transform footTransform = GetFootTransform(foot);
+                            target.UpdateStrideTarget(footTransform.position, target.TargetFootRotation, Vector3.up);
                         }
                         break;
                 }
