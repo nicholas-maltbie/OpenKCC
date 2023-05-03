@@ -29,7 +29,7 @@ namespace nickmaltbie.OpenKCC.Animation
     [RequireComponent(typeof(Animator))]
     public class HumanoidFootIK : MonoBehaviour
     {
-        public static readonly Foot[] Feet = new Foot[]{/*Foot.LeftFoot, */Foot.RightFoot};
+        public static readonly Foot[] Feet = new Foot[]{Foot.LeftFoot, Foot.RightFoot};
         public const string LeftFootIKWeight = "LeftFootIKWeight";
         public const string RightFootIKWeight = "RightFootIKWeight";
 
@@ -47,6 +47,22 @@ namespace nickmaltbie.OpenKCC.Animation
 
         public class FootTarget
         {
+            public static float SmoothValue(float x)
+            {
+                if (x <= 0)
+                {
+                    return 0;
+                }
+                else if (x >= 1)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return (Mathf.Sin(Mathf.PI * (x - 0.5f)) + 1) * 0.5f;
+                }
+            }
+
             public const float MinFootGroundedWeight = 0.9f;
             public const float MaxFootReleasedWeight = 0.1f;
 
@@ -58,23 +74,22 @@ namespace nickmaltbie.OpenKCC.Animation
             private Quaternion fromFootRotation = Quaternion.identity;
             private float strideHeight;
             private float strideTime;
+            private float placeBlendTime;
             private float footGroundedHeight;
             private Vector3 footVelocity = Vector3.zero;
             private Quaternion footAngularVelocity = Quaternion.identity;
             private float smoothedAnimationWeight;
             private float smoothedAnimationWeightVelocity;
-
             private Vector3 raisedFootVelocity = Vector3.zero;
-            private Vector3 footSmoothVelocity = Vector3.zero;
-            private Vector3 footSmoothAngularVelocity = Vector3.zero;
 
-            public FootTarget(Foot foot, Animator animator, float strideHeight, float strideTime, float footGroundedHeight)
+            public FootTarget(Foot foot, Animator animator, float strideHeight, float strideTime, float placeBlendTime, float footGroundedHeight)
             {
                 this.foot = foot;
                 this.animator = animator;
 
                 this.strideHeight = strideHeight;
                 this.strideTime = strideTime;
+                this.placeBlendTime = placeBlendTime;
                 this.footGroundedHeight = footGroundedHeight;
             }
 
@@ -85,7 +100,8 @@ namespace nickmaltbie.OpenKCC.Animation
             public float FootIKWeight { get; private set; }
             public State FootState { get; private set; }
             public bool UseBump { get; set; }
-            protected float RemainingStrideTime => StrideStartTime + strideTime - Time.time;
+            protected float TotalStrideTime => UseBump ? strideTime : placeBlendTime;
+            protected float RemainingStrideTime => StrideStartTime + TotalStrideTime - Time.time;
 
             public bool MidStride
             {
@@ -110,15 +126,15 @@ namespace nickmaltbie.OpenKCC.Animation
             {
                 if (FootState == State.Grounded && UseBump)
                 {
-                    return RemainingStrideTime > strideTime * 0.5f;
+                    return RemainingStrideTime > strideTime * 0.1f;
                 }
                 else if (FootState == State.Grounded)
                 {
-                    return FootIKWeight <= 0.5f;
+                    return false;
                 }
                 else
                 {
-                    return FootIKWeight >= 0.5f;
+                    return FootIKWeight <= 0.1f;
                 }
             }
 
@@ -135,45 +151,38 @@ namespace nickmaltbie.OpenKCC.Animation
                     return TargetFootPosition + GroundNormal * footGroundedHeight;
                 }
 
-                float fraction = 1 - Mathf.Clamp(RemainingStrideTime / strideTime, 0, 1);
-                Vector3 lerpPos = Vector3.Lerp(fromFootPosition, TargetFootPosition, fraction);
+                float fraction = 1 - Mathf.Clamp(RemainingStrideTime / TotalStrideTime, 0, 1);
+                Vector3 lerpPos = Vector3.Lerp(fromFootPosition, TargetFootPosition, SmoothValue(fraction));
                 Vector3 verticalOffset = UseBump ? Vector3.up * strideHeight * Mathf.Sin(fraction * Mathf.PI) : Vector3.zero;;
                 return lerpPos + verticalOffset + GroundNormal * footGroundedHeight;
             }
 
             public Quaternion FootIKTargetRot()
             {
-                if (RemainingStrideTime <= 0)
+                if (RemainingStrideTime <= 0 || !UseBump)
                 {
                     return TargetFootRotation;
                 }
 
-                float fraction = 1 - Mathf.Clamp(RemainingStrideTime / strideTime, 0, 1);
-                return Quaternion.Lerp(fromFootRotation, TargetFootRotation, fraction);
+                float fraction = 1 - Mathf.Clamp(RemainingStrideTime / TotalStrideTime, 0, 1);
+                return Quaternion.Lerp(fromFootRotation, TargetFootRotation, SmoothValue(fraction));
             }
 
             public void LerpFootIKWeight()
             {
                 float currentWeight = FootIKWeight;
                 float targetWeight = FootState == State.Grounded ? 1.0f : 0.0f;
-                FootIKWeight = Mathf.SmoothDamp(currentWeight, targetWeight, ref footIKWeightVelocityLerp, strideTime, Mathf.Infinity, Time.deltaTime);
+                FootIKWeight = Mathf.SmoothDamp(currentWeight, targetWeight, ref footIKWeightVelocityLerp, TotalStrideTime, Mathf.Infinity, Time.deltaTime);
                 FootIKWeight = Mathf.Clamp(FootIKWeight, 0, 1);
             }
 
             public void ReleaseFoot()
             {
-                UnityEngine.Debug.Log($"Foot:{foot} releasing");
-
                 FootState = State.Released;
             }
 
             public void StartStride(Vector3 toPos, Quaternion toRot, Vector3 groundNormal, bool bumpStep)
             {
-                UnityEngine.Debug.Log($"Foot:{foot} starting stride bumpStep:{bumpStep}");
-
-                Vector3 currentPos = FootIKTargetPos();
-                Quaternion currentRot = FootIKTargetRot();
-
                 fromFootPosition = TargetFootPosition;
                 fromFootRotation = TargetFootRotation;
                 TargetFootPosition = toPos;
@@ -184,9 +193,16 @@ namespace nickmaltbie.OpenKCC.Animation
                 StrideStartTime = Time.time;
             }
 
-            public void UpdateStrideTarget(Vector3 toPos, Quaternion toRot, Vector3 groundNormal)
+            public void UpdateStrideTarget(Vector3 toPos, Quaternion toRot, Vector3 groundNormal, bool force = false)
             {
-                TargetFootPosition = Vector3.SmoothDamp(TargetFootPosition, toPos, ref raisedFootVelocity, 0.05f, Mathf.Infinity, Time.deltaTime);
+                if (force)
+                {
+                    TargetFootPosition = toPos;
+                }
+                else
+                {
+                    TargetFootPosition = Vector3.SmoothDamp(TargetFootPosition, toPos, ref raisedFootVelocity, strideTime, Mathf.Infinity, Time.deltaTime);
+                }
                 TargetFootRotation = toRot;
                 GroundNormal = groundNormal;
             }
@@ -197,7 +213,8 @@ namespace nickmaltbie.OpenKCC.Animation
         public float stepHeight = 0.1f;
         public float strideThresholdDistance = 0.75f;
         public float strideThresholdDegrees = 45;
-        public float strideTime = 0.15f;
+        public float strideTime = 0.25f;
+        public float placeBlendTime = 0.05f;
         public float footGroundedHeight = 0.05f;
         
 
@@ -219,8 +236,8 @@ namespace nickmaltbie.OpenKCC.Animation
 
         private void SetupTargets()
         {
-            leftFootTarget = new FootTarget(Foot.LeftFoot, animator, stepHeight, strideTime, footGroundedHeight);
-            rightFootTarget = new FootTarget(Foot.RightFoot, animator, stepHeight, strideTime, footGroundedHeight);
+            leftFootTarget = new FootTarget(Foot.LeftFoot, animator, stepHeight, strideTime, placeBlendTime, footGroundedHeight);
+            rightFootTarget = new FootTarget(Foot.RightFoot, animator, stepHeight, strideTime, placeBlendTime, footGroundedHeight);
         }
 
         public FootTarget GetFootTarget(Foot foot)
@@ -250,10 +267,9 @@ namespace nickmaltbie.OpenKCC.Animation
             foreach (Foot foot in Feet)
             {
                 FootTarget target = GetFootTarget(foot);
-                UnityEngine.Debug.DrawLine(target.TargetFootPosition + Vector3.up, target.TargetFootPosition, Color.red);
-                UnityEngine.Debug.DrawLine(target.fromFootPosition + Vector3.up, target.fromFootPosition, Color.blue);
-                UnityEngine.Debug.DrawLine(target.FootIKTargetPos() + Vector3.up * 0.5f, target.FootIKTargetPos(), Color.green);
-                bool grounded = GetFootTargetPosViaHips(foot, out Vector3 hipGroundPos, out Quaternion hipGroundRot, out Vector3 groundNormal);
+                // UnityEngine.Debug.DrawLine(target.TargetFootPosition + Vector3.up, target.TargetFootPosition, Color.red);
+                // UnityEngine.Debug.DrawLine(target.fromFootPosition + Vector3.up, target.fromFootPosition, Color.blue);
+                // UnityEngine.Debug.DrawLine(target.FootIKTargetPos() + Vector3.up * 0.5f, target.FootIKTargetPos(), Color.green);
 
                 switch (target.FootState)
                 {
@@ -263,7 +279,7 @@ namespace nickmaltbie.OpenKCC.Animation
                         {
                             target.ReleaseFoot();
                         }
-                        else if (grounded)
+                        else if (GetFootTargetPosViaHips(foot, out Vector3 hipGroundPos, out Quaternion hipGroundRot, out Vector3 groundNormal))
                         {
                             // Check if we have exceeded the target angle or target distance
                             float deltaDist = Vector3.Distance(hipGroundPos, target.TargetFootPosition);
@@ -273,9 +289,13 @@ namespace nickmaltbie.OpenKCC.Animation
 
                             // When replacing the foot, try to move the foot up towards the hip if the
                             // step is behind the hips.
-                            if (!target.MidStride && (distThreshold || turnThreshold) && CanTakeStride)
+                            if (!target.MidStride && turnThreshold && CanTakeStride)
                             {
                                 target.StartStride(hipGroundPos, hipGroundRot, groundNormal, true);
+                            }
+                            else if (!target.MidStride && distThreshold && CanTakeStride)
+                            {
+                                target.ReleaseFoot();
                             }
                             else if (target.CanUpdateStrideTarget())
                             {
@@ -286,16 +306,16 @@ namespace nickmaltbie.OpenKCC.Animation
                     case State.Released:
                         if (target.OverGroundThreshold())
                         {
-                            bool onGround = GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot, out groundNormal);
+                            bool onGround = GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot, out Vector3 groundNormal);
                             if (onGround)
                             {
                                 target.StartStride(groundedPos, groundedRot, groundNormal, false);
                             }
                         }
-                        else
+                        else if (target.CanUpdateStrideTarget())
                         {
                             Transform footTransform = GetFootTransform(foot);
-                            target.UpdateStrideTarget(footTransform.position, target.TargetFootRotation, Vector3.up);
+                            target.UpdateStrideTarget(footTransform.position, target.TargetFootRotation, Vector3.up, true);
                         }
                         break;
                 }
@@ -331,10 +351,7 @@ namespace nickmaltbie.OpenKCC.Animation
             Vector3 hipRight = hipTransform.right;
 
             Vector3 footPos = footTransform.position;
-            Vector3 onHipPlane = Vector3.ProjectOnPlane(footPos - hipTransform.position, hipForward) + hipTransform.position;
-            Vector3 deltaToHipPlane = onHipPlane - footPos;
-
-            Vector3 source = Vector3.ProjectOnPlane(onHipPlane - hipTransform.position, hipForward) + hipTransform.position;
+            Vector3 source = Vector3.ProjectOnPlane(footPos - hipTransform.position, hipForward) + hipTransform.position;
             source.y = kneeTransform.position.y;
             bool hipGrounded = Physics.Raycast(source, Vector3.down, out RaycastHit hipHitInfo, groundCheckDist);
             if (hipGrounded)
@@ -346,7 +363,7 @@ namespace nickmaltbie.OpenKCC.Animation
             }
             else
             {
-                hipGroundedPos = onHipPlane;
+                hipGroundedPos = footPos;
                 hitNormal = Vector3.up;
                 hipGroundedRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(footTransform.forward, hipHitInfo.normal), Vector3.up);
                 return false;

@@ -19189,7 +19189,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
       propertyPath: strideTime
-      value: 0.25
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
+      propertyPath: lockFootTime
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
       propertyPath: footGroundedHeight
