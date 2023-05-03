@@ -109,13 +109,13 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             if (RemainingStrideTime <= 0)
             {
-                return TargetFootPosition + GroundNormal * footGroundedHeight;
+                return TargetFootPosition + Vector3.up * footGroundedHeight;
             }
 
             float fraction = 1 - Mathf.Clamp(RemainingStrideTime / TotalStrideTime, 0, 1);
             Vector3 lerpPos = Vector3.Lerp(fromFootPosition, TargetFootPosition, SmoothValue(fraction));
             Vector3 verticalOffset = UseBump ? Vector3.up * strideHeight * Mathf.Sin(fraction * Mathf.PI) : Vector3.zero;;
-            return lerpPos + verticalOffset + GroundNormal * footGroundedHeight;
+            return lerpPos + verticalOffset + Vector3.up * footGroundedHeight;
         }
 
         public Quaternion FootIKTargetRot()
