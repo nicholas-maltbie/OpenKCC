@@ -112,15 +112,18 @@ namespace nickmaltbie.OpenKCC.Animation
 
                             // When replacing the foot, try to move the foot up towards the hip if the
                             // step is behind the hips.
-                            if (!target.MidStride && turnThreshold && CanTakeStride)
+                            if (CanTakeStride && !target.MidStride)
                             {
-                                target.StartStride(hipGroundPos, hipGroundRot, normal, true);
+                                if (distThreshold)
+                                {
+                                    target.ReleaseFoot();
+                                }
+                                else if (turnThreshold)
+                                {
+                                    target.StartStride(hipGroundPos, hipGroundRot, normal, true);
+                                }
                             }
-                            else if (!target.MidStride && distThreshold && CanTakeStride)
-                            {
-                                target.ReleaseFoot();
-                            }
-                            else if (target.CanUpdateStrideTarget())
+                            else if (target.MidStride && target.CanUpdateStrideTarget())
                             {
                                 target.UpdateStrideTarget(hipGroundPos, hipGroundRot, normal);
                             }

@@ -102,8 +102,8 @@ namespace nickmaltbie.OpenKCC.Animation
 
         public float GetFootAnimationWeight() => foot == Foot.LeftFoot ? animator.GetFloat(LeftFootIKWeight) : animator.GetFloat(RightFootIKWeight);
 
-        public bool OverGroundThreshold() => GetFootAnimationWeight() >= 0.1f;
-        public bool UnderReleaseThreshold() => GetFootAnimationWeight() <= 0.1f;
+        public bool OverGroundThreshold() => FootIKWeight <= 0.01f && GetFootAnimationWeight() >= 0.1f;
+        public bool UnderReleaseThreshold() => FootIKWeight >= 0.99f && GetFootAnimationWeight() <= 0.1f;
 
         public Vector3 FootIKTargetPos()
         {
@@ -139,14 +139,11 @@ namespace nickmaltbie.OpenKCC.Animation
 
         public void ReleaseFoot()
         {
-            Debug.Log($"foot:{foot} releasing");
             State = FootState.Released;
         }
 
         public void StartStride(Vector3 toPos, Quaternion toRot, Vector3 groundNormal, bool bumpStep)
         {
-            Debug.Log($"foot:{foot} starting stride useBump:{bumpStep}");
-
             fromFootPosition = TargetFootPosition;
             fromFootRotation = TargetFootRotation;
             TargetFootPosition = toPos;
