@@ -19187,26 +19187,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: strideTime
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: groundCheckDist
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: maxHipVerticalOffset
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: strideThresholdDistance
-      value: 0.45
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: maxVerticalDistanceToFoot
-      value: 0.85
-      objectReference: {fileID: 0}
     - target: {fileID: 1928389238801210305, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
       propertyPath: m_Name
       value: Player

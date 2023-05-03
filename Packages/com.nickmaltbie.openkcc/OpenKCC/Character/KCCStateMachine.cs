@@ -151,6 +151,8 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public Vector3 InputMovement { get; private set; }
 
+        public string SlidingStateDynamic => deltaTimeInCurrentState >= 0.1f ? SlidingAnimState : IdleAnimState;
+
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
         [Transition(typeof(StartMoveInput), typeof(WalkingState))]
@@ -194,7 +196,7 @@ namespace nickmaltbie.OpenKCC.Character
         [MovementSettings(SpeedConfig = nameof(sprintSpeed))]
         public class SprintingState : State { }
 
-        [Animation(SlidingAnimState, 0.35f, true)]
+        [DynamicAnimation(nameof(SlidingStateDynamic), 0.35f, true, 0.1f)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
