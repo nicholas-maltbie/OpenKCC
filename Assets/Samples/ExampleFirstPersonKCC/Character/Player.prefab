@@ -391,13 +391,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundCheckDist: 1.5
   stepHeight: 0.2
-  strideThresholdDistance: 0.65
+  strideThresholdDistance: 0.25
   strideThresholdDegrees: 60
-  strideTime: 0.125
+  strideTime: 0.05
+  placeBlendTime: 0.05
   footGroundedHeight: 0.135
-  delayBetweenStrides: 0.25
-  delayBeforeCorrection: 1
-  maxLegDistanceFromHips: 1
 --- !u!4 &2110423193989123606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f9a65e0222533fa4292d5c9cce96ca3c, type: 3}
