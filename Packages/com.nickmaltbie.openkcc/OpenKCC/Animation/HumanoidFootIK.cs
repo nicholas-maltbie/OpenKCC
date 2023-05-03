@@ -39,9 +39,14 @@ namespace nickmaltbie.OpenKCC.Animation
         public float strideTime = 0.25f;
         public float placeBlendTime = 0.05f;
         public float footGroundedHeight = 0.05f;
+        public float maxVerticalDistanceToFoot = 0.75f;
+        public float maxHipVerticalOffset = 0.5f;
+        public float hipSmoothTime = 0.1f;
         
 
         private Animator animator;
+        private float hipOffsetSpeed;
+        private float hipOffset;
 
         public float MostRecentStrideTime => Mathf.Max(leftFootTarget.StrideStartTime, rightFootTarget.StrideStartTime);
         public bool CanTakeStride => (MostRecentStrideTime + strideTime) <= Time.time;
@@ -149,6 +154,12 @@ namespace nickmaltbie.OpenKCC.Animation
                 animator.SetIKPositionWeight(goal, target.FootIKWeight);
                 animator.SetIKRotationWeight(goal, target.FootIKWeight);
             }
+
+            // Move hips according to target positions
+            float targetHipOffset = GetTargetHipOffset();
+            hipOffset = Mathf.SmoothDamp(hipOffset, targetHipOffset, ref hipOffsetSpeed, hipSmoothTime, Mathf.Infinity, Time.deltaTime);
+            Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
+            transform.localPosition = Vector3.up * hipOffset;
         }
 
         private Transform GetFootTransform(Foot foot)
@@ -161,6 +172,42 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             HumanBodyBones toesBone = foot == Foot.LeftFoot ? HumanBodyBones.LeftToes : HumanBodyBones.RightToes;
             return animator.GetBoneTransform(toesBone);
+        }
+
+        private float GetTargetHipOffset()
+        {
+            // Average the hip offset required of each foot
+            float leftOffset = GetVerticalOffsetByFoot(Foot.LeftFoot);
+            float rightOffset = GetVerticalOffsetByFoot(Foot.RightFoot);
+
+            // Only include grounded feet
+            FootTarget leftTarget = GetFootTarget(Foot.LeftFoot);
+            FootTarget rightTarget = GetFootTarget(Foot.RightFoot);
+
+            if (leftTarget.State == FootState.Grounded && rightTarget.State == FootState.Grounded)
+            {
+                return Mathf.Min(leftOffset, rightOffset);
+            }
+            else if (leftTarget.State == FootState.Grounded)
+            {
+                return leftOffset;
+            }
+            else if (rightTarget.State == FootState.Grounded)
+            {
+                return rightOffset;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private float GetVerticalOffsetByFoot(Foot foot)
+        {
+            FootTarget target = GetFootTarget(foot);
+            Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
+            float verticalDistance = Vector3.Project(hipTransform.position - target.FootIKTargetPos(), Vector3.up).magnitude;
+            return Mathf.Clamp(maxVerticalDistanceToFoot - verticalDistance, -maxHipVerticalOffset, 0);
         }
 
         private bool GetFootTargetPosViaHips(Foot foot, out Vector3 hipGroundedPos, out Quaternion hipGroundedRotation, out Vector3 hitNormal)
