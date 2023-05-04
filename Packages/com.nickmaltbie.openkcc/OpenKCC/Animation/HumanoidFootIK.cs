@@ -110,7 +110,7 @@ namespace nickmaltbie.OpenKCC.Animation
                         else if (GetFootTargetPosViaHips(foot, out Vector3 hipGroundPos, out Quaternion hipGroundRot, out Vector3 normal))
                         {
                             // Check if we have exceeded the target angle or target distance
-                            float deltaDist = Vector3.Distance(hipGroundPos, target.TargetFootPosition);
+                            float deltaDist = Vector3.ProjectOnPlane(hipGroundPos - target.TargetFootPosition, Vector3.up).magnitude;
                             float deltaAngle = Quaternion.Angle(hipGroundRot, target.TargetFootRotation);
                             bool distThreshold = deltaDist >= strideThresholdDistance;
                             bool turnThreshold = deltaAngle >= strideThresholdDegrees;
@@ -252,6 +252,7 @@ namespace nickmaltbie.OpenKCC.Animation
             Vector3 source = footTransform.position + heightOffset;
 
             bool heelGrounded = Physics.Raycast(source, Vector3.down, out RaycastHit kneeHitInfo, groundCheckDist);
+            UnityEngine.Debug.DrawLine(source, source + Vector3.down * groundCheckDist, Color.magenta);
             groundedPos = footTransform.position;
             rotation = footTransform.rotation;
             groundNormal = Vector3.up;

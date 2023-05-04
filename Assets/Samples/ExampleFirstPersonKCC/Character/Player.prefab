@@ -286,8 +286,8 @@ MonoBehaviour:
   moveActionReference: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   sprintActionReference: {fileID: -6424176782126915535, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   jumpActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-  walkingSpeed: 2.75
-  sprintSpeed: 5.5
+  walkingSpeed: 2.5
+  sprintSpeed: 4.5
   jumpVelocity: 6.5
 --- !u!114 &1755217166684006379
 MonoBehaviour:
@@ -389,16 +389,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b344b2a98d47beb4ea143c2a8f2942b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundCheckDist: 1
-  stepHeight: 0.2
-  strideThresholdDistance: 0.45
+  groundCheckDist: 1.5
+  stepHeight: 0.05
+  strideThresholdDistance: 0.65
   strideThresholdDegrees: 60
   strideTime: 0.15
-  placeBlendTime: 0.05
+  placeBlendTime: 0.075
   footGroundedHeight: 0.135
-  maxVerticalDistanceToFoot: 0.85
-  maxHipVerticalOffset: 1.5
-  hipSmoothTime: 0.15
+  maxVerticalDistanceToFoot: 0.75
+  maxHipVerticalOffset: 2
+  hipSmoothTime: 0.05
 --- !u!4 &2110423193989123606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f9a65e0222533fa4292d5c9cce96ca3c, type: 3}

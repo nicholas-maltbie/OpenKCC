@@ -21,10 +21,10 @@ namespace nickmaltbie.OpenKCC.Editor
             DrawDefaultInspector();
 
             samplingRate = EditorGUILayout.IntField("Sampling Rate", samplingRate);
+            var footIK = target as HumanoidFootIK;
 
             if (GUILayout.Button("Bake Animation Curves"))
             {
-                var footIK = target as HumanoidFootIK;
                 EditorCoroutineUtility.StartCoroutine(BakeAnimations(footIK.gameObject, footIK.GetComponent<Animator>(), footIK), this);
             }
         }

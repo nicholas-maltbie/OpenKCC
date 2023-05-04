@@ -102,8 +102,8 @@ namespace nickmaltbie.OpenKCC.Animation
 
         public float GetFootAnimationWeight() => foot == Foot.LeftFoot ? animator.GetFloat(LeftFootIKWeight) : animator.GetFloat(RightFootIKWeight);
 
-        public bool OverGroundThreshold() => FootIKWeight <= 0.01f && GetFootAnimationWeight() >= 0.1f;
-        public bool UnderReleaseThreshold() => FootIKWeight >= 0.99f && GetFootAnimationWeight() <= 0.1f;
+        public bool OverGroundThreshold() => GetFootAnimationWeight() >= 0.5f;
+        public bool UnderReleaseThreshold() => GetFootAnimationWeight() <= 0.5f;
 
         public Vector3 FootIKTargetPos()
         {
