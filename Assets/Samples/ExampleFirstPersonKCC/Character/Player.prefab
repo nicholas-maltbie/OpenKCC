@@ -131,7 +131,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.25
+  m_Radius: 0.35
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -395,10 +395,10 @@ MonoBehaviour:
   strideThresholdDegrees: 60
   strideTime: 0.15
   placeBlendTime: 0.075
-  footGroundedHeight: 0.135
-  maxVerticalDistanceToFoot: 0.75
+  footGroundedHeight: 0.1
+  maxVerticalDistanceToFoot: 0.8
   maxHipVerticalOffset: 2
-  hipSmoothTime: 0.05
+  hipSmoothTime: 0.35
 --- !u!4 &2110423193989123606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f9a65e0222533fa4292d5c9cce96ca3c, type: 3}

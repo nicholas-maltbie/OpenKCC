@@ -56,7 +56,6 @@ namespace nickmaltbie.OpenKCC.Animation
         }
 
         public float StrideStartTime { get; private set; } = Mathf.NegativeInfinity;
-        public Vector3 GroundNormal { get; private set; } = Vector3.up;
         public Vector3 TargetFootPosition { get; private set; } = Vector3.zero;
         public Quaternion TargetFootRotation { get; private set; } = Quaternion.identity;
         public float FootIKWeight { get; private set; }
@@ -142,19 +141,18 @@ namespace nickmaltbie.OpenKCC.Animation
             State = FootState.Released;
         }
 
-        public void StartStride(Vector3 toPos, Quaternion toRot, Vector3 groundNormal, bool bumpStep)
+        public void StartStride(Vector3 toPos, Quaternion toRot, bool bumpStep)
         {
             fromFootPosition = TargetFootPosition;
             fromFootRotation = TargetFootRotation;
             TargetFootPosition = toPos;
             TargetFootRotation = toRot;
             this.UseBump = bumpStep;
-            GroundNormal = groundNormal;
             State = FootState.Grounded;
             StrideStartTime = Time.time;
         }
 
-        public void UpdateStrideTarget(Vector3 toPos, Quaternion toRot, Vector3 groundNormal, bool force = false)
+        public void UpdateStrideTarget(Vector3 toPos, Quaternion toRot, bool force = false)
         {
             if (force)
             {
@@ -165,7 +163,6 @@ namespace nickmaltbie.OpenKCC.Animation
                 TargetFootPosition = Vector3.SmoothDamp(TargetFootPosition, toPos, ref raisedFootVelocity, strideTime, Mathf.Infinity, Time.deltaTime);
             }
             TargetFootRotation = toRot;
-            GroundNormal = groundNormal;
         }
     }
 }

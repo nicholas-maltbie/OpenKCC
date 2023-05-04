@@ -95,9 +95,6 @@ namespace nickmaltbie.OpenKCC.Animation
             foreach (Foot foot in Feet)
             {
                 FootTarget target = GetFootTarget(foot);
-                // UnityEngine.Debug.DrawLine(target.TargetFootPosition + Vector3.up, target.TargetFootPosition, Color.red);
-                // UnityEngine.Debug.DrawLine(target.fromFootPosition + Vector3.up, target.fromFootPosition, Color.blue);
-                // UnityEngine.Debug.DrawLine(target.FootIKTargetPos() + Vector3.up * 0.5f, target.FootIKTargetPos(), Color.green);
 
                 switch (target.State)
                 {
@@ -107,7 +104,7 @@ namespace nickmaltbie.OpenKCC.Animation
                         {
                             target.ReleaseFoot();
                         }
-                        else if (GetFootTargetPosViaHips(foot, out Vector3 hipGroundPos, out Quaternion hipGroundRot, out Vector3 normal))
+                        else if (GetFootTargetPosViaHips(foot, out Vector3 hipGroundPos, out Quaternion hipGroundRot, out Vector3 _))
                         {
                             // Check if we have exceeded the target angle or target distance
                             float deltaDist = Vector3.ProjectOnPlane(hipGroundPos - target.TargetFootPosition, Vector3.up).magnitude;
@@ -125,25 +122,25 @@ namespace nickmaltbie.OpenKCC.Animation
                                 }
                                 else if (turnThreshold)
                                 {
-                                    target.StartStride(hipGroundPos, hipGroundRot, normal, true);
+                                    target.StartStride(hipGroundPos, hipGroundRot, true);
                                 }
                             }
                             else if (target.MidStride && target.CanUpdateStrideTarget())
                             {
-                                target.UpdateStrideTarget(hipGroundPos, hipGroundRot, normal);
+                                target.UpdateStrideTarget(hipGroundPos, hipGroundRot);
                             }
                         }
                         break;
                     case FootState.Released:
                         if (target.OverGroundThreshold() &&
-                            GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot, out Vector3 groundNormal))
+                            GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot, out Vector3 _))
                         {
-                            target.StartStride(groundedPos, groundedRot, groundNormal, false);
+                            target.StartStride(groundedPos, groundedRot, false);
                         }
                         else
                         {
                             Transform footTransform = GetFootTransform(foot);
-                            target.UpdateStrideTarget(footTransform.position, target.TargetFootRotation, Vector3.up, target.CanUpdateStrideTarget());
+                            target.UpdateStrideTarget(footTransform.position, target.TargetFootRotation, target.CanUpdateStrideTarget());
                         }
                         break;
                 }
@@ -252,7 +249,6 @@ namespace nickmaltbie.OpenKCC.Animation
             Vector3 source = footTransform.position + heightOffset;
 
             bool heelGrounded = Physics.Raycast(source, Vector3.down, out RaycastHit kneeHitInfo, groundCheckDist);
-            UnityEngine.Debug.DrawLine(source, source + Vector3.down * groundCheckDist, Color.magenta);
             groundedPos = footTransform.position;
             rotation = footTransform.rotation;
             groundNormal = Vector3.up;

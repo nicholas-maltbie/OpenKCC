@@ -19187,38 +19187,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: stepHeight
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: strideTime
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: hipSmoothTime
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: placeBlendTime
-      value: 0.075
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: groundCheckDist
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: maxHipVerticalOffset
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: strideThresholdDistance
-      value: 0.65
-      objectReference: {fileID: 0}
-    - target: {fileID: 1833340540, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: maxVerticalDistanceToFoot
-      value: 0.75
-      objectReference: {fileID: 0}
     - target: {fileID: 1928389238801210305, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
       propertyPath: m_Name
       value: Player
@@ -19266,14 +19234,6 @@ PrefabInstance:
     - target: {fileID: 1928389238801210310, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1928389240043740980, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: sprintSpeed
-      value: 4.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1928389240043740980, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}
-      propertyPath: walkingSpeed
-      value: 2.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba88b23b077d354ba94e3d1c4f22966, type: 3}

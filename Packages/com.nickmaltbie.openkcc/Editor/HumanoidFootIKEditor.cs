@@ -15,17 +15,21 @@ namespace nickmaltbie.OpenKCC.Editor
         int taskId = -1;
 
         int samplingRate = 30;
+        bool state = false;
 
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
-            samplingRate = EditorGUILayout.IntField("Sampling Rate", samplingRate);
-            var footIK = target as HumanoidFootIK;
-
-            if (GUILayout.Button("Bake Animation Curves"))
+            if (state = EditorGUILayout.BeginFoldoutHeaderGroup(state, "Baking Options"))
             {
-                EditorCoroutineUtility.StartCoroutine(BakeAnimations(footIK.gameObject, footIK.GetComponent<Animator>(), footIK), this);
+                samplingRate = EditorGUILayout.IntField("Sampling Rate", samplingRate);
+                var footIK = target as HumanoidFootIK;
+
+                if (GUILayout.Button("Bake Animation Curves"))
+                {
+                    EditorCoroutineUtility.StartCoroutine(BakeAnimations(footIK.gameObject, footIK.GetComponent<Animator>(), footIK), this);
+                }
             }
         }
 
