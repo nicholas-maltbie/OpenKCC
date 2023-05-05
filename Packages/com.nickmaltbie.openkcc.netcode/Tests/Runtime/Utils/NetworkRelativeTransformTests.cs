@@ -51,8 +51,8 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Utils
             obj.transform.position = Vector3.up;
             obj.UpdateState(new RelativeParentConfig
             {
-                relativePos = Vector3.up,
-                previousParent = parentObj.transform,
+                RelativePos = Vector3.up,
+                PreviousParent = parentObj.transform,
             });
 
             // Now when we move the parent object to position Vector3.forward, it should move on all servers
@@ -64,8 +64,8 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Utils
             // Now detach the parent
             obj.UpdateState(new RelativeParentConfig
             {
-                relativePos = Vector3.zero,
-                previousParent = null,
+                RelativePos = Vector3.zero,
+                PreviousParent = null,
             });
             obj.transform.position = Vector3.up;
             yield return TestUtils.WaitUntil(() => ForAllPlayers(0, tr =>
@@ -84,8 +84,8 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Utils
             NetworkRelativeTransform obj = GetAttachedNetworkBehaviour(0, 0);
             obj.UpdateState(new RelativeParentConfig
             {
-                relativePos = Vector3.up,
-                previousParent = parentObj.transform,
+                RelativePos = Vector3.up,
+                PreviousParent = parentObj.transform,
             });
 
             // Assert that parent propagates.
@@ -94,8 +94,8 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Utils
             // Assert that parent changes to null.
             obj.UpdateState(new RelativeParentConfig
             {
-                relativePos = Vector3.up,
-                previousParent = null,
+                RelativePos = Vector3.up,
+                PreviousParent = null,
             });
             yield return TestUtils.WaitUntil(() => ForAllPlayers(0, tr => tr.GetParent() == null));
         }

@@ -90,6 +90,48 @@ namespace nickmaltbie.OpenKCC.Animation
             }
         }
 
+        public void UpdateFeetPositions(Vector3 deltaPos)
+        {
+            foreach (Foot foot in Feet)
+            {
+                var target = GetFootTarget(foot);
+                if (target.State != FootState.Grounded)
+                {
+                    continue;
+                }
+
+                Vector3 newPos = target.TargetFootPosition + deltaPos;
+
+                // Recompute angle for the foot as well and check if grounded target has changed.
+                HumanBodyBones kneeBone = foot == Foot.LeftFoot ? HumanBodyBones.LeftLowerLeg : HumanBodyBones.RightLowerLeg;
+                Transform kneeTransform = animator.GetBoneTransform(kneeBone);
+                Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
+
+                Vector3 heightOffset = Vector3.Project(kneeTransform.position - newPos, Vector3.up);
+                Vector3 source = newPos + heightOffset;
+
+                bool grounded = Physics.Raycast(source, Vector3.down, out RaycastHit hitInfo, groundCheckDist);
+                if (grounded)
+                {
+                    if (hitInfo.collider.gameObject == target.Floor)
+                    {
+                        Vector3 footForward = Vector3.ProjectOnPlane(target.FootForward, hitInfo.normal).normalized;
+                        target.UpdateStrideTarget(hitInfo.point, Quaternion.LookRotation(footForward, hitInfo.normal), true);
+                    }
+                    else
+                    {
+                        Vector3 footForward = Vector3.ProjectOnPlane(hipTransform.forward, hitInfo.normal);
+                        Quaternion rotation = Quaternion.LookRotation(footForward, hitInfo.normal);
+                        target.StartStride(hitInfo.point, rotation, hitInfo.collider.gameObject, footForward, true);
+                    }
+                }
+                else
+                {
+                    target.ReleaseFoot();
+                }
+            }
+        }
+
         public void OnAnimatorIK(int layerIndex)
         {
             foreach (Foot foot in Feet)
@@ -104,7 +146,7 @@ namespace nickmaltbie.OpenKCC.Animation
                         {
                             target.ReleaseFoot();
                         }
-                        else if (GetFootTargetPosViaHips(foot, out Vector3 hipGroundPos, out Quaternion hipGroundRot, out Vector3 _))
+                        else if (GetFootTargetPosViaHips(foot, out Vector3 hipGroundPos, out Quaternion hipGroundRot, out Vector3 _, out GameObject hipFloor, out Vector3 hipForward))
                         {
                             // Check if we have exceeded the target angle or target distance
                             float deltaDist = Vector3.ProjectOnPlane(hipGroundPos - target.TargetFootPosition, Vector3.up).magnitude;
@@ -122,7 +164,7 @@ namespace nickmaltbie.OpenKCC.Animation
                                 }
                                 else if (turnThreshold)
                                 {
-                                    target.StartStride(hipGroundPos, hipGroundRot, true);
+                                    target.StartStride(hipGroundPos, hipGroundRot, hipFloor, hipForward, true);
                                 }
                             }
                             else if (target.MidStride && target.CanUpdateStrideTarget())
@@ -133,9 +175,9 @@ namespace nickmaltbie.OpenKCC.Animation
                         break;
                     case FootState.Released:
                         if (target.OverGroundThreshold() &&
-                            GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot, out Vector3 _))
+                            GetFootGroundedTransform(foot, out Vector3 groundedPos, out Quaternion groundedRot, out Vector3 _, out GameObject groundedFloor, out Vector3 groundedForward))
                         {
-                            target.StartStride(groundedPos, groundedRot, false);
+                            target.StartStride(groundedPos, groundedRot, groundedFloor, groundedForward, false);
                         }
                         else
                         {
@@ -207,7 +249,7 @@ namespace nickmaltbie.OpenKCC.Animation
             return Mathf.Clamp(maxVerticalDistanceToFoot - verticalDistance, -maxHipVerticalOffset, 0);
         }
 
-        private bool GetFootTargetPosViaHips(Foot foot, out Vector3 hipGroundedPos, out Quaternion hipGroundedRotation, out Vector3 hitNormal)
+        private bool GetFootTargetPosViaHips(Foot foot, out Vector3 hipGroundedPos, out Quaternion hipGroundedRotation, out Vector3 hitNormal, out GameObject floor, out Vector3 footForward)
         {
             HumanBodyBones kneeBone = foot == Foot.LeftFoot ? HumanBodyBones.LeftLowerLeg : HumanBodyBones.RightLowerLeg;
             Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
@@ -226,22 +268,25 @@ namespace nickmaltbie.OpenKCC.Animation
                 hipGroundedPos = hipHitInfo.point;
                 hitNormal = hipHitInfo.normal;
                 hipGroundedRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(hipTransform.forward, hipHitInfo.normal), Vector3.up);
+                floor = hipHitInfo.collider?.gameObject;
+                footForward = hipTransform.forward;
                 return true;
             }
             else
             {
                 hipGroundedPos = footPos;
                 hitNormal = Vector3.up;
+                floor = null;
+                footForward = footTransform.forward;
                 hipGroundedRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(footTransform.forward, hipHitInfo.normal), Vector3.up);
                 return false;
             }
         }
 
-        private bool GetFootGroundedTransform(Foot foot, out Vector3 groundedPos, out Quaternion rotation, out Vector3 groundNormal)
+        private bool GetFootGroundedTransform(Foot foot, out Vector3 groundedPos, out Quaternion rotation, out Vector3 groundNormal, out GameObject floor, out Vector3 footForward)
         {
             HumanBodyBones kneeBone = foot == Foot.LeftFoot ? HumanBodyBones.LeftLowerLeg : HumanBodyBones.RightLowerLeg;
             Transform kneeTransform = animator.GetBoneTransform(kneeBone);
-            Transform toesTransform = GetToeTransform(foot);
             Transform footTransform = GetFootTransform(foot);
             Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
 
@@ -252,12 +297,15 @@ namespace nickmaltbie.OpenKCC.Animation
             groundedPos = footTransform.position;
             rotation = footTransform.rotation;
             groundNormal = Vector3.up;
+            floor = null;
+            footForward = Vector3.forward;
             if (heelGrounded)
             {
                 groundedPos = kneeHitInfo.point;
-                Vector3 footForward = Vector3.ProjectOnPlane(hipTransform.forward, kneeHitInfo.normal);
+                footForward = Vector3.ProjectOnPlane(hipTransform.forward, kneeHitInfo.normal);
                 rotation = Quaternion.LookRotation(footForward, kneeHitInfo.normal);
                 groundNormal = kneeHitInfo.normal;
+                floor = kneeHitInfo.collider?.gameObject;
             }
 
             return heelGrounded;

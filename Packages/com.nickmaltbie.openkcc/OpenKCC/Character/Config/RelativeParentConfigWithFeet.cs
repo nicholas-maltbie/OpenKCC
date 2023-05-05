@@ -16,9 +16,25 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Runtime.CompilerServices;
+using System;
+using nickmaltbie.OpenKCC.Animation;
+using nickmaltbie.OpenKCC.Environment.MovingGround;
+using UnityEngine;
 
-[assembly: InternalsVisibleTo("nickmaltbie.OpenKCC.Editor")]
-[assembly: InternalsVisibleTo("nickmaltbie.OpenKCC.Tests.EditMode")]
-[assembly: InternalsVisibleTo("nickmaltbie.OpenKCC.Tests.TestCommon")]
-[assembly: InternalsVisibleTo("nickmaltbie.OpenKCC.Tests.netcode.Runtime")]
+namespace nickmaltbie.OpenKCC.Character.Config
+{
+    [Serializable]
+    public class RelativeParentConfigWithFeet : RelativeParentConfig
+    {
+        private HumanoidFootIK feet;
+
+        /// <inheritdoc/>
+        public override void FollowGround(Transform transform)
+        {
+            feet ??= transform.gameObject.GetComponentInChildren<HumanoidFootIK>();
+            Vector3 delta = DeltaPosition(transform);
+            feet?.UpdateFeetPositions(delta);
+            transform.position += delta;
+        }
+    }
+}

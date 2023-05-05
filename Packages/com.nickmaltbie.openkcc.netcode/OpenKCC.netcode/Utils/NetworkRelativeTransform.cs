@@ -53,7 +53,7 @@ namespace nickmaltbie.OpenKCC.netcode.Utils
 
         public void UpdateState(RelativeParentConfig config)
         {
-            Floor = config.previousParent?.GetComponent<NetworkObject>();
+            Floor = config.PreviousParent?.GetComponent<NetworkObject>();
         }
 
         public void Awake()

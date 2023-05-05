@@ -57,9 +57,11 @@ namespace nickmaltbie.OpenKCC.Animation
 
         public float StrideStartTime { get; private set; } = Mathf.NegativeInfinity;
         public Vector3 TargetFootPosition { get; private set; } = Vector3.zero;
+        public Vector3 FootForward { get; set; }
         public Quaternion TargetFootRotation { get; private set; } = Quaternion.identity;
         public float FootIKWeight { get; private set; }
         public FootState State { get; private set; }
+        public GameObject Floor { get; private set; }
         public bool UseBump { get; set; }
         protected float TotalStrideTime => UseBump ? strideTime : placeBlendTime;
         protected float RemainingStrideTime => StrideStartTime + TotalStrideTime - Time.time;
@@ -139,14 +141,17 @@ namespace nickmaltbie.OpenKCC.Animation
         public void ReleaseFoot()
         {
             State = FootState.Released;
+            Floor = null;
         }
 
-        public void StartStride(Vector3 toPos, Quaternion toRot, bool bumpStep)
+        public void StartStride(Vector3 toPos, Quaternion toRot, GameObject floor, Vector3 footForward, bool bumpStep)
         {
             fromFootPosition = TargetFootPosition;
             fromFootRotation = TargetFootRotation;
             TargetFootPosition = toPos;
             TargetFootRotation = toRot;
+            Floor = floor;
+            FootForward = footForward;
             this.UseBump = bumpStep;
             State = FootState.Grounded;
             StrideStartTime = Time.time;

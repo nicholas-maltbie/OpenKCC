@@ -173,7 +173,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Relative parent configuration for following the ground.
         /// </summary>
-        public RelativeParentConfig RelativeParentConfig { get; protected set; } = new RelativeParentConfig();
+        public RelativeParentConfig RelativeParentConfig { get; protected set; } = new RelativeParentConfigWithFeet();
 
         /// <summary>
         /// Current grounded state of the character.
