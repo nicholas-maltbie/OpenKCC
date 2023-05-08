@@ -30,7 +30,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <summary>
         /// Array of each kind of foot associated with a human character.
         /// </summary>
-        public static readonly Foot[] Feet = new Foot[]{Foot.LeftFoot, Foot.RightFoot};
+        public static readonly Foot[] Feet = new Foot[] { Foot.LeftFoot, Foot.RightFoot };
 
         /// <summary>
         /// Targets for the feet positions to manage them separately.
@@ -86,7 +86,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// </summary>
         [Tooltip("Height offset for feet when grounded.")]
         public float footGroundedHeight = 0.05f;
-        
+
         /// <summary>
         /// Max distance the player's foot should be from the hips, above
         /// which the player will over their hips down to properly place
@@ -100,7 +100,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// </summary>
         [Tooltip("Time to take to sooth hip offset from the ground.")]
         public float hipSmoothTime = 0.35f;
-        
+
         /// <summary>
         /// Animator component for managing the player avatar.
         /// </summary>
@@ -197,7 +197,7 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             foreach (Foot foot in Feet)
             {
-                var target = GetFootTarget(foot);
+                FootTarget target = GetFootTarget(foot);
                 if (target.State != FootState.Grounded)
                 {
                     continue;
@@ -210,7 +210,7 @@ namespace nickmaltbie.OpenKCC.Animation
                 Transform kneeTransform = animator.GetBoneTransform(kneeBone);
                 Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
 
-                Vector3 heightOffset = Vector3.Project(kneeTransform.position - newPos, Vector3.up);
+                var heightOffset = Vector3.Project(kneeTransform.position - newPos, Vector3.up);
                 Vector3 source = newPos + heightOffset;
 
                 bool grounded = Physics.Raycast(source, Vector3.down, out RaycastHit hitInfo, groundCheckDist);
@@ -223,8 +223,8 @@ namespace nickmaltbie.OpenKCC.Animation
                     }
                     else
                     {
-                        Vector3 footForward = Vector3.ProjectOnPlane(hipTransform.forward, hitInfo.normal);
-                        Quaternion rotation = Quaternion.LookRotation(footForward, hitInfo.normal);
+                        var footForward = Vector3.ProjectOnPlane(hipTransform.forward, hitInfo.normal);
+                        var rotation = Quaternion.LookRotation(footForward, hitInfo.normal);
                         target.StartStride(hitInfo.point, rotation, hitInfo.collider.gameObject, footForward, true);
                     }
                 }
@@ -281,6 +281,7 @@ namespace nickmaltbie.OpenKCC.Animation
                                 target.UpdateStrideTarget(hipGroundPos, hipGroundRot);
                             }
                         }
+
                         break;
                     case FootState.Released:
                         if (target.OverGroundThreshold() &&
@@ -293,6 +294,7 @@ namespace nickmaltbie.OpenKCC.Animation
                             Transform footTransform = GetFootTransform(foot);
                             target.UpdateStrideTarget(footTransform.position, target.TargetFootRotation, target.CanUpdateStrideTarget());
                         }
+
                         break;
                 }
 
@@ -441,7 +443,7 @@ namespace nickmaltbie.OpenKCC.Animation
             Transform footTransform = GetFootTransform(foot);
             Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
 
-            Vector3 heightOffset = Vector3.Project(kneeTransform.position - footTransform.position, Vector3.up);
+            var heightOffset = Vector3.Project(kneeTransform.position - footTransform.position, Vector3.up);
             Vector3 source = footTransform.position + heightOffset;
 
             bool heelGrounded = Physics.Raycast(source, Vector3.down, out RaycastHit kneeHitInfo, groundCheckDist);

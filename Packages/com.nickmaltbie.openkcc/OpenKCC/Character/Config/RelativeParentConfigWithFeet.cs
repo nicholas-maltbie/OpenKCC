@@ -18,7 +18,6 @@
 
 using System;
 using nickmaltbie.OpenKCC.Animation;
-using nickmaltbie.OpenKCC.Environment.MovingGround;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character.Config

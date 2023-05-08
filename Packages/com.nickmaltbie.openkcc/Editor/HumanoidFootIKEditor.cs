@@ -1,4 +1,21 @@
-﻿
+﻿// Copyright (C) 2023 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +26,26 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Editor
 {
+    /// <summary>
+    /// Custom editor script to manage creating curves for the Humanoid Foot IK.
+    /// </summary>
     [CustomEditor(typeof(HumanoidFootIK), true)]
     public class HumanoidFootIKEditor : UnityEditor.Editor
     {
-        int taskId = -1;
+        /// <summary>
+        /// Task id for generating foot curves in teh background.
+        /// </summary>
+        private int taskId = -1;
 
-        int samplingRate = 30;
-        bool state = false;
+        /// <summary>
+        /// Rate of sampling per second.
+        /// </summary>
+        private int samplingRate = 30;
+
+        /// <summary>
+        /// Current state of the editor dropdown.
+        /// </summary>
+        private bool state = false;
 
         public override void OnInspectorGUI()
         {
@@ -33,7 +63,14 @@ namespace nickmaltbie.OpenKCC.Editor
             }
         }
 
-        public bool IsFootGrounded(GameObject go, Animator animator, HumanBodyBones bone, float footGroundedHeight)
+        /// <summary>
+        /// Check if the foot is "grounded" for a specific grounded. height.
+        /// </summary>
+        /// <param name="animator"></param>
+        /// <param name="bone"></param>
+        /// <param name="footGroundedHeight"></param>
+        /// <returns></returns>
+        public bool IsFootGrounded(Animator animator, HumanBodyBones bone, float footGroundedHeight)
         {
             Transform transform = animator.GetBoneTransform(bone);
             return transform.position.y <= footGroundedHeight;
@@ -41,7 +78,7 @@ namespace nickmaltbie.OpenKCC.Editor
 
         public Dictionary<Transform, (Vector3, Quaternion)> GetPoses(Animator animator)
         {
-            Dictionary<Transform, (Vector3, Quaternion)> state = new Dictionary<Transform, (Vector3, Quaternion)>();
+            var state = new Dictionary<Transform, (Vector3, Quaternion)>();
             foreach (Transform transform in animator.GetComponentsInChildren<Transform>())
             {
                 state[transform] = (transform.position, transform.rotation);
@@ -50,34 +87,45 @@ namespace nickmaltbie.OpenKCC.Editor
             return state;
         }
 
+        /// <summary>
+        /// Reset the player pose to some saved position.
+        /// </summary>
+        /// <param name="poses">POsition and rotation of each bone.</param>
         public void ResetPlayerPose(Dictionary<Transform, (Vector3, Quaternion)> poses)
         {
-            foreach(var kvp in poses)
+            foreach (KeyValuePair<Transform, (Vector3, Quaternion)> kvp in poses)
             {
                 kvp.Key.position = kvp.Value.Item1;
                 kvp.Key.rotation = kvp.Value.Item2;
             }
         }
 
+        /// <summary>
+        /// Bake the animation for the avatar's foot IK curves.
+        /// </summary>
+        /// <param name="go">Game object for the avatar.</param>
+        /// <param name="animator">Animator for the avatar.</param>
+        /// <param name="footIK">Foot IK Controller.</param>
+        /// <returns>Enumerable of action for baking action.</returns>
         public IEnumerator BakeAnimations(GameObject go, Animator animator, HumanoidFootIK footIK)
         {
-            var pose = GetPoses(animator);
+            Dictionary<Transform, (Vector3, Quaternion)> pose = GetPoses(animator);
             taskId = Progress.Start("FootIKCurves", "Baking Foot IK Curves", Progress.Options.None, -1);
 
-            var clips = animator.runtimeAnimatorController.animationClips;
+            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
             int clipCount = clips.Length;
             int current = 0;
 
             // Setup the curves for foot locking to ground
             foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
             {
-                float clipPercent = (float) current / clipCount;
+                float clipPercent = (float)current / clipCount;
                 Progress.Report(taskId, clipPercent, $"Working on clip:{clip.name}");
 
-                var assetPath = AssetDatabase.GetAssetPath(clip);
+                string assetPath = AssetDatabase.GetAssetPath(clip);
 
-                ClipAnimationInfoCurve leftInfoCurve = new ClipAnimationInfoCurve();
-                ClipAnimationInfoCurve rightInfoCurve = new ClipAnimationInfoCurve();
+                var leftInfoCurve = new ClipAnimationInfoCurve();
+                var rightInfoCurve = new ClipAnimationInfoCurve();
                 leftInfoCurve.name = FootTarget.LeftFootIKWeight;
                 rightInfoCurve.name = FootTarget.RightFootIKWeight;
 
@@ -91,46 +139,46 @@ namespace nickmaltbie.OpenKCC.Editor
                 // So you actually need to cleanup the animations first...
                 // otherwise it will fail to save.
                 yield return null;
-                Progress.Report(taskId, (float) current / clipCount, $"Cleaning up existing curves for:{clip.name}");
+                Progress.Report(taskId, (float)current / clipCount, $"Cleaning up existing curves for:{clip.name}");
                 importer.SaveAndReimport();
                 ResetPlayerPose(pose);
                 yield return null;
-                
+
                 // Sample for each frame and check if foot is grounded
                 int frames = Mathf.CeilToInt(clip.length * samplingRate);
 
-                Keyframe[] leftFootKeys = new Keyframe[frames];
-                Keyframe[] rightFootKeys = new Keyframe[frames];
+                var leftFootKeys = new Keyframe[frames];
+                var rightFootKeys = new Keyframe[frames];
 
                 yield return null;
                 float time = 0.0f;
                 clip.SampleAnimation(go, time);
-                bool leftGrounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
-                bool rightGrounded = IsFootGrounded(go, animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
+                bool leftGrounded = IsFootGrounded(animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
+                bool rightGrounded = IsFootGrounded(animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
                 leftFootKeys[0] = new Keyframe(time, leftGrounded ? 1.0f : 0.0f);
                 rightFootKeys[0] = new Keyframe(time, rightGrounded ? 1.0f : 0.0f);
                 yield return null;
-                Progress.Report(taskId, (float) current / clipCount, $"Processing frame:0 for clip:{clip.name}.");
+                Progress.Report(taskId, (float)current / clipCount, $"Processing frame:0 for clip:{clip.name}.");
 
                 for (int i = 1; i < frames - 1; i++)
                 {
-                    time = (float) i / samplingRate;
+                    time = (float)i / samplingRate;
                     clip.SampleAnimation(go, time);
-                    leftGrounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
-                    rightGrounded = IsFootGrounded(go, animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
-                    float keyframeTime = (float) i / frames;
+                    leftGrounded = IsFootGrounded(animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
+                    rightGrounded = IsFootGrounded(animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
+                    float keyframeTime = (float)i / frames;
                     leftFootKeys[i] = new Keyframe(keyframeTime, leftGrounded ? 1.0f : 0.0f);
                     rightFootKeys[i] = new Keyframe(keyframeTime, rightGrounded ? 1.0f : 0.0f);
-                    Progress.Report(taskId, (float) current / clipCount + (float) i / frames * 1 / clipCount, $"Processing frame:{i} for clip:{clip.name}.");
+                    Progress.Report(taskId, (float)current / clipCount + (float)i / frames * 1 / clipCount, $"Processing frame:{i} for clip:{clip.name}.");
                     yield return null;
                 }
 
                 time = clip.length;
                 clip.SampleAnimation(go, time);
-                leftGrounded = IsFootGrounded(go, animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
-                rightGrounded = IsFootGrounded(go, animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
+                leftGrounded = IsFootGrounded(animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
+                rightGrounded = IsFootGrounded(animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
                 current++;
-                Progress.Report(taskId, (float) current / clipCount, $"Processing frame:end for clip:{clip.name}.");
+                Progress.Report(taskId, (float)current / clipCount, $"Processing frame:end for clip:{clip.name}.");
 
                 leftFootKeys[frames - 1] = new Keyframe(1.0f, leftGrounded ? 1.0f : 0.0f);
                 rightFootKeys[frames - 1] = new Keyframe(1.0f, rightGrounded ? 1.0f : 0.0f);
@@ -162,11 +210,11 @@ namespace nickmaltbie.OpenKCC.Editor
 
                 anims[animIndex].curves = Enumerable.Concat(
                     anims[animIndex].curves.Where(c => c.name != FootTarget.LeftFootIKWeight && c.name != FootTarget.RightFootIKWeight),
-                    new [] { leftInfoCurve, rightInfoCurve }).ToArray();
+                    new[] { leftInfoCurve, rightInfoCurve }).ToArray();
                 importer.clipAnimations = anims;
 
                 yield return null;
-                Progress.Report(taskId, (float) current / clipCount, $"Saving results for clip:{clip.name}");
+                Progress.Report(taskId, (float)current / clipCount, $"Saving results for clip:{clip.name}");
                 importer.SaveAndReimport();
                 ResetPlayerPose(pose);
                 yield return null;
