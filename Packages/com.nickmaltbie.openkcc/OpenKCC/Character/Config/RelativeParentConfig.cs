@@ -35,6 +35,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
 
         /// <summary>
         /// Relative rotation in local space.
+        /// TODO: Adjust this configuration to work as expected.
         /// </summary>
         public Quaternion RelativeRotation { get; internal set; }
 
@@ -54,6 +55,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         public void Reset()
         {
             RelativePos = Vector3.zero;
+            RelativeRotation = Quaternion.identity;
             PreviousParent = null;
         }
 
@@ -62,13 +64,14 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// relative parent for some given movement.
         /// </summary>
         /// <param name="position">Position of object before moving.</param>
+        /// <param name="rotation">Rotation of object before moving.</param>
         /// <param name="groundedState">Current grounded state of the object.</param>
         /// <param name="delta">Delta that the object has moved.</param>
         /// <param name="deltaTime">Delta time for update.</param>
         /// <returns>The distance the player should be moved based
         /// on moving ground. Will only be more than Vector3.zero if the ground
         /// is moving and should not attach.</returns>
-        public virtual Vector3 UpdateMovingGround(Vector3 position, IKCCGrounded groundedState, Vector3 delta, float deltaTime)
+        public virtual Vector3 UpdateMovingGround(Vector3 position, Quaternion rotation, IKCCGrounded groundedState, Vector3 delta, float deltaTime)
         {
             if (groundedState.StandingOnGround && groundedState.Floor != null)
             {
@@ -77,6 +80,8 @@ namespace nickmaltbie.OpenKCC.Character.Config
 
                 if (ground == null || ground.ShouldAttach())
                 {
+                    RelativeRotation = rotation * Quaternion.Inverse(parent.rotation);
+
                     if (parent != PreviousParent)
                     {
                         RelativePos = position + delta - parent.position;
@@ -110,20 +115,36 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// <param name="transform">Transform to move.</param>
         public virtual void FollowGround(Transform transform)
         {
-            transform.position += DeltaPosition(transform);
+            transform.position += DeltaPosition(transform.position);
+        }
+
+        /// <summary>
+        /// Compute the delta in rotation required to move the
+        /// object with the moving ground for this update.
+        /// </summary>
+        /// <param name="rotation">Rotation fo the object in world space.</param>
+        /// <returns></returns>
+        protected Quaternion DeltaRotation(Quaternion rotation)
+        {
+            if (OnMovingGround)
+            {
+                return PreviousParent.rotation * Quaternion.Inverse(RelativeRotation);
+            }
+
+            return Quaternion.identity;
         }
 
         /// <summary>
         /// Compute the delta in position required to move the character
         /// with the moving ground for this update.
         /// </summary>
-        /// <param name="transform">Transform to move.</param>
+        /// <param name="position">Position of the object in world space.</param>
         /// <returns>Delta in world space to move the player.</returns>
-        protected Vector3 DeltaPosition(Transform transform)
+        protected Vector3 DeltaPosition(Vector3 position)
         {
             if (OnMovingGround)
             {
-                return (PreviousParent.position + PreviousParent.rotation * RelativePos) - transform.position;
+                return (PreviousParent.position + PreviousParent.rotation * RelativePos) - position;
             }
 
             return Vector3.zero;

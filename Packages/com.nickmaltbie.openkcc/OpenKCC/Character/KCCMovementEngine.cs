@@ -352,7 +352,7 @@ namespace nickmaltbie.OpenKCC.Character
             CheckGrounded(snappedUp, snappedDown);
 
             Vector3 delta = transform.position - start;
-            transform.position += RelativeParentConfig.UpdateMovingGround(start, GroundedState, delta, unityService.fixedDeltaTime);
+            transform.position += RelativeParentConfig.UpdateMovingGround(start, transform.rotation, GroundedState, delta, unityService.fixedDeltaTime);
             previousPosition = transform.position;
             return bounces;
         }

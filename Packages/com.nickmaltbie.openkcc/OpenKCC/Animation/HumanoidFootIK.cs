@@ -16,58 +16,153 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Animation
 {
     /// <summary>
-    /// Script to attach player feet to ground.
+    /// Script to attach player feet to ground as the player
+    /// moves around naturally.
     /// </summary>
     [RequireComponent(typeof(Animator))]
     public class HumanoidFootIK : MonoBehaviour
     {
+        /// <summary>
+        /// Array of each kind of foot associated with a human character.
+        /// </summary>
         public static readonly Foot[] Feet = new Foot[]{Foot.LeftFoot, Foot.RightFoot};
 
+        /// <summary>
+        /// Targets for the feet positions to manage them separately.
+        /// </summary>
         public FootTarget leftFootTarget, rightFootTarget;
-        public float groundCheckDist = 1.5f;
-        public float stepHeight = 0.1f;
-        public float strideThresholdDistance = 0.75f;
-        public float strideThresholdDegrees = 45;
-        public float strideTime = 0.25f;
-        public float placeBlendTime = 0.05f;
-        public float footGroundedHeight = 0.05f;
-        public float maxVerticalDistanceToFoot = 0.75f;
-        public float maxHipVerticalOffset = 0.5f;
-        public float hipSmoothTime = 0.1f;
-        
 
+        /// <summary>
+        /// Distance at which this will check to the ground from the player's
+        /// knee height.
+        /// </summary>
+        [Tooltip("Distance to check for ground from knee height")]
+        public float groundCheckDist = 1.5f;
+
+        /// <summary>
+        /// How high player will lift feet when stepping in place.
+        /// </summary>
+        [Tooltip("How high player will lift feet when stepping in place.")]
+        public float stepHeight = 0.1f;
+
+        /// <summary>
+        /// Distance threshold above which the player will release
+        /// their foot from the ground. This is the distance between the current
+        /// target/desired position and the current position the foot is on the
+        /// ground.
+        /// </summary>
+        [Tooltip("Distance threshold above which the player will release their grounded feet.")]
+        public float strideThresholdDistance = 0.75f;
+
+        /// <summary>
+        /// Degrees of rotation above which the player will rotate their foot
+        /// when their foot is a given number of degrees away from their
+        /// current facing.
+        /// </summary>
+        [Tooltip("Degree threshold above which the player will rotate and replace their feet.")]
+        public float strideThresholdDegrees = 45;
+
+        /// <summary>
+        /// Time for the player to complete a grounded stride.
+        /// </summary>
+        [Tooltip("Time needed to complete a grounded stride.")]
+        public float strideTime = 0.25f;
+
+        /// <summary>
+        /// Blend time between foot in the air and being placed on the ground
+        /// in seconds.
+        /// </summary>
+        [Tooltip("Blend time (in seconds) when placing foot on the ground.")]
+        public float placeBlendTime = 0.05f;
+
+        /// <summary>
+        /// How far off the ground are the feet bones when the player's foot
+        /// is grounded.
+        /// </summary>
+        [Tooltip("Height offset for feet when grounded.")]
+        public float footGroundedHeight = 0.05f;
+        
+        /// <summary>
+        /// Max distance the player's foot should be from the hips, above
+        /// which the player will over their hips down to properly place
+        /// feet on the ground.
+        /// </summary>
+        [Tooltip("Max distance the player's foot should be from the hips.")]
+        public float maxHipFootDistance = 0.85f;
+
+        /// <summary>
+        /// Time to take to sooth hip offset from the ground.
+        /// </summary>
+        [Tooltip("Time to take to sooth hip offset from the ground.")]
+        public float hipSmoothTime = 0.35f;
+        
+        /// <summary>
+        /// Animator component for managing the player avatar.
+        /// </summary>
         private Animator animator;
+
+        /// <summary>
+        /// Current speed at which the hips are moving to match the grounded
+        /// position.
+        /// </summary>
         private float hipOffsetSpeed;
+
+        /// <summary>
+        /// The current offset of the hip location from the current
+        /// grounded location.
+        /// </summary>
         private float hipOffset;
 
+        /// <summary>
+        /// Gest the most recent stride time between
+        /// the left and right foot targets for this avatar.
+        /// </summary>
         public float MostRecentStrideTime => Mathf.Max(leftFootTarget.StrideStartTime, rightFootTarget.StrideStartTime);
+
+        /// <summary>
+        /// Gets if the player can take a stride with their feet right now.
+        /// This checks that neither foot has taken a stride within the past
+        /// stride time threshold.
+        /// </summary>
         public bool CanTakeStride => (MostRecentStrideTime + strideTime) <= Time.time;
 
+        /// <summary>
+        /// Configure and setup the humanoid foot ik controller.
+        /// </summary>
         public void Awake()
         {
             animator = GetComponent<Animator>();
             SetupTargets();
         }
 
+        /// <summary>
+        /// On validate function to update values when they are changed
+        /// in the editor.
+        /// </summary>
         public void OnValidate()
         {
             SetupTargets();
         }
 
+        /// <summary>
+        /// Setup the individual foot targets based on the configuration values.
+        /// </summary>
         private void SetupTargets()
         {
             leftFootTarget = new FootTarget(Foot.LeftFoot, animator, stepHeight, strideTime, placeBlendTime, footGroundedHeight);
             rightFootTarget = new FootTarget(Foot.RightFoot, animator, stepHeight, strideTime, placeBlendTime, footGroundedHeight);
         }
 
+        /// <summary>
+        /// Gets the foot target based on the selection.
+        /// </summary>
+        /// <param name="foot">Foot to select (right or left).</param>
+        /// <returns>FootTarget for managing that foot's grounded state.</returns>
         public FootTarget GetFootTarget(Foot foot)
         {
             if (foot == Foot.LeftFoot)
@@ -82,6 +177,9 @@ namespace nickmaltbie.OpenKCC.Animation
             return null;
         }
 
+        /// <summary>
+        /// Update called each frame to lerp the foot ik weights.
+        /// </summary>
         public void Update()
         {
             foreach (Foot foot in Feet)
@@ -90,6 +188,11 @@ namespace nickmaltbie.OpenKCC.Animation
             }
         }
 
+        /// <summary>
+        /// Update the feet positions based on some current delta
+        /// in position for moving ground targets.
+        /// </summary>
+        /// <param name="deltaPos">Delta position in world space to move the feet.</param>
         public void UpdateFeetPositions(Vector3 deltaPos)
         {
             foreach (Foot foot in Feet)
@@ -132,6 +235,12 @@ namespace nickmaltbie.OpenKCC.Animation
             }
         }
 
+        /// <summary>
+        /// Called each time the animator is updated. This is used to get the
+        /// currently desired position of the feet from the animator's current
+        /// animation then update the foot based on its current state.
+        /// </summary>
+        /// <param name="layerIndex">Layer index for the animator.</param>
         public void OnAnimatorIK(int layerIndex)
         {
             foreach (Foot foot in Feet)
@@ -201,18 +310,23 @@ namespace nickmaltbie.OpenKCC.Animation
             transform.localPosition = Vector3.up * hipOffset;
         }
 
+        /// <summary>
+        /// Get the foot transform from the animator avatar.
+        /// </summary>
+        /// <param name="foot">Foot to check.</param>
+        /// <returns>Bone transform for that avatar's selected foot.</returns>
         private Transform GetFootTransform(Foot foot)
         {
             HumanBodyBones footBone = foot == Foot.LeftFoot ? HumanBodyBones.LeftFoot : HumanBodyBones.RightFoot;
             return animator.GetBoneTransform(footBone);
         }
 
-        private Transform GetToeTransform(Foot foot)
-        {
-            HumanBodyBones toesBone = foot == Foot.LeftFoot ? HumanBodyBones.LeftToes : HumanBodyBones.RightToes;
-            return animator.GetBoneTransform(toesBone);
-        }
-
+        /// <summary>
+        /// Gets the target hip offset based on the current vertical offset
+        /// of each foot.
+        /// </summary>
+        /// <returns>The new target hip offset based on the current distance from
+        /// the hips.</returns>
         private float GetTargetHipOffset()
         {
             // Average the hip offset required of each foot
@@ -241,14 +355,38 @@ namespace nickmaltbie.OpenKCC.Animation
             }
         }
 
+        /// <summary>
+        /// Gets the foot's desired hip offset based on the current grounded
+        /// state. Basically, if a foot is grounded on floor too far away from the
+        /// avatar, the avatar should move down to account for this height
+        /// difference.
+        /// </summary>
+        /// <param name="foot">Foot target for the avatar.</param>
+        /// <returns>Desired hip offset for the selected foot.</returns>
         private float GetVerticalOffsetByFoot(Foot foot)
         {
             FootTarget target = GetFootTarget(foot);
             Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
-            float verticalDistance = Vector3.Project(hipTransform.position - target.FootIKTargetPos(), Vector3.up).magnitude;
-            return Mathf.Clamp(maxVerticalDistanceToFoot - verticalDistance, -maxHipVerticalOffset, 0);
+            float dist = Vector3.Distance(hipTransform.position, target.FootIKTargetPos());
+            return Mathf.Clamp(maxHipFootDistance - dist, -maxHipFootDistance, 0);
         }
 
+        /// <summary>
+        /// Get where a foot's current target ground position
+        /// is in the vertical plane defined by the player's hips.
+        /// This will take wherever the foot is in world space and project
+        /// it onto the plane that is normal to the hip's forward vector.
+        /// This gets where the foot would be if the player were to lift up
+        /// their foot and bring it in line with their hips from the foot's
+        /// current location.
+        /// </summary>
+        /// <param name="foot">Foot target to check position of.</param>
+        /// <param name="hipGroundedPos">Desired foot position in world space.</param>
+        /// <param name="hipGroundedRotation">Desired foot rotation in world space.</param>
+        /// <param name="hitNormal">Ground normal for the surface the foot is standing on.</param>
+        /// <param name="floor">GameObject/collider player is currently standing on.</param>
+        /// <param name="footForward">Forward vector for the foot's desired rotation.</param>
+        /// <returns>True if the foot has a surface to ground on, false otherwise.</returns>
         private bool GetFootTargetPosViaHips(Foot foot, out Vector3 hipGroundedPos, out Quaternion hipGroundedRotation, out Vector3 hitNormal, out GameObject floor, out Vector3 footForward)
         {
             HumanBodyBones kneeBone = foot == Foot.LeftFoot ? HumanBodyBones.LeftLowerLeg : HumanBodyBones.RightLowerLeg;
@@ -283,6 +421,19 @@ namespace nickmaltbie.OpenKCC.Animation
             }
         }
 
+        /// <summary>
+        /// Gets the foot's current grounded location in world space given
+        /// the current location of the foot from the animator.
+        /// Will draw a line from the knee height of the player down and check if
+        /// the foot can stand on some surface under the player.
+        /// </summary>
+        /// <param name="foot">Foot target to check position of.</param>
+        /// <param name="groundedPos">Desired foot position in world space.</param>
+        /// <param name="rotation">Desired foot rotation in world space.</param>
+        /// <param name="groundNormal">Ground normal for the surface the foot is standing on.</param>
+        /// <param name="floor">GameObject/collider player is currently standing on.</param>
+        /// <param name="footForward">Forward vector for the foot's desired rotation.</param>
+        /// <returns>True if the foot has a surface to ground on, false otherwise.</returns>
         private bool GetFootGroundedTransform(Foot foot, out Vector3 groundedPos, out Quaternion rotation, out Vector3 groundNormal, out GameObject floor, out Vector3 footForward)
         {
             HumanBodyBones kneeBone = foot == Foot.LeftFoot ? HumanBodyBones.LeftLowerLeg : HumanBodyBones.RightLowerLeg;

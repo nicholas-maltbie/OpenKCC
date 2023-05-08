@@ -23,16 +23,23 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character.Config
 {
+    /// <summary>
+    /// Relative parent config that will update a <see cref="nickmaltbie.OpenKCC.Animation.HumanoidFootIK"/>
+    /// if one is attached to the avatar.
+    /// </summary>
     [Serializable]
     public class RelativeParentConfigWithFeet : RelativeParentConfig
     {
+        /// <summary>
+        /// Feet controls attached to this character.
+        /// </summary>
         private HumanoidFootIK feet;
 
         /// <inheritdoc/>
         public override void FollowGround(Transform transform)
         {
             feet ??= transform.gameObject.GetComponentInChildren<HumanoidFootIK>();
-            Vector3 delta = DeltaPosition(transform);
+            Vector3 delta = DeltaPosition(transform.position);
             feet?.UpdateFeetPositions(delta);
             transform.position += delta;
         }

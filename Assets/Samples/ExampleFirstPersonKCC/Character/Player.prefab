@@ -396,8 +396,7 @@ MonoBehaviour:
   strideTime: 0.15
   placeBlendTime: 0.075
   footGroundedHeight: 0.1
-  maxVerticalDistanceToFoot: 0.8
-  maxHipVerticalOffset: 2
+  maxHipFootDistance: 0.75
   hipSmoothTime: 0.35
 --- !u!4 &2110423193989123606 stripped
 Transform:
