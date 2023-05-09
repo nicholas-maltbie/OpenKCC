@@ -123,7 +123,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// </summary>
         /// <param name="rotation">Rotation fo the object in world space.</param>
         /// <returns></returns>
-        protected Quaternion DeltaRotation(Quaternion rotation)
+        public Quaternion DeltaRotation(Quaternion rotation)
         {
             if (OnMovingGround)
             {
@@ -139,7 +139,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// </summary>
         /// <param name="position">Position of the object in world space.</param>
         /// <returns>Delta in world space to move the player.</returns>
-        protected Vector3 DeltaPosition(Vector3 position)
+        public Vector3 DeltaPosition(Vector3 position)
         {
             if (OnMovingGround)
             {
