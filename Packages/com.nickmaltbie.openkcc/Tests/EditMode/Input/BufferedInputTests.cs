@@ -63,6 +63,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
         }
 
         [Test]
+        public void Validate_BufferedInput_Overrides()
+        {
+            var inputAction = new InputAction();
+            bufferedInput.InputAction = inputAction;
+            Assert.AreEqual(inputAction, bufferedInput.InputAction);
+            bufferedInput.InputAction = null;
+            Assert.AreEqual(bufferedInput.inputActionReference.action, bufferedInput.InputAction);
+        }
+
+        [Test]
         public void Validate_BufferedInput_False()
         {
             // Validate that input is disabled

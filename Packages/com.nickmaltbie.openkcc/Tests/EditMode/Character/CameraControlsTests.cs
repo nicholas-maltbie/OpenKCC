@@ -91,7 +91,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             base.TearDown();
             PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
+        }
 
+        [Test]
+        public void Validate_CaemraController_CameraBase()
+        {
+            Assert.AreEqual(cameraController.config.cameraTransform, cameraController.CameraBase);
         }
 
         [Test]
@@ -119,8 +124,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         }
 
         [Test]
-        public void Validate_CameraController_BasicMovement()
+        public void Validate_CameraController_BasicMovement([Values] bool rotatePlayer)
         {
+            cameraController.config.rotatePlayer = rotatePlayer;
+
             Assert.AreEqual(0, cameraController.Pitch);
             Assert.AreEqual(0, cameraController.Yaw);
             Assert.AreEqual(0, cameraController.PlayerHeading.eulerAngles.y);

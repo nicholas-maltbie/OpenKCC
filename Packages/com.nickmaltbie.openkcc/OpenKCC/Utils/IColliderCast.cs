@@ -92,7 +92,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="source">Source point to check from.</param>
         /// <param name="direction">Direction to search for step.</param>
         /// <param name="distance">Distance to search for step ahead of player.</param>
-        /// <param name="stepHit">Information bout step hit ahead.</param>
+        /// <param name="stepHit">Information about step hit ahead.</param>
         /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
         /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
         /// <returns>Is something ahead hit.</returns>

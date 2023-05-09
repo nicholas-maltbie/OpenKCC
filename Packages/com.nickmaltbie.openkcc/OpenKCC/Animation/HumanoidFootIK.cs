@@ -16,6 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Animation
@@ -129,7 +130,12 @@ namespace nickmaltbie.OpenKCC.Animation
         /// This checks that neither foot has taken a stride within the past
         /// stride time threshold.
         /// </summary>
-        public bool CanTakeStride => (MostRecentStrideTime + strideTime) <= Time.time;
+        public bool CanTakeStride => (MostRecentStrideTime + strideTime) <= unityService.time;
+
+        /// <summary>
+        /// Unity service for managing time delta.
+        /// </summary>
+        internal IUnityService unityService = UnityService.Instance;
 
         /// <summary>
         /// Configure and setup the humanoid foot ik controller.
@@ -307,7 +313,7 @@ namespace nickmaltbie.OpenKCC.Animation
 
             // Move hips according to target positions
             float targetHipOffset = GetTargetHipOffset();
-            hipOffset = Mathf.SmoothDamp(hipOffset, targetHipOffset, ref hipOffsetSpeed, hipSmoothTime, Mathf.Infinity, Time.deltaTime);
+            hipOffset = Mathf.SmoothDamp(hipOffset, targetHipOffset, ref hipOffsetSpeed, hipSmoothTime, Mathf.Infinity, unityService.deltaTime);
             Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
             transform.localPosition = Vector3.up * hipOffset;
         }
@@ -369,7 +375,7 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             FootTarget target = GetFootTarget(foot);
             Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
-            float dist = Vector3.Distance(hipTransform.position, target.FootIKTargetPos());
+            float dist = Vector3.Distance(hipTransform.position - Vector3.up * hipOffset, target.FootIKTargetPos());
             return Mathf.Clamp(maxHipFootDistance - dist, -maxHipFootDistance, 0);
         }
 

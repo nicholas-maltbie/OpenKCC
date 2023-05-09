@@ -16,6 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Animation
@@ -109,6 +110,11 @@ namespace nickmaltbie.OpenKCC.Animation
         private Vector3 raisedFootVelocity = Vector3.zero;
 
         /// <summary>
+        /// Unity service for managing time delta.
+        /// </summary>
+        internal IUnityService unityService = UnityService.Instance;
+
+        /// <summary>
         /// Construct a foot target with a given set of configurations
         /// and parameters.
         /// </summary>
@@ -181,7 +187,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// Gest the remaining time in the current stride based off the current
         /// game time.
         /// </summary>
-        protected float RemainingStrideTime => StrideStartTime + TotalStrideTime - Time.time;
+        protected float RemainingStrideTime => StrideStartTime + TotalStrideTime - unityService.time;
 
         /// <summary>
         /// Gets if this foot is currently mid stride. This foot
@@ -293,7 +299,7 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             float currentWeight = FootIKWeight;
             float targetWeight = State == FootState.Grounded ? 1.0f : 0.0f;
-            FootIKWeight = Mathf.SmoothDamp(currentWeight, targetWeight, ref footIKWeightVelocityLerp, TotalStrideTime, Mathf.Infinity, Time.deltaTime);
+            FootIKWeight = Mathf.SmoothDamp(currentWeight, targetWeight, ref footIKWeightVelocityLerp, TotalStrideTime, Mathf.Infinity, unityService.deltaTime);
             FootIKWeight = Mathf.Clamp(FootIKWeight, 0, 1);
         }
 
@@ -325,7 +331,7 @@ namespace nickmaltbie.OpenKCC.Animation
             FootForward = footForward;
             UseBump = bumpStep;
             State = FootState.Grounded;
-            StrideStartTime = Time.time;
+            StrideStartTime = unityService.time;
         }
 
         /// <summary>
@@ -342,7 +348,7 @@ namespace nickmaltbie.OpenKCC.Animation
             }
             else
             {
-                TargetFootPosition = Vector3.SmoothDamp(TargetFootPosition, toPos, ref raisedFootVelocity, strideTime, Mathf.Infinity, Time.deltaTime);
+                TargetFootPosition = Vector3.SmoothDamp(TargetFootPosition, toPos, ref raisedFootVelocity, strideTime, Mathf.Infinity, unityService.deltaTime);
             }
 
             TargetFootRotation = toRot;

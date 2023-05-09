@@ -32,7 +32,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
         /// Update a camera controller based on current configuration
         /// and inputs.
         /// </summary>
-        /// <param name="config">Configuration for the camear controller.</param>
+        /// <param name="config">Configuration for the camera controller.</param>
         /// <param name="go">GameObject associated with the camera controller.</param>
         /// <param name="cameraControls">Camera controls object.</param>
         /// <param name="deltaTime">delta time for updating the camera controller.</param>
