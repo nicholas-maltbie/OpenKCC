@@ -28,6 +28,26 @@ namespace nickmaltbie.OpenKCC.Animation
     public class FootTarget
     {
         /// <summary>
+        /// Threshold for animation weight value for changing between grounded and not grounded.
+        /// </summary>
+        public const float ThresholdGroundedStateChange = 0.5f;
+
+        /// <summary>
+        /// Threshold for animation IK weight value to consider the foot grounded.
+        /// </summary>
+        public const float ThresholdIKWeightGrounded = 0.95f;
+
+        /// <summary>
+        /// Threshold for animation IK weight value to consider the foot released.
+        /// </summary>
+        public const float ThresholdIKWeightReleased = 0.05f;
+
+        /// <summary>
+        /// Threshold fraction of animation at which a stride target can no longer be updated.
+        /// </summary>
+        public const float ThresholdFractionStrideNoUpdate = 0.15f;
+
+        /// <summary>
         /// Name for animator curve to define the left foot IK weight.
         /// </summary>
         public const string LeftFootIKWeight = "LeftFootIKWeight";
@@ -207,11 +227,11 @@ namespace nickmaltbie.OpenKCC.Animation
                 }
                 else if (State == FootState.Grounded)
                 {
-                    return FootIKWeight <= 0.95f;
+                    return FootIKWeight <= ThresholdIKWeightGrounded;
                 }
                 else
                 {
-                    return FootIKWeight >= 0.05f;
+                    return FootIKWeight >= ThresholdIKWeightReleased;
                 }
             }
         }
@@ -225,7 +245,7 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             if (State == FootState.Grounded && UseBump)
             {
-                return RemainingStrideTime > strideTime * 0.25f;
+                return RemainingStrideTime > strideTime * ThresholdFractionStrideNoUpdate;
             }
             else if (State == FootState.Grounded)
             {
@@ -233,7 +253,7 @@ namespace nickmaltbie.OpenKCC.Animation
             }
             else
             {
-                return FootIKWeight <= 0.01f;
+                return FootIKWeight <= ThresholdIKWeightReleased;
             }
         }
 
@@ -247,13 +267,13 @@ namespace nickmaltbie.OpenKCC.Animation
         /// Is the foot's animation weight over the grounded threshold. (should be grounded)
         /// </summary>
         /// <returns>True if the foot is over the grounded threshold, false otherwise.</returns>
-        public bool OverGroundThreshold() => GetFootAnimationWeight() >= 0.5f;
+        public bool OverGroundThreshold() => GetFootAnimationWeight() >= ThresholdGroundedStateChange;
 
         /// <summary>
         /// Is the foot's animation weight under the release threshold. (should be released)
         /// </summary>
         /// <returns>True if the foot is under the release threshold, false otherwise.</returns>
-        public bool UnderReleaseThreshold() => GetFootAnimationWeight() <= 0.5f;
+        public bool UnderReleaseThreshold() => GetFootAnimationWeight() <= ThresholdGroundedStateChange;
 
         /// <summary>
         /// Get the current foot IK target position in world space. This
@@ -271,7 +291,6 @@ namespace nickmaltbie.OpenKCC.Animation
             float fraction = 1 - Mathf.Clamp(RemainingStrideTime / TotalStrideTime, 0, 1);
             var lerpPos = Vector3.Lerp(fromFootPosition, TargetFootPosition, SmoothValue(fraction));
             Vector3 verticalOffset = UseBump ? Vector3.up * strideHeight * Mathf.Sin(fraction * Mathf.PI) : Vector3.zero;
-            ;
             return lerpPos + verticalOffset + Vector3.up * footGroundedHeight;
         }
 
