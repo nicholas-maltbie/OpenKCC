@@ -135,6 +135,108 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         }
 
         [Test]
+        public void Validate_FootTarget_UpdateStrideTarget()
+        {
+            // If updating with force, should snap right away.
+            leftFootTarget.UpdateStrideTarget(Vector3.forward, Quaternion.identity, true);
+            Assert.AreEqual(Vector3.forward, leftFootTarget.TargetFootPosition);
+            Assert.AreEqual(Quaternion.identity, leftFootTarget.TargetFootRotation);
+            leftFootTarget.UpdateStrideTarget(Vector3.zero, Quaternion.identity, true);
+            Assert.AreEqual(Vector3.zero, leftFootTarget.TargetFootPosition);
+            Assert.AreEqual(Quaternion.identity, leftFootTarget.TargetFootRotation);
+
+            // Measure distance and ensure it keeps dropping
+            float previousDelta = Vector3.Distance(leftFootTarget.TargetFootPosition, Vector3.forward);
+            while (previousDelta >= 0.01f)
+            {
+                leftFootTarget.UpdateStrideTarget(Vector3.forward, Quaternion.identity, false);
+                float newDelta = Vector3.Distance(leftFootTarget.TargetFootPosition, Vector3.forward);
+                Assert.IsTrue(newDelta <= previousDelta);
+                previousDelta = newDelta;
+            }
+        }
+
+        [Test]
+        public void Validate_FootTarget_StrideState()
+        {
+            float time = 0.0f;
+            GameObject floor = CreateGameObject();
+            unityServiceMock.Setup(e => e.deltaTime).Returns(0.05f);
+            unityServiceMock.Setup(e => e.time).Returns(() => time);
+
+            // Foot should start off released and able to update stride target
+            Assert.AreEqual(FootState.Released, leftFootTarget.State);
+            Assert.IsTrue(leftFootTarget.CanUpdateStrideTarget());
+            Assert.AreEqual(0.0f, leftFootTarget.FootIKWeight);
+
+            // Start basic action to ground foot
+            leftFootTarget.StartStride(Vector3.forward, Quaternion.identity, floor, Vector3.forward, false);
+            Assert.IsFalse(leftFootTarget.CanUpdateStrideTarget());
+
+            // Assert that the foot is now mid stride and remains mid stride until
+            // the foot ik weight drops below the threshold ik weight grounded
+            while (leftFootTarget.FootIKWeight >= FootTarget.ThresholdIKWeightGrounded)
+            {
+                Assert.IsTrue(leftFootTarget.MidStride);
+                Assert.IsFalse(leftFootTarget.CanUpdateStrideTarget());
+                leftFootTarget.LerpFootIKWeight();
+                time += 0.05f;
+            }
+
+            // Once the foot is above threshold, it should be fully grounded
+            while (leftFootTarget.MidStride)
+            {
+                leftFootTarget.LerpFootIKWeight();
+                time += 0.05f;
+            }
+
+            Assert.AreEqual(FootState.Grounded, leftFootTarget.State);
+            Assert.IsFalse(leftFootTarget.MidStride);
+            Assert.IsFalse(leftFootTarget.CanUpdateStrideTarget());
+
+            // Now take a small bump step and assert that we are mid
+            // stride as long as the stride time is greater than zero
+            Quaternion previousRotation = leftFootTarget.FootIKTargetRot();
+            leftFootTarget.StartStride(Vector3.left, Quaternion.LookRotation(Vector3.left, Vector3.up), floor, Vector3.left, true);
+            while (leftFootTarget.RemainingStrideTime > 0)
+            {
+                bool expectedStrideUpdate = leftFootTarget.RemainingStrideTime >= leftFootTarget.StrideTime * FootTarget.ThresholdFractionStrideNoUpdate;
+
+                Assert.IsTrue(leftFootTarget.MidStride);
+                Assert.AreEqual(expectedStrideUpdate, leftFootTarget.CanUpdateStrideTarget());
+                leftFootTarget.LerpFootIKWeight();
+                time += 0.01f;
+
+                // Also... assert check our delta rotation
+                Assert.IsTrue(Quaternion.Angle(previousRotation, leftFootTarget.FootIKTargetRot()) >= 0);
+                previousRotation = leftFootTarget.FootIKTargetRot();
+            }
+
+            Assert.IsFalse(leftFootTarget.MidStride);
+            Assert.IsFalse(leftFootTarget.CanUpdateStrideTarget());
+
+            // Assert that we are close to our target rotation
+            Assert.IsTrue(Quaternion.Angle(Quaternion.LookRotation(Vector3.left, Vector3.up), leftFootTarget.FootIKTargetRot()) <= 5.0f);
+
+            // Finally release the foot and assert it's mid stride until
+            // foot IK Weight is below a specific value.
+            leftFootTarget.ReleaseFoot();
+            Assert.IsTrue(leftFootTarget.MidStride);
+            Assert.IsFalse(leftFootTarget.CanUpdateStrideTarget());
+
+            while(leftFootTarget.MidStride)
+            {
+                leftFootTarget.LerpFootIKWeight();
+                time += 0.01f;
+
+                if (leftFootTarget.FootIKWeight <= FootTarget.ThresholdIKWeightReleased)
+                {
+                    Assert.IsTrue(leftFootTarget.CanUpdateStrideTarget());
+                }
+            }
+        }
+
+        [Test]
         public void Validate_FootTarget_GetAnimationCurveValue()
         {
             for (float sample = 0; sample <= 1.0f; sample += 0.001f)

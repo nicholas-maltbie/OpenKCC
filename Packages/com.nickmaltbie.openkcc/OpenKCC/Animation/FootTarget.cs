@@ -110,11 +110,6 @@ namespace nickmaltbie.OpenKCC.Animation
         private float strideHeight;
 
         /// <summary>
-        /// Time required to take a full stride for the foot.
-        /// </summary>
-        private float strideTime;
-
-        /// <summary>
         /// Time when blending placement for the player foot.
         /// </summary>
         private float placeBlendTime;
@@ -150,10 +145,15 @@ namespace nickmaltbie.OpenKCC.Animation
             this.animator = animator;
 
             this.strideHeight = strideHeight;
-            this.strideTime = strideTime;
             this.placeBlendTime = placeBlendTime;
             this.footGroundedHeight = footGroundedHeight;
+            this.StrideTime = strideTime;
         }
+
+        /// <summary>
+        /// Time required to take a full stride for the foot.
+        /// </summary>
+        public float StrideTime { get; private set; }
 
         /// <summary>
         /// Gets the time of the most recent stride's start.
@@ -201,13 +201,13 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <summary>
         /// Gets the time required for the current stride action/blending.
         /// </summary>
-        protected float TotalStrideTime => UseBump ? strideTime : placeBlendTime;
+        protected float TotalStrideTime => UseBump ? StrideTime : placeBlendTime;
 
         /// <summary>
         /// Gest the remaining time in the current stride based off the current
         /// game time.
         /// </summary>
-        protected float RemainingStrideTime => StrideStartTime + TotalStrideTime - unityService.time;
+        public float RemainingStrideTime => StrideStartTime + TotalStrideTime - unityService.time;
 
         /// <summary>
         /// Gets if this foot is currently mid stride. This foot
@@ -245,7 +245,7 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             if (State == FootState.Grounded && UseBump)
             {
-                return RemainingStrideTime > strideTime * ThresholdFractionStrideNoUpdate;
+                return RemainingStrideTime > StrideTime * ThresholdFractionStrideNoUpdate;
             }
             else if (State == FootState.Grounded)
             {
@@ -364,10 +364,11 @@ namespace nickmaltbie.OpenKCC.Animation
             if (force)
             {
                 TargetFootPosition = toPos;
+                raisedFootVelocity = Vector3.zero;
             }
             else
             {
-                TargetFootPosition = Vector3.SmoothDamp(TargetFootPosition, toPos, ref raisedFootVelocity, strideTime, Mathf.Infinity, unityService.deltaTime);
+                TargetFootPosition = Vector3.SmoothDamp(TargetFootPosition, toPos, ref raisedFootVelocity, StrideTime, Mathf.Infinity, unityService.deltaTime);
             }
 
             TargetFootRotation = toRot;
