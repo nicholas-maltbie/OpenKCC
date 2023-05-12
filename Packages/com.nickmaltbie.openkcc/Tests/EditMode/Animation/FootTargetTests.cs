@@ -147,7 +147,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
 
             // Measure distance and ensure it keeps dropping
             float previousDelta = Vector3.Distance(leftFootTarget.TargetFootPosition, Vector3.forward);
-            while (previousDelta >= 0.01f)
+            for (int i = 0; i < 100; i++)
             {
                 leftFootTarget.UpdateStrideTarget(Vector3.forward, Quaternion.identity, false);
                 float newDelta = Vector3.Distance(leftFootTarget.TargetFootPosition, Vector3.forward);
