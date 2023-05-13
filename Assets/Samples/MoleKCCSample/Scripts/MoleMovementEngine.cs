@@ -103,7 +103,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             }
 
             // Compute the new grounded state
-            CheckGrounded(false);
+            CheckGrounded(false, false);
             GroundNormal = GroundedState.SurfaceNormal;
 
             if (GroundNormal == Vector3.zero)

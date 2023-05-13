@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Addressing small bug in player movement caused by stair movement normals
+    not being computed properly when walking down stairs.
+
 ## [1.3.4] 2023-04-01
 
 * Refactored common assets (like UI) to `ExampleFirstPersonKCC` sample 

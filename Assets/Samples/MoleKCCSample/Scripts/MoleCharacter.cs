@@ -351,7 +351,7 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             if (!IsOwner)
             {
                 // movementEngine.SetNormal(relativeUp.Value);
-                movementEngine.CheckGrounded(false);
+                movementEngine.CheckGrounded(false, false);
             }
 
             bool particlesEnabled = Attribute.GetCustomAttribute(CurrentState, typeof(DiggingParticlesEnabled)) != null;

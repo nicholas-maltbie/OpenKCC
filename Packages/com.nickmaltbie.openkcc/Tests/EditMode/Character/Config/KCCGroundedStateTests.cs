@@ -25,7 +25,7 @@ using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
+namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Config
 {
     /// <summary>
     /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.Config.KCCGroundedState"/> in edit mode.
@@ -51,10 +51,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         public void Validate_KCCGroundedState_CheckGrounded_StandingOnGround()
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: 0.001f, didHit: true);
-            kccGroundedState = movementEngine.CheckGrounded(false);
+            kccGroundedState = movementEngine.CheckGrounded(false, false);
 
             TestUtils.AssertInBounds(kccGroundedState.Angle, 0.0f);
             Assert.IsTrue(kccGroundedState.StandingOnGround);
+            Assert.IsTrue(kccGroundedState.StandingOnGroundOrOverlap);
             Assert.IsTrue(kccGroundedState.DistanceToGround == 0.001f);
             Assert.IsFalse(kccGroundedState.Sliding);
         }
@@ -65,7 +66,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         )
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: distance, didHit: distance < Mathf.Infinity);
-            kccGroundedState = movementEngine.CheckGrounded(false);
+            kccGroundedState = movementEngine.CheckGrounded(false, false);
 
             Assert.IsFalse(kccGroundedState.StandingOnGround);
             Assert.IsFalse(kccGroundedState.Sliding);
@@ -78,7 +79,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             [Values] bool falling)
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: 0.001f, didHit: falling);
-            kccGroundedState = movementEngine.CheckGrounded(false);
+            kccGroundedState = movementEngine.CheckGrounded(false, false);
 
             if (falling)
             {
@@ -96,7 +97,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         public void Validate_KCCGroundedState_CheckGrounded_Sliding()
         {
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: (Vector3.up + Vector3.right * 10).normalized, didHit: true);
-            kccGroundedState = movementEngine.CheckGrounded(false);
+            kccGroundedState = movementEngine.CheckGrounded(false, false);
 
             Assert.IsTrue(kccGroundedState.StandingOnGround);
             Assert.IsTrue(kccGroundedState.Sliding);
