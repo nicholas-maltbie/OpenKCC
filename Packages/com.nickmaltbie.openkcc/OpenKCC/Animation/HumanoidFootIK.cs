@@ -240,7 +240,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// </summary>
         /// <param name="foot">foot to update.</param>
         /// <param name="deltaPos">Delta position in world space to move the feet.</param>
-        private void UpdateFootPosition(Foot foot, Vector3 deltaPos)
+        public void UpdateFootPosition(Foot foot, Vector3 deltaPos)
         {
             FootTarget target = GetFootTarget(foot);
             if (target.State != FootState.Grounded)
@@ -320,6 +320,10 @@ namespace nickmaltbie.OpenKCC.Animation
             }
         }
 
+        /// <summary>
+        /// Update foot targets when the foot is grounded.
+        /// </summary>
+        /// <param name="target">Foot target to update.</param>
         private void UpdateFootWhenGrounded(FootTarget target)
         {
             bool shouldRelease = target.UnderReleaseThreshold();
