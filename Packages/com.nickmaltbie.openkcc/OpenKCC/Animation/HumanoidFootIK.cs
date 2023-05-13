@@ -173,6 +173,8 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             LeftFootTarget = new FootTarget(Foot.LeftFoot, animator, stepHeight, strideTime, placeBlendTime, footGroundedHeight);
             RightFootTarget = new FootTarget(Foot.RightFoot, animator, stepHeight, strideTime, placeBlendTime, footGroundedHeight);
+            LeftFootTarget.unityService = unityService;
+            RightFootTarget.unityService = unityService;
         }
 
         /// <summary>
