@@ -28,6 +28,30 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
     public static class KCCTestUtils
     {
         /// <summary>
+        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.DoRaycastInDirection"/>
+        /// </summary>
+        /// <param name="source">Source point to check from.</param>
+        /// <param name="direction">Direction to search for step.</param>
+        /// <param name="distance">Distance to search for step ahead of player.</param>
+        /// <param name="hit">Information about hit.</param>
+        /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
+        /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
+        /// <returns>Is something ahead hit.</returns>
+        public delegate void DoRaycastInDirectionCallback(Vector3 source, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
+
+        /// <summary>
+        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.DoRaycastInDirection"/>
+        /// </summary>
+        /// <param name="source">Source point to check from.</param>
+        /// <param name="direction">Direction to search for step.</param>
+        /// <param name="distance">Distance to search for step ahead of player.</param>
+        /// <param name="hit">Information about hit.</param>
+        /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
+        /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
+        /// <returns>Is something ahead hit.</returns>
+        public delegate bool DoRaycastInDirectionReturns(Vector3 source, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
+
+        /// <summary>
         /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf"/>
         /// </summary>
         /// <param name="position">Position of the object when it is being raycast.</param>

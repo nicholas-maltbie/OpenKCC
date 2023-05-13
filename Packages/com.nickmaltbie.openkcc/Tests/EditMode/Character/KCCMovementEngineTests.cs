@@ -52,6 +52,53 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             engine = CreateGameObject().AddComponent<KCCMovementEngine>();
             colliderCastMock = new Mock<IColliderCast>();
             engine._colliderCast = colliderCastMock.Object;
+
+            engine.Awake();
+        }
+
+        [Test]
+        public void Verify_KCCMovementEngine_SnapDownOverrideNormal()
+        {
+            // Setup the normal to originally be Vector3.up
+            var raycastHitMock = new Mock<IRaycastHit>();
+            raycastHitMock.Setup(hit => hit.distance).Returns(KCCUtils.Epsilon);
+            raycastHitMock.Setup(hit => hit.normal).Returns(Vector3.up);
+            colliderCastMock.Setup(e => e.CastSelf(
+                It.IsAny<Vector3>(),
+                It.IsAny<Quaternion>(),
+                It.IsAny<Vector3>(),
+                It.IsAny<float>(),
+                out It.Ref<IRaycastHit>.IsAny,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>()))
+                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+                {
+                    hit = raycastHitMock.Object;
+                }))
+                .Returns(true);
+
+            var groundedState = engine.CheckGrounded(false, true);
+            Assert.AreEqual(Vector3.up, groundedState.SurfaceNormal);
+
+            // Setup the step hit to return a different normal
+            var stepHitMock = new Mock<IRaycastHit>();
+            stepHitMock.Setup(hit => hit.distance).Returns(KCCUtils.Epsilon);
+            stepHitMock.Setup(hit => hit.normal).Returns(Vector3.forward);
+            colliderCastMock.Setup(e => e.DoRaycastInDirection(
+                It.IsAny<Vector3>(),
+                It.IsAny<Vector3>(),
+                It.IsAny<float>(),
+                out It.Ref<IRaycastHit>.IsAny,
+                It.IsAny<int>(),
+                It.IsAny<QueryTriggerInteraction>()))
+                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+                {
+                    hit = stepHitMock.Object;
+                }))
+                .Returns(true);
+
+            groundedState = engine.CheckGrounded(false, true);
+            Assert.AreEqual(Vector3.forward, groundedState.SurfaceNormal);
         }
 
         [Test]
@@ -134,7 +181,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 }))
                 .Returns(true);
 
-            engine.CheckGrounded(false);
+            engine.CheckGrounded(false, false);
 
             Vector3 velocity = engine.GetGroundVelocity();
 
@@ -206,12 +253,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 }))
                 .Returns(true);
 
-            engine.CheckGrounded(false);
+            engine.CheckGrounded(false, false);
 
             Assert.AreEqual(currentNormal, engine.GroundedState.SurfaceNormal);
             currentNormal = newNormal;
 
-            engine.CheckGrounded(snapped);
+            engine.CheckGrounded(snapped, snapped);
 
             if (snapped)
             {

@@ -339,18 +339,17 @@ namespace nickmaltbie.OpenKCC.Character
             }).ToArray();
 
             // Compute player relative movement state based on final pos
-            bool snappedDown = false;
             bool snappedUp = bounces.Any(bounce => bounce.action == KCCUtils.MovementAction.SnapUp);
+            bool snappedDown = ShouldSnapDown(snappedUp, moves);
 
             // Only snap down if the player was grounded before they started
             // moving and are not currently trying to move upwards.
-            if (ShouldSnapDown(snappedUp, moves))
+            if (snappedDown)
             {
-                snappedDown = true;
                 SnapPlayerDown();
             }
 
-            CheckGrounded(snappedUp || snappedDown);
+            CheckGrounded(snappedUp, snappedDown);
 
             Vector3 delta = transform.position - start;
             transform.position += RelativeParentConfig.UpdateMovingGround(start, GroundedState, delta, unityService.fixedDeltaTime);
@@ -398,12 +397,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Update the current grounded state of this kinematic character controller.
         /// </summary>
-        public virtual KCCGroundedState CheckGrounded(bool snapped)
+        public virtual KCCGroundedState CheckGrounded(bool snappedUp, bool snappedDown)
         {
             Vector3 groundCheckPos = transform.position;
 
             // If snapped up, use the snapped position to check grounded
-            if (snapped)
+            if (snappedUp || snappedDown)
             {
                 Vector3 snapDelta = KCCUtils.GetSnapDelta(
                     transform.position,
@@ -426,9 +425,23 @@ namespace nickmaltbie.OpenKCC.Character
 
             Vector3 normal = hit.normal;
 
-            if (snapped)
+            if (snappedUp)
             {
                 normal = GroundedState.SurfaceNormal;
+            }
+            else if (!snappedUp && snappedDown)
+            {
+                // Check if we're walking down stairs
+                bool overrideNormal = ColliderCast.DoRaycastInDirection(
+                    transform.position,
+                    -Up,
+                    GroundCheckDistance,
+                    out IRaycastHit stepHit,
+                    layerMask);
+                if (overrideNormal)
+                {
+                    normal = stepHit.normal;
+                }
             }
 
             GroundedState = new KCCGroundedState(
