@@ -96,7 +96,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // Start a stride and check that foot will lock from position to stride position
             GameObject floor = CreateGameObject();
             footTarget.UpdateStrideTarget(Vector3.zero, Quaternion.identity, true);
-            footTarget.StartStride(Vector3.forward, Quaternion.identity, floor, Vector3.forward, false);
+            footTarget.StartStride(Vector3.forward, Quaternion.identity, floor, Vector3.forward, Vector3.up, false);
 
             // Assert that the foot is grounded and now mid stride
             Assert.IsTrue(footTarget.State == FootState.Grounded);
@@ -170,7 +170,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             Assert.AreEqual(0.0f, leftFootTarget.FootIKWeight);
 
             // Start basic action to ground foot
-            leftFootTarget.StartStride(Vector3.forward, Quaternion.identity, floor, Vector3.forward, false);
+            leftFootTarget.StartStride(Vector3.forward, Quaternion.identity, floor, Vector3.forward, Vector3.up, false);
             Assert.IsFalse(leftFootTarget.CanUpdateStrideTarget());
 
             // Assert that the foot is now mid stride and remains mid stride until
@@ -197,7 +197,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // Now take a small bump step and assert that we are mid
             // stride as long as the stride time is greater than zero
             Quaternion previousRotation = leftFootTarget.FootIKTargetRot();
-            leftFootTarget.StartStride(Vector3.left, Quaternion.LookRotation(Vector3.left, Vector3.up), floor, Vector3.left, true);
+            leftFootTarget.StartStride(Vector3.left, Quaternion.LookRotation(Vector3.left, Vector3.up), floor, Vector3.left, Vector3.up, true);
             while (leftFootTarget.RemainingStrideTime > 0)
             {
                 bool expectedStrideUpdate = leftFootTarget.RemainingStrideTime >= leftFootTarget.StrideTime * FootTarget.ThresholdFractionStrideNoUpdate;

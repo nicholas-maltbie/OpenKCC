@@ -80,11 +80,6 @@ namespace nickmaltbie.OpenKCC.Animation
         }
 
         /// <summary>
-        /// Which foot does this target correspond to.
-        /// </summary>
-        private Foot foot;
-
-        /// <summary>
         /// Animator for managing the player avatar.
         /// </summary>
         private Animator animator;
@@ -103,21 +98,6 @@ namespace nickmaltbie.OpenKCC.Animation
         /// Rotation foot is being moved from when grounding.
         /// </summary>
         private Quaternion fromFootRotation = Quaternion.identity;
-
-        /// <summary>
-        /// Height foot is lifted to mid stride.
-        /// </summary>
-        private float strideHeight;
-
-        /// <summary>
-        /// Time when blending placement for the player foot.
-        /// </summary>
-        private float placeBlendTime;
-
-        /// <summary>
-        /// Height foot is raised above the ground when taking a small step.
-        /// </summary>
-        private float footGroundedHeight;
 
         /// <summary>
         /// Current velocity of the foot when smoothing foot position while raised.
@@ -141,19 +121,39 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <param name="footGroundedHeight">Height to raise foot of ground when placed.</param>
         public FootTarget(Foot foot, Animator animator, float strideHeight, float strideTime, float placeBlendTime, float footGroundedHeight)
         {
-            this.foot = foot;
+            this.Foot = foot;
             this.animator = animator;
 
-            this.strideHeight = strideHeight;
-            this.placeBlendTime = placeBlendTime;
-            this.footGroundedHeight = footGroundedHeight;
+            this.StrideHeight = strideHeight;
+            this.PlaceBlendTime = placeBlendTime;
+            this.FootGroundedHeight = footGroundedHeight;
             this.StrideTime = strideTime;
         }
+
+        /// <summary>
+        /// Which foot does this target correspond to.
+        /// </summary>
+        public Foot Foot { get; private set; }
 
         /// <summary>
         /// Time required to take a full stride for the foot.
         /// </summary>
         public float StrideTime { get; private set; }
+
+        /// <summary>
+        /// Height foot is lifted to mid stride.
+        /// </summary>
+        public float StrideHeight { get; private set; }
+
+        /// <summary>
+        /// Time when blending placement for the player foot.
+        /// </summary>
+        public float PlaceBlendTime { get; private set; }
+
+        /// <summary>
+        /// Height foot is raised above the ground when taking a small step.
+        /// </summary>
+        public float FootGroundedHeight { get; private set; }
 
         /// <summary>
         /// Gets the time of the most recent stride's start.
@@ -169,6 +169,11 @@ namespace nickmaltbie.OpenKCC.Animation
         /// Gets the forward vector for the foot rotation.
         /// </summary>
         public Vector3 FootForward { get; set; }
+
+        /// <summary>
+        /// Ground normal for surface player is standing on.
+        /// </summary>
+        public Vector3 GroundNormal { get; set; }
 
         /// <summary>
         /// Gets the target foot rotation for IK controls.
@@ -201,7 +206,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <summary>
         /// Gets the time required for the current stride action/blending.
         /// </summary>
-        protected float TotalStrideTime => UseBump ? StrideTime : placeBlendTime;
+        protected float TotalStrideTime => UseBump ? StrideTime : PlaceBlendTime;
 
         /// <summary>
         /// Gest the remaining time in the current stride based off the current
@@ -261,7 +266,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// Gets the current animation weight for the foot from the animator.
         /// </summary>
         /// <returns>Float animation weight for the selected foot.</returns>
-        public float GetFootAnimationWeight() => foot == Foot.LeftFoot ? animator.GetFloat(LeftFootIKWeight) : animator.GetFloat(RightFootIKWeight);
+        public float GetFootAnimationWeight() => Foot == Foot.LeftFoot ? animator.GetFloat(LeftFootIKWeight) : animator.GetFloat(RightFootIKWeight);
 
         /// <summary>
         /// Is the foot's animation weight over the grounded threshold. (should be grounded)
@@ -285,13 +290,13 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             if (RemainingStrideTime <= 0)
             {
-                return TargetFootPosition + Vector3.up * footGroundedHeight;
+                return TargetFootPosition + GroundNormal * FootGroundedHeight;
             }
 
             float fraction = 1 - Mathf.Clamp(RemainingStrideTime / TotalStrideTime, 0, 1);
             var lerpPos = Vector3.Lerp(fromFootPosition, TargetFootPosition, SmoothValue(fraction));
-            Vector3 verticalOffset = UseBump ? Vector3.up * strideHeight * Mathf.Sin(fraction * Mathf.PI) : Vector3.zero;
-            return lerpPos + verticalOffset + Vector3.up * footGroundedHeight;
+            Vector3 verticalOffset = UseBump ? Vector3.up * StrideHeight * Mathf.Sin(fraction * Mathf.PI) : Vector3.zero;
+            return lerpPos + verticalOffset + GroundNormal * FootGroundedHeight;
         }
 
         /// <summary>
@@ -339,8 +344,9 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <param name="toRot">Desired target rotation of the foot.</param>
         /// <param name="floor">Object the foot is placed on.</param>
         /// <param name="footForward">Forward vector for foot rotation.</param>
+        /// <param name="groundNormal">Normal vector for surface player is standing on.</param>
         /// <param name="bumpStep">Is this a small bump from a currently grounded state.</param>
-        public void StartStride(Vector3 toPos, Quaternion toRot, GameObject floor, Vector3 footForward, bool bumpStep)
+        public void StartStride(Vector3 toPos, Quaternion toRot, GameObject floor, Vector3 footForward, Vector3 groundNormal, bool bumpStep)
         {
             fromFootPosition = TargetFootPosition;
             fromFootRotation = TargetFootRotation;
@@ -348,6 +354,7 @@ namespace nickmaltbie.OpenKCC.Animation
             TargetFootRotation = toRot;
             Floor = floor;
             FootForward = footForward;
+            GroundNormal = groundNormal;
             UseBump = bumpStep;
             State = FootState.Grounded;
             StrideStartTime = unityService.time;

@@ -23,6 +23,7 @@ namespace nickmaltbie.OpenKCC.Animation
     /// </summary>
     public enum Foot
     {
+        Unspecified,
         LeftFoot,
         RightFoot,
     }

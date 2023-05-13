@@ -40,8 +40,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Config
             Transform ground = CreateGameObject().transform;
 
             // Set both feet as grounded for test
-            footIK.leftFootTarget.StartStride(Vector3.zero, Quaternion.identity, ground.gameObject, Vector3.forward, false);
-            footIK.rightFootTarget.StartStride(Vector3.zero, Quaternion.identity, ground.gameObject, Vector3.forward, false);
+            footIK.LeftFootTarget.StartStride(Vector3.zero, Quaternion.identity, ground.gameObject, Vector3.forward, footIK.LeftFootTarget.GroundNormal, false);
+            footIK.RightFootTarget.StartStride(Vector3.zero, Quaternion.identity, ground.gameObject, Vector3.forward, footIK.RightFootTarget.GroundNormal, false);
 
             parent.UpdateMovingGround(
                 Vector3.zero,
@@ -54,8 +54,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Config
             Assert.AreEqual(Vector3.zero, parent.DeltaPosition(player.position));
             Assert.AreEqual(Quaternion.identity, parent.DeltaRotation(player.rotation));
             parent.FollowGround(player);
-            Assert.AreEqual(Vector3.zero, footIK.leftFootTarget.TargetFootPosition);
-            Assert.AreEqual(Vector3.zero, footIK.rightFootTarget.TargetFootPosition);
+            Assert.AreEqual(Vector3.zero, footIK.LeftFootTarget.TargetFootPosition);
+            Assert.AreEqual(Vector3.zero, footIK.RightFootTarget.TargetFootPosition);
 
             // Move the ground forward one unit
             ground.position += Vector3.forward;
