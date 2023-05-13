@@ -279,6 +279,40 @@ namespace nickmaltbie.OpenKCC.Animation
         }
 
         /// <summary>
+        /// Gets the target hip offset based on the current vertical offset
+        /// of each foot.
+        /// </summary>
+        /// <returns>The new target hip offset based on the current distance from
+        /// the hips.</returns>
+        public float GetTargetHipOffset()
+        {
+            // Average the hip offset required of each foot
+            float leftOffset = GetVerticalOffsetByFoot(Foot.LeftFoot);
+            float rightOffset = GetVerticalOffsetByFoot(Foot.RightFoot);
+
+            // Only include grounded feet
+            FootTarget leftTarget = GetFootTarget(Foot.LeftFoot);
+            FootTarget rightTarget = GetFootTarget(Foot.RightFoot);
+
+            if (leftTarget.State == FootState.Grounded && rightTarget.State == FootState.Grounded)
+            {
+                return Mathf.Min(leftOffset, rightOffset);
+            }
+            else if (leftTarget.State == FootState.Grounded)
+            {
+                return leftOffset;
+            }
+            else if (rightTarget.State == FootState.Grounded)
+            {
+                return rightOffset;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
         /// Update the left and right foot targets based on their current state.
         /// </summary>
         private void UpdateFootTargets()
@@ -370,40 +404,6 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             HumanBodyBones footBone = foot == Foot.LeftFoot ? HumanBodyBones.LeftFoot : HumanBodyBones.RightFoot;
             return animator.GetBoneTransform(footBone);
-        }
-
-        /// <summary>
-        /// Gets the target hip offset based on the current vertical offset
-        /// of each foot.
-        /// </summary>
-        /// <returns>The new target hip offset based on the current distance from
-        /// the hips.</returns>
-        private float GetTargetHipOffset()
-        {
-            // Average the hip offset required of each foot
-            float leftOffset = GetVerticalOffsetByFoot(Foot.LeftFoot);
-            float rightOffset = GetVerticalOffsetByFoot(Foot.RightFoot);
-
-            // Only include grounded feet
-            FootTarget leftTarget = GetFootTarget(Foot.LeftFoot);
-            FootTarget rightTarget = GetFootTarget(Foot.RightFoot);
-
-            if (leftTarget.State == FootState.Grounded && rightTarget.State == FootState.Grounded)
-            {
-                return Mathf.Min(leftOffset, rightOffset);
-            }
-            else if (leftTarget.State == FootState.Grounded)
-            {
-                return leftOffset;
-            }
-            else if (rightTarget.State == FootState.Grounded)
-            {
-                return rightOffset;
-            }
-            else
-            {
-                return 0;
-            }
         }
 
         /// <summary>

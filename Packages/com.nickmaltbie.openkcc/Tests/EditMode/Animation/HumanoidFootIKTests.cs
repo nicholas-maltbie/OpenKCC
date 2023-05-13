@@ -515,6 +515,71 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         }
 
         /// <summary>
+        /// Tests to ensure that Validate that the <see cref="nickmaltbie.OpenKCC.Animation.HumanoidFootIK.GetTargetHipOffset"/>
+        /// performs as expected.
+        /// </summary>
+        /// <param name="leftGrounded">Should left foot be grounded.</param>
+        /// <param name="rightGrounded">Should right foot be grounded.</param>
+        [Test]
+        public void Validate_HumanoidFootIK_GetTargetHipOffset([Values] bool leftGrounded, [Values] bool rightGrounded)
+        {
+            GameObject floor = CreateGameObject();
+            unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
+
+            // Setup each foot in expected grounded state.
+            if (leftGrounded)
+            {
+                footIK.LeftFootTarget.StartStride(Vector3.down * 1.25f, Quaternion.identity, floor, Vector3.forward, Vector3.up, false);
+                for (int i = 0; i < 10; i++)
+                {
+                    footIK.LeftFootTarget.LerpFootIKWeight();
+                }
+            }
+            else
+            {
+                footIK.LeftFootTarget.ReleaseFoot();
+            }
+            
+            if (rightGrounded)
+            {
+                footIK.RightFootTarget.StartStride(Vector3.down * 1.45f, Quaternion.identity, floor, Vector3.forward, Vector3.up, false);
+                for (int i = 0; i < 10; i++)
+                {
+                    footIK.RightFootTarget.LerpFootIKWeight();
+                }
+            }
+            else
+            {
+                footIK.RightFootTarget.ReleaseFoot();
+            }
+
+            unityServiceMock.Setup(e => e.time).Returns(100.0f);
+            avatarBones[HumanBodyBones.RightFoot].transform.position = Vector3.zero;
+            avatarBones[HumanBodyBones.LeftFoot].transform.position = Vector3.zero;
+
+            // When getting hip offset, should be some large value if either left foot
+            // or right foot is not grounded
+            float offset = footIK.GetTargetHipOffset();
+
+            if (!leftGrounded && !rightGrounded)
+            {
+                Assert.AreEqual(0, offset);
+            }
+            else if (leftGrounded && !rightGrounded)
+            {
+                TestUtils.AssertInBounds(-0.35f, offset);
+            }
+            else if (!leftGrounded && rightGrounded)
+            {
+                TestUtils.AssertInBounds(-0.55f, offset);
+            }
+            else if (leftGrounded && rightGrounded)
+            {
+                TestUtils.AssertInBounds(-0.55f, offset);
+            }
+        }
+
+        /// <summary>
         /// Validate that the <see cref="nickmaltbie.OpenKCC.Animation.HumanoidFootIK.Update"/>
         /// properly invokes the <see cref="nickmaltbie.OpenKCC.Animation.FootTarget.LerpFootIKWeight"/>
         /// for the mocked delta time values.
