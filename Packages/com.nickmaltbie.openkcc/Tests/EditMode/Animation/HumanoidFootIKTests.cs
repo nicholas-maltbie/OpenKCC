@@ -503,7 +503,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         }
 
         /// <summary>
-        /// Validate that the <see cref="nickmaltbie.OpenKCC.Animation.HumanoidFootIK.GetFootTarget(Foot)"/>
+        /// Validate that the <see cref="nickmaltbie.OpenKCC.Animation.HumanoidFootIK.GetFootTarget(nickmaltbie.OpenKCC.Animation.Foot)"/>
         /// returns the expected foot target, either right or left (or null if improperly specified).
         /// </summary>
         [Test]
