@@ -62,6 +62,11 @@ namespace nickmaltbie.OpenKCC.Animation
         internal IRaycastHelper raycastMock = RaycastHelper.Instance;
 
         /// <summary>
+        /// Layer for calculating collisions with ground.
+        /// </summary>
+        public LayerMask feetCollisionDetection = -1;
+
+        /// <summary>
         /// Distance at which this will check to the ground from the player's
         /// knee height.
         /// </summary>
@@ -494,7 +499,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <returns>True if the foot has a surface to ground on, false otherwise.</returns>
         private bool GetFootGroundedInfo(Vector3 sourcePos, out Vector3 groundedPos, out Vector3 groundNormal, out GameObject floor)
         {
-            bool grounded = raycastMock.DoRaycastInDirection(sourcePos, Vector3.down, groundCheckDist, out IRaycastHit hitInfo);
+            bool grounded = raycastMock.DoRaycastInDirection(sourcePos, Vector3.down, groundCheckDist, out IRaycastHit hitInfo, layerMask: feetCollisionDetection);
             groundedPos = grounded ? hitInfo.point : Vector3.zero;
             groundNormal = grounded ? hitInfo.normal : Vector3.up;
             floor = grounded ? hitInfo.collider?.gameObject : null;

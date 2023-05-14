@@ -389,7 +389,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b344b2a98d47beb4ea143c2a8f2942b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundCheckDist: 1
+  feetCollisionDetection:
+    serializedVersion: 2
+    m_Bits: 53
+  groundCheckDist: 1.35
   stepHeight: 0.05
   strideThresholdDistance: 0.65
   strideThresholdDegrees: 60
