@@ -121,13 +121,13 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <param name="footGroundedHeight">Height to raise foot of ground when placed.</param>
         public FootTarget(Foot foot, Animator animator, float strideHeight, float strideTime, float placeBlendTime, float footGroundedHeight)
         {
-            this.Foot = foot;
+            Foot = foot;
             this.animator = animator;
 
-            this.StrideHeight = strideHeight;
-            this.PlaceBlendTime = placeBlendTime;
-            this.FootGroundedHeight = footGroundedHeight;
-            this.StrideTime = strideTime;
+            StrideHeight = strideHeight;
+            PlaceBlendTime = placeBlendTime;
+            FootGroundedHeight = footGroundedHeight;
+            StrideTime = strideTime;
         }
 
         /// <summary>

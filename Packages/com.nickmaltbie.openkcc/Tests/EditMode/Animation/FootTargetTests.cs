@@ -47,7 +47,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             controller.AddParameter(FootTarget.LeftFootIKWeight, AnimatorControllerParameterType.Float);
             controller.AddParameter(FootTarget.RightFootIKWeight, AnimatorControllerParameterType.Float);
             rootStateMachine.AddState(AnimState);
-            
+
             animator = CreateGameObject().AddComponent<Animator>();
             animator.runtimeAnimatorController = controller;
 
@@ -71,8 +71,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // between 0 and 1
             for (int sample = 0; sample < total; sample++)
             {
-                float i = (float) sample / total;
-                float j = (float) (sample + 1) / total;
+                float i = (float)sample / total;
+                float j = (float)(sample + 1) / total;
 
                 float f_i = FootTarget.SmoothValue(i);
                 float f_j = FootTarget.SmoothValue(j);
@@ -115,7 +115,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 previousWeight = footTarget.FootIKWeight;
 
                 // Should be moving towards Vecotr3.forward.
-                Vector3 expected = Vector3.forward * FootTarget.SmoothValue((float) i / 10) + Vector3.up * 0.1f;
+                Vector3 expected = Vector3.forward * FootTarget.SmoothValue((float)i / 10) + Vector3.up * 0.1f;
                 TestUtils.AssertInBounds(footTarget.FootIKTargetPos(), expected);
                 TestUtils.AssertInBounds(Quaternion.Angle(footTarget.FootIKTargetRot(), Quaternion.identity), 0, 1.0f);
             }
@@ -224,7 +224,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             Assert.IsTrue(leftFootTarget.MidStride);
             Assert.IsFalse(leftFootTarget.CanUpdateStrideTarget());
 
-            while(leftFootTarget.MidStride)
+            while (leftFootTarget.MidStride)
             {
                 leftFootTarget.LerpFootIKWeight();
                 time += 0.01f;

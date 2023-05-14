@@ -1,3 +1,20 @@
+﻿// Copyright (C) 2023 Nicholas Maltbie
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+// BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +44,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         /// <summary>
         /// Set of bones in basic humanoid avatar.
         /// </summary>
-        private static readonly (HumanBodyBones, HumanBodyBones)[] RequiredBones = new []
+        private static readonly (HumanBodyBones, HumanBodyBones)[] RequiredBones = new[]
         {
             (HumanBodyBones.Hips, HumanBodyBones.Hips),
             (HumanBodyBones.Spine, HumanBodyBones.Hips),
@@ -97,7 +114,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 });
 
             // Set the hierarchy of bones
-            foreach (var set in RequiredBones)
+            foreach ((HumanBodyBones, HumanBodyBones) set in RequiredBones)
             {
                 if (set.Item1 != set.Item2)
                 {
@@ -105,9 +122,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 }
             }
 
-            HumanDescription description = new HumanDescription()
+            var description = new HumanDescription()
             {
-                human = avatarBones.Values.Select(bone => new HumanBone { boneName = bone.name, humanName = bone.name } ).ToArray(),
+                human = avatarBones.Values.Select(bone => new HumanBone { boneName = bone.name, humanName = bone.name }).ToArray(),
                 skeleton = avatarBones.Values.Select(bone => new SkeletonBone { name = bone.name }).Append(new SkeletonBone { name = go.name }).ToArray(),
                 upperArmTwist = 0.1f,
                 lowerArmTwist = 0.1f,
@@ -127,7 +144,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             animator.StartPlayback();
             animator.Play(AnimState, 0);
         }
-        
+
         /// <summary>
         /// Validate that the <see cref="nickmaltbie.OpenKCC.Animation.HumanoidFootIK.UpdateFeetPositions(Vector3)"/>
         /// will properly translate foot targets to simulate player standing on moving
@@ -154,7 +171,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             Assert.AreEqual(Vector3.forward, footIK.RightFootTarget.TargetFootPosition);
 
             // Set the player as standing on something
-            Mock<IRaycastHit> mockHit = new Mock<IRaycastHit>();
+            var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             mockHit.Setup(e => e.collider).Returns(box);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
@@ -217,6 +234,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 UnityEngine.Debug.Log(footIK.RightFootTarget.FootIKWeight);
                 footIK.RightFootTarget.LerpFootIKWeight();
             }
+
             UnityEngine.Debug.Log(footIK.RightFootTarget.FootIKWeight);
             Assert.IsTrue(footIK.RightFootTarget.FootIKWeight >= 0.95f);
 
@@ -225,7 +243,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             animator.SetFloat(FootTarget.RightFootIKWeight, 0.0f);
 
             // Set the player as standing on something
-            Mock<IRaycastHit> mockHit = new Mock<IRaycastHit>();
+            var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
                 .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
@@ -269,6 +287,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 footIK.RightFootTarget.LerpFootIKWeight();
                 footIK.LeftFootTarget.LerpFootIKWeight();
             }
+
             Assert.IsTrue(footIK.RightFootTarget.FootIKWeight >= 0.95f);
             Assert.IsTrue(footIK.RightFootTarget.FootIKWeight >= 0.95f);
 
@@ -286,7 +305,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // the foot to release
             // move hips forward, like a lot forward
             avatarBones[HumanBodyBones.Hips].transform.position += Vector3.forward * 100;
-            Mock<IRaycastHit> mockHit = new Mock<IRaycastHit>();
+            var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
                 .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
@@ -295,7 +314,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                     hit = mockHit.Object;
                 }))
                 .Returns(true);
-            
+
             // when manually updating the feet, feet should be released because
             // it's way too far form original position
             footIK.OnAnimatorIK(0);
@@ -324,6 +343,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 footIK.RightFootTarget.LerpFootIKWeight();
                 footIK.LeftFootTarget.LerpFootIKWeight();
             }
+
             Assert.IsTrue(footIK.RightFootTarget.FootIKWeight >= 0.95f);
             Assert.IsTrue(footIK.LeftFootTarget.FootIKWeight >= 0.95f);
 
@@ -339,7 +359,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // Set the player as standing on something
             // move hips rotated around completely.
             avatarBones[HumanBodyBones.Hips].transform.rotation *= Quaternion.Euler(0, 180, 0);
-            Mock<IRaycastHit> mockHit = new Mock<IRaycastHit>();
+            var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
                 .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
@@ -348,7 +368,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                     hit = mockHit.Object;
                 }))
                 .Returns(true);
-            
+
             // when manually updating the feet, feet should be updated to new position
             // and rotation
             footIK.OnAnimatorIK(0);
@@ -379,6 +399,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             {
                 footIK.RightFootTarget.LerpFootIKWeight();
             }
+
             Assert.IsTrue(footIK.RightFootTarget.FootIKWeight >= 0.05f);
 
             // Right foot should still be mid stride
@@ -391,7 +412,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // Set the player as standing on something
             // move hips rotated around completely.
             avatarBones[HumanBodyBones.Hips].transform.position = Vector3.forward;
-            Mock<IRaycastHit> mockHit = new Mock<IRaycastHit>();
+            var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
                 .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
@@ -400,7 +421,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                     hit = mockHit.Object;
                 }))
                 .Returns(true);
-            
+
             // when manually updating the feet, feet should be moved slightly forward
             footIK.OnAnimatorIK(0);
             footIK.OnAnimatorIK(0);
@@ -435,7 +456,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             animator.SetFloat(FootTarget.RightFootIKWeight, 1.0f);
 
             // Set the player as standing on something
-            Mock<IRaycastHit> mockHit = new Mock<IRaycastHit>();
+            var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
                 .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
@@ -539,7 +560,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             {
                 footIK.LeftFootTarget.ReleaseFoot();
             }
-            
+
             if (rightGrounded)
             {
                 footIK.RightFootTarget.StartStride(Vector3.down * 1.45f, Quaternion.identity, floor, Vector3.forward, Vector3.up, false);
@@ -596,7 +617,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             footIK.LeftFootTarget.StartStride(Vector3.forward, Quaternion.identity, CreateGameObject(), Vector3.forward, Vector3.up, false);
             float previousLeftFootWeight = footIK.LeftFootTarget.FootIKWeight;
             footIK.Update();
-            
+
             // Assert that the footIK will lerp as part of the update
             for (int i = 0; i < 10; i++)
             {
@@ -611,4 +632,4 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             }
         }
     }
-}  
+}

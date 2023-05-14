@@ -77,7 +77,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 }))
                 .Returns(true);
 
-            var groundedState = engine.CheckGrounded(false, true);
+            OpenKCC.Character.Config.KCCGroundedState groundedState = engine.CheckGrounded(false, true);
             Assert.AreEqual(Vector3.up, groundedState.SurfaceNormal);
 
             // Setup the step hit to return a different normal
