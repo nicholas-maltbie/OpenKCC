@@ -37,6 +37,10 @@ on the ground while they walk.
 The [HumanoidFootIK](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK) behavior
 manages placing the player's feet on the ground with a few different properties.
 
+* [feetCollisionDetection](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK.feetCollisionDetection)
+    \- Layer mask for computing where to place feet in world. Useful for having the
+    character collide with specific surfaces but have the feet pass through
+    them like a ramp on top of a set of stairs.
 * [groundCheckDist](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK.groundCheckDist)
     \- Distance at which this will check to the ground from the player's knee height.
 * [stepHeight](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK.stepHeight)
