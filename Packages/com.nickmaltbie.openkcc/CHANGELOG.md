@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Added support for `LayerMask` for the `HumanoidFootIK` raycast checks
 * Created class `IRaycastHelper` for easily mocking raycast checks.
 * Overhauled existing animations to play well with foot ik and fixed import errors due to lazy coding
 * Re-imported and created new animations so they are configured for Michelle's avatar
