@@ -37,7 +37,7 @@ on the ground while they walk.
 The [HumanoidFootIK](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK) behavior
 manages placing the player's feet on the ground with a few different properties.
 
-* [gorundCheckDist](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK.gorundCheckDist)
+* [groundCheckDist](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK.groundCheckDist)
     \- Distance at which this will check to the ground from the player's knee height.
 * [stepHeight](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK.stepHeight)
     \- How high player will lift feet when stepping in place.
