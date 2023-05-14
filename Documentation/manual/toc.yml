@@ -6,6 +6,8 @@
 - name: KCC Design overview
   href: kcc-design/overview.md
   items:
+    - name: Foot IK Design
+      href: kcc-design/foot-ik-design.md
     - name: State Machine Design
       href: kcc-design/kcc-fsm-design.md
     - name: KCC Movement Design
