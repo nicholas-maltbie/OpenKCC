@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using UnityEngine;
 
@@ -26,39 +25,37 @@ namespace nickmaltbie.OpenKCC.Character.Config
     /// Relative parent configuration for saving
     /// the position of an object relative to a given parent object.
     /// </summary>
-    [Serializable]
     public class RelativeParentConfig
     {
         /// <summary>
         /// Relative position in local space.
         /// </summary>
-        public Vector3 relativePos;
+        public Vector3 RelativePos { get; internal set; }
+
+        /// <summary>
+        /// Relative rotation in local space.
+        /// TODO: Adjust this configuration to work as expected.
+        /// </summary>
+        public Quaternion RelativeRotation { get; internal set; }
 
         /// <summary>
         /// Previous parent for saving relative transform position.
         /// </summary>
-        public Transform previousParent;
+        public Transform PreviousParent { get; internal set; }
+
+        /// <summary>
+        /// Check if the player is standing on moving ground.
+        /// </summary>
+        public bool OnMovingGround => PreviousParent != null;
 
         /// <summary>
         /// Reset the relative parent transform.
         /// </summary>
         public void Reset()
         {
-            relativePos = Vector3.zero;
-            previousParent = null;
-        }
-
-        /// <summary>
-        /// Move the transform's position
-        /// to be the same relative position to parent as the saved position.
-        /// </summary>
-        /// <param name="transform">Transform to move.</param>
-        public void FollowGround(Transform transform)
-        {
-            if (previousParent != null)
-            {
-                transform.position = previousParent.position + previousParent.rotation * relativePos;
-            }
+            RelativePos = Vector3.zero;
+            RelativeRotation = Quaternion.identity;
+            PreviousParent = null;
         }
 
         /// <summary>
@@ -66,13 +63,14 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// relative parent for some given movement.
         /// </summary>
         /// <param name="position">Position of object before moving.</param>
+        /// <param name="rotation">Rotation of object before moving.</param>
         /// <param name="groundedState">Current grounded state of the object.</param>
         /// <param name="delta">Delta that the object has moved.</param>
         /// <param name="deltaTime">Delta time for update.</param>
         /// <returns>The distance the player should be moved based
         /// on moving ground. Will only be more than Vector3.zero if the ground
         /// is moving and should not attach.</returns>
-        public Vector3 UpdateMovingGround(Vector3 position, IKCCGrounded groundedState, Vector3 delta, float deltaTime)
+        public virtual Vector3 UpdateMovingGround(Vector3 position, Quaternion rotation, IKCCGrounded groundedState, Vector3 delta, float deltaTime)
         {
             if (groundedState.StandingOnGround && groundedState.Floor != null)
             {
@@ -81,27 +79,71 @@ namespace nickmaltbie.OpenKCC.Character.Config
 
                 if (ground == null || ground.ShouldAttach())
                 {
-                    if (parent != previousParent)
+                    RelativeRotation = rotation * Quaternion.Inverse(parent.rotation);
+
+                    if (parent != PreviousParent)
                     {
-                        relativePos = position + delta - parent.position;
-                        relativePos = Quaternion.Inverse(parent.rotation) * relativePos;
+                        RelativePos = position + delta - parent.position;
+                        RelativePos = Quaternion.Inverse(parent.rotation) * RelativePos;
                     }
                     else
                     {
-                        relativePos += Quaternion.Inverse(parent.rotation) * delta;
+                        RelativePos += Quaternion.Inverse(parent.rotation) * delta;
                     }
 
-                    previousParent = parent;
+                    PreviousParent = parent;
                 }
                 else
                 {
-                    previousParent = null;
+                    PreviousParent = null;
                     return ground.GetVelocityAtPoint(groundedState.GroundHitPosition) * deltaTime;
                 }
             }
             else
             {
                 Reset();
+            }
+
+            return Vector3.zero;
+        }
+
+        /// <summary>
+        /// Move the transform's position
+        /// to be the same relative position to parent as the saved position.
+        /// </summary>
+        /// <param name="transform">Transform to move.</param>
+        public virtual void FollowGround(Transform transform)
+        {
+            transform.position += DeltaPosition(transform.position);
+        }
+
+        /// <summary>
+        /// Compute the delta in rotation required to move the
+        /// object with the moving ground for this update.
+        /// </summary>
+        /// <param name="rotation">Rotation fo the object in world space.</param>
+        /// <returns></returns>
+        public Quaternion DeltaRotation(Quaternion rotation)
+        {
+            if (OnMovingGround)
+            {
+                return PreviousParent.rotation * Quaternion.Inverse(RelativeRotation);
+            }
+
+            return Quaternion.identity;
+        }
+
+        /// <summary>
+        /// Compute the delta in position required to move the character
+        /// with the moving ground for this update.
+        /// </summary>
+        /// <param name="position">Position of the object in world space.</param>
+        /// <returns>Delta in world space to move the player.</returns>
+        public Vector3 DeltaPosition(Vector3 position)
+        {
+            if (OnMovingGround)
+            {
+                return (PreviousParent.position + PreviousParent.rotation * RelativePos) - position;
             }
 
             return Vector3.zero;

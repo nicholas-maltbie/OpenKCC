@@ -28,7 +28,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
     public static class KCCTestUtils
     {
         /// <summary>
-        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.DoRaycastInDirection"/>
+        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IRaycastHelper.DoRaycastInDirection(Vector3, Vector3, float, out IRaycastHit, int, QueryTriggerInteraction)"/>
         /// </summary>
         /// <param name="source">Source point to check from.</param>
         /// <param name="direction">Direction to search for step.</param>
@@ -40,7 +40,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         public delegate void DoRaycastInDirectionCallback(Vector3 source, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
 
         /// <summary>
-        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.DoRaycastInDirection"/>
+        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IRaycastHelper.DoRaycastInDirection(Vector3, Vector3, float, out IRaycastHit, int, QueryTriggerInteraction)"/>
         /// </summary>
         /// <param name="source">Source point to check from.</param>
         /// <param name="direction">Direction to search for step.</param>
