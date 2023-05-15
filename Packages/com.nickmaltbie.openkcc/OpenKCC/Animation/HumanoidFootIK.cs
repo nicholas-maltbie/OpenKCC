@@ -307,13 +307,18 @@ namespace nickmaltbie.OpenKCC.Animation
             float leftOffset = GetVerticalOffsetByFoot(Foot.LeftFoot);
             float rightOffset = GetVerticalOffsetByFoot(Foot.RightFoot);
 
-            // If either foot is overlapping with the ground, return zero
-            if (Feet.Any(foot => GetFootTarget(foot).Overlapping))
+            // Only include grounded feet
+            FootTarget leftTarget = GetFootTarget(Foot.LeftFoot);
+            FootTarget rightTarget = GetFootTarget(Foot.RightFoot);
+
+            if (leftTarget.State == FootState.Grounded && rightTarget.State == FootState.Grounded)
+            {
+                return Mathf.Min(leftOffset, rightOffset);
+            }
+            else
             {
                 return 0;
             }
-
-            return Mathf.Min(leftOffset, rightOffset);
         }
 
         /// <summary>
@@ -446,7 +451,7 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             FootTarget target = GetFootTarget(foot);
             Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
-            float dist = Vector3.Project((hipTransform.position - Vector3.up * hipOffset) - target.FootIKTargetPos(), Vector3.up).magnitude;
+            float dist = Vector3.Distance(hipTransform.position - Vector3.up * hipOffset, target.FootIKTargetPos());
             return Mathf.Clamp(maxHipFootDistance - dist, -maxHipFootDistance, 0);
         }
 
