@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## In Progress
 
 * Updated project version to [2021.3.25f1](https://unity.com/releases/editor/whats-new/2021.3.25)
+* Corrected basic overlap for when feet intersect with a wall or ramp.
+* Added support for `LayerMask` for the `HumanoidFootIK` raycast checks
 * Created class `IRaycastHelper` for easily mocking raycast checks.
 * Overhauled existing animations to play well with foot ik and fixed import
     errors due to lazy coding
