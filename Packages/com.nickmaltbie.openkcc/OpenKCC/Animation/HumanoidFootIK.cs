@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Linq;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity;
 using UnityEngine;
@@ -244,7 +243,7 @@ namespace nickmaltbie.OpenKCC.Animation
             // Move hips according to target positions
             float targetHipOffset = GetTargetHipOffset();
             hipOffset = Mathf.SmoothDamp(hipOffset, targetHipOffset, ref hipOffsetSpeed, hipSmoothTime, Mathf.Infinity, unityService.deltaTime);
-            Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
+            _ = animator.GetBoneTransform(HumanBodyBones.Hips);
             transform.localPosition = Vector3.up * hipOffset;
         }
 
@@ -351,7 +350,7 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             AvatarIKGoal goal = target.Foot == Foot.LeftFoot ? AvatarIKGoal.LeftFoot : AvatarIKGoal.RightFoot;
             Vector3 targetPosition = target.TargetFootPosition;
-            Quaternion targetRotation = target.FootIKTargetRot();
+            _ = target.FootIKTargetRot();
             Transform hips = animator.GetBoneTransform(HumanBodyBones.Hips);
 
             animator.SetIKPosition(goal, target.FootIKTargetPos());
