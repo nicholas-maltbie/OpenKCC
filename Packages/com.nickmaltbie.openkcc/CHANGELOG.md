@@ -4,15 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
-* Added support for `LayerMask` for the `HumanoidFootIK` raycast checks
+* Updated project version to [2021.3.25f1](https://unity.com/releases/editor/whats-new/2021.3.25)
 * Created class `IRaycastHelper` for easily mocking raycast checks.
-* Overhauled existing animations to play well with foot ik and fixed import errors due to lazy coding
+* Overhauled existing animations to play well with foot ik and fixed import
+    errors due to lazy coding
 * Re-imported and created new animations so they are configured for Michelle's avatar
 * Created `HumanoidFootIK` and `FootTarget` classes to manage basic player foot IK
-* Created `HumanoidFootIKEditor` to bake animation curves for player movement when I'm too lazy to do it manually
-    * Manually adjusted curves for player foot IK
+* Created `HumanoidFootIKEditor` to bake animation curves for player movement
+    when I'm too lazy to do it manually. Then proceeded to
+    manually adjusted curves for player foot IK
 * Added tests to verify basic behavior of `HumanoidFootIK` and `FootTarget` classes
-* Updated avatar configurations and settings to support `HumanoidFootIK` usage for basic test scene
+* Updated avatar configurations and settings to support `HumanoidFootIK` usage
+    for basic test scene
 * Added more test objects in the `SampleScene` to verify new foot behaviors.
 * Addressing small bug in player movement caused by stair movement normals
     not being computed properly when walking down stairs.
