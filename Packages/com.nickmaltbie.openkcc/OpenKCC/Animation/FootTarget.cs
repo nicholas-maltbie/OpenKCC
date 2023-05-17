@@ -131,6 +131,11 @@ namespace nickmaltbie.OpenKCC.Animation
         }
 
         /// <summary>
+        /// Is this foot overlapping the ground
+        /// </summary>
+        public bool Overlapping { get; set; }
+
+        /// <summary>
         /// Which foot does this target correspond to.
         /// </summary>
         public Foot Foot { get; private set; }
@@ -365,8 +370,9 @@ namespace nickmaltbie.OpenKCC.Animation
         /// </summary>
         /// <param name="toPos">Position to update stride target to.</param>
         /// <param name="toRot">Rotation to update stride target to.</param>
+        /// <param name="groundNormal">New ground normal for foot position.</param>
         /// <param name="force">Should this blend based on current delta time or simply be forced to a new position.</param>
-        public void UpdateStrideTarget(Vector3 toPos, Quaternion toRot, bool force = false)
+        public void UpdateStrideTarget(Vector3 toPos, Quaternion toRot, Vector3 groundNormal, bool force = false)
         {
             if (force)
             {
@@ -378,6 +384,7 @@ namespace nickmaltbie.OpenKCC.Animation
                 TargetFootPosition = Vector3.SmoothDamp(TargetFootPosition, toPos, ref raisedFootVelocity, StrideTime, Mathf.Infinity, unityService.deltaTime);
             }
 
+            GroundNormal = groundNormal;
             TargetFootRotation = toRot;
         }
     }

@@ -98,7 +98,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             unityServiceMock = new Mock<IUnityService>();
             raycastHelperMock = new Mock<IRaycastHelper>();
             footIK.unityService = unityServiceMock.Object;
-            footIK.raycastMock = raycastHelperMock.Object;
+            footIK.raycastHelper = raycastHelperMock.Object;
             footIK.LeftFootTarget.unityService = unityServiceMock.Object;
             footIK.RightFootTarget.unityService = unityServiceMock.Object;
 
@@ -153,6 +153,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         [Test]
         public void Validate_HumanoidFootIK_UpdateFootPlacement()
         {
+            footIK.correctForOverlap = false;
+
             GameObject ground = CreateGameObject();
             ground.name = "ground";
             BoxCollider box = ground.AddComponent<BoxCollider>();
@@ -582,21 +584,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // or right foot is not grounded
             float offset = footIK.GetTargetHipOffset();
 
-            if (!leftGrounded && !rightGrounded)
+            if (leftGrounded && rightGrounded)
+            {
+                TestUtils.AssertInBounds(-0.55f, offset);
+            }
+            else
             {
                 Assert.AreEqual(0, offset);
-            }
-            else if (leftGrounded && !rightGrounded)
-            {
-                TestUtils.AssertInBounds(-0.35f, offset);
-            }
-            else if (!leftGrounded && rightGrounded)
-            {
-                TestUtils.AssertInBounds(-0.55f, offset);
-            }
-            else if (leftGrounded && rightGrounded)
-            {
-                TestUtils.AssertInBounds(-0.55f, offset);
             }
         }
 

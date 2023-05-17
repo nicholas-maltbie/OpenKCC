@@ -286,8 +286,8 @@ MonoBehaviour:
   moveActionReference: {fileID: 8130185064591157487, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   sprintActionReference: {fileID: -6424176782126915535, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   jumpActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
-  walkingSpeed: 2.5
-  sprintSpeed: 4.5
+  walkingSpeed: 2.25
+  sprintSpeed: 4
   jumpVelocity: 6.5
 --- !u!114 &1755217166684006379
 MonoBehaviour:
@@ -392,15 +392,15 @@ MonoBehaviour:
   feetCollisionDetection:
     serializedVersion: 2
     m_Bits: 53
-  groundCheckDist: 1.35
-  stepHeight: 0.05
-  strideThresholdDistance: 0.65
-  strideThresholdDegrees: 60
+  groundCheckDist: 1.1
+  stepHeight: 0.085
+  strideThresholdDistance: 0.8
+  strideThresholdDegrees: 65
   strideTime: 0.15
   placeBlendTime: 0.075
   footGroundedHeight: 0.1
-  maxHipFootDistance: 0.95
-  hipSmoothTime: 0.135
+  maxHipFootDistance: 1
+  hipSmoothTime: 0.225
 --- !u!4 &2110423193989123606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f9a65e0222533fa4292d5c9cce96ca3c, type: 3}

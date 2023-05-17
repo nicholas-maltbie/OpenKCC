@@ -59,7 +59,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <summary>
         /// Raycast helper for mocking raycast behavior.
         /// </summary>
-        internal IRaycastHelper raycastMock = RaycastHelper.Instance;
+        internal IRaycastHelper raycastHelper = RaycastHelper.Instance;
 
         /// <summary>
         /// Layer for calculating collisions with ground.
@@ -129,6 +129,11 @@ namespace nickmaltbie.OpenKCC.Animation
         /// </summary>
         [Tooltip("Time to take to sooth hip offset from the ground.")]
         public float hipSmoothTime = 0.35f;
+
+        /// <summary>
+        /// Test debug value to disable correcting for overlap.
+        /// </summary>
+        internal bool correctForOverlap = true;
 
         /// <summary>
         /// Left foot target for player.
@@ -238,7 +243,7 @@ namespace nickmaltbie.OpenKCC.Animation
             // Move hips according to target positions
             float targetHipOffset = GetTargetHipOffset();
             hipOffset = Mathf.SmoothDamp(hipOffset, targetHipOffset, ref hipOffsetSpeed, hipSmoothTime, Mathf.Infinity, unityService.deltaTime);
-            Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
+            _ = animator.GetBoneTransform(HumanBodyBones.Hips);
             transform.localPosition = Vector3.up * hipOffset;
         }
 
@@ -257,6 +262,12 @@ namespace nickmaltbie.OpenKCC.Animation
 
             Vector3 newPos = target.TargetFootPosition + deltaPos;
 
+            // If we're overlapping with something, move the foot back
+            if (VerifySpotOverlap(newPos, out IRaycastHit hit))
+            {
+                newPos = hit.point;
+            }
+
             // Recompute angle for the foot as well and check if grounded target has changed.
             HumanBodyBones kneeBone = foot == Foot.LeftFoot ? HumanBodyBones.LeftLowerLeg : HumanBodyBones.RightLowerLeg;
             Transform kneeTransform = animator.GetBoneTransform(kneeBone);
@@ -269,7 +280,7 @@ namespace nickmaltbie.OpenKCC.Animation
             if (grounded && floor == target.Floor)
             {
                 Vector3 footForward = Vector3.ProjectOnPlane(target.FootForward, groundNormal).normalized;
-                target.UpdateStrideTarget(groundedPos, Quaternion.LookRotation(footForward, groundNormal), true);
+                target.UpdateStrideTarget(groundedPos, Quaternion.LookRotation(footForward, groundNormal), groundNormal, true);
             }
             else if (grounded && floor != target.Floor)
             {
@@ -303,14 +314,6 @@ namespace nickmaltbie.OpenKCC.Animation
             {
                 return Mathf.Min(leftOffset, rightOffset);
             }
-            else if (leftTarget.State == FootState.Grounded)
-            {
-                return leftOffset;
-            }
-            else if (rightTarget.State == FootState.Grounded)
-            {
-                return rightOffset;
-            }
             else
             {
                 return 0;
@@ -335,11 +338,35 @@ namespace nickmaltbie.OpenKCC.Animation
                         break;
                 }
 
-                AvatarIKGoal goal = foot == Foot.LeftFoot ? AvatarIKGoal.LeftFoot : AvatarIKGoal.RightFoot;
-                animator.SetIKPosition(goal, target.FootIKTargetPos());
-                animator.SetIKRotation(goal, target.FootIKTargetRot());
-                animator.SetIKPositionWeight(goal, target.FootIKWeight);
-                animator.SetIKRotationWeight(goal, target.FootIKWeight);
+                UpdateFootIKState(target);
+            }
+        }
+
+        /// <summary>
+        /// Update the foot IK state based on the current target configuration.
+        /// </summary>
+        /// <param name="target">Foot target to update.</param>
+        private void UpdateFootIKState(FootTarget target)
+        {
+            AvatarIKGoal goal = target.Foot == Foot.LeftFoot ? AvatarIKGoal.LeftFoot : AvatarIKGoal.RightFoot;
+            Vector3 targetPosition = target.TargetFootPosition;
+            _ = target.FootIKTargetRot();
+            Transform hips = animator.GetBoneTransform(HumanBodyBones.Hips);
+
+            animator.SetIKPosition(goal, target.FootIKTargetPos());
+            animator.SetIKRotation(goal, target.FootIKTargetRot());
+            animator.SetIKPositionWeight(goal, target.FootIKWeight);
+            animator.SetIKRotationWeight(goal, target.FootIKWeight);
+
+            // If we are overlapping with something, snap it back
+            target.Overlapping = VerifySpotOverlap(targetPosition, out IRaycastHit footHit);
+            if (target.Overlapping)
+            {
+                target.UpdateStrideTarget(
+                    footHit.point,
+                    Quaternion.LookRotation(hips.forward, footHit.normal),
+                    footHit.normal,
+                    false);
             }
         }
 
@@ -357,7 +384,7 @@ namespace nickmaltbie.OpenKCC.Animation
             else
             {
                 Transform footTransform = GetFootTransform(target.Foot);
-                target.UpdateStrideTarget(footTransform.position, target.TargetFootRotation, target.CanUpdateStrideTarget());
+                target.UpdateStrideTarget(footTransform.position, target.TargetFootRotation, target.GroundNormal, target.CanUpdateStrideTarget());
             }
         }
 
@@ -395,7 +422,7 @@ namespace nickmaltbie.OpenKCC.Animation
                 }
                 else if (target.MidStride && target.CanUpdateStrideTarget())
                 {
-                    target.UpdateStrideTarget(hipGroundPos, hipGroundRot);
+                    target.UpdateStrideTarget(hipGroundPos, hipGroundRot, Vector3.up);
                 }
             }
         }
@@ -499,11 +526,38 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <returns>True if the foot has a surface to ground on, false otherwise.</returns>
         private bool GetFootGroundedInfo(Vector3 sourcePos, out Vector3 groundedPos, out Vector3 groundNormal, out GameObject floor)
         {
-            bool grounded = raycastMock.DoRaycastInDirection(sourcePos, Vector3.down, groundCheckDist, out IRaycastHit hitInfo, layerMask: feetCollisionDetection);
+            bool grounded = raycastHelper.DoRaycastInDirection(sourcePos, Vector3.down, groundCheckDist, out IRaycastHit hitInfo, layerMask: feetCollisionDetection);
             groundedPos = grounded ? hitInfo.point : Vector3.zero;
             groundNormal = grounded ? hitInfo.normal : Vector3.up;
             floor = grounded ? hitInfo.collider?.gameObject : null;
             return grounded;
+        }
+
+        /// <summary>
+        /// Verifies if a target position for the foot is overlapping with anything.
+        /// </summary>
+        /// <param name="newTarget">New target position for the foot.</param>
+        /// <param name="hit">Hit associated with the reachability check.</param>
+        /// <returns>True if reachable, false otherwise.</returns>
+        private bool VerifySpotOverlap(Vector3 newTarget, out IRaycastHit hit)
+        {
+            if (!correctForOverlap)
+            {
+                hit = new RaycastHitWrapper(new RaycastHit());
+                return false;
+            }
+
+            // Check if the foot is currently in an overlapping position
+            Transform hips = animator.GetBoneTransform(HumanBodyBones.Hips);
+            Vector3 dir = (newTarget - hips.position).normalized;
+            float dist = Vector3.Distance(newTarget, hips.position);
+
+            return raycastHelper.DoRaycastInDirection(
+                hips.position,
+                dir,
+                dist,
+                out hit,
+                layerMask: feetCollisionDetection);
         }
     }
 }

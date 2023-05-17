@@ -95,7 +95,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
 
             // Start a stride and check that foot will lock from position to stride position
             GameObject floor = CreateGameObject();
-            footTarget.UpdateStrideTarget(Vector3.zero, Quaternion.identity, true);
+            footTarget.UpdateStrideTarget(Vector3.zero, Quaternion.identity, Vector3.up, true);
             footTarget.StartStride(Vector3.forward, Quaternion.identity, floor, Vector3.forward, Vector3.up, false);
 
             // Assert that the foot is grounded and now mid stride
@@ -138,10 +138,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         public void Validate_FootTarget_UpdateStrideTarget()
         {
             // If updating with force, should snap right away.
-            leftFootTarget.UpdateStrideTarget(Vector3.forward, Quaternion.identity, true);
+            leftFootTarget.UpdateStrideTarget(Vector3.forward, Quaternion.identity, Vector3.up, true);
             Assert.AreEqual(Vector3.forward, leftFootTarget.TargetFootPosition);
             Assert.AreEqual(Quaternion.identity, leftFootTarget.TargetFootRotation);
-            leftFootTarget.UpdateStrideTarget(Vector3.zero, Quaternion.identity, true);
+            leftFootTarget.UpdateStrideTarget(Vector3.zero, Quaternion.identity, Vector3.up, true);
             Assert.AreEqual(Vector3.zero, leftFootTarget.TargetFootPosition);
             Assert.AreEqual(Quaternion.identity, leftFootTarget.TargetFootRotation);
 
@@ -149,7 +149,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             float previousDelta = Vector3.Distance(leftFootTarget.TargetFootPosition, Vector3.forward);
             for (int i = 0; i < 100; i++)
             {
-                leftFootTarget.UpdateStrideTarget(Vector3.forward, Quaternion.identity, false);
+                leftFootTarget.UpdateStrideTarget(Vector3.forward, Quaternion.identity, Vector3.up, false);
                 float newDelta = Vector3.Distance(leftFootTarget.TargetFootPosition, Vector3.forward);
                 Assert.IsTrue(newDelta <= previousDelta);
                 previousDelta = newDelta;
