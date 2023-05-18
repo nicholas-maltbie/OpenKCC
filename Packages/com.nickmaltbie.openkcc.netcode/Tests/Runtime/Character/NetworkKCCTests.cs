@@ -119,6 +119,13 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             e.GetComponent<CapsuleCollider>().enabled = objectIdx == clientIdx;
         }
 
+        /// <summary>
+        /// Validation basic transitions between idle state, walking state,
+        /// back to idle, then to jumping state for a networked KCC
+        /// and verify that these states are propagated to other clients
+        /// as well.
+        /// </summary>
+        /// <returns>Enumerator representing state of test.</returns>
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_Move_Transition()
         {
@@ -143,6 +150,15 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             }
         }
 
+        /// <summary>
+        /// Spawn a set of players on a "MovingGroundConveyer" and verify
+        /// that the players move with the MovingGroundConveyer's baked
+        /// velocity.
+        /// 
+        /// Assert that when the players jump, they maintain some velocity
+        /// in the direction of the MovingGroundConveyer's motion as well.
+        /// </summary>
+        /// <returns>Enumerator representing state of test.</returns>
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_MovingGround()
         {
@@ -180,6 +196,14 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
                     }));
         }
 
+        /// <summary>
+        /// Create a set of players and verify that they transition
+        /// to sliding state on the owner as well as client
+        /// machines. Achieve this by rotating the floor and setting
+        /// the max walk angle for the players to be less than that of
+        /// the floor rotation.
+        /// </summary>
+        /// <returns>Enumerator representing state of test.</returns>
         [UnityTest]
         public IEnumerator Validate_NetworkKCC_Sliding()
         {
@@ -201,7 +225,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
 
         protected IEnumerator SetupPlayersInIdleState()
         {
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.1f));
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.25f));
             SetupInputs();
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player =>
             {
