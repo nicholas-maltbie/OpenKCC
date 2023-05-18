@@ -19,6 +19,7 @@
 using System.Collections;
 using System.Linq;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
+using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Animation;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
@@ -185,9 +186,14 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             SetupPlayersInIdleState();
             floor.transform.position = Vector3.down * 3;
             yield return new WaitForFixedUpdate();
-            floor.transform.rotation = Quaternion.Euler(70.0f, 0, 0);
+            floor.transform.rotation = Quaternion.Euler(10, 0, 0);
 
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.up));
+            // Adjust each player's max walk angle to 5 degrees
+            ForAllPlayers(player =>
+            {
+                player.GetComponent<KCCMovementEngine>().maxWalkAngle = 5;
+                return true;
+            });
 
             // Wait until players are in sliding satte
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(SlidingState) == player.CurrentState));
