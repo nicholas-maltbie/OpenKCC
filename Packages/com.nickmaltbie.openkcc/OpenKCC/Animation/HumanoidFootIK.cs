@@ -335,7 +335,6 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             AvatarIKGoal goal = target.Foot == Foot.LeftFoot ? AvatarIKGoal.LeftFoot : AvatarIKGoal.RightFoot;
             Vector3 targetPosition = target.TargetFootPosition;
-            _ = target.FootIKTargetRot();
             Transform hips = animator.GetBoneTransform(HumanBodyBones.Hips);
 
             // If we are overlapping with something, snap it back
@@ -354,7 +353,7 @@ namespace nickmaltbie.OpenKCC.Animation
 
             if (target.State == FootState.Released && overlapping)
             {
-                Vector3 footForward = Vector3.ProjectOnPlane(hips.forward, footHit.normal);;
+                var footForward = Vector3.ProjectOnPlane(hips.forward, footHit.normal);
                 animator.SetIKRotationWeight(goal, 1);
                 animator.SetIKRotation(goal, Quaternion.LookRotation(footForward, footHit.normal));
             }
