@@ -541,7 +541,6 @@ namespace nickmaltbie.OpenKCC.Animation
             Vector3 dir = (newTarget - hips.position).normalized;
             float dist = Vector3.Distance(newTarget, hips.position);
 
-            UnityEngine.Debug.DrawLine(hips.position, hips.position + dir * dist);
             return raycastHelper.DoRaycastInDirection(
                 hips.position,
                 dir,
