@@ -498,14 +498,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             Assert.AreEqual(footIK.stepHeight, footIK.RightFootTarget.StrideHeight);
             Assert.AreEqual(footIK.strideTime, footIK.LeftFootTarget.StrideTime);
             Assert.AreEqual(footIK.strideTime, footIK.RightFootTarget.StrideTime);
-            Assert.AreEqual(footIK.placeBlendTime, footIK.LeftFootTarget.PlaceBlendTime);
-            Assert.AreEqual(footIK.placeBlendTime, footIK.RightFootTarget.PlaceBlendTime);
             Assert.AreEqual(footIK.footGroundedHeight, footIK.LeftFootTarget.FootGroundedHeight);
             Assert.AreEqual(footIK.footGroundedHeight, footIK.RightFootTarget.FootGroundedHeight);
 
             footIK.stepHeight *= 2;
             footIK.strideTime *= 2;
-            footIK.placeBlendTime *= 2;
             footIK.footGroundedHeight *= 2;
 
             footIK.OnValidate();
@@ -514,15 +511,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             Assert.AreEqual(footIK.stepHeight, footIK.RightFootTarget.StrideHeight);
             Assert.AreEqual(footIK.strideTime, footIK.LeftFootTarget.StrideTime);
             Assert.AreEqual(footIK.strideTime, footIK.RightFootTarget.StrideTime);
-            Assert.AreEqual(footIK.placeBlendTime, footIK.LeftFootTarget.PlaceBlendTime);
-            Assert.AreEqual(footIK.placeBlendTime, footIK.RightFootTarget.PlaceBlendTime);
             Assert.AreEqual(footIK.footGroundedHeight, footIK.LeftFootTarget.FootGroundedHeight);
             Assert.AreEqual(footIK.footGroundedHeight, footIK.RightFootTarget.FootGroundedHeight);
-
-            footIK.stepHeight *= 2;
-            footIK.strideTime *= 2;
-            footIK.placeBlendTime *= 2;
-            footIK.footGroundedHeight *= 2;
         }
 
         /// <summary>
@@ -603,8 +593,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         public void Validate_HumanoidFootIK_LerpUpdates()
         {
             unityServiceMock.Setup(e => e.deltaTime).Returns(0.01f);
-
-            footIK.placeBlendTime = 1.0f;
             footIK.OnValidate();
 
             // Ground the left foot
