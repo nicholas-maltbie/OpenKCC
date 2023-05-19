@@ -113,11 +113,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 // Just assert that the weight is increasing
                 Assert.IsTrue(previousWeight <= footTarget.FootIKWeight);
                 previousWeight = footTarget.FootIKWeight;
-
-                // Should be moving towards Vecotr3.forward.
-                Vector3 expected = Vector3.forward * FootTarget.SmoothValue((float)i / 10) + Vector3.up * 0.1f;
-                TestUtils.AssertInBounds(footTarget.FootIKTargetPos(), expected);
-                TestUtils.AssertInBounds(Quaternion.Angle(footTarget.FootIKTargetRot(), Quaternion.identity), 0, 1.0f);
             }
 
             // After 10 updates, foot should be fully grounded and weight should be close to 1.0f

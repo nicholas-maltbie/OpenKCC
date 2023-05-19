@@ -578,6 +578,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             {
                 TestUtils.AssertInBounds(-0.55f, offset);
             }
+            else if (leftGrounded && !rightGrounded)
+            {
+                TestUtils.AssertInBounds(-0.35f, offset);
+            }
+            else if (!leftGrounded && rightGrounded)
+            {
+                TestUtils.AssertInBounds(-0.55f, offset);
+            }
             else
             {
                 Assert.AreEqual(0, offset);
