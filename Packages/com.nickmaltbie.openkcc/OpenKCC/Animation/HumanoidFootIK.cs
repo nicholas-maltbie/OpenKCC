@@ -343,7 +343,7 @@ namespace nickmaltbie.OpenKCC.Animation
             Vector3 worldPos = footTransform.position;
             if (overlapping)
             {
-                worldPos = Vector3.Lerp(footTransform.position, footHit.point + footGroundedHeight * footHit.normal, 0.95f);
+                worldPos = Vector3.Lerp(footTransform.position, footHit.point + footGroundedHeight * footHit.normal, 0.5f);
             }
 
             animator.SetIKPosition(goal, Vector3.Lerp(worldPos, target.FootIKTargetPos(), target.FootIKWeight));
