@@ -251,7 +251,7 @@ namespace nickmaltbie.OpenKCC.Animation
             UpdateFootTargets();
 
             // Move hips according to target positions
-            float targetHipOffset = GetTargetHipOffset();
+            float targetHipOffset = Mathf.Clamp(GetTargetHipOffset(), -maxHipOffset, 0);
             hipOffset = Mathf.SmoothDamp(hipOffset, targetHipOffset, ref hipOffsetSpeed, hipSmoothTime, Mathf.Infinity, unityService.deltaTime);
             transform.localPosition = Vector3.up * hipOffset;
         }
@@ -353,7 +353,7 @@ namespace nickmaltbie.OpenKCC.Animation
             Transform footTransform = GetFootTransform(target.Foot);
             bool overlapping = VerifySpotOverlap(footTransform.position, out IRaycastHit footHit);
             Vector3 worldPos = footTransform.position;
-            if (overlapping)
+            if (overlapping && target.State == FootState.Grounded)
             {
                 Vector3 correctedPos = footHit.point + footGroundedHeight * footHit.normal;
                 if (target.OverlapTime <= 0)
