@@ -129,6 +129,16 @@ namespace nickmaltbie.OpenKCC.Animation
         }
 
         /// <summary>
+        /// Position of foot with overlap corrected.
+        /// </summary>
+        public Vector3 OverlapCorrectedPosition { get; set; }
+
+        /// <summary>
+        /// Time foot has been overlapping with terrain.
+        /// </summary>
+        public float OverlapTime { get; set; }
+
+        /// <summary>
         /// Which foot does this target correspond to.
         /// </summary>
         public Foot Foot { get; private set; }

@@ -55,9 +55,8 @@ manages placing the player's feet on the ground with a few different properties.
     current facing.
 * [strideTime](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK.strideTime)
     \- Time for the player to complete a grounded stride.
-* [placeBlendTime](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK.placeBlendTime)
-    \- Blend time between foot in the air and being placed on the ground
-    in seconds.
+* [overlapBlendTime](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK.overlapBlendTime)
+    \- Time to correct overlapping foot position in seconds.
 * [footGroundedHeight](xref:nickmaltbie.OpenKCC.Animation.HumanoidFootIK.footGroundedHeight)
     \- How far off the ground are the feet bones when the player's foot
     is grounded.

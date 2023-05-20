@@ -118,10 +118,22 @@ namespace nickmaltbie.OpenKCC.Animation
         public float maxHipFootDistance = 0.85f;
 
         /// <summary>
+        /// Max distance player can raise or lower hips.
+        /// </summary>
+        [Tooltip("Max distance player can raise or lower hips.")]
+        public float maxHipOffset = 0.45f;
+
+        /// <summary>
         /// Time to take to sooth hip offset from the ground.
         /// </summary>
         [Tooltip("Time to take to sooth hip offset from the ground.")]
         public float hipSmoothTime = 0.35f;
+
+        /// <summary>
+        /// Time to blend position between world position and overlap position.
+        /// </summary>
+        [Tooltip("Time to correct overlapping foot position.")]
+        public float overlapBlendTime = 0.05f;
 
         /// <summary>
         /// Test debug value to disable correcting for overlap.
@@ -343,7 +355,29 @@ namespace nickmaltbie.OpenKCC.Animation
             Vector3 worldPos = footTransform.position;
             if (overlapping)
             {
-                worldPos = Vector3.Lerp(footTransform.position, footHit.point + footGroundedHeight * footHit.normal, 0.5f);
+                Vector3 correctedPos = footHit.point + footGroundedHeight * footHit.normal;
+                if (target.OverlapTime <= 0)
+                {
+                    target.OverlapCorrectedPosition = correctedPos;
+                }
+                else
+                {
+                    target.OverlapCorrectedPosition = Vector3.Lerp(target.OverlapCorrectedPosition, correctedPos, 0.5f);
+                }
+
+                target.OverlapTime += unityService.deltaTime;
+                target.OverlapTime = Mathf.Clamp(target.OverlapTime, 0, overlapBlendTime);
+            }
+            else
+            {
+                target.OverlapTime -= unityService.deltaTime;
+                target.OverlapTime = Mathf.Clamp(target.OverlapTime, 0, overlapBlendTime);
+            }
+
+            if (target.OverlapTime > 0)
+            {
+                float lerp = Mathf.Clamp(target.OverlapTime / overlapBlendTime, 0, 1);
+                worldPos = Vector3.Lerp(worldPos, target.OverlapCorrectedPosition, lerp);
             }
 
             animator.SetIKPosition(goal, Vector3.Lerp(worldPos, target.FootIKTargetPos(), target.FootIKWeight));
@@ -351,10 +385,11 @@ namespace nickmaltbie.OpenKCC.Animation
             animator.SetIKPositionWeight(goal, 1);
             animator.SetIKRotationWeight(goal, target.FootIKWeight);
 
-            if (target.State == FootState.Released && overlapping)
+            if (target.OverlapTime > 0)
             {
+                float lerp = Mathf.Clamp(target.OverlapTime / overlapBlendTime, 0, 1);
                 var footForward = Vector3.ProjectOnPlane(hips.forward, footHit.normal);
-                animator.SetIKRotationWeight(goal, 1);
+                animator.SetIKRotationWeight(goal, lerp);
                 animator.SetIKRotation(goal, Quaternion.LookRotation(footForward, footHit.normal));
             }
         }
