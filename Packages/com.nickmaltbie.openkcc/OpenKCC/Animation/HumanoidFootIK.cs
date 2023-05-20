@@ -353,7 +353,7 @@ namespace nickmaltbie.OpenKCC.Animation
             Transform footTransform = GetFootTransform(target.Foot);
             bool overlapping = VerifySpotOverlap(footTransform.position, out IRaycastHit footHit);
             Vector3 worldPos = footTransform.position;
-            if (overlapping && target.State == FootState.Grounded)
+            if (overlapping && target.State == FootState.Released)
             {
                 Vector3 correctedPos = footHit.point + footGroundedHeight * footHit.normal;
                 if (target.OverlapTime <= 0)
