@@ -131,10 +131,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.35
-  m_Height: 1.8
+  m_Radius: 0.25
+  m_Height: 1.65
   m_Direction: 1
-  m_Center: {x: 0, y: 0.9, z: 0}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!114 &1443923188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,15 +392,16 @@ MonoBehaviour:
   feetCollisionDetection:
     serializedVersion: 2
     m_Bits: 53
-  groundCheckDist: 1.1
+  groundCheckDist: 1.35
   stepHeight: 0.085
-  strideThresholdDistance: 0.8
+  strideThresholdDistance: 0.85
   strideThresholdDegrees: 65
   strideTime: 0.15
-  placeBlendTime: 0.075
-  footGroundedHeight: 0.1
-  maxHipFootDistance: 1
+  footGroundedHeight: 0.12
+  maxHipFootDistance: 0.9
+  maxHipOffset: 0.65
   hipSmoothTime: 0.225
+  overlapBlendTime: 0.1
 --- !u!4 &2110423193989123606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f9a65e0222533fa4292d5c9cce96ca3c, type: 3}

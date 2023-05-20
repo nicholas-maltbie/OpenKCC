@@ -103,13 +103,6 @@ namespace nickmaltbie.OpenKCC.Animation
         public float strideTime = 0.25f;
 
         /// <summary>
-        /// Blend time between foot in the air and being placed on the ground
-        /// in seconds.
-        /// </summary>
-        [Tooltip("Blend time (in seconds) when placing foot on the ground.")]
-        public float placeBlendTime = 0.05f;
-
-        /// <summary>
         /// How far off the ground are the feet bones when the player's foot
         /// is grounded.
         /// </summary>
@@ -125,10 +118,22 @@ namespace nickmaltbie.OpenKCC.Animation
         public float maxHipFootDistance = 0.85f;
 
         /// <summary>
+        /// Max distance player can raise or lower hips.
+        /// </summary>
+        [Tooltip("Max distance player can raise or lower hips.")]
+        public float maxHipOffset = 0.45f;
+
+        /// <summary>
         /// Time to take to sooth hip offset from the ground.
         /// </summary>
         [Tooltip("Time to take to sooth hip offset from the ground.")]
         public float hipSmoothTime = 0.35f;
+
+        /// <summary>
+        /// Time to blend position between world position and overlap position.
+        /// </summary>
+        [Tooltip("Time to correct overlapping foot position.")]
+        public float overlapBlendTime = 0.05f;
 
         /// <summary>
         /// Test debug value to disable correcting for overlap.
@@ -181,8 +186,8 @@ namespace nickmaltbie.OpenKCC.Animation
         /// </summary>
         private void SetupTargets()
         {
-            LeftFootTarget = new FootTarget(Foot.LeftFoot, animator, stepHeight, strideTime, placeBlendTime, footGroundedHeight);
-            RightFootTarget = new FootTarget(Foot.RightFoot, animator, stepHeight, strideTime, placeBlendTime, footGroundedHeight);
+            LeftFootTarget = new FootTarget(Foot.LeftFoot, animator, stepHeight, strideTime, footGroundedHeight);
+            RightFootTarget = new FootTarget(Foot.RightFoot, animator, stepHeight, strideTime, footGroundedHeight);
             LeftFootTarget.unityService = unityService;
             RightFootTarget.unityService = unityService;
         }
@@ -224,6 +229,11 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <param name="deltaPos">Delta position in world space to move the feet.</param>
         public void UpdateFeetPositions(Vector3 deltaPos)
         {
+            if (deltaPos.magnitude <= KCCUtils.Epsilon)
+            {
+                return;
+            }
+
             foreach (Foot foot in Feet)
             {
                 UpdateFootPosition(foot, deltaPos);
@@ -241,9 +251,8 @@ namespace nickmaltbie.OpenKCC.Animation
             UpdateFootTargets();
 
             // Move hips according to target positions
-            float targetHipOffset = GetTargetHipOffset();
+            float targetHipOffset = Mathf.Clamp(GetTargetHipOffset(), -maxHipOffset, 0);
             hipOffset = Mathf.SmoothDamp(hipOffset, targetHipOffset, ref hipOffsetSpeed, hipSmoothTime, Mathf.Infinity, unityService.deltaTime);
-            _ = animator.GetBoneTransform(HumanBodyBones.Hips);
             transform.localPosition = Vector3.up * hipOffset;
         }
 
@@ -305,19 +314,7 @@ namespace nickmaltbie.OpenKCC.Animation
             // Average the hip offset required of each foot
             float leftOffset = GetVerticalOffsetByFoot(Foot.LeftFoot);
             float rightOffset = GetVerticalOffsetByFoot(Foot.RightFoot);
-
-            // Only include grounded feet
-            FootTarget leftTarget = GetFootTarget(Foot.LeftFoot);
-            FootTarget rightTarget = GetFootTarget(Foot.RightFoot);
-
-            if (leftTarget.State == FootState.Grounded && rightTarget.State == FootState.Grounded)
-            {
-                return Mathf.Min(leftOffset, rightOffset);
-            }
-            else
-            {
-                return 0;
-            }
+            return Mathf.Min(leftOffset, rightOffset);
         }
 
         /// <summary>
@@ -350,23 +347,50 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             AvatarIKGoal goal = target.Foot == Foot.LeftFoot ? AvatarIKGoal.LeftFoot : AvatarIKGoal.RightFoot;
             Vector3 targetPosition = target.TargetFootPosition;
-            _ = target.FootIKTargetRot();
             Transform hips = animator.GetBoneTransform(HumanBodyBones.Hips);
 
-            animator.SetIKPosition(goal, target.FootIKTargetPos());
+            // If we are overlapping with something, snap it back
+            Transform footTransform = GetFootTransform(target.Foot);
+            bool overlapping = VerifySpotOverlap(footTransform.position, out IRaycastHit footHit);
+            Vector3 worldPos = footTransform.position;
+            if (overlapping && target.State == FootState.Released)
+            {
+                Vector3 correctedPos = footHit.point + footGroundedHeight * footHit.normal;
+                if (target.OverlapTime <= 0)
+                {
+                    target.OverlapCorrectedPosition = correctedPos;
+                }
+                else
+                {
+                    target.OverlapCorrectedPosition = Vector3.Lerp(target.OverlapCorrectedPosition, correctedPos, 0.5f);
+                }
+
+                target.OverlapTime += unityService.deltaTime;
+                target.OverlapTime = Mathf.Clamp(target.OverlapTime, 0, overlapBlendTime);
+            }
+            else
+            {
+                target.OverlapTime -= unityService.deltaTime;
+                target.OverlapTime = Mathf.Clamp(target.OverlapTime, 0, overlapBlendTime);
+            }
+
+            if (target.OverlapTime > 0)
+            {
+                float lerp = Mathf.Clamp(target.OverlapTime / overlapBlendTime, 0, 1);
+                worldPos = Vector3.Lerp(worldPos, target.OverlapCorrectedPosition, lerp);
+            }
+
+            animator.SetIKPosition(goal, Vector3.Lerp(worldPos, target.FootIKTargetPos(), target.FootIKWeight));
             animator.SetIKRotation(goal, target.FootIKTargetRot());
-            animator.SetIKPositionWeight(goal, target.FootIKWeight);
+            animator.SetIKPositionWeight(goal, 1);
             animator.SetIKRotationWeight(goal, target.FootIKWeight);
 
-            // If we are overlapping with something, snap it back
-            target.Overlapping = VerifySpotOverlap(targetPosition, out IRaycastHit footHit);
-            if (target.Overlapping)
+            if (target.OverlapTime > 0)
             {
-                target.UpdateStrideTarget(
-                    footHit.point,
-                    Quaternion.LookRotation(hips.forward, footHit.normal),
-                    footHit.normal,
-                    false);
+                float lerp = Mathf.Clamp(target.OverlapTime / overlapBlendTime, 0, 1);
+                var footForward = Vector3.ProjectOnPlane(hips.forward, footHit.normal);
+                animator.SetIKRotationWeight(goal, lerp);
+                animator.SetIKRotation(goal, Quaternion.LookRotation(footForward, footHit.normal));
             }
         }
 
@@ -380,11 +404,6 @@ namespace nickmaltbie.OpenKCC.Animation
                 GetFootGroundedTransform(target.Foot, out Vector3 groundedPos, out Quaternion groundedRot, out Vector3 groundNormal, out GameObject groundedFloor, out Vector3 groundedForward))
             {
                 target.StartStride(groundedPos, groundedRot, groundedFloor, groundedForward, groundNormal, false);
-            }
-            else
-            {
-                Transform footTransform = GetFootTransform(target.Foot);
-                target.UpdateStrideTarget(footTransform.position, target.TargetFootRotation, target.GroundNormal, target.CanUpdateStrideTarget());
             }
         }
 
@@ -449,8 +468,13 @@ namespace nickmaltbie.OpenKCC.Animation
         private float GetVerticalOffsetByFoot(Foot foot)
         {
             FootTarget target = GetFootTarget(foot);
+            if (target.State != FootState.Grounded)
+            {
+                return 0;
+            }
+
             Transform hipTransform = animator.GetBoneTransform(HumanBodyBones.Hips);
-            float dist = Vector3.Distance(hipTransform.position - Vector3.up * hipOffset, target.FootIKTargetPos());
+            float dist = Vector3.Project(hipTransform.position - Vector3.up * hipOffset - target.FootIKTargetPos(), Vector3.up).magnitude;
             return Mathf.Clamp(maxHipFootDistance - dist, -maxHipFootDistance, 0);
         }
 

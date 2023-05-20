@@ -117,23 +117,26 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <param name="animator">Animator managing avatar control.</param>
         /// <param name="strideHeight">Height of stride for short steps.</param>
         /// <param name="strideTime">Time of stride for short steps.</param>
-        /// <param name="placeBlendTime">Blend time when placing the foot on the ground.</param>
         /// <param name="footGroundedHeight">Height to raise foot of ground when placed.</param>
-        public FootTarget(Foot foot, Animator animator, float strideHeight, float strideTime, float placeBlendTime, float footGroundedHeight)
+        public FootTarget(Foot foot, Animator animator, float strideHeight, float strideTime, float footGroundedHeight)
         {
             Foot = foot;
             this.animator = animator;
 
             StrideHeight = strideHeight;
-            PlaceBlendTime = placeBlendTime;
             FootGroundedHeight = footGroundedHeight;
             StrideTime = strideTime;
         }
 
         /// <summary>
-        /// Is this foot overlapping the ground
+        /// Position of foot with overlap corrected.
         /// </summary>
-        public bool Overlapping { get; set; }
+        public Vector3 OverlapCorrectedPosition { get; set; }
+
+        /// <summary>
+        /// Time foot has been overlapping with terrain.
+        /// </summary>
+        public float OverlapTime { get; set; }
 
         /// <summary>
         /// Which foot does this target correspond to.
@@ -149,11 +152,6 @@ namespace nickmaltbie.OpenKCC.Animation
         /// Height foot is lifted to mid stride.
         /// </summary>
         public float StrideHeight { get; private set; }
-
-        /// <summary>
-        /// Time when blending placement for the player foot.
-        /// </summary>
-        public float PlaceBlendTime { get; private set; }
 
         /// <summary>
         /// Height foot is raised above the ground when taking a small step.
@@ -209,15 +207,10 @@ namespace nickmaltbie.OpenKCC.Animation
         public bool UseBump { get; private set; }
 
         /// <summary>
-        /// Gets the time required for the current stride action/blending.
-        /// </summary>
-        protected float TotalStrideTime => UseBump ? StrideTime : PlaceBlendTime;
-
-        /// <summary>
         /// Gest the remaining time in the current stride based off the current
         /// game time.
         /// </summary>
-        public float RemainingStrideTime => StrideStartTime + TotalStrideTime - unityService.time;
+        public float RemainingStrideTime => UseBump ? StrideStartTime + StrideTime - unityService.time : 0;
 
         /// <summary>
         /// Gets if this foot is currently mid stride. This foot
@@ -298,7 +291,7 @@ namespace nickmaltbie.OpenKCC.Animation
                 return TargetFootPosition + GroundNormal * FootGroundedHeight;
             }
 
-            float fraction = 1 - Mathf.Clamp(RemainingStrideTime / TotalStrideTime, 0, 1);
+            float fraction = 1 - Mathf.Clamp(RemainingStrideTime / StrideTime, 0, 1);
             var lerpPos = Vector3.Lerp(fromFootPosition, TargetFootPosition, SmoothValue(fraction));
             Vector3 verticalOffset = UseBump ? Vector3.up * StrideHeight * Mathf.Sin(fraction * Mathf.PI) : Vector3.zero;
             return lerpPos + verticalOffset + GroundNormal * FootGroundedHeight;
@@ -316,7 +309,7 @@ namespace nickmaltbie.OpenKCC.Animation
                 return TargetFootRotation;
             }
 
-            float fraction = 1 - Mathf.Clamp(RemainingStrideTime / TotalStrideTime, 0, 1);
+            float fraction = 1 - Mathf.Clamp(RemainingStrideTime / StrideTime, 0, 1);
             return Quaternion.Lerp(fromFootRotation, TargetFootRotation, SmoothValue(fraction));
         }
 
@@ -328,7 +321,7 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             float currentWeight = FootIKWeight;
             float targetWeight = State == FootState.Grounded ? 1.0f : 0.0f;
-            FootIKWeight = Mathf.SmoothDamp(currentWeight, targetWeight, ref footIKWeightVelocityLerp, TotalStrideTime, Mathf.Infinity, unityService.deltaTime);
+            FootIKWeight = Mathf.SmoothDamp(currentWeight, targetWeight, ref footIKWeightVelocityLerp, StrideTime, Mathf.Infinity, unityService.deltaTime);
             FootIKWeight = Mathf.Clamp(FootIKWeight, 0, 1);
         }
 

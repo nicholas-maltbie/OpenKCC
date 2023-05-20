@@ -51,8 +51,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             animator = CreateGameObject().AddComponent<Animator>();
             animator.runtimeAnimatorController = controller;
 
-            leftFootTarget = new FootTarget(Foot.LeftFoot, animator, 0.05f, 0.25f, 0.05f, 0.15f);
-            rightFootTarget = new FootTarget(Foot.RightFoot, animator, 0.05f, 0.25f, 0.05f, 0.15f);
+            leftFootTarget = new FootTarget(Foot.LeftFoot, animator, 0.05f, 0.25f, 0.15f);
+            rightFootTarget = new FootTarget(Foot.RightFoot, animator, 0.05f, 0.25f, 0.15f);
 
             unityServiceMock = new Mock<IUnityService>();
             leftFootTarget.unityService = unityServiceMock.Object;
@@ -85,7 +85,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         public void Verify_FootTarget_LerpedMovement()
         {
             // Set foot stride time to 1 second and time step to 0.1 seconds
-            var footTarget = new FootTarget(Foot.LeftFoot, animator, 0.25f, 1.0f, 1.0f, 0.1f);
+            var footTarget = new FootTarget(Foot.LeftFoot, animator, 0.25f, 1.0f, 0.1f);
             unityServiceMock.Setup(e => e.deltaTime).Returns(0.1f);
             unityServiceMock.Setup(e => e.time).Returns(0.0f);
             footTarget.unityService = unityServiceMock.Object;
@@ -113,11 +113,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 // Just assert that the weight is increasing
                 Assert.IsTrue(previousWeight <= footTarget.FootIKWeight);
                 previousWeight = footTarget.FootIKWeight;
-
-                // Should be moving towards Vecotr3.forward.
-                Vector3 expected = Vector3.forward * FootTarget.SmoothValue((float)i / 10) + Vector3.up * 0.1f;
-                TestUtils.AssertInBounds(footTarget.FootIKTargetPos(), expected);
-                TestUtils.AssertInBounds(Quaternion.Angle(footTarget.FootIKTargetRot(), Quaternion.identity), 0, 1.0f);
             }
 
             // After 10 updates, foot should be fully grounded and weight should be close to 1.0f
