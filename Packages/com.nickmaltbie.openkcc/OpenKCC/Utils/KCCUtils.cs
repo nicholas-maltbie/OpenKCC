@@ -200,6 +200,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 // Have the player move up up to the remaining momentum
                 float distanceMove = Mathf.Min(momentum.magnitude, distanceToSnap);
                 position += distanceMove * Vector3.up;
+                momentum /= 2;
                 return true;
             }
             // Otherwise move the player back down
