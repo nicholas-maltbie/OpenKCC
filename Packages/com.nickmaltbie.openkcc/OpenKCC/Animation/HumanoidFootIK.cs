@@ -346,7 +346,6 @@ namespace nickmaltbie.OpenKCC.Animation
         private void UpdateFootIKState(FootTarget target)
         {
             AvatarIKGoal goal = target.Foot == Foot.LeftFoot ? AvatarIKGoal.LeftFoot : AvatarIKGoal.RightFoot;
-            Vector3 targetPosition = target.TargetFootPosition;
             Transform hips = animator.GetBoneTransform(HumanBodyBones.Hips);
 
             // If we are overlapping with something, snap it back
