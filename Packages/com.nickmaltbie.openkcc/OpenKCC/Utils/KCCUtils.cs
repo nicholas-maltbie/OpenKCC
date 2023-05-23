@@ -200,21 +200,6 @@ namespace nickmaltbie.OpenKCC.Utils
                 // Have the player move up up to the remaining momentum
                 float distanceMove = Mathf.Min(momentum.magnitude, distanceToSnap);
                 position += distanceMove * Vector3.up;
-
-                // Also move the player forward however far they can move
-                bool didForwardHit = config.ColliderCast.CastSelf(
-                    position,
-                    rotation,
-                    momentum.normalized,
-                    momentum.magnitude,
-                    out IRaycastHit forwardHit,
-                    config.LayerMask,
-                    queryTriggerInteraction: QueryTriggerInteraction.Ignore);
-
-                float forwardDist = didForwardHit ? Mathf.Max(0, forwardHit.distance - KCCUtils.Epsilon) : momentum.magnitude;
-                float remainingMomentum = Mathf.Max(0, momentum.magnitude - (distanceMove + forwardDist));
-                position += forwardDist * momentum.normalized;
-                momentum = momentum.normalized * remainingMomentum;
                 return true;
             }
             // Otherwise move the player back down
@@ -391,15 +376,16 @@ namespace nickmaltbie.OpenKCC.Utils
 
             // Check if the player is running into a perpendicular surface
             bool perpendicularBounce = CheckPerpendicularBounce(hit, remainingMomentum, config);
-
-            if (perpendicularBounce && AttemptSnapUp(hit, ref remainingMomentum, ref position, rotation, config))
+            Vector3 snappedMomentum = remainingMomentum;
+            Vector3 snappedPosition = position;
+            if (perpendicularBounce && AttemptSnapUp(hit, ref snappedMomentum, ref snappedPosition, rotation, config))
             {
                 return new KCCBounce
                 {
                     initialPosition = initialPosition,
-                    finalPosition = position,
+                    finalPosition = snappedPosition,
                     initialMomentum = initialMomentum,
-                    remainingMomentum = remainingMomentum,
+                    remainingMomentum = snappedMomentum,
                     hit = hit,
                     action = MovementAction.SnapUp,
                 };

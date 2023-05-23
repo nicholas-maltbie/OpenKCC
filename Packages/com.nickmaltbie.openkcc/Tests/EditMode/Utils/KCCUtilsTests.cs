@@ -221,9 +221,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             var bounces = GetBounces(Vector3.zero, Vector3.forward * 10, verticalSnapUp: snapUpDistance).ToList();
 
             // Validate bounce properties
-            Assert.IsTrue(bounces.Count == 2, $"Expected to find {3} bounce but instead found {bounces.Count}");
+            Assert.IsTrue(bounces.Count == 3, $"Expected to find {3} bounce but instead found {bounces.Count}");
             KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.SnapUp);
-            KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop);
+            KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Move);
+            KCCValidation.ValidateKCCBounce(bounces[2], KCCUtils.MovementAction.Stop);
         }
 
         /// <summary>
