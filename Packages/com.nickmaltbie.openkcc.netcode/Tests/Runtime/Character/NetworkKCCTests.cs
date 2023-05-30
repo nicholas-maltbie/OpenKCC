@@ -16,7 +16,9 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using nickmaltbie.openkcc.Tests.netcode.TestCommon;
 using nickmaltbie.OpenKCC.Character;
@@ -80,6 +82,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         public const string SprintControlName = "Sprint";
 
         protected override int NumberOfClients => 2;
+        protected override IEnumerable<Type> RequiredComponents => new[] { typeof(CapsuleColliderCast), typeof(ClientNetworkTransform) };
         private GameObject floor;
 
         [OneTimeSetUp]
@@ -98,7 +101,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
         public override IEnumerator UnityTearDown()
         {
             yield return base.UnityTearDown();
-            Object.Destroy(floor);
+            UnityEngine.Object.Destroy(floor);
         }
 
         [UnitySetUp]
@@ -267,9 +270,6 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
 
         public override void SetupPrefab(GameObject go)
         {
-            go.AddComponent<CapsuleColliderCast>();
-            go.AddComponent<ClientNetworkTransform>();
-
             // Setup the rigidbody
             Rigidbody rb = go.GetComponent<Rigidbody>();
             rb.useGravity = false;

@@ -33,6 +33,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
     public abstract class NetcodeInputRuntimeTest<E> : NetcodeInputRuntimeTest where E : Component
     {
         protected virtual int SpawnCount => NumberOfClients + 1;
+        protected virtual IEnumerable<Type> RequiredComponents => Enumerable.Empty<Type>();
         protected GameObject m_PrefabToSpawn;
 
         public virtual void SetupClient(E e, int objectIdx, int clientIdx) { }
@@ -79,6 +80,11 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
         {
             m_PrefabToSpawn = CreateNetworkObjectPrefab($"Testable{typeof(E).Name}");
             m_PrefabToSpawn.AddComponent<TestableNetworkBehaviour>();
+            foreach (Type componentType in RequiredComponents)
+            {
+                m_PrefabToSpawn.AddComponent(componentType);
+            }
+
             m_PrefabToSpawn.AddComponent<E>();
             SetupPrefab(m_PrefabToSpawn);
         }

@@ -18,9 +18,11 @@
 
 using Moq;
 using nickmaltbie.OpenKCC.Character;
+using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Tests.EditMode.Utils;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
@@ -43,15 +45,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
     [TestFixture]
     public class KCCMovementEngineTests : TestBase
     {
-        private Mock<IColliderCast> colliderCastMock;
+        private MockColliderCast colliderCastMock;
         private KCCMovementEngine engine;
 
         [SetUp]
         public override void Setup()
         {
-            engine = CreateGameObject().AddComponent<KCCMovementEngine>();
-            colliderCastMock = new Mock<IColliderCast>();
-            engine._colliderCast = colliderCastMock.Object;
+            GameObject go = CreateGameObject();
+            colliderCastMock = go.AddComponent<MockColliderCast>();
+            engine = go.AddComponent<KCCMovementEngine>();
+            engine._colliderCast = colliderCastMock;
 
             engine.Awake();
         }
@@ -60,43 +63,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         public void Verify_KCCMovementEngine_SnapDownOverrideNormal()
         {
             // Setup the normal to originally be Vector3.up
-            var raycastHitMock = new Mock<IRaycastHit>();
-            raycastHitMock.Setup(hit => hit.distance).Returns(KCCUtils.Epsilon);
-            raycastHitMock.Setup(hit => hit.normal).Returns(Vector3.up);
-            colliderCastMock.Setup(e => e.CastSelf(
-                It.IsAny<Vector3>(),
-                It.IsAny<Quaternion>(),
-                It.IsAny<Vector3>(),
-                It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny,
-                It.IsAny<int>(),
-                It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
-                {
-                    hit = raycastHitMock.Object;
-                }))
-                .Returns(true);
-
-            OpenKCC.Character.Config.KCCGroundedState groundedState = engine.CheckGrounded(false, true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, default, default, Vector3.up, KCCUtils.Epsilon, true);
+            KCCGroundedState groundedState = engine.CheckGrounded(false, true);
             Assert.AreEqual(Vector3.up, groundedState.SurfaceNormal);
 
             // Setup the step hit to return a different normal
-            var stepHitMock = new Mock<IRaycastHit>();
-            stepHitMock.Setup(hit => hit.distance).Returns(KCCUtils.Epsilon);
-            stepHitMock.Setup(hit => hit.normal).Returns(Vector3.forward);
-            colliderCastMock.Setup(e => e.DoRaycastInDirection(
-                It.IsAny<Vector3>(),
-                It.IsAny<Vector3>(),
-                It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny,
-                It.IsAny<int>(),
-                It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
-                {
-                    hit = stepHitMock.Object;
-                }))
-                .Returns(true);
-
+            KCCTestUtils.SetupCastSelf(colliderCastMock, default, default, Vector3.forward, KCCUtils.Epsilon, true);
             groundedState = engine.CheckGrounded(false, true);
             Assert.AreEqual(Vector3.forward, groundedState.SurfaceNormal);
         }
@@ -113,7 +85,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         public void Verify_KCCMovementEngine_Properties()
         {
             Assert.AreEqual(Vector3.up, engine.Up);
-            Assert.AreEqual(colliderCastMock.Object, engine.ColliderCast);
+            Assert.AreEqual(colliderCastMock, engine.ColliderCast);
             Assert.AreEqual(engine.GroundedDistance, KCCMovementEngine.DefaultGroundedDistance);
             Assert.AreEqual(engine.GroundCheckDistance, KCCMovementEngine.DefaultGroundCheckDistance);
             Assert.AreEqual(engine.MaxWalkAngle, engine.maxWalkAngle);
@@ -161,28 +133,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
                 rb.isKinematic = isKinematic;
             }
 
-            var raycastHitMock = new Mock<IRaycastHit>();
-            raycastHitMock.Setup(hit => hit.collider).Returns(box);
-            raycastHitMock.Setup(hit => hit.point).Returns(Vector3.zero);
-            raycastHitMock.Setup(hit => hit.distance).Returns(KCCUtils.Epsilon);
-            raycastHitMock.Setup(hit => hit.normal).Returns(Vector3.up);
-
-            colliderCastMock.Setup(e => e.CastSelf(
-                It.IsAny<Vector3>(),
-                It.IsAny<Quaternion>(),
-                It.IsAny<Vector3>(),
-                It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny,
-                It.IsAny<int>(),
-                It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
-                {
-                    hit = raycastHitMock.Object;
-                }))
-                .Returns(true);
-
+            KCCTestUtils.SetupCastSelf(colliderCastMock, box, Vector3.zero, Vector3.up, KCCUtils.Epsilon, true);
             engine.CheckGrounded(false, false);
-
             Vector3 velocity = engine.GetGroundVelocity();
 
             if (movingGround)
@@ -229,40 +181,19 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             GameObject box = CreateGameObject();
             BoxCollider collider = box.AddComponent<BoxCollider>();
-            Vector3 startingNormal = Vector3.up;
+            Vector3 initialNormal = Vector3.up;
             Vector3 newNormal = Vector3.down;
-            Vector3 currentNormal = startingNormal;
-
-            var raycastHitMock = new Mock<IRaycastHit>();
-            raycastHitMock.Setup(hit => hit.collider).Returns(collider);
-            raycastHitMock.Setup(hit => hit.point).Returns(Vector3.zero);
-            raycastHitMock.Setup(hit => hit.distance).Returns(KCCUtils.Epsilon);
-            raycastHitMock.Setup(hit => hit.normal).Returns(() => currentNormal);
-
-            colliderCastMock.Setup(e => e.CastSelf(
-                It.IsAny<Vector3>(),
-                It.IsAny<Quaternion>(),
-                It.IsAny<Vector3>(),
-                It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny,
-                It.IsAny<int>(),
-                It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.CastSelfCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
-                {
-                    hit = raycastHitMock.Object;
-                }))
-                .Returns(true);
+            KCCTestUtils.SetupCastSelf(colliderCastMock, collider, Vector3.zero, initialNormal, KCCUtils.Epsilon, true);
 
             engine.CheckGrounded(false, false);
+            Assert.AreEqual(initialNormal, engine.GroundedState.SurfaceNormal);
 
-            Assert.AreEqual(currentNormal, engine.GroundedState.SurfaceNormal);
-            currentNormal = newNormal;
-
+            KCCTestUtils.SetupCastSelf(colliderCastMock, collider, Vector3.zero, newNormal, KCCUtils.Epsilon, true);
             engine.CheckGrounded(snapped, snapped);
 
             if (snapped)
             {
-                Assert.AreEqual(startingNormal, engine.GroundedState.SurfaceNormal);
+                Assert.AreEqual(initialNormal, engine.GroundedState.SurfaceNormal);
             }
             else
             {
@@ -297,40 +228,22 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             //   be fine.
             // We should compute the relative position of the player to be
             // 0.5 units above the center of the box.
-            var noHit = new Mock<IRaycastHit>();
-            noHit.Setup(hit => hit.collider).Returns(default(Collider));
-            noHit.Setup(hit => hit.point).Returns(Vector3.zero);
-            noHit.Setup(hit => hit.distance).Returns(Mathf.Infinity);
-            noHit.Setup(hit => hit.normal).Returns(Vector3.zero);
-
-            var groundCheckHit = new Mock<IRaycastHit>();
-            groundCheckHit.Setup(hit => hit.collider).Returns(box);
-            groundCheckHit.Setup(hit => hit.point).Returns(Vector3.zero);
-            groundCheckHit.Setup(hit => hit.distance).Returns(KCCUtils.Epsilon);
-            groundCheckHit.Setup(hit => hit.normal).Returns(Vector3.up);
-
+            IRaycastHit noHit = KCCTestUtils.SetupRaycastHitMock(default(Collider), Vector3.zero, Vector3.zero, Mathf.Infinity);
+            IRaycastHit groundCheckHit = KCCTestUtils.SetupRaycastHitMock(box, Vector3.zero, Vector3.up, KCCUtils.Epsilon);
             int hitIdx = 0;
 
-            colliderCastMock.Setup(e => e.CastSelf(
-                It.IsAny<Vector3>(),
-                It.IsAny<Quaternion>(),
-                It.IsAny<Vector3>(),
-                It.IsAny<float>(),
-                out It.Ref<IRaycastHit>.IsAny,
-                It.IsAny<int>(),
-                It.IsAny<QueryTriggerInteraction>()))
-                .Returns(new KCCTestUtils.CastSelfReturns((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            colliderCastMock.OnCastSelf = (Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            {
+                // Only return hit past second cast
+                if (++hitIdx < 2)
                 {
-                    // Only return hit past second cast
-                    if (++hitIdx < 2)
-                    {
-                        hit = noHit.Object;
-                        return false;
-                    }
+                    hit = noHit;
+                    return false;
+                }
 
-                    hit = groundCheckHit.Object;
-                    return true;
-                }));
+                hit = groundCheckHit;
+                return true;
+            };
 
             // Setup a basic collision between the player and the ground
             // one meter below the player.
@@ -348,7 +261,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         [Test]
         public void SerializationValidationTests()
         {
-            KCCMovementEngine movementEngine = CreateGameObject().AddComponent<KCCMovementEngine>();
+            GameObject go = CreateGameObject();
+            go.AddComponent<MockColliderCast>();
+            KCCMovementEngine movementEngine = go.AddComponent<KCCMovementEngine>();
             movementEngine.serializationVersion = "";
             movementEngine.layerMask = 0;
 

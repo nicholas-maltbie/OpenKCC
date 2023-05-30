@@ -18,6 +18,7 @@
 
 using Moq;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Tests.TestCommon
@@ -27,56 +28,6 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
     /// </summary>
     public static class KCCTestUtils
     {
-        /// <summary>
-        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IRaycastHelper.DoRaycastInDirection(Vector3, Vector3, float, out IRaycastHit, int, QueryTriggerInteraction)"/>
-        /// </summary>
-        /// <param name="source">Source point to check from.</param>
-        /// <param name="direction">Direction to search for step.</param>
-        /// <param name="distance">Distance to search for step ahead of player.</param>
-        /// <param name="hit">Information about hit.</param>
-        /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
-        /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
-        /// <returns>Is something ahead hit.</returns>
-        public delegate void DoRaycastInDirectionCallback(Vector3 source, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
-
-        /// <summary>
-        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IRaycastHelper.DoRaycastInDirection(Vector3, Vector3, float, out IRaycastHit, int, QueryTriggerInteraction)"/>
-        /// </summary>
-        /// <param name="source">Source point to check from.</param>
-        /// <param name="direction">Direction to search for step.</param>
-        /// <param name="distance">Distance to search for step ahead of player.</param>
-        /// <param name="hit">Information about hit.</param>
-        /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
-        /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
-        /// <returns>Is something ahead hit.</returns>
-        public delegate bool DoRaycastInDirectionReturns(Vector3 source, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
-
-        /// <summary>
-        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf"/>
-        /// </summary>
-        /// <param name="position">Position of the object when it is being raycast.</param>
-        /// <param name="rotation">Rotation of the objecting when it is being raycast.</param>
-        /// <param name="direction">Direction of the raycast.</param>
-        /// <param name="distance">Maximum distance of raycast.</param>
-        /// <param name="hit">First object hit and related information, will have a distance of Infinity if none
-        /// is found.</param>
-        /// <param name="skinWidth">Width of skin of object to use when casting a hit. Essentially buffer
-        /// space around the edge of the object.</param>
-        /// <returns>True if an object is hit within distance, false otherwise.</returns>
-        public delegate void CastSelfCallback(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
-
-        /// <summary>
-        /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf"/>
-        /// </summary>
-        /// <param name="position">Position of the object when it is being raycast.</param>
-        /// <param name="rotation">Rotation of the objecting when it is being raycast.</param>
-        /// <param name="direction">Direction of the raycast.</param>
-        /// <param name="distance">Maximum distance of raycast.</param>
-        /// <param name="hit">First object hit and related information, will have a distance of Infinity if none
-        /// is found.</param>
-        /// <returns>True if an object is hit within distance, false otherwise.</returns>
-        public delegate bool CastSelfReturns(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
-
         /// <summary>
         /// Bound range for test utils validation of number in range.
         /// </summary>
@@ -108,23 +59,18 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             return raycastHitMock.Object;
         }
 
-        public static IRaycastHit SetupCastSelf(Mock<IColliderCast> colliderCastMock, Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f, bool didHit = false)
+        public static IRaycastHit SetupCastSelf(MockColliderCast colliderCastMock, Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f, bool didHit = false)
         {
             IRaycastHit raycastHit = KCCTestUtils.SetupRaycastHitMock(
                 collider,
                 point,
                 normal,
                 distance);
-
-            colliderCastMock.Setup(e => e.CastSelf(
-                It.IsAny<Vector3>(),
-                It.IsAny<Quaternion>(),
-                It.IsAny<Vector3>(),
-                It.IsAny<float>(),
-                out raycastHit,
-                It.IsAny<int>(),
-                It.IsAny<QueryTriggerInteraction>()
-            )).Returns(didHit);
+            colliderCastMock.OnCastSelf = (Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            {
+                hit = raycastHit;
+                return didHit;
+            };
 
             return raycastHit;
         }

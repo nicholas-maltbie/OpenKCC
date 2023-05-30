@@ -16,11 +16,10 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
-using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
@@ -34,17 +33,19 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Config
     public class KCCGroundedStateTests : TestBase
     {
         private KCCMovementEngine movementEngine;
-        private Mock<IColliderCast> colliderCastMock;
+        private MockColliderCast colliderCastMock;
         private KCCGroundedState kccGroundedState;
 
         [SetUp]
         public void SetUp()
         {
-            colliderCastMock = new Mock<IColliderCast>();
             kccGroundedState = new KCCGroundedState();
 
-            movementEngine = base.CreateGameObject().AddComponent<KCCMovementEngine>();
-            movementEngine._colliderCast = colliderCastMock.Object;
+            GameObject go = base.CreateGameObject();
+
+            colliderCastMock = go.AddComponent<MockColliderCast>();
+            movementEngine = go.AddComponent<KCCMovementEngine>();
+            movementEngine._colliderCast = colliderCastMock;
         }
 
         [Test]

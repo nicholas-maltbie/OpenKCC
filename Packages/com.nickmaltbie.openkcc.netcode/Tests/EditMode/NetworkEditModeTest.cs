@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.netcode.Character;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
@@ -33,6 +34,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime
         public void EmptyTest()
         {
             GameObject go = CreateGameObject();
+            go.AddComponent<MockColliderCast>();
             NetworkKCC networkKcc = go.AddComponent<NetworkKCC>();
             networkKcc.Start();
         }

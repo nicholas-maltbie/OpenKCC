@@ -22,6 +22,7 @@ using Moq;
 using nickmaltbie.OpenKCC.Animation;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
@@ -177,7 +178,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             mockHit.Setup(e => e.collider).Returns(box);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+                .Callback(new MockColliderCast.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     mockHit.Setup(e => e.point).Returns(pos);
                     hit = mockHit.Object;
@@ -248,7 +249,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+                .Callback(new MockColliderCast.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     hit = mockHit.Object;
                 }))
@@ -310,7 +311,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+                .Callback(new MockColliderCast.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     mockHit.Setup(e => e.point).Returns(pos);
                     hit = mockHit.Object;
@@ -364,7 +365,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+                .Callback(new MockColliderCast.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     mockHit.Setup(e => e.point).Returns(pos);
                     hit = mockHit.Object;
@@ -417,7 +418,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+                .Callback(new MockColliderCast.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     mockHit.Setup(e => e.point).Returns(pos + Vector3.forward * 0.01f);
                     hit = mockHit.Object;
@@ -461,7 +462,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             var mockHit = new Mock<IRaycastHit>();
             mockHit.Setup(e => e.normal).Returns(Vector3.up);
             raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+                .Callback(new MockColliderCast.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
                     hit = mockHit.Object;
                 }))

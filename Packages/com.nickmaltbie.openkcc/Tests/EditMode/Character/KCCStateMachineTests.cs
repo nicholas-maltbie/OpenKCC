@@ -23,7 +23,7 @@ using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Character.Events;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
-using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
@@ -38,7 +38,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
     public class KCCStateMachineTests : KCCStateMachineTestBase
     {
         private Mock<IUnityService> unityServiceMock;
-        private Mock<IColliderCast> colliderCastMock;
+        private MockColliderCast colliderCastMock;
         private Mock<ICameraControls> cameraControlsMock;
 
         [SetUp]
@@ -47,7 +47,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             base.Setup();
 
             unityServiceMock = new Mock<IUnityService>();
-            colliderCastMock = new Mock<IColliderCast>();
+            colliderCastMock = new MockColliderCast();
             cameraControlsMock = new Mock<ICameraControls>();
 
             unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
@@ -56,7 +56,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kccStateMachine.Awake();
             kccStateMachine.CameraControls = cameraControlsMock.Object;
 
-            moveEngine._colliderCast = colliderCastMock.Object;
+            moveEngine._colliderCast = colliderCastMock;
         }
 
         [TearDown]
