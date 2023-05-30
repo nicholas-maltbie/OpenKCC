@@ -17,22 +17,21 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Utils;
-using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Tests.TestCommon
 {
     public class MockRaycastHit : IRaycastHit
     {
-        public Collider collider {get; set; }
-        public Vector3 point {get; set; }
-        public Vector3 normal {get; set; }
-        public Vector3 barycentricCoordinate {get; set; }
-        public float distance {get; set; }
-        public int triangleIndex {get; set; }
-        public Vector2 textureCoord {get; set; }
-        public Vector2 textureCoord2 {get; set; }
-        public Transform transform {get; set; }
-        public Rigidbody rigidbody {get; set; }
+        public Collider collider { get; set; }
+        public Vector3 point { get; set; }
+        public Vector3 normal { get; set; }
+        public Vector3 barycentricCoordinate { get; set; }
+        public float distance { get; set; }
+        public int triangleIndex { get; set; }
+        public Vector2 textureCoord { get; set; }
+        public Vector2 textureCoord2 { get; set; }
+        public Transform transform { get; set; }
+        public Rigidbody rigidbody { get; set; }
     }
 }

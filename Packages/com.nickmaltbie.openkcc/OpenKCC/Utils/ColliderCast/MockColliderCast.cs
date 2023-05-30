@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nicholas Maltbie
+﻿// Copyright (C) 2023 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using nickmaltbie.OpenKCC.Utils;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils.ColliderCast

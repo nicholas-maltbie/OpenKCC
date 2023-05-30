@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Character.Action;
-using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
