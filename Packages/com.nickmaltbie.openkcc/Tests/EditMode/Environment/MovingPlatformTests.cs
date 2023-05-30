@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using Moq;
 using nickmaltbie.OpenKCC.Environment;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
@@ -32,7 +31,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
     [TestFixture]
     public class MovingPlatformTests : TestBase
     {
-        private Mock<IUnityService> mockUnityService;
+        private MockUnityService mockUnityService;
         private MovingPlatform platform;
         private Rigidbody rb;
 
@@ -42,10 +41,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
             GameObject go = CreateGameObject();
             rb = go.AddComponent<Rigidbody>();
             platform = go.AddComponent<MovingPlatform>();
-            platform.untiyService = (mockUnityService = new Mock<IUnityService>()).Object;
+            mockUnityService = new MockUnityService();
+            platform.untiyService = mockUnityService;
 
-            mockUnityService.Setup(e => e.fixedDeltaTime).Returns(1.0f);
-            mockUnityService.Setup(e => e.deltaTime).Returns(1.0f);
+            mockUnityService.fixedDeltaTime = 1.0f;
+            mockUnityService.deltaTime = 1.0f;
         }
 
         [Test]

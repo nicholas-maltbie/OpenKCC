@@ -16,10 +16,10 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Config;
 using nickmaltbie.OpenKCC.Input;
+using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
@@ -35,10 +35,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
     [TestFixture]
     public class JumpActionTests : TestBase
     {
-        private Mock<IUnityService> unityServiceMock;
-        private Mock<IKCCConfig> kccConfigMock;
-        private Mock<IKCCGrounded> kccGroundedMock;
-        private Mock<IJumping> jumpingMock;
+        private MockUnityService unityServiceMock;
+        private KCCConfig kccConfigMock;
+        private MockKCCGrounded kccGroundedMock;
+        private MockJumping jumpingMock;
 
         private Gamepad gamepad;
         private InputAction testAction;
@@ -52,11 +52,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         {
             base.Setup();
 
-            unityServiceMock = new Mock<IUnityService>();
-            unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
+            unityServiceMock = new MockUnityService();
+            unityServiceMock.deltaTime = 1.0f;
 
             jumpAction = new JumpAction();
-            jumpAction.unityService = unityServiceMock.Object;
+            jumpAction.unityService = unityServiceMock;
             jumpAction.SetCondition(() => condition);
 
             InputActionMap actionMap;
@@ -64,20 +64,21 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             testAction = actionMap.AddAction("testAction", InputActionType.Button, gamepad.aButton.path, interactions: "press");
 
             var bufferedInput = new BufferedInput();
-            bufferedInput.unityService = unityServiceMock.Object;
+            bufferedInput.unityService = unityServiceMock;
             bufferedInput.inputActionReference = InputActionReference.Create(testAction);
             bufferedInput.cooldown = 1.0f;
             bufferedInput.bufferTime = 3.0f;
 
-            jumpingMock = new Mock<IJumping>();
-            kccConfigMock = new Mock<IKCCConfig>();
-            kccGroundedMock = new Mock<IKCCGrounded>();
+            jumpingMock = new MockJumping();
+            kccConfigMock = new KCCConfig
+            {
+                Up = Vector3.up,
+            };
+            kccGroundedMock = new MockKCCGrounded();
 
-            kccConfigMock.Setup(e => e.Up).Returns(Vector3.up);
-            jumpingMock.Setup(e => e.ApplyJump(It.IsAny<Vector3>()))
-                .Callback((Vector3 jump) => inputJump = jump);
+            jumpingMock.OnJump = (Vector3 jump) => inputJump = jump;
             jumpAction.jumpInput = bufferedInput;
-            jumpAction.Setup(kccGroundedMock.Object, kccConfigMock.Object, jumpingMock.Object);
+            jumpAction.Setup(kccGroundedMock, kccConfigMock, jumpingMock);
 
             testAction.Enable();
         }
@@ -87,8 +88,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         {
             jumpAction.jumpAngleWeightFactor = jumpWeight;
 
-            kccGroundedMock.Setup(e => e.StandingOnGround).Returns(true);
-            kccGroundedMock.Setup(e => e.SurfaceNormal).Returns(Vector3.forward);
+            kccGroundedMock.StandingOnGround = true;
+            kccGroundedMock.SurfaceNormal = Vector3.forward;
             jumpAction.Jump();
 
             Vector3 expected = Vector3.Lerp(Vector3.up, Vector3.forward, jumpWeight).normalized * jumpAction.jumpVelocity;
@@ -99,7 +100,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         [Test]
         public void Verify_JumpAction_JumpedWhileSliding()
         {
-            kccGroundedMock.Setup(e => e.Sliding).Returns(true);
+            kccGroundedMock.Sliding = true;
             Assert.IsFalse(jumpAction.JumpedWhileSliding);
 
             jumpAction.Jump();
@@ -107,8 +108,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             jumpAction.Update();
             Assert.IsTrue(jumpAction.JumpedWhileSliding);
 
-            kccGroundedMock.Setup(e => e.StandingOnGround).Returns(true);
-            kccGroundedMock.Setup(e => e.Sliding).Returns(false);
+            kccGroundedMock.StandingOnGround = true;
+            kccGroundedMock.Sliding = false;
             jumpAction.Update();
             Assert.IsFalse(jumpAction.JumpedWhileSliding);
         }
@@ -117,32 +118,32 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         public void Verify_JumpAction_ApplyJumpIfPossible()
         {
             jumpAction.maxJumpAngle = 60.0f;
-            kccGroundedMock.Setup(e => e.StandingOnGround).Returns(true);
-            kccGroundedMock.Setup(e => e.Angle).Returns(30);
-            kccGroundedMock.Setup(e => e.Sliding).Returns(false);
+            kccGroundedMock.StandingOnGround = true;
+            kccGroundedMock.Angle = 30;
+            kccGroundedMock.Sliding = false;
 
             // Assert that can jump when standing on flat ground.
             Set(gamepad.aButton, 1);
 
             jumpAction.Update();
             Assert.IsTrue(jumpAction.AttemptingJump);
-            Assert.IsTrue(jumpAction.ApplyJumpIfPossible(kccGroundedMock.Object));
-            Assert.IsFalse(jumpAction.ApplyJumpIfPossible(kccGroundedMock.Object));
+            Assert.IsTrue(jumpAction.ApplyJumpIfPossible(kccGroundedMock));
+            Assert.IsFalse(jumpAction.ApplyJumpIfPossible(kccGroundedMock));
         }
 
         [Test]
         public void Verify_JumpAction_CanJump_Sliding()
         {
             jumpAction.maxJumpAngle = 60.0f;
-            kccGroundedMock.Setup(e => e.StandingOnGround).Returns(true);
-            kccGroundedMock.Setup(e => e.Angle).Returns(30);
-            kccGroundedMock.Setup(e => e.Sliding).Returns(false);
+            kccGroundedMock.StandingOnGround = true;
+            kccGroundedMock.Angle = 30;
+            kccGroundedMock.Sliding = false;
 
             // Assert that can jump when standing on flat ground.
             Assert.IsTrue(jumpAction.CanJump());
 
             // Assert that can jump while sliding.
-            kccGroundedMock.Setup(e => e.Sliding).Returns(true);
+            kccGroundedMock.Sliding = true;
             Assert.IsTrue(jumpAction.CanJump());
 
             // Assert that cannot jump two times while sliding.
@@ -154,15 +155,15 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         public void Verify_JumpAction_CanJump_SteepSlope()
         {
             jumpAction.maxJumpAngle = 60.0f;
-            kccGroundedMock.Setup(e => e.StandingOnGround).Returns(true);
-            kccGroundedMock.Setup(e => e.Angle).Returns(30);
-            kccGroundedMock.Setup(e => e.Sliding).Returns(false);
+            kccGroundedMock.StandingOnGround = true;
+            kccGroundedMock.Angle = 30;
+            kccGroundedMock.Sliding = false;
 
             // Assert that can jump when standing on flat ground.
             Assert.IsTrue(jumpAction.CanJump());
 
             // Assert that can jump while sliding.
-            kccGroundedMock.Setup(e => e.Sliding).Returns(true);
+            kccGroundedMock.Sliding = true;
             Assert.IsTrue(jumpAction.CanJump());
 
             jumpAction.maxJumpAngle = 20.0f;
@@ -182,7 +183,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
             jumpAction.Update();
             Assert.IsTrue(jumpAction.AttemptingJump);
 
-            unityServiceMock.Setup(e => e.deltaTime).Returns(100);
+            unityServiceMock.deltaTime = 100;
             jumpAction.Update();
             Assert.IsFalse(jumpAction.CanJump());
         }
@@ -191,9 +192,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
         public void Verify_JumpAction_CanJump_NotGrounded()
         {
             jumpAction.maxJumpAngle = 60.0f;
-            kccGroundedMock.Setup(e => e.StandingOnGround).Returns(false);
-            kccGroundedMock.Setup(e => e.Angle).Returns(30);
-            kccGroundedMock.Setup(e => e.Sliding).Returns(false);
+            kccGroundedMock.StandingOnGround = false;
+            kccGroundedMock.Angle = 30;
+            kccGroundedMock.Sliding = false;
 
             // Assert that can jump when standing on flat ground.
             Assert.IsFalse(jumpAction.CanJump());

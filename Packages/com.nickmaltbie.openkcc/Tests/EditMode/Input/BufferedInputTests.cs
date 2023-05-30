@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
@@ -35,7 +34,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
         private InputActionMap actionMap;
         private InputAction testAction;
         private BufferedInput bufferedInput;
-        private Mock<IUnityService> mockUnityService;
+        private MockUnityService mockUnityService;
 
         [SetUp]
         public void SetUp()
@@ -44,9 +43,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
             testAction = actionMap.AddAction("testAction", InputActionType.Button, gamepad.aButton.path);
 
             bufferedInput = new BufferedInput();
-            mockUnityService = new Mock<IUnityService>();
-            mockUnityService.Setup(e => e.deltaTime).Returns(1.0f);
-            bufferedInput.unityService = mockUnityService.Object;
+            mockUnityService = new MockUnityService();
+            mockUnityService.deltaTime = 1.0f;
+            bufferedInput.unityService = mockUnityService;
             bufferedInput.inputActionReference = InputActionReference.Create(testAction);
 
             bufferedInput.cooldown = 1.0f;
@@ -96,7 +95,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
             bufferedInput.Update();
             Assert.IsTrue(bufferedInput.Pressed);
 
-            mockUnityService.Setup(e => e.deltaTime).Returns(1000);
+            mockUnityService.deltaTime = 1000;
             bufferedInput.Update();
             Assert.IsFalse(bufferedInput.Pressed);
         }
@@ -116,11 +115,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Input
             bufferedInput.Update();
             Assert.IsFalse(bufferedInput.Pressed);
 
-            mockUnityService.Setup(e => e.deltaTime).Returns(1000);
+            mockUnityService.deltaTime = 1000;
             bufferedInput.Update();
             Assert.IsTrue(bufferedInput.Pressed);
 
-            mockUnityService.Setup(e => e.deltaTime).Returns(1000);
+            mockUnityService.deltaTime = 1000;
             bufferedInput.Update();
             bufferedInput.ResetCooldown();
             Assert.IsFalse(bufferedInput.Pressed);

@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using Moq;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
@@ -36,7 +35,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
         /// <summary>
         /// Mock untiy service for managing unity inputs.
         /// </summary>
-        private Mock<IUnityService> mockUnityService;
+        private MockUnityService mockUnityService;
 
         /// <summary>
         /// Enumerate list of supported moving ground types for testing.
@@ -208,11 +207,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
             var movementTracking = movingGround as MovementTracking;
             if (movementTracking != null)
             {
-                mockUnityService = new Mock<IUnityService>();
-                movementTracking.unityService = mockUnityService.Object;
+                mockUnityService = new MockUnityService();
+                movementTracking.unityService = mockUnityService;
 
-                mockUnityService.Setup(e => e.deltaTime).Returns(1);
-                mockUnityService.Setup(e => e.fixedDeltaTime).Returns(1);
+                mockUnityService.deltaTime = 1;
+                mockUnityService.fixedDeltaTime = 1;
             }
 
             return movingGround;
@@ -239,8 +238,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
 
             float deltaTime = 1.0f;
 
-            mockUnityService.Setup(e => e.deltaTime).Returns(deltaTime);
-            mockUnityService.Setup(e => e.fixedDeltaTime).Returns(deltaTime);
+            mockUnityService.deltaTime = deltaTime;
+            mockUnityService.fixedDeltaTime = deltaTime;
 
             MoveGround(behaviour, move, rotation, deltaTime: deltaTime);
             var changeAttitude = Quaternion.Euler(rotation);

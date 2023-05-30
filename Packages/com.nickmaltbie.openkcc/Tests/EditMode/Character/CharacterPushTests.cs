@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Environment.Pushable;
 using nickmaltbie.OpenKCC.Utils;
@@ -72,26 +71,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             kinematic.AddComponent<Rigidbody>().isKinematic = true;
             noPushable.AddComponent<Rigidbody>();
 
-            var hit = new Mock<IControllerColliderHit>();
-            hit.Setup(e => e.gameObject).Returns(noRigidbody);
-            character.PushObject(hit.Object);
-
-            hit.Setup(e => e.gameObject).Returns(kinematic);
-            hit.Setup(e => e.rigidbody).Returns(kinematic.GetComponent<Rigidbody>());
-            character.PushObject(hit.Object);
-
-            hit.Setup(e => e.gameObject).Returns(noPushable);
-            hit.Setup(e => e.rigidbody).Returns(noPushable.GetComponent<Rigidbody>());
-            character.PushObject(hit.Object);
+            character.PushObject(new KinematicCharacterControllerHit(default, default, noRigidbody, default, default, default, default, default));
+            character.PushObject(new KinematicCharacterControllerHit(default, kinematic.GetComponent<Rigidbody>(), kinematic, default, default, default, default, default));
+            character.PushObject(new KinematicCharacterControllerHit(default, noPushable.GetComponent<Rigidbody>(), noPushable, default, default, default, default, default));
         }
 
         [Test]
         public void Verify_CharacterPush_PushObject()
         {
-            var hit = new Mock<IControllerColliderHit>();
-            hit.Setup(e => e.gameObject).Returns(pushable);
-            hit.Setup(e => e.rigidbody).Returns(pushable.GetComponent<Rigidbody>());
-            character.PushObject(hit.Object);
+            var hit = new KinematicCharacterControllerHit(default, pushable.GetComponent<Rigidbody>(), pushable, default, default, default, default, default);
+            character.PushObject(hit);
         }
     }
 }

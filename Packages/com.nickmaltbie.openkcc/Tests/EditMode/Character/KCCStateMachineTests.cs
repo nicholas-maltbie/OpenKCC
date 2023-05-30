@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Config;
@@ -31,30 +30,31 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
+
     /// <summary>
     /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.KCCStateMachine"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class KCCStateMachineTests : KCCStateMachineTestBase
     {
-        private Mock<IUnityService> unityServiceMock;
+        private MockUnityService unityServiceMock;
         private MockColliderCast colliderCastMock;
-        private Mock<ICameraControls> cameraControlsMock;
+        private MockCameraControls cameraControlsMock;
 
         [SetUp]
         public void SetUp()
         {
             base.Setup();
 
-            unityServiceMock = new Mock<IUnityService>();
+            unityServiceMock = new MockUnityService();
             colliderCastMock = new MockColliderCast();
-            cameraControlsMock = new Mock<ICameraControls>();
+            cameraControlsMock = new MockCameraControls();
 
-            unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
-            unityServiceMock.Setup(e => e.fixedDeltaTime).Returns(1.0f);
+            unityServiceMock.deltaTime = 1.0f;
+            unityServiceMock.fixedDeltaTime = 1.0f;
 
             kccStateMachine.Awake();
-            kccStateMachine.CameraControls = cameraControlsMock.Object;
+            kccStateMachine.CameraControls = cameraControlsMock;
 
             moveEngine._colliderCast = colliderCastMock;
         }
@@ -73,7 +73,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             KCCTestUtils.SetupCastSelf(colliderCastMock, didHit: false);
 
             Assert.AreEqual(typeof(KCCStateMachine.IdleState), kccStateMachine.CurrentState);
-            unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
+            unityServiceMock.deltaTime = 1.0f;
 
             kccStateMachine.Update();
             kccStateMachine.FixedUpdate();
@@ -145,11 +145,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             BoxCollider collider = movingGround.AddComponent<BoxCollider>();
             KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true, collider: collider);
 
-            var unityServiceMock = new Mock<IUnityService>();
+            var unityServiceMock = new MockUnityService();
             tracking.shouldAttach = shouldAttach;
-            tracking.unityService = unityServiceMock.Object;
-            unityServiceMock.Setup(e => e.fixedDeltaTime).Returns(1.0f);
-            unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
+            tracking.unityService = unityServiceMock;
+            unityServiceMock.fixedDeltaTime = 1.0f;
+            unityServiceMock.deltaTime = 1.0f;
 
             tracking.FixedUpdate();
             tracking.transform.position += direction;
