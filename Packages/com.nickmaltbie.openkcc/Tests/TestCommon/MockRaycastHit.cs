@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nicholas Maltbie
+﻿// Copyright (C) 2023 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -34,6 +34,5 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         public Vector2 textureCoord2 {get; set; }
         public Transform transform {get; set; }
         public Rigidbody rigidbody {get; set; }
-        public ArticulationBody articulationBody {get; set; }
     }
 }

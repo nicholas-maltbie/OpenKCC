@@ -20,14 +20,17 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils
 {
+    public static class RaycastHelperConstants
+    {
+        public const int DefaultLayerMask = ~0;
+        public const QueryTriggerInteraction DefaultQueryTriggerInteraction = QueryTriggerInteraction.Ignore;
+    }
+
     /// <summary>
     /// Abstraction to check for raycast commands.
     /// </summary>
     public interface IRaycastHelper
     {
-        public const int DefaultLayerMask = ~0;
-        public const QueryTriggerInteraction DefaultQueryTriggerInteraction = QueryTriggerInteraction.Ignore;
-
         /// <summary>
         /// Do a raycast in a given direction ignoring this object.
         /// </summary>
@@ -38,6 +41,6 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
         /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
         /// <returns>Is something ahead hit.</returns>
-        bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit, int layerMask = DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = DefaultQueryTriggerInteraction);
+        bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction);
     }
 }

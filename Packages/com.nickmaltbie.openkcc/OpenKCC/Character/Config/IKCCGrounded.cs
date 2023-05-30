@@ -29,46 +29,46 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// <summary>
         /// Current distance the player is from the ground.
         /// </summary>
-        public float DistanceToGround { get; }
+        float DistanceToGround { get; }
 
         /// <summary>
         /// Was the player grounded this frame
         /// </summary>
-        public bool OnGround { get; }
+        bool OnGround { get; }
 
         /// <summary>
         /// Angle between the ground and the player.
         /// </summary>
-        public float Angle { get; }
+        float Angle { get; }
 
         /// <summary>
         /// The surface normal vector of the ground the player is standing on.
         /// </summary>
-        public Vector3 SurfaceNormal { get; }
+        Vector3 SurfaceNormal { get; }
 
         /// <summary>
         /// The point in which the player is hitting the ground.
         /// </summary>
-        public Vector3 GroundHitPosition { get; }
+        Vector3 GroundHitPosition { get; }
 
         /// <summary>
         /// What is the player standing on.
         /// </summary>
-        public GameObject Floor { get; }
+        GameObject Floor { get; }
 
         /// <summary>
         /// Is the player currently standing on the ground?
         /// </summary>
-        public bool StandingOnGround { get; }
+        bool StandingOnGround { get; }
 
         /// <summary>
         /// Is the player currently falling?
         /// </summary>
-        public bool Falling { get; }
+        bool Falling { get; }
 
         /// <summary>
         /// Check if a player is sliding for a given max walk angle.
         /// </summary>
-        public bool Sliding { get; }
+        bool Sliding { get; }
     }
 }

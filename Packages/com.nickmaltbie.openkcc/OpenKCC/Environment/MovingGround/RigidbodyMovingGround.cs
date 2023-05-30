@@ -33,7 +33,7 @@ namespace nickmaltbie.OpenKCC.Environment.MovingGround
 
         public void Start()
         {
-            attachedRigidbody ??= GetComponent<Rigidbody>();
+            attachedRigidbody = attachedRigidbody ?? GetComponent<Rigidbody>();
         }
 
         /// <inheritdoc/>

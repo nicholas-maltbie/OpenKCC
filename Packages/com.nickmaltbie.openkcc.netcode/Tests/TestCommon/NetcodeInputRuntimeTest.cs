@@ -182,7 +182,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
         public static Dictionary<(Type, int, int), TestableNetworkBehaviour> Objects = new Dictionary<(Type, int, int), TestableNetworkBehaviour>();
         public static int CurrentlySpawning = 0;
         public static Type CurrentlyTesting = typeof(NetworkBehaviour);
-        private Dictionary<string, InputControl> inputControls = new();
+        private Dictionary<string, InputControl> inputControls = new Dictionary<string, InputControl>();
 
         public override void OnNetworkSpawn()
         {

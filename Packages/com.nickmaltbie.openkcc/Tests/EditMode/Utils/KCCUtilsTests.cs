@@ -173,7 +173,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
             IRaycastHit wallCollision = KCCTestUtils.SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
             colliderCastMock.OnDoRaycastInDirection =
-                (Vector3 _, Vector3 _, float _, out IRaycastHit hit, int _, QueryTriggerInteraction _) =>
+                (Vector3 v1, Vector3 v2, float v3, out IRaycastHit hit, int v4, QueryTriggerInteraction v5) =>
                 {
                     hit = wallCollision;
                     return true;
@@ -210,12 +210,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
             IRaycastHit wallCollision = KCCTestUtils.SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
             colliderCastMock.OnDoRaycastInDirection =
-                (Vector3 _, Vector3 _, float _, out IRaycastHit hit, int _, QueryTriggerInteraction _) =>
+                (Vector3 v1, Vector3 v2, float v3, out IRaycastHit hit, int v4, QueryTriggerInteraction v5) =>
                 {
                     hit = wallCollision;
                     return true;
                 };
-            colliderCastMock.OnGetBottom = (Vector3 _, Quaternion _) => Vector3.zero;
+            colliderCastMock.OnGetBottom = (Vector3 v1, Quaternion v2) => Vector3.zero;
 
             // Simulate bounces
             var bounces = GetBounces(Vector3.zero, Vector3.forward * 10, verticalSnapUp: snapUpDistance).ToList();
@@ -446,9 +446,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             IColliderCast colliderCast = null,
             ICharacterPush push = null)
         {
-            rotation ??= Quaternion.Euler(Vector3.zero);
-            up ??= Vector3.up;
-            colliderCast ??= colliderCastMock;
+            rotation = rotation ?? Quaternion.Euler(Vector3.zero);
+            up = up ?? Vector3.up;
+            colliderCast = colliderCast ?? colliderCastMock;
             _ = push ?? characterPushMock;
 
             return KCCUtils.GetBounces(

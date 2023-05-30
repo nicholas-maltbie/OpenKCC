@@ -26,37 +26,37 @@ namespace nickmaltbie.OpenKCC.Character.Config
     /// a given kinematic character controller.
     /// </summary>
     [Serializable]
-    public readonly struct KCCGroundedState : IKCCGrounded
+    public struct KCCGroundedState : IKCCGrounded
     {
         /// <summary>
         /// Current distance the player is from the ground.
         /// </summary>
-        public readonly float DistanceToGround { get; }
+        public float DistanceToGround { get; }
 
         /// <summary>
         /// Is the player currently standing on the ground.
         /// </summary>
-        public readonly bool OnGround { get; }
+        public bool OnGround { get; }
 
         /// <summary>
         /// Angle between the ground and the player.
         /// </summary>
-        public readonly float Angle { get; }
+        public float Angle { get; }
 
         /// <summary>
         /// The surface normal vector of the ground the player is standing on.
         /// </summary>
-        public readonly Vector3 SurfaceNormal { get; }
+        public Vector3 SurfaceNormal { get; }
 
         /// <summary>
         /// The point in which the player is hitting the ground.
         /// </summary>
-        public readonly Vector3 GroundHitPosition { get; }
+        public Vector3 GroundHitPosition { get; }
 
         /// <summary>
         /// What is the player standing on.
         /// </summary>
-        public readonly GameObject Floor { get; }
+        public GameObject Floor { get; }
 
         /// <summary>
         /// Is the player currently standing on the ground?
@@ -65,25 +65,25 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// ground or another object as it is difficult to tell whether they are stuck in a wall
         /// (and would therefore not be on the ground) versus when they are stuck in the floor.
         /// </summary>
-        public readonly bool StandingOnGround { get; }
+        public bool StandingOnGround { get; }
 
         /// <summary>
         /// Is the player currently standing on or overlapping with the ground.
         /// </summary>
-        public readonly bool StandingOnGroundOrOverlap { get; }
+        public bool StandingOnGroundOrOverlap { get; }
 
         /// <summary>
         /// Is the player currently falling? this is true if they are either not standing on 
         /// the ground or if the angle between them and the ground is grater than the player's
         /// ability to walk.
         /// </summary>
-        public readonly bool Falling { get; }
+        public bool Falling { get; }
 
         /// <summary>
         /// Check if a player is sliding for a given max walk angle.
         /// </summary>
         /// <returns>True if the player is slipping/falling on the slope they are currently standing on.</returns>
-        public readonly bool Sliding { get; }
+        public bool Sliding { get; }
 
         /// <summary>
         /// Setup a structure of the grounded

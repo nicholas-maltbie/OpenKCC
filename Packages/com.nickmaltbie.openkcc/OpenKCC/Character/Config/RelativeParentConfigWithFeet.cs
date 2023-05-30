@@ -37,7 +37,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// <inheritdoc/>
         public override void FollowGround(Transform transform)
         {
-            feet ??= transform.gameObject.GetComponentInChildren<HumanoidFootIK>();
+            feet = feet ?? transform.gameObject.GetComponentInChildren<HumanoidFootIK>();
             Vector3 delta = DeltaPosition(transform.position);
             feet?.UpdateFeetPositions(delta);
             transform.position += delta;

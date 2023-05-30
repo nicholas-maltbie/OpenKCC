@@ -44,7 +44,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             Assert.AreEqual(raycastHitData.textureCoord2, raycastHitWrapper.textureCoord2);
             Assert.AreEqual(raycastHitData.transform, raycastHitWrapper.transform);
             Assert.AreEqual(raycastHitData.rigidbody, raycastHitWrapper.rigidbody);
-            Assert.AreEqual(raycastHitData.articulationBody, raycastHitWrapper.articulationBody);
 
             Vector3 testVector3 = Vector3.forward;
             raycastHitWrapper.point = Vector3.forward;

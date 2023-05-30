@@ -36,7 +36,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Sphere Collider associated with this object.
         /// </summary>
-        internal SphereCollider SphereCollider => _sphereCollider ??= GetComponent<SphereCollider>();
+        internal SphereCollider SphereCollider => _sphereCollider = _sphereCollider ?? GetComponent<SphereCollider>();
 
         /// <inheritdoc/>
         public override Collider Collider => SphereCollider;
@@ -75,8 +75,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public override IEnumerable<Collider> GetOverlapping(
             Vector3 position,
             Quaternion rotation,
-            int layerMask = IColliderCast.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
+            int layerMask = RaycastHelperConstants.DefaultLayerMask,
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, float radius) = GetParams(position, rotation);
             return Physics
@@ -90,8 +90,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             Quaternion rotation,
             Vector3 direction,
             float distance,
-            int layerMask = IColliderCast.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
+            int layerMask = RaycastHelperConstants.DefaultLayerMask,
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, float radius) = GetParams(position, rotation);
             return Physics.SphereCastAll(center, radius, direction, distance, layerMask, queryTriggerInteraction)

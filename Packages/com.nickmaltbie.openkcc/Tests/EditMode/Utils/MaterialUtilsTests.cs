@@ -31,7 +31,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
     public class MaterialUtilsTests : TestBase
     {
         private const string TestValueFloat = "_Glossiness";
-        private const string TestValueColor = "_BaseColor";
+        private const string TestValueColor = "_Color";
 
         private GameObject baseRendererGO;
         private GameObject childRendererGO;
@@ -58,9 +58,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 
             childRendererGO.transform.SetParent(baseRendererGO.transform);
 
-            baseRenderer.sharedMaterials = new[] { baseMat = new Material(Shader.Find("Universal Render Pipeline/Lit")) };
-            childRenderer.sharedMaterials = new[] { childMat = new Material(Shader.Find("Universal Render Pipeline/Lit")) };
-            otherRenderer.sharedMaterials = new[] { otherMat = new Material(Shader.Find("Universal Render Pipeline/Lit")) };
+            baseRenderer.sharedMaterials = new[] { baseMat = new Material(Shader.Find("Standard")) };
+            childRenderer.sharedMaterials = new[] { childMat = new Material(Shader.Find("Standard")) };
+            otherRenderer.sharedMaterials = new[] { otherMat = new Material(Shader.Find("Standard")) };
         }
 
         [Test]

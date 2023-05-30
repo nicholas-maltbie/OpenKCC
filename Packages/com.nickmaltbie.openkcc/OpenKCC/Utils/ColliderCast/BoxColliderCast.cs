@@ -36,7 +36,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Box Collider associated with this object.
         /// </summary>
-        internal BoxCollider BoxCollider => _boxCollider ??= GetComponent<BoxCollider>();
+        internal BoxCollider BoxCollider => _boxCollider = _boxCollider ?? GetComponent<BoxCollider>();
 
         /// <inheritdoc/>
         public override Collider Collider => BoxCollider;
@@ -76,8 +76,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public override IEnumerable<Collider> GetOverlapping(
             Vector3 position,
             Quaternion rotation,
-            int layerMask = IColliderCast.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
+            int layerMask = RaycastHelperConstants.DefaultLayerMask,
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, Vector3 size) = GetParams(position, rotation);
             return Physics
@@ -91,8 +91,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             Quaternion rotation,
             Vector3 direction,
             float distance,
-            int layerMask = IColliderCast.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
+            int layerMask = RaycastHelperConstants.DefaultLayerMask,
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, Vector3 size) = GetParams(position, rotation, -KCCUtils.Epsilon);
             return Physics.BoxCastAll(center, size / 2, direction, rotation, distance, layerMask, queryTriggerInteraction)

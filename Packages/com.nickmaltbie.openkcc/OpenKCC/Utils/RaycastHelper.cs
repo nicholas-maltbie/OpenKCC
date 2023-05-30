@@ -36,7 +36,7 @@ namespace nickmaltbie.OpenKCC.Utils
         private RaycastHelper() { }
 
         /// <inheritdoc/>
-        public bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit, int layerMask = IRaycastHelper.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = IRaycastHelper.DefaultQueryTriggerInteraction)
+        public bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             bool didHit = Physics.Raycast(new Ray(source, direction), out RaycastHit hit, distance, layerMask, queryTriggerInteraction);
             stepHit = new RaycastHitWrapper(hit);

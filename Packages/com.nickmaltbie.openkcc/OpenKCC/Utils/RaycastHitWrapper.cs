@@ -68,8 +68,5 @@ namespace nickmaltbie.OpenKCC.Utils
 
         /// <inheritdoc/>
         public Rigidbody rigidbody => hit.rigidbody;
-
-        /// <inheritdoc/>
-        public ArticulationBody articulationBody => hit.articulationBody;
     }
 }

@@ -105,7 +105,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Collider cast for player movement.
         /// </summary>
-        public virtual IColliderCast ColliderCast => _colliderCast ??= GetComponent<IColliderCast>();
+        public virtual IColliderCast ColliderCast => _colliderCast = _colliderCast ?? GetComponent<IColliderCast>();
 
         /// <summary>
         /// Distance to ground at which player is considered grounded.
@@ -143,7 +143,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Layermask for computing player collisions.
         /// </summary>
-        public LayerMask layerMask = IColliderCast.DefaultLayerMask;
+        public LayerMask layerMask = RaycastHelperConstants.DefaultLayerMask;
 
         /// <inheritdoc/>
         public bool CanSnapUp => GroundedState.OnGround;
@@ -331,12 +331,7 @@ namespace nickmaltbie.OpenKCC.Character
                 QueryTriggerInteraction.Ignore);
 
             // Allow player to move
-            KCCBounce[] bounces = moves.SelectMany(move =>
-            {
-                KCCBounce[] bounces = GetMovement(move).ToArray();
-
-                return bounces;
-            }).ToArray();
+            KCCBounce[] bounces = moves.SelectMany(move => GetMovement(move)).ToArray();
 
             // Compute player relative movement state based on final pos
             bool snappedUp = bounces.Any(bounce => bounce.action == KCCUtils.MovementAction.SnapUp);

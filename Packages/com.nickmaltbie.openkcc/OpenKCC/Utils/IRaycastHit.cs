@@ -85,12 +85,5 @@ namespace nickmaltbie.OpenKCC.Utils
         /// </summary>
         /// <value></value>
         Rigidbody rigidbody { get; }
-
-        /// <summary>
-        /// The ArticulationBody of the collider that was hit. If the collider is not attached
-        /// to an articulation body then it is null.
-        /// </summary>
-        /// <value></value>
-        ArticulationBody articulationBody { get; }
     }
 }

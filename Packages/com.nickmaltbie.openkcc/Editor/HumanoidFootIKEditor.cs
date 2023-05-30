@@ -110,7 +110,10 @@ namespace nickmaltbie.OpenKCC.Editor
         public IEnumerator BakeAnimations(GameObject go, Animator animator, HumanoidFootIK footIK)
         {
             Dictionary<Transform, (Vector3, Quaternion)> pose = GetPoses(animator);
+
+#if UNITY_2020_1_OR_NEWER
             taskId = Progress.Start("FootIKCurves", "Baking Foot IK Curves", Progress.Options.None, -1);
+# endif
 
             AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
             int clipCount = clips.Length;
@@ -120,7 +123,9 @@ namespace nickmaltbie.OpenKCC.Editor
             foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
             {
                 float clipPercent = (float)current / clipCount;
+# if UNITY_2020_1_OR_NEWER
                 Progress.Report(taskId, clipPercent, $"Working on clip:{clip.name}");
+# endif
 
                 string assetPath = AssetDatabase.GetAssetPath(clip);
 
@@ -139,7 +144,9 @@ namespace nickmaltbie.OpenKCC.Editor
                 // So you actually need to cleanup the animations first...
                 // otherwise it will fail to save.
                 yield return null;
+# if UNITY_2020_1_OR_NEWER
                 Progress.Report(taskId, (float)current / clipCount, $"Cleaning up existing curves for:{clip.name}");
+# endif
                 importer.SaveAndReimport();
                 ResetPlayerPose(pose);
                 yield return null;
@@ -158,7 +165,9 @@ namespace nickmaltbie.OpenKCC.Editor
                 leftFootKeys[0] = new Keyframe(time, leftGrounded ? 1.0f : 0.0f);
                 rightFootKeys[0] = new Keyframe(time, rightGrounded ? 1.0f : 0.0f);
                 yield return null;
+# if UNITY_2020_1_OR_NEWER
                 Progress.Report(taskId, (float)current / clipCount, $"Processing frame:0 for clip:{clip.name}.");
+# endif
 
                 for (int i = 1; i < frames - 1; i++)
                 {
@@ -169,7 +178,9 @@ namespace nickmaltbie.OpenKCC.Editor
                     float keyframeTime = (float)i / frames;
                     leftFootKeys[i] = new Keyframe(keyframeTime, leftGrounded ? 1.0f : 0.0f);
                     rightFootKeys[i] = new Keyframe(keyframeTime, rightGrounded ? 1.0f : 0.0f);
+# if UNITY_2020_1_OR_NEWER
                     Progress.Report(taskId, (float)current / clipCount + (float)i / frames * 1 / clipCount, $"Processing frame:{i} for clip:{clip.name}.");
+# endif
                     yield return null;
                 }
 
@@ -178,7 +189,9 @@ namespace nickmaltbie.OpenKCC.Editor
                 leftGrounded = IsFootGrounded(animator, HumanBodyBones.LeftFoot, footIK.footGroundedHeight);
                 rightGrounded = IsFootGrounded(animator, HumanBodyBones.RightFoot, footIK.footGroundedHeight);
                 current++;
+# if UNITY_2020_1_OR_NEWER
                 Progress.Report(taskId, (float)current / clipCount, $"Processing frame:end for clip:{clip.name}.");
+# endif
 
                 leftFootKeys[frames - 1] = new Keyframe(1.0f, leftGrounded ? 1.0f : 0.0f);
                 rightFootKeys[frames - 1] = new Keyframe(1.0f, rightGrounded ? 1.0f : 0.0f);
@@ -214,13 +227,17 @@ namespace nickmaltbie.OpenKCC.Editor
                 importer.clipAnimations = anims;
 
                 yield return null;
+# if UNITY_2020_1_OR_NEWER
                 Progress.Report(taskId, (float)current / clipCount, $"Saving results for clip:{clip.name}");
+# endif
                 importer.SaveAndReimport();
                 ResetPlayerPose(pose);
                 yield return null;
             }
 
+#if UNITY_2020_1_OR_NEWER
             Progress.Remove(taskId);
+# endif
         }
     }
 }

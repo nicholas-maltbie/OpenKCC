@@ -270,7 +270,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             movementEngine.OnAfterDeserialize();
 
             Assert.AreEqual(movementEngine.serializationVersion, KCCMovementEngine.CurrentSerializationVersion);
-            Assert.AreEqual(movementEngine.layerMask.value, IColliderCast.DefaultLayerMask);
+            Assert.AreEqual(movementEngine.layerMask.value, RaycastHelperConstants.DefaultLayerMask);
         }
     }
 }
