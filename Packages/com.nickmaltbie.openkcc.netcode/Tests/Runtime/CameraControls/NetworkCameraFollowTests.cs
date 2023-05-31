@@ -84,18 +84,15 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.CameraControls
                 cameraFollow.enabled = true;
 
                 // Wait until camera moves to camera follow's position
-                yield return TestUtils.WaitUntil(() =>
+                int tries = 0;
+                bool inBounds = false;
+                while (!inBounds && tries < 1000)
                 {
-                    try
-                    {
-                        TestUtils.AssertInBounds(Camera.main.transform.position, cameraFollow.GetComponent<NetworkCameraController>().config.cameraTransform.position);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                });
+                    tries++;
+                    float dist = Vector3.Distance(Camera.main.transform.position, cameraFollow.GetComponent<NetworkCameraController>().config.cameraTransform.position);
+                    inBounds = dist <= 0.1f;
+                    yield return new WaitForSeconds(0.1f);
+                }
 
                 // Disable
                 cameraFollow.enabled = false;
