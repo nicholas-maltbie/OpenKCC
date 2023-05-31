@@ -222,13 +222,13 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
                 return true;
             });
 
-            // Wait until players are in sliding satte
+            // Wait until players are in sliding state
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player => typeof(SlidingState) == player.CurrentState));
         }
 
         protected IEnumerator SetupPlayersInIdleState()
         {
-            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up * 0.25f));
+            ForEachOwner((player, i) => player.TeleportPlayer(Vector3.right * i * 2 + Vector3.up));
             SetupInputs();
             yield return TestUtils.WaitUntil(() => ForAllPlayers(player =>
             {
