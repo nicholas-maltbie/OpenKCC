@@ -91,7 +91,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             meshFilter.mesh = capsuleMesh;
 
             MeshRenderer mr = character.AddComponent<MeshRenderer>();
-            mr.material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            mr.material = new Material(Shader.Find("Standard"));
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
         /// <returns>Character bounces for player given current movement.</returns>
         public IEnumerable<KCCBounce> GetBounces(Vector3 movement, IKCCConfig kccConfig = null)
         {
-            kccConfig ??= CreateKCCConfig();
+            kccConfig = kccConfig ?? CreateKCCConfig();
 
             return KCCUtils.GetBounces(
                 playerPosition.position,
@@ -243,8 +243,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             ProBuilderMesh angledWall1 = ShapeGenerator.GenerateCube(PivotLocation.FirstCorner, new Vector3(0.1f, 2, wallLength));
             ProBuilderMesh angledWall2 = ShapeGenerator.GenerateCube(PivotLocation.FirstCorner, new Vector3(0.1f, 2, wallLength));
 
-            angledWall1.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-            angledWall2.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            angledWall1.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Standard"));
+            angledWall2.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Standard"));
 
             angledWall1.gameObject.AddComponent<MeshCollider>();
             angledWall2.gameObject.AddComponent<MeshCollider>();
@@ -362,7 +362,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             // Position stairs 1 units ahead of the player and centered
             var size = new Vector3(width, stepHeight * numSteps, stepDepth * numSteps);
             ProBuilderMesh stairBuilder = ShapeGenerator.GenerateStair(PivotLocation.FirstCorner, size, numSteps, false);
-            stairBuilder.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            stairBuilder.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Standard"));
             stairBuilder.transform.position = Vector3.forward + Vector3.left * width / 2;
             stairBuilder.gameObject.AddComponent<MeshCollider>();
             RegisterGameObject(stairBuilder.gameObject);
@@ -370,7 +370,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             // Put a small platform after the stairs
             ProBuilderMesh platform = ShapeGenerator.GeneratePlane(PivotLocation.FirstCorner, 5, width, 1, 1, Axis.Up);
             platform.transform.position = stairBuilder.transform.position + new Vector3(0, size.y, size.z);
-            platform.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            platform.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Standard"));
             platform.gameObject.AddComponent<MeshCollider>();
             RegisterGameObject(platform.gameObject);
 

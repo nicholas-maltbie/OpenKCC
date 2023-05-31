@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
@@ -31,16 +30,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
     public class ConditionalActionTests : TestBase
     {
         private ConditionalAction action;
-        private Mock<IUnityService> unityServiceMock;
+        private MockUnityService unityServiceMock;
         private bool condition = true;
 
         [SetUp]
         public void SetUp()
         {
-            unityServiceMock = new Mock<IUnityService>();
+            unityServiceMock = new MockUnityService();
             action = new ConditionalAction();
-            action.unityService = unityServiceMock.Object;
-            unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
+            action.unityService = unityServiceMock;
+            unityServiceMock.deltaTime = 1.0f;
             action.SetCondition(() => condition);
         }
 
@@ -62,7 +61,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Action
 
             action.Update();
             Assert.IsTrue(action.CanPerform);
-            unityServiceMock.Setup(e => e.deltaTime).Returns(1000);
+            unityServiceMock.deltaTime = 1000;
 
             action.Update();
             Assert.IsFalse(action.CanPerform);

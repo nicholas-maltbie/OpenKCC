@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.cinemachine.CameraControls;
 using nickmaltbie.TestUtilsUnity;
@@ -31,7 +30,7 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.CameraControls
     [TestFixture]
     public class CameraRotaterTests : TestBase
     {
-        private Mock<IUnityService> unityServiceMock;
+        private MockUnityService unityServiceMock;
         private CameraRotater cameraController;
         private Gamepad gamepad;
         private StickControl lookAction;
@@ -42,10 +41,10 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.CameraControls
             base.Setup();
             GameObject go = CreateGameObject();
             cameraController = go.AddComponent<CameraRotater>();
-            unityServiceMock = new Mock<IUnityService>();
+            unityServiceMock = new MockUnityService();
             cameraController.followTarget = go;
-            cameraController.unityService = unityServiceMock.Object;
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.1f);
+            cameraController.unityService = unityServiceMock;
+            unityServiceMock.deltaTime = 0.1f;
 
             gamepad = InputSystem.AddDevice<Gamepad>();
             lookAction = gamepad.leftStick;

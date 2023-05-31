@@ -74,3 +74,6 @@ jobs:
 
       - name: Build Website
         run: .\Documentation\build-validation.cmd
+
+      - name: Build full Website
+        run: .\Documentation\build.ps1

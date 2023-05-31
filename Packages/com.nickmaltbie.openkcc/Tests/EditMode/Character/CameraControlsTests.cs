@@ -17,10 +17,8 @@
 // SOFTWARE.
 
 using System.Collections;
-using Moq;
 using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.OpenKCC.Input;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
@@ -37,7 +35,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
     [TestFixture]
     public class CameraControlsTests : TestBase
     {
-        private Mock<IUnityService> unityServiceMock;
+        private MockUnityService unityServiceMock;
         private CameraController cameraController;
         private Gamepad gamepad;
         private InputAction lookInputAction;
@@ -52,13 +50,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             base.Setup();
             GameObject go = CreateGameObject();
             cameraController = go.AddComponent<CameraController>();
-            unityServiceMock = new Mock<IUnityService>();
+            unityServiceMock = new MockUnityService();
             cameraController.config.cameraTransform = cameraController.transform;
-            cameraController.unityService = unityServiceMock.Object;
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.1f);
+            cameraController.unityService = unityServiceMock;
+            unityServiceMock.deltaTime = 0.1f;
 
             InputActionMap actionMap;
-            var jumpInput = new BufferedInput();
             (gamepad, _, actionMap) = base.SetupInputDevice<Gamepad>();
             zoomAction = gamepad.rightStick;
             lookAction = gamepad.leftStick;

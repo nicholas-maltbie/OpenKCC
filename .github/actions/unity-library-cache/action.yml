@@ -4,15 +4,25 @@ inputs:
   target_platform:
     required: true
     type: string
+  library_directory:
+    required: false
+    type: string
+    default: "./Library"
+  unity_version:
+    required: false
+    type: string
+    default: ""
 runs:
   using: "composite"
   steps:
+    - uses: ./.github/actions/setvars
     - name: Cache Library Folder
       uses: actions/cache@v3
       with:
-        path: Library
-        key: Library-${{ runner.os }}-${{ inputs.target_platform }}-${{ hashFiles('Packages/manifest.json') }}-v1.0.0
+        path: ${{ inputs.library_directory }}
+        key: Library-${{ runner.os }}-${{ inputs.target_platform }}-${{ hashFiles('Packages/manifest.json') }}-${{ inputs.unity_version || env.UNITY_VERSION }}-${{ inputs.library_directory }}-v1.0.0
         restore-keys: |
+          Library-${{ runner.os }}-${{ inputs.target_platform }}-${{ inputs.unity_version || env.UNITY_VERSION }}-${{ inputs.library_directory }}-
+          Library-${{ runner.os }}-${{ inputs.target_platform }}-${{ inputs.unity_version || env.UNITY_VERSION }}-
           Library-${{ runner.os }}-${{ inputs.target_platform }}-
           Library-${{ runner.os }}-
-          Library-

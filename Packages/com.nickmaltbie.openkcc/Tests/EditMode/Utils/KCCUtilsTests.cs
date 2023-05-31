@@ -18,11 +18,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Moq;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Environment.MovingGround;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
@@ -72,12 +72,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         /// <summary>
         /// Collider cast mock used for testing.
         /// </summary>
-        public Mock<IColliderCast> colliderCastMock;
+        public MockColliderCast colliderCastMock;
 
         /// <summary>
         /// Mock for controlling character pushes used for testing.
         /// </summary>
-        public Mock<ICharacterPush> characterPushMock;
+        public MockCharacterPush characterPushMock;
 
         /// <summary>
         /// Setup test with basic collider cast mock.
@@ -85,8 +85,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         [SetUp]
         public void SetUp()
         {
-            colliderCastMock = new Mock<IColliderCast>();
-            characterPushMock = new Mock<ICharacterPush>();
+            GameObject go = CreateGameObject();
+            colliderCastMock = go.AddComponent<MockColliderCast>();
+            characterPushMock = new MockCharacterPush();
         }
 
         /// <summary>
@@ -171,14 +172,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
             IRaycastHit wallCollision = KCCTestUtils.SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
-            colliderCastMock.Setup(mock => mock.DoRaycastInDirection(
-                It.IsAny<Vector3>(),
-                It.IsAny<Vector3>(),
-                It.IsAny<float>(),
-                out wallCollision,
-                It.IsAny<int>(),
-                It.IsAny<QueryTriggerInteraction>())).Returns(true);
-            colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
+            colliderCastMock.OnDoRaycastInDirection =
+                (Vector3 v1, Vector3 v2, float v3, out IRaycastHit hit, int v4, QueryTriggerInteraction v5) =>
+                {
+                    hit = wallCollision;
+                    return true;
+                };
+
+            colliderCastMock.OnGetBottom = (Vector3, Quaternion) => Vector3.zero;
 
             // Simulate bounces
             var bounces = GetBounces(Vector3.zero, Vector3.forward * 5, stepUpDepth: KCCUtils.Epsilon).ToList();
@@ -208,14 +209,13 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
 
             // Have the snap up simulate hitting a step that is slightly above feet and has a normal perpendicular to up
             IRaycastHit wallCollision = KCCTestUtils.SetupRaycastHitMock(normal: Vector3.back, distance: float.Epsilon);
-            colliderCastMock.Setup(mock => mock.DoRaycastInDirection(
-                It.IsAny<Vector3>(),
-                It.IsAny<Vector3>(),
-                It.IsAny<float>(),
-                out wallCollision,
-                It.IsAny<int>(),
-                It.IsAny<QueryTriggerInteraction>())).Returns(true);
-            colliderCastMock.Setup(mock => mock.GetBottom(It.IsAny<Vector3>(), It.IsAny<Quaternion>())).Returns(Vector3.zero);
+            colliderCastMock.OnDoRaycastInDirection =
+                (Vector3 v1, Vector3 v2, float v3, out IRaycastHit hit, int v4, QueryTriggerInteraction v5) =>
+                {
+                    hit = wallCollision;
+                    return true;
+                };
+            colliderCastMock.OnGetBottom = (Vector3 v1, Quaternion v2) => Vector3.zero;
 
             // Simulate bounces
             var bounces = GetBounces(Vector3.zero, Vector3.forward * 10, verticalSnapUp: snapUpDistance).ToList();
@@ -238,7 +238,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             Vector3 expectedFinalPosition = initialPosition + movement;
 
             // Have collider return hitting something... but it shouldn't be called due to no movement
-            SetupColliderCast(false, new Mock<IRaycastHit>().Object);
+            SetupColliderCast(false, new MockRaycastHit());
 
             // Simulate bounces
             var bounces = GetBounces(initialPosition, movement).ToList();
@@ -266,7 +266,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         {
             SetupColliderCast(true, KCCTestUtils.SetupRaycastHitMock(null, Vector3.zero, Vector3.up, 0.01f));
 
-            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, colliderCastMock.Object);
+            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, colliderCastMock);
 
             Assert.IsTrue(displacement.magnitude > 0.0f, $"Expected displacement to have a magnitude grater than zero but instead found {displacement.ToString("F3")}");
         }
@@ -340,8 +340,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
                 // Next hit should not collide with anything as we are above the step
                 (false, KCCTestUtils.SetupRaycastHitMock()),
             });
-            characterPushMock.Setup(mock => mock.CanPushObject(It.IsAny<Collider>())).Returns(true);
-            characterPushMock.Setup(mock => mock.PushObject(It.IsAny<IControllerColliderHit>())).Callback(() => { });
+            characterPushMock.OnCanPushObject = _ => true;
+            characterPushMock.OnPushObject = _ => { };
 
             // Simulate bounces
             var bounces = GetBounces(Vector3.zero, Vector3.forward).ToList();
@@ -391,25 +391,17 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         {
             IEnumerator<(bool, IRaycastHit)> hitEnumerator = hitData.GetEnumerator();
             (bool, IRaycastHit) nextHit = (false, null);
-            colliderCastMock.Setup(
-                mock => mock.CastSelf(
-                    It.IsAny<Vector3>(),
-                    It.IsAny<Quaternion>(),
-                    It.IsAny<Vector3>(),
-                    It.IsAny<float>(),
-                    out It.Ref<IRaycastHit>.IsAny,
-                    It.IsAny<int>(),
-                    It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new RaycastHitCallback((Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layetMask, QueryTriggerInteraction query) =>
+            colliderCastMock.OnCastSelf = (Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layetMask, QueryTriggerInteraction query) =>
+            {
+                hit = nextHit.Item2;
+                if (hitEnumerator.MoveNext())
                 {
+                    nextHit = hitEnumerator.Current;
                     hit = nextHit.Item2;
-                    if (hitEnumerator.MoveNext())
-                    {
-                        nextHit = hitEnumerator.Current;
-                        hit = nextHit.Item2;
-                    }
-                }))
-                .Returns(() => nextHit.Item1);
+                }
+
+                return nextHit.Item1;
+            };
         }
 
         /// <summary>
@@ -419,14 +411,11 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         /// <param name="raycastHit">Raycast hit object to return.</param>
         public void SetupColliderCast(bool didHit, IRaycastHit raycastHit)
         {
-            colliderCastMock.Setup(mock => mock.CastSelf(
-                It.IsAny<Vector3>(),
-                It.IsAny<Quaternion>(),
-                It.IsAny<Vector3>(),
-                It.IsAny<float>(),
-                out raycastHit,
-                It.IsAny<int>(),
-                It.IsAny<QueryTriggerInteraction>())).Returns(didHit);
+            colliderCastMock.OnCastSelf = (Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layetMask, QueryTriggerInteraction query) =>
+            {
+                hit = raycastHit;
+                return didHit;
+            };
         }
 
         /// <summary>
@@ -457,10 +446,10 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             IColliderCast colliderCast = null,
             ICharacterPush push = null)
         {
-            rotation ??= Quaternion.Euler(Vector3.zero);
-            up ??= Vector3.up;
-            colliderCast ??= colliderCastMock.Object;
-            _ = push ?? characterPushMock.Object;
+            rotation = rotation ?? Quaternion.Euler(Vector3.zero);
+            up = up ?? Vector3.up;
+            colliderCast = colliderCast ?? colliderCastMock;
+            _ = push ?? characterPushMock;
 
             return KCCUtils.GetBounces(
                 position,

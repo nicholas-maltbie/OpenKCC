@@ -1,0 +1,33 @@
+{
+  "scopedRegistries": [
+    {
+      "name": "nickmaltbie",
+      "url": "https://registry.npmjs.org",
+      "scopes": [
+        "com.nickmaltbie"
+      ]
+    }
+  ],
+  "dependencies": {
+    "com.nickmaltbie.openkcc": "file:../../../Packages/com.nickmaltbie.openkcc",
+    "com.nickmaltbie.openkcc.cinemachine": "file:../../../Packages/com.nickmaltbie.openkcc.cinemachine",
+    "com.nickmaltbie.openkcc.netcode": "file:../../../Packages/com.nickmaltbie.openkcc.netcode",
+    "com.unity.probuilder": "5.0.7",
+    "com.unity.test-framework": "1.1.33",
+    "com.unity.testtools.codecoverage": "1.2.3",
+    "com.unity.toolchain.win-x86_64-linux-x86_64": "2.0.5",
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.director": "1.0.0",
+    "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.physics2d": "1.0.0",
+    "com.unity.modules.uielements": "1.0.0"
+  },
+  "testables": [
+    "com.nickmaltbie.openkcc",
+    "com.nickmaltbie.openkcc.cinemachine",
+    "com.nickmaltbie.openkcc.netcode",
+    "com.nickmaltbie.testutilsunity",
+    "com.unity.inputsystem",
+    "com.unity.netcode.gameobjects"
+  ]
+}

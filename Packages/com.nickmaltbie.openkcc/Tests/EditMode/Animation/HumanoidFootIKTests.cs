@@ -18,7 +18,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Moq;
 using nickmaltbie.OpenKCC.Animation;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
@@ -71,8 +70,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         };
 
         private Dictionary<HumanBodyBones, Transform> avatarBones;
-        private Mock<IUnityService> unityServiceMock;
-        private Mock<IRaycastHelper> raycastHelperMock;
+        private MockUnityService unityServiceMock;
+        private MockRaycastHelper raycastHelperMock;
         private HumanoidFootIK footIK;
         private Animator animator;
 
@@ -95,12 +94,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             animator.runtimeAnimatorController = controller;
 
             // Attach mocks to the object.
-            unityServiceMock = new Mock<IUnityService>();
-            raycastHelperMock = new Mock<IRaycastHelper>();
-            footIK.unityService = unityServiceMock.Object;
-            footIK.raycastHelper = raycastHelperMock.Object;
-            footIK.LeftFootTarget.unityService = unityServiceMock.Object;
-            footIK.RightFootTarget.unityService = unityServiceMock.Object;
+            unityServiceMock = new MockUnityService();
+            raycastHelperMock = new MockRaycastHelper();
+            footIK.unityService = unityServiceMock;
+            footIK.raycastHelper = raycastHelperMock;
+            footIK.LeftFootTarget.unityService = unityServiceMock;
+            footIK.RightFootTarget.unityService = unityServiceMock;
 
             // setup the avatar for the player
             avatarBones = RequiredBones.Select(set => set.Item1).ToDictionary<HumanBodyBones, HumanBodyBones, Transform>(
@@ -173,24 +172,22 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             Assert.AreEqual(Vector3.forward, footIK.RightFootTarget.TargetFootPosition);
 
             // Set the player as standing on something
-            var mockHit = new Mock<IRaycastHit>();
-            mockHit.Setup(e => e.normal).Returns(Vector3.up);
-            mockHit.Setup(e => e.collider).Returns(box);
-            raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            var mockHit = new MockRaycastHit() { normal = Vector3.up, collider = box, };
+            int calls = 0;
+            raycastHelperMock.OnDoRaycastInDirection =
+                (Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
-                    mockHit.Setup(e => e.point).Returns(pos);
-                    hit = mockHit.Object;
-                }))
-                .Returns(true);
+                    calls++;
+                    mockHit.point = pos;
+                    hit = mockHit;
+                    return true;
+                };
 
             // Move player feet one unit to the right
             footIK.UpdateFeetPositions(Vector3.right);
 
             // Verify that a check for the right foot was performed
-            raycastHelperMock.Verify(
-                e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()),
-                Times.AtLeastOnce);
+            Assert.IsTrue(calls >= 1);
 
             // After grounding the foot, trigger the update foot placement
             // This update foot placement should only be applied to the grounded foot (right foot)
@@ -200,7 +197,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             Assert.AreEqual(FootState.Grounded, footIK.RightFootTarget.State);
 
             // Trigger another update, but have the player's moved foot be on a new ground
-            mockHit.Setup(e => e.collider).Returns(box2);
+            mockHit.collider = box2;
             footIK.UpdateFeetPositions(Vector3.right);
             Assert.AreEqual(Vector3.zero, footIK.LeftFootTarget.TargetFootPosition);
             Assert.AreEqual(Vector3.forward + Vector3.right + Vector3.right, footIK.RightFootTarget.TargetFootPosition);
@@ -208,7 +205,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             Assert.AreEqual(FootState.Grounded, footIK.RightFootTarget.State);
 
             // Trigger another update, but have the player's moved foot be no longer supported
-            raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>())).Returns(false);
+            raycastHelperMock.OnDoRaycastInDirection =
+                (Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+                {
+                    hit = default;
+                    return false;
+                };
             footIK.UpdateFeetPositions(Vector3.forward);
             Assert.AreEqual(FootState.Released, footIK.LeftFootTarget.State);
             Assert.AreEqual(FootState.Released, footIK.RightFootTarget.State);
@@ -228,7 +230,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             footIK.RightFootTarget.StartStride(Vector3.forward, Quaternion.identity, CreateGameObject(), Vector3.forward, Vector3.up, false);
             Assert.AreEqual(FootState.Released, footIK.LeftFootTarget.State);
             Assert.AreEqual(FootState.Grounded, footIK.RightFootTarget.State);
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.1f);
+            unityServiceMock.deltaTime = 0.1f;
 
             // Lerp the weights until they are within expected values
             for (int i = 0; i < 100 && footIK.RightFootTarget.FootIKWeight <= 0.95f; i++)
@@ -245,22 +247,21 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             animator.SetFloat(FootTarget.RightFootIKWeight, 0.0f);
 
             // Set the player as standing on something
-            var mockHit = new Mock<IRaycastHit>();
-            mockHit.Setup(e => e.normal).Returns(Vector3.up);
-            raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            var mockHit = new MockRaycastHit() { normal = Vector3.up };
+            int calls = 0;
+            raycastHelperMock.OnDoRaycastInDirection =
+                (Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
-                    hit = mockHit.Object;
-                }))
-                .Returns(true);
+                    hit = mockHit;
+                    calls++;
+                    return true;
+                };
 
             // Trigger the update feet method
             footIK.OnAnimatorIK(0);
 
             // Verify that a check for the feet were performed
-            raycastHelperMock.Verify(
-                e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()),
-                Times.AtLeastOnce);
+            Assert.IsTrue(calls >= 1);
 
             // Feet should flip states
             Assert.AreEqual(FootState.Grounded, footIK.LeftFootTarget.State);
@@ -281,7 +282,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             footIK.RightFootTarget.StartStride(Vector3.zero, Quaternion.identity, CreateGameObject(), Vector3.forward, Vector3.up, false);
             Assert.AreEqual(FootState.Grounded, footIK.LeftFootTarget.State);
             Assert.AreEqual(FootState.Grounded, footIK.RightFootTarget.State);
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.1f);
+            unityServiceMock.deltaTime = 0.1f;
 
             // Lerp the weights until they are within expected values
             for (int i = 0; i < 100 && (footIK.RightFootTarget.FootIKWeight <= 0.95f || footIK.LeftFootTarget.FootIKWeight <= 0.95f); i++)
@@ -294,7 +295,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             Assert.IsTrue(footIK.RightFootTarget.FootIKWeight >= 0.95f);
 
             // Set so both feet are no longer mid stride
-            unityServiceMock.Setup(e => e.time).Returns(100.0f);
+            unityServiceMock.time = 100.0f;
             Assert.IsFalse(footIK.RightFootTarget.MidStride);
             Assert.IsFalse(footIK.RightFootTarget.MidStride);
 
@@ -307,15 +308,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // the foot to release
             // move hips forward, like a lot forward
             avatarBones[HumanBodyBones.Hips].transform.position += Vector3.forward * 100;
-            var mockHit = new Mock<IRaycastHit>();
-            mockHit.Setup(e => e.normal).Returns(Vector3.up);
-            raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            var mockHit = new MockRaycastHit { normal = Vector3.up };
+            raycastHelperMock.OnDoRaycastInDirection =
+                (Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
-                    mockHit.Setup(e => e.point).Returns(pos);
-                    hit = mockHit.Object;
-                }))
-                .Returns(true);
+                    mockHit.point = pos;
+                    hit = mockHit;
+                    return true;
+                };
 
             // when manually updating the feet, feet should be released because
             // it's way too far form original position
@@ -337,7 +337,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             footIK.RightFootTarget.StartStride(Vector3.zero, Quaternion.identity, CreateGameObject(), Vector3.forward, Vector3.up, false);
             Assert.AreEqual(FootState.Grounded, footIK.LeftFootTarget.State);
             Assert.AreEqual(FootState.Grounded, footIK.RightFootTarget.State);
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.1f);
+            unityServiceMock.deltaTime = 0.1f;
 
             // Lerp the weights until they are within expected values
             for (int i = 0; i < 100 && (footIK.RightFootTarget.FootIKWeight <= 0.95f || footIK.LeftFootTarget.FootIKWeight <= 0.95f); i++)
@@ -350,7 +350,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             Assert.IsTrue(footIK.LeftFootTarget.FootIKWeight >= 0.95f);
 
             // Set so both feet are no longer mid stride
-            unityServiceMock.Setup(e => e.time).Returns(100.0f);
+            unityServiceMock.time = 100.0f;
             Assert.IsFalse(footIK.RightFootTarget.MidStride);
             Assert.IsFalse(footIK.LeftFootTarget.MidStride);
 
@@ -361,15 +361,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // Set the player as standing on something
             // move hips rotated around completely.
             avatarBones[HumanBodyBones.Hips].transform.rotation *= Quaternion.Euler(0, 180, 0);
-            var mockHit = new Mock<IRaycastHit>();
-            mockHit.Setup(e => e.normal).Returns(Vector3.up);
-            raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            var mockHit = new MockRaycastHit() { normal = Vector3.up };
+            raycastHelperMock.OnDoRaycastInDirection =
+                (Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
-                    mockHit.Setup(e => e.point).Returns(pos);
-                    hit = mockHit.Object;
-                }))
-                .Returns(true);
+                    mockHit.point = pos;
+                    hit = mockHit;
+                    return true;
+                };
 
             // when manually updating the feet, feet should be updated to new position
             // and rotation
@@ -394,7 +393,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             footIK.RightFootTarget.StartStride(Vector3.zero, Quaternion.identity, CreateGameObject(), Vector3.forward, Vector3.up, true);
             Assert.AreEqual(FootState.Released, footIK.LeftFootTarget.State);
             Assert.AreEqual(FootState.Grounded, footIK.RightFootTarget.State);
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.05f);
+            unityServiceMock.deltaTime = 0.05f;
 
             // Lerp the weights until they are within expected values
             for (int i = 0; i < 100 && footIK.RightFootTarget.FootIKWeight <= 0.05f; i++)
@@ -414,15 +413,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // Set the player as standing on something
             // move hips rotated around completely.
             avatarBones[HumanBodyBones.Hips].transform.position = Vector3.forward;
-            var mockHit = new Mock<IRaycastHit>();
-            mockHit.Setup(e => e.normal).Returns(Vector3.up);
-            raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            var mockHit = new MockRaycastHit() { normal = Vector3.up, };
+            raycastHelperMock.OnDoRaycastInDirection =
+                (Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
-                    mockHit.Setup(e => e.point).Returns(pos + Vector3.forward * 0.01f);
-                    hit = mockHit.Object;
-                }))
-                .Returns(true);
+                    mockHit.point = pos + Vector3.forward * 0.01f;
+                    hit = mockHit;
+                    return true;
+                };
 
             // when manually updating the feet, feet should be moved slightly forward
             footIK.OnAnimatorIK(0);
@@ -458,22 +456,21 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             animator.SetFloat(FootTarget.RightFootIKWeight, 1.0f);
 
             // Set the player as standing on something
-            var mockHit = new Mock<IRaycastHit>();
-            mockHit.Setup(e => e.normal).Returns(Vector3.up);
-            raycastHelperMock.Setup(e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()))
-                .Callback(new KCCTestUtils.DoRaycastInDirectionCallback((Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            var mockHit = new MockRaycastHit { normal = Vector3.up, };
+            int calls = 0;
+            raycastHelperMock.OnDoRaycastInDirection =
+                (Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
                 {
-                    hit = mockHit.Object;
-                }))
-                .Returns(true);
+                    hit = mockHit;
+                    calls++;
+                    return true;
+                };
 
             // Trigger the update feet method
             footIK.OnAnimatorIK(0);
 
             // Verify that a check for the right foot was performed
-            raycastHelperMock.Verify(
-                e => e.DoRaycastInDirection(It.IsAny<Vector3>(), It.IsAny<Vector3>(), It.IsAny<float>(), out It.Ref<IRaycastHit>.IsAny, It.IsAny<int>(), It.IsAny<QueryTriggerInteraction>()),
-                Times.AtLeastOnce);
+            Assert.IsTrue(calls >= 1);
 
             // Feet should remain in same state
             Assert.AreEqual(FootState.Released, footIK.LeftFootTarget.State);
@@ -537,7 +534,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         public void Validate_HumanoidFootIK_GetTargetHipOffset([Values] bool leftGrounded, [Values] bool rightGrounded)
         {
             GameObject floor = CreateGameObject();
-            unityServiceMock.Setup(e => e.deltaTime).Returns(1.0f);
+            unityServiceMock.deltaTime = 1.0f;
 
             // Setup each foot in expected grounded state.
             if (leftGrounded)
@@ -566,7 +563,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 footIK.RightFootTarget.ReleaseFoot();
             }
 
-            unityServiceMock.Setup(e => e.time).Returns(100.0f);
+            unityServiceMock.time = 100.0f;
             avatarBones[HumanBodyBones.RightFoot].transform.position = Vector3.zero;
             avatarBones[HumanBodyBones.LeftFoot].transform.position = Vector3.zero;
 
@@ -600,7 +597,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         [Test]
         public void Validate_HumanoidFootIK_LerpUpdates()
         {
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.01f);
+            unityServiceMock.deltaTime = 0.01f;
             footIK.OnValidate();
 
             // Ground the left foot

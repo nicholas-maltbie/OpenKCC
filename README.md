@@ -125,11 +125,7 @@ of the project manifest.
 
 Additionally, some of the testing code uses pro builder's api, so make
 sure to import [com.unity.probuilder](https://docs.unity3d.com/Packages/com.unity.probuilder@5.0/manual/index.html)
-version 5.0 or newer as well.
-
-In order to run the tests, you will need to import the [Moq](https://github.com/moq/moq)
-library. My favorite way to import the `Moq.dll` in Unity is by using
-[NuGet for Unity](https://github.com/GlitchEnzo/NuGetForUnity).
+version 5.0 or newer as well..
 
 ## Samples
 
@@ -245,9 +241,9 @@ If you want to help with the project, feel free to make some
 changes and submit a PR to the repo.
 
 This project is developed using Unity Release
-[2021.3.25f1](https://unity3d.com/unity/whats-new/2021.3.25).
+[2022.2.16f1](https://unity3d.com/unity/whats-new/2022.2.16).
 Install this version of Unity from Unity Hub using this link:
-[unityhub://2021.3.25f1/68ef2c4f8861](unityhub://2021.3.25f1/68ef2c4f8861).
+[unityhub://2022.2.16f1/d535843d11e1](unityhub://2022.2.16f1/d535843d11e1).
 
 ### Git LFS Setup
 

@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using System.Collections;
-using Moq;
 using nickmaltbie.OpenKCC.cinemachine.Player;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
@@ -30,7 +29,7 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.Player
     [TestFixture]
     public class PlayerFadeTests : TestBase
     {
-        private Mock<IUnityService> unityServiceMock;
+        private MockUnityService unityServiceMock;
         private PlayerFade playerFade;
         private GameObject camera;
         private GameObject box;
@@ -41,11 +40,11 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.Player
             base.Setup();
             GameObject go = CreateGameObject();
             playerFade = go.AddComponent<PlayerFade>();
-            unityServiceMock = new Mock<IUnityService>();
+            unityServiceMock = new MockUnityService();
             playerFade.followTarget = go;
             playerFade.avatarBase = go;
-            playerFade.unityService = unityServiceMock.Object;
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.1f);
+            playerFade.unityService = unityServiceMock;
+            unityServiceMock.deltaTime = 0.1f;
 
             camera = CreateGameObject();
             camera.AddComponent<Camera>();

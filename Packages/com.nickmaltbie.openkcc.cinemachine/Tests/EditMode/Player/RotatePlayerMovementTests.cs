@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.CameraControls;
 using nickmaltbie.OpenKCC.cinemachine.Player;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
@@ -35,7 +34,7 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.Player
     [TestFixture]
     public class RotatePlayerMovementTests : KCCStateMachineTestBase
     {
-        private Mock<IUnityService> unityServiceMock;
+        private MockUnityService unityServiceMock;
         private RotatePlayerMovement rotatePlayer;
         private GameObject avatarBase;
 
@@ -54,10 +53,10 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.Player
             rotatePlayer = kccStateMachine.gameObject.AddComponent<RotatePlayerMovement>();
             rotatePlayer.avatarBase = avatarBase;
 
-            unityServiceMock = new Mock<IUnityService>();
-            rotatePlayer.unityService = unityServiceMock.Object;
+            unityServiceMock = new MockUnityService();
+            rotatePlayer.unityService = unityServiceMock;
 
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.1f);
+            unityServiceMock.deltaTime = 0.1f;
         }
 
         [Test]

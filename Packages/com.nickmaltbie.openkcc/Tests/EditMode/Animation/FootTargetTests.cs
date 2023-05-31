@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.Animation;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
@@ -34,7 +33,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
     {
         private const string AnimState = "AnimState";
 
-        private Mock<IUnityService> unityServiceMock;
+        private MockUnityService unityServiceMock;
         private FootTarget leftFootTarget, rightFootTarget;
         private Animator animator;
 
@@ -54,9 +53,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             leftFootTarget = new FootTarget(Foot.LeftFoot, animator, 0.05f, 0.25f, 0.15f);
             rightFootTarget = new FootTarget(Foot.RightFoot, animator, 0.05f, 0.25f, 0.15f);
 
-            unityServiceMock = new Mock<IUnityService>();
-            leftFootTarget.unityService = unityServiceMock.Object;
-            rightFootTarget.unityService = unityServiceMock.Object;
+            unityServiceMock = new MockUnityService();
+            leftFootTarget.unityService = unityServiceMock;
+            rightFootTarget.unityService = unityServiceMock;
 
             animator.StartPlayback();
             animator.Play(AnimState, 0);
@@ -86,9 +85,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         {
             // Set foot stride time to 1 second and time step to 0.1 seconds
             var footTarget = new FootTarget(Foot.LeftFoot, animator, 0.25f, 1.0f, 0.1f);
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.1f);
-            unityServiceMock.Setup(e => e.time).Returns(0.0f);
-            footTarget.unityService = unityServiceMock.Object;
+            unityServiceMock.deltaTime = 0.1f;
+            unityServiceMock.time = 0.0f;
+            footTarget.unityService = unityServiceMock;
 
             // Assert that foot is released
             footTarget.ReleaseFoot();
@@ -107,7 +106,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             // Assert that foot is moving towards target position now.
             for (int i = 0; i < 10; i++)
             {
-                unityServiceMock.Setup(e => e.time).Returns(i / 10.0f);
+                unityServiceMock.time = i / 10.0f;
                 footTarget.LerpFootIKWeight();
 
                 // Just assert that the weight is increasing
@@ -122,7 +121,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             }
 
             Assert.IsFalse(footTarget.MidStride);
-            unityServiceMock.Setup(e => e.time).Returns(2.0f);
+            unityServiceMock.time = 2.0f;
             footTarget.LerpFootIKWeight();
             TestUtils.AssertInBounds(footTarget.FootIKTargetPos(), new Vector3(0, 0.1f, 1.0f));
             TestUtils.AssertInBounds(Quaternion.Angle(footTarget.FootIKTargetRot(), Quaternion.identity), 0, 1.0f);
@@ -154,10 +153,9 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         [Test]
         public void Validate_FootTarget_StrideState()
         {
-            float time = 0.0f;
             GameObject floor = CreateGameObject();
-            unityServiceMock.Setup(e => e.deltaTime).Returns(0.05f);
-            unityServiceMock.Setup(e => e.time).Returns(() => time);
+            unityServiceMock.deltaTime = 0.05f;
+            unityServiceMock.time = 0.0f;
 
             // Foot should start off released and able to update stride target
             Assert.AreEqual(FootState.Released, leftFootTarget.State);
@@ -175,14 +173,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 Assert.IsTrue(leftFootTarget.MidStride);
                 Assert.IsFalse(leftFootTarget.CanUpdateStrideTarget());
                 leftFootTarget.LerpFootIKWeight();
-                time += 0.05f;
+                unityServiceMock.time += 0.05f;
             }
 
             // Once the foot is above threshold, it should be fully grounded
             while (leftFootTarget.MidStride)
             {
                 leftFootTarget.LerpFootIKWeight();
-                time += 0.05f;
+                unityServiceMock.time += 0.05f;
             }
 
             Assert.AreEqual(FootState.Grounded, leftFootTarget.State);
@@ -200,7 +198,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                 Assert.IsTrue(leftFootTarget.MidStride);
                 Assert.AreEqual(expectedStrideUpdate, leftFootTarget.CanUpdateStrideTarget());
                 leftFootTarget.LerpFootIKWeight();
-                time += 0.01f;
+                unityServiceMock.time += 0.01f;
 
                 // Also... assert check our delta rotation
                 Assert.IsTrue(Quaternion.Angle(previousRotation, leftFootTarget.FootIKTargetRot()) >= 0);
@@ -222,7 +220,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             while (leftFootTarget.MidStride)
             {
                 leftFootTarget.LerpFootIKWeight();
-                time += 0.01f;
+                unityServiceMock.time += 0.01f;
 
                 if (leftFootTarget.FootIKWeight <= FootTarget.ThresholdIKWeightReleased)
                 {

@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Moq;
 using nickmaltbie.OpenKCC.Environment;
 using nickmaltbie.TestUtilsUnity;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
@@ -31,7 +30,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
     [TestFixture]
     public class FixedRigidbodySetTests : TestBase
     {
-        private Mock<IUnityService> mockUnityService;
+        private MockUnityService mockUnityService;
         private Transform bodyTransform;
         private Transform parentTransform;
         private FixedRigidbodySet fixedRigidbody;
@@ -40,7 +39,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
         [SetUp]
         public void SetUp()
         {
-            mockUnityService = new Mock<IUnityService>();
+            mockUnityService = new MockUnityService();
 
             GameObject go = CreateGameObject();
             GameObject parent = CreateGameObject();
@@ -55,7 +54,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
 
             rigidbody.isKinematic = true;
 
-            fixedRigidbody.unityService = mockUnityService.Object;
+            fixedRigidbody.unityService = mockUnityService;
             fixedRigidbody.Start();
         }
 
@@ -67,7 +66,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
             [ValueSource(nameof(TestDirections))] Vector3 dir,
             [Values] bool isContinuous)
         {
-            mockUnityService.Setup(e => e.fixedDeltaTime).Returns(deltaTime);
+            mockUnityService.fixedDeltaTime = deltaTime;
             fixedRigidbody.localTranslation = isLocal;
             fixedRigidbody.linearVelocity = speed * dir;
             fixedRigidbody.isContinuous = isContinuous;
@@ -96,7 +95,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Environment
             [ValueSource(nameof(TestDirections))] Vector3 dir,
             [Values] bool isContinuous)
         {
-            mockUnityService.Setup(e => e.fixedDeltaTime).Returns(deltaTime);
+            mockUnityService.fixedDeltaTime = deltaTime;
             fixedRigidbody.localRotation = isLocal;
             fixedRigidbody.angularVelocity = speed * dir;
             fixedRigidbody.isContinuous = isContinuous;

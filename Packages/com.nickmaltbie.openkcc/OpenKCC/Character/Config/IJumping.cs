@@ -29,6 +29,6 @@ namespace nickmaltbie.OpenKCC.Character.Config
         /// Apply a jump to the player.
         /// </summary>
         /// <param name="velocity">Velocity change for the player jump.</param>
-        public void ApplyJump(Vector3 velocity);
+        void ApplyJump(Vector3 velocity);
     }
 }

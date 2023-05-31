@@ -33,6 +33,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
     public abstract class NetcodeInputRuntimeTest<E> : NetcodeInputRuntimeTest where E : Component
     {
         protected virtual int SpawnCount => NumberOfClients + 1;
+        protected virtual IEnumerable<Type> RequiredComponents => Enumerable.Empty<Type>();
         protected GameObject m_PrefabToSpawn;
 
         public virtual void SetupClient(E e, int objectIdx, int clientIdx) { }
@@ -79,6 +80,11 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
         {
             m_PrefabToSpawn = CreateNetworkObjectPrefab($"Testable{typeof(E).Name}");
             m_PrefabToSpawn.AddComponent<TestableNetworkBehaviour>();
+            foreach (Type componentType in RequiredComponents)
+            {
+                m_PrefabToSpawn.AddComponent(componentType);
+            }
+
             m_PrefabToSpawn.AddComponent<E>();
             SetupPrefab(m_PrefabToSpawn);
         }
@@ -176,7 +182,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
         public static Dictionary<(Type, int, int), TestableNetworkBehaviour> Objects = new Dictionary<(Type, int, int), TestableNetworkBehaviour>();
         public static int CurrentlySpawning = 0;
         public static Type CurrentlyTesting = typeof(NetworkBehaviour);
-        private Dictionary<string, InputControl> inputControls = new();
+        private Dictionary<string, InputControl> inputControls = new Dictionary<string, InputControl>();
 
         public override void OnNetworkSpawn()
         {
@@ -298,7 +304,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
             }
             else
             {
-                UnityEngine.SceneManagement.Scene scene = SceneManager.CreateScene("EmptyTestScene");
+                UnityEngine.SceneManagement.Scene scene = SceneManager.CreateScene($"EmptyTestScene-{System.Guid.NewGuid()}");
             }
 #endif
             netcodeHelper.OneTimeSetup();

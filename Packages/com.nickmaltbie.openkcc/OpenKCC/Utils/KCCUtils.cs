@@ -122,7 +122,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 dir,
             float dist,
             IColliderCast colliderCast,
-            int layerMask = IColliderCast.DefaultLayerMask)
+            int layerMask = RaycastHelperConstants.DefaultLayerMask)
         {
             bool didHit = colliderCast.CastSelf(
                 position + dir * Epsilon,
@@ -157,7 +157,7 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 dir,
             float dist,
             IColliderCast colliderCast,
-            int layerMask = IColliderCast.DefaultLayerMask)
+            int layerMask = RaycastHelperConstants.DefaultLayerMask)
         {
             return position + GetSnapDelta(position, rotation, dir, dist, colliderCast, layerMask);
         }

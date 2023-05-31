@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Removed `Moq` dependency for tests.
+* Updated project version to 20202.2.16f1 and added automated tests for
+    backwards compatibility for versions 2019.4, 2020.3, 2021.3
 * Removed reduction in momentum due to snapping up as it was causing player to
     sometimes get stuck on corners of small slopes.
 * Updated project version to [2021.3.25f1](https://unity.com/releases/editor/whats-new/2021.3.25)

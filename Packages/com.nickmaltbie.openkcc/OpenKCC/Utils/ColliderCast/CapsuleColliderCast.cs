@@ -41,12 +41,12 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Capsule Collider associated with this object.
         /// </summary>
-        public CapsuleCollider CapsuleCollider => _capsuleCollider ??= GetComponent<CapsuleCollider>();
+        public CapsuleCollider CapsuleCollider => _capsuleCollider = _capsuleCollider ?? GetComponent<CapsuleCollider>();
 
         /// <summary>
         /// Debug mesh associated with capsule collider.
         /// </summary>
-        public Mesh DebugCapsuleMesh => _debugCapsuleMesh ??=
+        public Mesh DebugCapsuleMesh => _debugCapsuleMesh = _debugCapsuleMesh ??
             CapsuleMaker.CapsuleData(radius: CapsuleCollider.radius, depth: CapsuleCollider.height - CapsuleCollider.radius * 2);
 
         /// <inheritdoc/>
@@ -90,8 +90,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public override IEnumerable<Collider> GetOverlapping(
             Vector3 position,
             Quaternion rotation,
-            int layerMask = IColliderCast.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
+            int layerMask = RaycastHelperConstants.DefaultLayerMask,
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation);
             return Physics
@@ -105,8 +105,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             Quaternion rotation,
             Vector3 direction,
             float distance,
-            int layerMask = IColliderCast.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = IColliderCast.DefaultQueryTriggerInteraction)
+            int layerMask = RaycastHelperConstants.DefaultLayerMask,
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation);
             return Physics.CapsuleCastAll(top, bottom, radius, direction, distance, layerMask, queryTriggerInteraction)
