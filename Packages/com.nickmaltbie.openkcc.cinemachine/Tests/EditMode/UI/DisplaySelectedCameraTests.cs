@@ -37,7 +37,6 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.UI
             CameraSelector selector = CreateGameObject().AddComponent<CameraSelector>();
             selector.ToggleCameraAction = new InputAction();
 
-
             // We need to ignore the failing message "[Error] No graphic device is available to initialize the view."
             UnityEngine.TestTools.LogAssert.ignoreFailingMessages = true;
             TMP_Text text = CreateGameObject().AddComponent<TextMeshPro>();
