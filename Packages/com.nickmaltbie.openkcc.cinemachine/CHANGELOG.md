@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Updated project version to 20202.2.16f1 and added automated tests for
+    backwards compatibility for versions 2019.4, 2020.3, 2021.3
+
 ## [1.3.3] 2023-2-16
 
 * Small update to cinemachine example settings for first person vcam.
