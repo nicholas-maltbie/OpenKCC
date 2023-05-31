@@ -304,7 +304,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
             }
             else
             {
-                UnityEngine.SceneManagement.Scene scene = SceneManager.CreateScene("EmptyTestScene");
+                UnityEngine.SceneManagement.Scene scene = SceneManager.CreateScene($"EmptyTestScene-{System.Guid.NewGuid()}");
             }
 #endif
             netcodeHelper.OneTimeSetup();

@@ -52,6 +52,9 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.UI
             displayCamera.Update();
 
             Assert.AreEqual("Selected Camera: " + vcam1.name, text.text);
+
+            // We need to ignore the failing message "[Error] No graphic device is available to initialize the view."
+            UnityEngine.TestTools.LogAssert.ignoreFailingMessages = true;
         }
     }
 }
