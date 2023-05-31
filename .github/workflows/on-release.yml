@@ -9,8 +9,8 @@ jobs:
   create-release-package:
     uses: ./.github/workflows/create-package.yml
     secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ secrets.NPM_TOKEN }}
     with:
       latest-publish: false
       release-publish: true
-      version-name: ${{ github.ref }}
+      version-name: ${{ github.ref_name }}
