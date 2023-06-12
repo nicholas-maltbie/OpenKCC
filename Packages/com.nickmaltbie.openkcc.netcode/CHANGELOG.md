@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.4.0] 2024-06-12
+
 * Removed `Moq` dependency for tests.
 * Updated project version to 20202.2.16f1 and added automated tests for
     backwards compatibility for versions 2020.3, 2021.3
