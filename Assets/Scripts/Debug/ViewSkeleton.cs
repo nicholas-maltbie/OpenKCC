@@ -50,11 +50,11 @@ public class ViewSkeleton : MonoBehaviour
                 else
                 {
                     Gizmos.color = Color.blue;
-                    # if UNITY_EDITOR
+#if UNITY_EDITOR
                     Handles.DrawBezier(child.position, child.parent.position, child.position, child.parent.position, Color.blue, null, 5.0f);
-                    # else
+#else
                     Gizmos.DrawLine(child.position, child.parent.position);
-                    # endif
+#endif
                     Gizmos.DrawSphere(child.position, 0.01f);
                 }
             }
