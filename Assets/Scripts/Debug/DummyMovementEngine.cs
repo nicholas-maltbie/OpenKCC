@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nicholas Maltbie
+﻿// Copyright (C) 2023 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,10 +16,10 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using UnityEngine;
-using nickmaltbie.OpenKCC.Character;
 using System;
+using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Utils;
+using UnityEngine;
 
 [Serializable]
 public struct InputMovementCommand
@@ -27,7 +27,6 @@ public struct InputMovementCommand
     public float time;
     public Vector3 dir;
 }
-
 
 [RequireComponent(typeof(KCCMovementEngine))]
 public class DummyMovementEngine : MonoBehaviour
@@ -79,7 +78,7 @@ public class DummyMovementEngine : MonoBehaviour
         if (Direction.magnitude >= 0.001f)
         {
             Quaternion currentRot = animator.transform.rotation;
-            Quaternion targetRot = Quaternion.LookRotation(Direction, Vector3.up);
+            var targetRot = Quaternion.LookRotation(Direction, Vector3.up);
             animator.transform.rotation = Quaternion.RotateTowards(currentRot, targetRot, rotationSpeed * Time.deltaTime);
         }
 

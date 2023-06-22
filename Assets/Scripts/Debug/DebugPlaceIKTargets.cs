@@ -29,7 +29,8 @@ public class DebugPlaceIKTargets : MonoBehaviour
         (AvatarIKGoal.RightFoot, HumanBodyBones.RightFoot),
     };
 
-    public bool enableIk = true;
+    public bool enableHandIk = true;
+    public bool enableFootIK = true;
     private Dictionary<AvatarIKGoal, Transform> debugTargets;
     private Animator animator;
 
@@ -53,7 +54,16 @@ public class DebugPlaceIKTargets : MonoBehaviour
     {
         foreach ((AvatarIKGoal goal, _) in targets)
         {
-            float weight = enableIk ? 1.0f : 0.0f;
+            float weight = 0.0f;
+            if (goal == AvatarIKGoal.LeftHand || goal == AvatarIKGoal.RightHand)
+            {
+                weight = enableHandIk ? 1.0f : 0.0f;
+            }
+            else if (goal == AvatarIKGoal.LeftFoot || goal == AvatarIKGoal.RightFoot)
+            {
+                weight = enableFootIK ? 1.0f : 0.0f;
+            }
+
             Transform target = debugTargets[goal];
             animator.SetIKPosition(goal, target.position);
             animator.SetIKRotation(goal, target.rotation);
