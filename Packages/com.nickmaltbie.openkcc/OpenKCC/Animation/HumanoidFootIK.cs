@@ -64,13 +64,14 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <summary>
         /// Layer for calculating collisions with ground.
         /// </summary>
+        [Tooltip("Layer for calculating collisions with ground.")]
         public LayerMask feetCollisionDetection = -1;
 
         /// <summary>
         /// Distance at which this will check to the ground from the player's
         /// knee height.
         /// </summary>
-        [Tooltip("Distance to check for ground from knee height")]
+        [Tooltip("Distance to check for ground from knee height.")]
         public float groundCheckDist = 1.5f;
 
         /// <summary>
