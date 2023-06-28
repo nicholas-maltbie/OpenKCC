@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nicholas Maltbie
+﻿// Copyright (C) 2023 Nicholas Maltbie
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -88,7 +88,6 @@ namespace nickmaltbie.OpenKCC.Animation
             }
         }
 
-
         public void OnValidate()
         {
             animator = GetComponent<Animator>();
@@ -129,7 +128,7 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             foreach (Foot foot in Feet)
             {
-                FootTarget target = GetFootTarget(foot);
+                _ = GetFootTarget(foot);
                 GetFootGroundedTransform(foot, out _, out _, out _, out _, out _, debugLine: true);
             }
         }
@@ -139,16 +138,20 @@ namespace nickmaltbie.OpenKCC.Animation
         /// </summary>
         private void UpdateFootTargets()
         {
-            Vector3 groundedPos = Vector3.zero;
-            Quaternion rotation = Quaternion.identity;
-            Vector3 groundNormal = Vector3.up;
+            _ = Vector3.zero;
+            _ = Quaternion.identity;
+            _ = Vector3.up;
             GameObject floor = null;
-            Vector3 footForward = transform.forward;
+            _ = transform.forward;
 
             foreach (Foot foot in Feet)
             {
                 FootTarget target = GetFootTarget(foot);
-                switch(debugType)
+                Vector3 groundedPos;
+                Quaternion rotation;
+                Vector3 groundNormal;
+                Vector3 footForward;
+                switch (debugType)
                 {
                     default:
                     case DebugType.Disabled:
@@ -175,6 +178,7 @@ namespace nickmaltbie.OpenKCC.Animation
                                 target.StartStride(groundedPos, rotation, floor, footForward, groundNormal, false);
                             }
                         }
+
                         break;
                     case DebugType.LiftFeet:
                         if (target.State == FootState.Grounded)
@@ -192,7 +196,7 @@ namespace nickmaltbie.OpenKCC.Animation
                                 float deltaAngle = Quaternion.Angle(rotation, target.TargetFootRotation);
                                 bool distThreshold = deltaDist >= strideThresholdDistance;
                                 bool turnThreshold = deltaAngle >= strideThresholdDegrees;
-                                
+
                                 if (CanTakeStride && !target.MidStride)
                                 {
                                     if (distThreshold)
@@ -218,6 +222,7 @@ namespace nickmaltbie.OpenKCC.Animation
                                 target.StartStride(groundedPos, rotation, floor, footForward, groundNormal, false);
                             }
                         }
+
                         break;
                 }
 
@@ -280,7 +285,7 @@ namespace nickmaltbie.OpenKCC.Animation
             groundedPos = grounded ? hitInfo.point : Vector3.zero;
             groundNormal = grounded ? hitInfo.normal : Vector3.up;
             floor = grounded ? hitInfo.collider?.gameObject : null;
-            
+
             if (debugLine)
             {
 # if UNITY_EDITOR
@@ -300,8 +305,7 @@ namespace nickmaltbie.OpenKCC.Animation
                         Handles.color = Color.green;
                         Handles.DrawLine(hitInfo.point, hitInfo.point + groundNormal * 0.25f, lineThickness / 2);
 
-                        
-                        Vector3 right = Vector3.Cross(transform.forward, groundNormal);
+                        var right = Vector3.Cross(transform.forward, groundNormal);
                         Vector3 forward = -Vector3.Cross(right, groundNormal);
                         Handles.color = Color.red;
                         Handles.DrawLine(
