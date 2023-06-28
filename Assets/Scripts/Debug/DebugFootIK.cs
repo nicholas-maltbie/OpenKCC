@@ -160,7 +160,7 @@ namespace nickmaltbie.OpenKCC.Animation
                     case DebugType.PlaceFeet:
                         if (target.State == FootState.Grounded)
                         {
-                            bool grounded = GetFootGroundedTransform(foot, out groundedPos, out rotation, out groundNormal, out floor, out footForward, false);
+                            bool grounded = GetFootGroundedTransform(foot, out groundedPos, out rotation, out groundNormal, out _, out _, false);
                             if (!grounded)
                             {
                                 target.ReleaseFoot();
@@ -183,7 +183,7 @@ namespace nickmaltbie.OpenKCC.Animation
                     case DebugType.LiftFeet:
                         if (target.State == FootState.Grounded)
                         {
-                            bool shouldRelease = target.UnderReleaseThreshold();
+                            _ = target.UnderReleaseThreshold();
                             bool grounded = GetFootTargetPosViaHips(foot, out groundedPos, out rotation, out groundNormal, out floor, out footForward, false);
                             if (!grounded)
                             {

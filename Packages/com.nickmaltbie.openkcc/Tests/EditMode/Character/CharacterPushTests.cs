@@ -28,7 +28,7 @@ using UnityEngine;
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 {
     /// <summary>
-    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.CharacterPush"/> in edit mode.
+    /// Basic tests for <see cref="nickmaltbie.OpenKCC.Character.KCCMovementEngineWithPush"/> in edit mode.
     /// </summary>
     [TestFixture]
     public class CharacterPushTests : TestBase
