@@ -23,18 +23,28 @@ using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character
 {
+    /// <summary>
+    /// Basic extension of KCCMovementEngine that allows for
+    /// pushing rigidbody objects that it collides with that
+    /// have the attached MonoBehaviour IPushable.
+    /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(IColliderCast))]
     public class KCCMovementEngineWithPush : KCCMovementEngine, ICharacterPush
     {
         /// <summary>
-        /// Power of the player push
+        /// Power of the player push.
         /// </summary>
-        public float pushPower = 2.0f;
+        [Tooltip("Power of the player push.")]
+        public float pushPower = 4.0f;
 
         /// <summary>
-        /// Decrease in momentum when pushing an object.
+        /// Decay in momentum when pushing an object.
+        /// Zero indicates all momentum is lost while 1 indicates all momentum
+        /// is maintained.
         /// </summary>
+        [Range(0, 1)]
+        [Tooltip("Decay in momentum when pushing an object.")]
         public float pushDecay = 0.8f;
 
         /// <inheritdoc/>
