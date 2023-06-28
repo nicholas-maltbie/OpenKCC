@@ -141,7 +141,6 @@ namespace nickmaltbie.OpenKCC.Animation
             _ = Vector3.zero;
             _ = Quaternion.identity;
             _ = Vector3.up;
-            GameObject floor = null;
             _ = transform.forward;
 
             foreach (Foot foot in Feet)
@@ -151,6 +150,7 @@ namespace nickmaltbie.OpenKCC.Animation
                 Quaternion rotation;
                 Vector3 groundNormal;
                 Vector3 footForward;
+                GameObject floor;
                 switch (debugType)
                 {
                     default:

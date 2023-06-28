@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Re-implemented example `KCCMovementEngineWithPush` to show how to use
+    `ICharacterPush` to push objects with the `KCCMovementEngine`
+
 ## [1.4.0] 2024-06-12
 
 * Removed `Moq` dependency for tests.

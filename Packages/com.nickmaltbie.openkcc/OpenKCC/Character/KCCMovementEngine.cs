@@ -48,7 +48,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Default maximum number of bounces for computing player movement.
         /// </summary>
-        public const float DefaultMaxBounces = 5f;
+        public const int DefaultMaxBounces = 5;
 
         /// <summary>
         /// Default expected depth of a step for walking up staircases.
@@ -73,7 +73,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Max launch speed of player form moving ground.
         /// </summary>
-        public const float DefaultMaxLaunchVelocity = 5.0f;
+        public const float DefaultMaxLaunchVelocity = 2.0f;
 
         /// <summary>
         /// Serialization version for the KCCMovementEngine.
@@ -110,12 +110,12 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Distance to ground at which player is considered grounded.
         /// </summary>
-        public virtual float GroundedDistance => 0.05f;
+        public virtual float GroundedDistance => DefaultGroundedDistance;
 
         /// <summary>
         /// Distance to check player distance to ground.
         /// </summary>
-        public virtual float GroundCheckDistance => 0.25f;
+        public virtual float GroundCheckDistance => DefaultGroundCheckDistance;
 
         /// <summary>
         /// Maximum angle at which the player can walk (in degrees).
@@ -123,22 +123,22 @@ namespace nickmaltbie.OpenKCC.Character
         public virtual float MaxWalkAngle => maxWalkAngle;
 
         /// <inheritdoc/>
-        public virtual int MaxBounces => 5;
+        public virtual int MaxBounces => DefaultMaxBounces;
 
         /// <inheritdoc/>
         public virtual float VerticalSnapUp => stepHeight;
 
         /// <inheritdoc/>
-        public virtual float StepUpDepth => 0.1f;
+        public virtual float StepUpDepth => DefaultStepUpDepth;
 
         /// <inheritdoc/>
-        public virtual float AnglePower => 2.0f;
+        public virtual float AnglePower => DefaultAnglePower;
 
         /// <summary>
         /// Max push speed of the player in units per second when pushing
         /// out of overlapping objects.
         /// </summary>
-        public float MaxPushSpeed => 100.0f;
+        public float MaxPushSpeed => DefaultMaxPushSpeed;
 
         /// <summary>
         /// Layermask for computing player collisions.
@@ -163,7 +163,7 @@ namespace nickmaltbie.OpenKCC.Character
         /// Max default launch velocity for the player from unlabeled
         /// surfaces.
         /// </summary>
-        public virtual float MaxDefaultLaunchVelocity => 5.0f;
+        public virtual float MaxDefaultLaunchVelocity => DefaultMaxLaunchVelocity;
 
         /// <summary>
         /// Maximum speed at which the player can snap down surfaces.

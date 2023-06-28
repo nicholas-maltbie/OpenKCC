@@ -18,7 +18,9 @@
 
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Environment.Pushable;
+using nickmaltbie.OpenKCC.Tests.TestCommon;
 using nickmaltbie.OpenKCC.Utils;
+using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
@@ -31,13 +33,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
     [TestFixture]
     public class CharacterPushTests : TestBase
     {
-        private CharacterPush character;
+        private KCCMovementEngineWithPush character;
+        private MockColliderCast mockColliderCast;
         private GameObject pushable;
 
         [SetUp]
         public override void Setup()
         {
-            character = CreateGameObject().AddComponent<CharacterPush>();
+            GameObject go = CreateGameObject();
+            mockColliderCast = go.AddComponent<MockColliderCast>();
+            character = go.AddComponent<KCCMovementEngineWithPush>();
 
             pushable = CreateGameObject();
             pushable.AddComponent<BoxCollider>();
@@ -81,6 +86,28 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             var hit = new KinematicCharacterControllerHit(default, pushable.GetComponent<Rigidbody>(), pushable, default, default, default, default, default);
             character.PushObject(hit);
+        }
+
+        [Test]
+        public void Verify_CharacterPush_PushObject_ViaMovement()
+        {
+            int hits = 0;
+            IRaycastHit noHit = KCCTestUtils.SetupRaycastHitMock(default(Collider), Vector3.zero, Vector3.zero, Mathf.Infinity);
+            IRaycastHit pushableHit = KCCTestUtils.SetupRaycastHitMock(pushable.GetComponent<Collider>(), Vector3.zero, Vector3.up, KCCUtils.Epsilon);
+            mockColliderCast.OnCastSelf = (Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            {
+                // Only return hit for first hit
+                if (++hits <= 1)
+                {
+                    hit = pushableHit;
+                    return false;
+                }
+
+                hit = noHit;
+                return true;
+            };
+
+            character.GetMovement(Vector3.forward);
         }
     }
 }
