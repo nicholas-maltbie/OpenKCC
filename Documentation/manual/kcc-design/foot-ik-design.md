@@ -1,5 +1,19 @@
 # Foot Inverse Kinematics
 
+<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD033 -->
+<!-- Disable line length lint rule for portion of embed -->
+<div class="videoWrapper">
+<iframe
+    src="https://youtu.be/jfKTmEWJESw"
+    title="Creating Dynamic Character Movements with Inverse Kinematics and Open-Source Code"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen></iframe>
+</div>
+<!-- markdownlint-enable MD033 -->
+<!-- markdownlint-enable MD013 -->
+
 The process of [Inverse Kinematics](https://docs.unity3d.com/Manual/InverseKinematics.html)
 is used to move an avatar's target and smoothly turn bones and other
 parameters to reach that target. When a character is moving around in a

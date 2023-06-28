@@ -107,7 +107,7 @@ namespace nickmaltbie.OpenKCC.Animation
         /// <summary>
         /// Unity service for managing time delta.
         /// </summary>
-        internal IUnityService unityService = UnityService.Instance;
+        public IUnityService unityService = UnityService.Instance;
 
         /// <summary>
         /// Construct a foot target with a given set of configurations
