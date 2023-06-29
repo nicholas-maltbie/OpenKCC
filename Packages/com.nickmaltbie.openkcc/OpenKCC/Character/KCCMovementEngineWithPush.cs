@@ -16,22 +16,36 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Environment.Pushable;
 using nickmaltbie.OpenKCC.Utils;
-
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Character
 {
     /// <summary>
-    /// Have a character controller push any dynamic rigidbody it hits
+    /// Basic extension of KCCMovementEngine that allows for
+    /// pushing rigidbody objects that it collides with that
+    /// have the attached MonoBehaviour IPushable.
     /// </summary>
-    public class CharacterPush : MonoBehaviour, ICharacterPush
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(IColliderCast))]
+    public class KCCMovementEngineWithPush : KCCMovementEngine, ICharacterPush
     {
         /// <summary>
-        /// Power of the player push
+        /// Power of the player push.
         /// </summary>
-        public float pushPower = 2.0f;
+        [Tooltip("Power of the player push.")]
+        public float pushPower = 4.0f;
+
+        /// <summary>
+        /// Decay in momentum when pushing an object.
+        /// Zero indicates all momentum is lost while 1 indicates all momentum
+        /// is maintained.
+        /// </summary>
+        [Range(0, 1)]
+        [Tooltip("Decay in momentum when pushing an object.")]
+        public float pushDecay = 0.8f;
 
         /// <inheritdoc/>
         public bool CanPushObject(Collider hit)
@@ -67,6 +81,33 @@ namespace nickmaltbie.OpenKCC.Character
                 pushForce,
                 hit.point,
                 (int)ForceMode.Force);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<KCCBounce> GetMovement(Vector3 movement)
+        {
+            foreach (KCCBounce bounce in base.GetMovement(movement))
+            {
+                if (bounce.action == KCCUtils.MovementAction.Bounce && CanPushObject(bounce.hit?.collider))
+                {
+                    Collider collider = bounce.hit.collider;
+                    PushObject(new KinematicCharacterControllerHit(
+                        collider,
+                        bounce.hit.rigidbody,
+                        collider.gameObject,
+                        collider.transform,
+                        bounce.hit.point,
+                        bounce.hit.normal,
+                        bounce.initialMomentum.normalized,
+                        movement.magnitude
+                    ));
+
+                    // If pushing something, reduce remaining force significantly
+                    bounce.remainingMomentum *= pushDecay;
+                }
+
+                yield return bounce;
+            }
         }
     }
 }

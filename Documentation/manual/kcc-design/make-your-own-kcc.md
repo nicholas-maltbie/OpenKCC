@@ -78,6 +78,16 @@ and allows for the mole to be considered
 "grounded" no matter what angle they
 are standing at.
 
+A good example of this level of customization is overriding the bounces and
+[KCCMovementEngine.GetMovement](xref:nickmaltbie.OpenKCC.Character.KCCMovementEngine.GetMovement(Vector3))
+similar to the [KCCMovementEngineWithPush](xref:nickmaltbie.OpenKCC.Character.KCCMovementEngineWithPush)
+which overrides the `GetMovement` function to inject push events on
+rigidbody objects that the player collides with.
+
+Or even the [MoleMovementEngine](xref:nickmaltbie.OpenKCC.MoleKCCSample.MoleMovementEngine)
+for an example of changing it enough to allow for different kinds of navigation
+in the world.
+
 ## Low Level Customization
 
 If you want to be entirely custom in the character
