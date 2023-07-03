@@ -117,7 +117,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         {
 #if UNITY_EDITOR
             // Some magic to auto update the parameters from existing collider
-            var existingCollider = GetComponent<SphereCollider>();
+            SphereCollider existingCollider = GetComponent<SphereCollider>();
             if (sphereCollider == null && existingCollider != null)
             {
                 sphereCollider = existingCollider;
@@ -132,7 +132,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
                 sphereCollider = gameObject.AddComponent<SphereCollider>();
             }
 
-            return this.sphereCollider;
+            return sphereCollider;
         }
 
         /// <inheritdoc/>

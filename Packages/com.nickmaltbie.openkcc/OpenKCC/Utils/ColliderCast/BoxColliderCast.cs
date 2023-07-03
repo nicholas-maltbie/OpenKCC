@@ -118,7 +118,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         {
 #if UNITY_EDITOR
             // Some magic to auto update the parameters from existing collider
-            var existingCollider = GetComponent<BoxCollider>();
+            BoxCollider existingCollider = GetComponent<BoxCollider>();
             if (boxCollider == null && existingCollider != null)
             {
                 boxCollider = existingCollider;
@@ -127,7 +127,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             }
 #endif
 
-            this.boxCollider = gameObject.GetComponent<BoxCollider>();
+            boxCollider = gameObject.GetComponent<BoxCollider>();
             if (boxCollider == null)
             {
                 boxCollider = gameObject.AddComponent<BoxCollider>();

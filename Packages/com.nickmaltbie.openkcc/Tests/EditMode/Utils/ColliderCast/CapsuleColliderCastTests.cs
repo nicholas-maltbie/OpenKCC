@@ -48,7 +48,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         [Test]
         public void Validate_GetParams()
         {
-            var collider = colliderCast.GetComponent<CapsuleCollider>();
+            CapsuleCollider collider = colliderCast.GetComponent<CapsuleCollider>();
             (Vector3 top, Vector3 bottom, float radius, float height) =
                 colliderCast.GetParams(Vector3.zero, Quaternion.Euler(Vector3.zero));
 
@@ -61,7 +61,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         [Test]
         public void Validate_GetBottom()
         {
-            var collider = colliderCast.GetComponent<CapsuleCollider>();
+            CapsuleCollider collider = colliderCast.GetComponent<CapsuleCollider>();
             TestUtils.AssertInBounds(
                 colliderCast.GetBottom(Vector3.zero, Quaternion.identity),
                 new Vector3(0, -collider.height / 2, 0),

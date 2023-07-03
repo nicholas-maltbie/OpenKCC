@@ -44,7 +44,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         [Test]
         public void Validate_GetBottom()
         {
-            var box = boxCast.GetComponent<BoxCollider>();
+            BoxCollider box = boxCast.GetComponent<BoxCollider>();
             TestUtils.AssertInBounds(
                 boxCast.GetBottom(Vector3.zero, Quaternion.identity),
                 new Vector3(0, -(box.size / 2).y, 0),

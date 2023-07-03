@@ -145,7 +145,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         {
 #if UNITY_EDITOR
             // Some magic to auto update the parameters from existing collider
-            var existingCollider = GetComponent<CapsuleCollider>();
+            CapsuleCollider existingCollider = GetComponent<CapsuleCollider>();
             if (capsuleCollider == null && existingCollider != null)
             {
                 capsuleCollider = existingCollider;
@@ -155,13 +155,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             }
 #endif
 
-            this.capsuleCollider = gameObject.GetComponent<CapsuleCollider>();
+            capsuleCollider = gameObject.GetComponent<CapsuleCollider>();
             if (capsuleCollider == null)
             {
                 capsuleCollider = gameObject.AddComponent<CapsuleCollider>();
             }
 
-            return this.capsuleCollider;
+            return capsuleCollider;
         }
 
         /// <inheritdoc/>

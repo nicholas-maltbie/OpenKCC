@@ -44,7 +44,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         [Test]
         public void Validate_GetBottom()
         {
-            var sphere = sphereCast.GetComponent<SphereCollider>();
+            SphereCollider sphere = sphereCast.GetComponent<SphereCollider>();
             TestUtils.AssertInBounds(
                 sphereCast.GetBottom(Vector3.zero, Quaternion.identity),
                 new Vector3(0, -sphere.radius, 0),
