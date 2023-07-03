@@ -28,11 +28,6 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
     public abstract class AbstractPrimitiveColliderCast : MonoBehaviour, IColliderCast
     {
         /// <summary>
-        /// Hide flags for when the collider is hidden.
-        /// </summary>
-        public const HideFlags HideCollider = HideFlags.NotEditable;
-
-        /// <summary>
         /// Collider associated with this primitive collider cast.
         /// </summary>
         protected Collider _collider;
@@ -142,8 +137,6 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         protected void SetupCollider()
         {
             _collider = SetupColliderComponent();
-            _collider.hideFlags = HideCollider;
-
             UpdateColliderParameters();
         }
     }

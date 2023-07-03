@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Modified extensions of `AbstractPrimitiveColliderCast` to store their
+    collider parameters in the collider cast component itself and copy
+    those parameters to the collider. Although if this has not been
+    configured yet, it will search for an existing collider.
 * Re-implemented example `KCCMovementEngineWithPush` to show how to use
     `ICharacterPush` to push objects with the `KCCMovementEngine`
 
