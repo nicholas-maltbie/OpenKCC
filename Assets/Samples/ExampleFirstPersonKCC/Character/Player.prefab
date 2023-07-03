@@ -70,7 +70,7 @@ Transform:
   - {fileID: 1928389238472999755}
   - {fileID: 2110423193989123606}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1928389238801210314
 MonoBehaviour:
@@ -133,7 +133,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!136 &1928389238801210308
 CapsuleCollider:
-  m_ObjectHideFlags: 8
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -317,7 +317,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  pushPower: 2
+  pushPower: 6
   pushDecay: 0.8
 --- !u!1001 &1928389239579011581
 PrefabInstance:

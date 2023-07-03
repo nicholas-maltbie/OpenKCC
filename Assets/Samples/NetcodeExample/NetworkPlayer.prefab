@@ -72,7 +72,7 @@ Transform:
   - {fileID: 1928389238472999755}
   - {fileID: 2885086429369801282}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &1928389238801210309
 Rigidbody:
@@ -103,7 +103,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!136 &1928389238801210308
 CapsuleCollider:
-  m_ObjectHideFlags: 8
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

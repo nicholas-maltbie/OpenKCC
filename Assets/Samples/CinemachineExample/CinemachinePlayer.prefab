@@ -104,7 +104,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!136 &3372921313112048411
 CapsuleCollider:
-  m_ObjectHideFlags: 8
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
