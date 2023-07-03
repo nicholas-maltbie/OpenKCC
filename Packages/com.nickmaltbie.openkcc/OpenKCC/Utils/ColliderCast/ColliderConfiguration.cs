@@ -228,8 +228,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// based on this collider configuration.
         /// </summary>
         /// <param name="go">Game object to attach collider to.</param>
-        /// <param name="cleanupCollider">Should existing colliders on
-        /// the object be cleaned up.</param>
+        /// <param name="cleanupCollider">Should existing colliders on the object be cleaned up.</param>
         /// <returns>Collider attached to the given game object.</returns>
         public Collider AttachCollider(GameObject go, bool cleanupCollider = true)
         {

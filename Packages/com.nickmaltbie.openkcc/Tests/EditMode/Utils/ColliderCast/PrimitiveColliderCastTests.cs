@@ -163,6 +163,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
             target1.transform.localScale = Vector3.one;
             RegisterGameObject(target1);
 
+            Physics.Simulate(0.0f);
             yield return null;
             TestUtils.AssertInBounds(
                 colliderCast.PushOutOverlapping(Vector3.zero, Quaternion.identity, 10.0f).magnitude,

@@ -33,36 +33,28 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// </summary>
         [Tooltip("Collider type selected for casting.")]
         [SerializeField]
-        public ColliderConfiguration config;
+        public ColliderConfiguration config = new ColliderConfiguration();
 
         /// <summary>
         /// Generated collider for this primitive collider cast.
         /// </summary>
-        /// <value></value>
-        private Collider GeneratedCollider { get; set; }
-
-        /// <summary>
-        /// Get the collider for this primitive collider cast.
-        /// </summary>
-        public override Collider Collider => GeneratedCollider;
-
-        public void Awake()
-        {
-            ConfigureColliders();
-        }
+        [HideInInspector]
+        [SerializeField]
+        private Collider generatedCollider;
 
         /// <summary>
         /// Create the collider for this primitive collider cast.
         /// </summary>
-        public void ConfigureColliders()
+        public override void UpdateColliderParameters()
         {
-            GeneratedCollider = config.AttachCollider(gameObject, true);
+            generatedCollider = config.AttachCollider(gameObject, true);
+            base._collider = generatedCollider;
             if (config.type == ColliderType.Point)
             {
                 SphereCollider sphere = gameObject.AddComponent<SphereCollider>();
                 sphere.radius = KCCUtils.Epsilon / 2;
                 sphere.center = config.pointCenter;
-                GeneratedCollider = sphere;
+                generatedCollider = sphere;
             }
         }
 
@@ -140,6 +132,20 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             }
 
             return overlap.Where(collider => collider.transform != transform);
+        }
+
+        /// <inheritdoc/>
+        protected override Collider SetupColliderComponent()
+        {
+            UpdateColliderParameters();
+            return generatedCollider;
+        }
+
+        /// <summary>
+        /// Do nothing, this is handled by editor script
+        /// </summary>
+        public override void OnValidate()
+        {
         }
     }
 }

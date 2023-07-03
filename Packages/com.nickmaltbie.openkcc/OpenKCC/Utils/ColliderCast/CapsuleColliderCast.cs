@@ -25,32 +25,52 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
     /// <summary>
     /// ColliderCast behaviour intended to work with any capsule collider shape.
     /// </summary>
-    [RequireComponent(typeof(CapsuleCollider))]
     public class CapsuleColliderCast : AbstractPrimitiveColliderCast
     {
+        /// <summary>
+        /// Default center for capsule collider.
+        /// </summary>
+        /// <returns></returns>
+        private static readonly Vector3 DefaultCenter = new Vector3(0, 1, 0);
+
+        /// <summary>
+        /// Radius of the capsule.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Radius of the capsule.")]
+        public float radius = 0.5f;
+
+        /// <summary>
+        /// Height of the capsule.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Height of the capsule.")]
+        public float height = 2.0f;
+
+        /// <summary>
+        /// Center of the capsule.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Center of the capsule.")]
+        public Vector3 center = DefaultCenter;
+
+        /// <summary>
+        /// Capsule collider associated with this object.
+        /// </summary>
+        [HideInInspector]
+        [SerializeField]
+        private CapsuleCollider capsuleCollider = null;
+
         /// <summary>
         /// Mesh of capsule for debug drawing.
         /// </summary>
         private Mesh _debugCapsuleMesh;
 
         /// <summary>
-        /// Capsule collider associated with this object.
-        /// </summary>
-        private CapsuleCollider _capsuleCollider;
-
-        /// <summary>
-        /// Capsule Collider associated with this object.
-        /// </summary>
-        public CapsuleCollider CapsuleCollider => _capsuleCollider = _capsuleCollider ?? GetComponent<CapsuleCollider>();
-
-        /// <summary>
         /// Debug mesh associated with capsule collider.
         /// </summary>
         public Mesh DebugCapsuleMesh => _debugCapsuleMesh = _debugCapsuleMesh ??
-            CapsuleMaker.CapsuleData(radius: CapsuleCollider.radius, depth: CapsuleCollider.height - CapsuleCollider.radius * 2);
-
-        /// <inheritdoc/>
-        public override Collider Collider => CapsuleCollider;
+            CapsuleMaker.CapsuleData(radius: radius, depth: height - radius * 2);
 
         /// <summary>
         /// Gets transformed parameters describing this capsule collider for a given position and rotation
@@ -83,7 +103,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <returns>The top, bottom, radius, and height of the capsule collider</returns>
         public (Vector3, Vector3, float, float) GetParams(Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
         {
-            return GetParams(CapsuleCollider.center, CapsuleCollider.radius, CapsuleCollider.height, position, rotation, radiusMod);
+            return GetParams(center, radius, height, position, rotation, radiusMod);
         }
 
         /// <inheritdoc/>
@@ -118,6 +138,38 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         {
             (_, Vector3 bottom, float radius, _) = GetParams(position, rotation);
             return bottom + radius * (rotation * Vector3.down);
+        }
+
+        /// <inheritdoc/>
+        protected override Collider SetupColliderComponent()
+        {
+#if UNITY_EDITOR
+            // Some magic to auto update the parameters from existing collider
+            var existingCollider = GetComponent<CapsuleCollider>();
+            if (capsuleCollider == null && existingCollider != null)
+            {
+                capsuleCollider = existingCollider;
+                radius = existingCollider.radius;
+                center = existingCollider.center;
+                height = existingCollider.height;
+            }
+#endif
+
+            this.capsuleCollider = gameObject.GetComponent<CapsuleCollider>();
+            if (capsuleCollider == null)
+            {
+                capsuleCollider = gameObject.AddComponent<CapsuleCollider>();
+            }
+
+            return this.capsuleCollider;
+        }
+
+        /// <inheritdoc/>
+        public override void UpdateColliderParameters()
+        {
+            capsuleCollider.radius = radius;
+            capsuleCollider.height = height;
+            capsuleCollider.center = center;
         }
     }
 }

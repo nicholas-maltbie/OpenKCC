@@ -63,8 +63,8 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
             config.Radius = 1.0f;
 
             GameObject go = CreateGameObject();
-            config.AttachCollider(go);
-            config.AttachCollider(go);
+            config.AttachCollider(go, false);
+            config.AttachCollider(go, true);
         }
     }
 }

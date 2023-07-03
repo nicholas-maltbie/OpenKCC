@@ -34,21 +34,17 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
     {
         private SphereColliderCast sphereCast;
 
-        private SphereCollider sphere;
-
         [SetUp]
         public void SetUp()
         {
             GameObject go = CreateGameObject();
-            sphere = go.AddComponent<SphereCollider>();
-            sphere.radius = 0.5f;
-            sphere.center = Vector3.zero;
             sphereCast = go.AddComponent<SphereColliderCast>();
         }
 
         [Test]
         public void Validate_GetBottom()
         {
+            var sphere = sphereCast.GetComponent<SphereCollider>();
             TestUtils.AssertInBounds(
                 sphereCast.GetBottom(Vector3.zero, Quaternion.identity),
                 new Vector3(0, -sphere.radius, 0),

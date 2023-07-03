@@ -46,7 +46,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
         /// <summary>
         /// Collider cast associated with the player.
         /// </summary>
-        public IColliderCast playerColliderCast;
+        public CapsuleColliderCast playerColliderCast;
 
         /// <summary>
         /// Character push associated with the player.
@@ -77,12 +77,11 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             GameObject character = CreateGameObject();
             playerPosition = character.transform;
 
-            CapsuleCollider collider = character.AddComponent<CapsuleCollider>();
-            collider.center = new Vector3(0, 1, 0);
-            collider.radius = 0.5f;
-            collider.height = 2.0f;
-
             playerColliderCast = character.AddComponent<CapsuleColliderCast>();
+            playerColliderCast.center = new Vector3(0, 1, 0);
+            playerColliderCast.radius = 0.5f;
+            playerColliderCast.height = 2.0f;
+            playerColliderCast.UpdateColliderParameters();
 
             Mesh capsuleMesh = CapsuleMaker.CapsuleData(depth: 1.0f);
             capsuleMesh.vertices = capsuleMesh.vertices.Select(vert => vert + Vector3.up).ToArray();

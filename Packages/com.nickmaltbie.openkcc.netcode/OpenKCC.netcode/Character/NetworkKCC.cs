@@ -251,8 +251,10 @@ namespace nickmaltbie.OpenKCC.netcode.Character
             }
         }
 
-        public void Awake()
+        /// <inheritdoc/>
+        public override void Awake()
         {
+            base.Awake();
             movementEngine = GetComponent<KCCMovementEngine>();
             jumpAction = new JumpAction()
             {

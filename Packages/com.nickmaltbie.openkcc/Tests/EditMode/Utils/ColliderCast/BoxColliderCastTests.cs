@@ -34,21 +34,17 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
     {
         private BoxColliderCast boxCast;
 
-        private BoxCollider box;
-
         [SetUp]
         public void SetUp()
         {
             GameObject go = CreateGameObject();
-            box = go.AddComponent<BoxCollider>();
-            box.size = Vector3.one;
-            box.center = Vector3.zero;
             boxCast = go.AddComponent<BoxColliderCast>();
         }
 
         [Test]
         public void Validate_GetBottom()
         {
+            var box = boxCast.GetComponent<BoxCollider>();
             TestUtils.AssertInBounds(
                 boxCast.GetBottom(Vector3.zero, Quaternion.identity),
                 new Vector3(0, -(box.size / 2).y, 0),

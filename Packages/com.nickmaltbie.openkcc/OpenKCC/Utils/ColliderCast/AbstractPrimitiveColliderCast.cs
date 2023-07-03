@@ -27,6 +27,32 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
     /// </summary>
     public abstract class AbstractPrimitiveColliderCast : MonoBehaviour, IColliderCast
     {
+        /// <summary>
+        /// Hide flags for when the collider is hidden.
+        /// </summary>
+        public const HideFlags HideCollider = HideFlags.NotEditable;
+
+        /// <summary>
+        /// Collider associated with this primitive collider cast.
+        /// </summary>
+        protected Collider _collider;
+
+        /// <summary>
+        /// Configure collider component.
+        /// </summary>
+        public virtual void Awake()
+        {
+            SetupCollider();
+        }
+
+        /// <summary>
+        /// Update parameters on validation.
+        /// </summary>
+        public virtual void OnValidate()
+        {
+            SetupCollider();
+        }
+
         /// <inheritdoc/>
         public bool CastSelf(
             Vector3 position,
@@ -88,7 +114,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Primitive collider shape associated with this object.
         /// </summary>
-        public abstract Collider Collider { get; }
+        public Collider Collider => _collider ??= SetupColliderComponent();
 
         /// <inheritdoc/>
         public abstract Vector3 GetBottom(Vector3 position, Quaternion rotation);
@@ -98,5 +124,27 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
 
         /// <inheritdoc/>
         public abstract IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction);
+
+        /// <summary>
+        /// Update the parameters of the collider on a configuration change.
+        /// </summary>
+        public abstract void UpdateColliderParameters();
+
+        /// <summary>
+        /// Setup the collider component associated with this object.
+        /// </summary>
+        /// <returns>Collider created (or one that already exists) for this object.</returns>
+        protected abstract Collider SetupColliderComponent();
+
+        /// <summary>
+        /// Setup the collider associated with this object.
+        /// </summary>
+        protected void SetupCollider()
+        {
+            _collider = SetupColliderComponent();
+            _collider.hideFlags = HideCollider;
+
+            UpdateColliderParameters();
+        }
     }
 }
