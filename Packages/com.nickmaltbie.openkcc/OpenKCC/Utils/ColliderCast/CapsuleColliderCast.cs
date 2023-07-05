@@ -55,6 +55,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public Vector3 center = DefaultCenter;
 
         /// <summary>
+        /// Direction of the capsule.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Direction of the capsule.")]
+        private CapsuleDirection capsuleDirection = CapsuleDirection.Y;
+
+        /// <summary>
         /// Capsule collider associated with this object.
         /// </summary>
         [HideInInspector]
@@ -77,19 +84,21 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// </summary>
         /// <param name="capsuleCenter">Center of the capsule collider in relative position.</param>
         /// <param name="capsuleRadius">Radius of the capsule</param>
-        /// <param name="capsuleHeight">height of the capsule.</param>
+        /// <param name="capsuleHeight">Height of the capsule.</param>
+        /// <param name="capsuleDirection">Direction of the capsule.<param>
         /// <param name="position">Position of the object.</param>
         /// <param name="rotation">Rotation of the object.</param>
         /// <param name="radiusMod">Modifier to add to radius when computing shape of collider.</param>
         /// <returns>The top, bottom, radius, and height of the capsule collider</returns>
-        public static (Vector3, Vector3, float, float) GetParams(Vector3 capsuleCenter, float capsuleRadius, float capsuleHeight, Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
+        public static (Vector3, Vector3, float, float) GetParams(Vector3 capsuleCenter, float capsuleRadius, float capsuleHeight, CapsuleDirection capsuleDirection, Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
         {
             Vector3 center = rotation * capsuleCenter + position;
             float radius = capsuleRadius + radiusMod;
             float height = capsuleHeight + radiusMod * 2;
 
-            Vector3 bottom = center + rotation * Vector3.down * (height / 2 - radius);
-            Vector3 top = center + rotation * Vector3.up * (height / 2 - radius);
+            Vector3 up = GetCapsuleRelativeUp(capsuleDirection);
+            Vector3 bottom = center + rotation * -up * (height / 2 - radius);
+            Vector3 top = center + rotation * up * (height / 2 - radius);
 
             return (top, bottom, radius, height);
         }
@@ -103,7 +112,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <returns>The top, bottom, radius, and height of the capsule collider</returns>
         public (Vector3, Vector3, float, float) GetParams(Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
         {
-            return GetParams(center, radius, height, position, rotation, radiusMod);
+            return GetParams(center, radius, height, capsuleDirection, position, rotation, radiusMod);
         }
 
         /// <inheritdoc/>
@@ -137,7 +146,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public override Vector3 GetBottom(Vector3 position, Quaternion rotation)
         {
             (_, Vector3 bottom, float radius, _) = GetParams(position, rotation);
-            return bottom + radius * (rotation * Vector3.down);
+            return bottom + radius * (rotation * -GetCapsuleRelativeUp(capsuleDirection));
         }
 
         /// <inheritdoc/>
@@ -152,6 +161,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
                 radius = existingCollider.radius;
                 center = existingCollider.center;
                 height = existingCollider.height;
+                capsuleDirection = GetCapsuleDirection(existingCollider.direction);
             }
 #endif
 
@@ -167,9 +177,40 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <inheritdoc/>
         public override void UpdateColliderParameters()
         {
+            base.UpdateColliderParameters();
             capsuleCollider.radius = radius;
             capsuleCollider.height = height;
             capsuleCollider.center = center;
+            capsuleCollider.direction = (int)capsuleDirection;
+        }
+
+        /// <summary>
+        /// Get relative up direction for the capsule based on capsule direction.
+        /// </summary>
+        /// <param name="dir">Direction from a Capsule Collider.</param>
+        /// <returns></returns>
+        public static Vector3 GetCapsuleRelativeUp(CapsuleDirection capsuleDirection)
+        {
+            switch(capsuleDirection)
+            {
+                default:
+                case CapsuleDirection.Y:
+                    return Vector3.up;
+                case CapsuleDirection.X:
+                    return Vector3.right;
+                case CapsuleDirection.Z:
+                    return Vector3.forward;
+            }
+        }
+
+        /// <summary>
+        /// See https://docs.unity3d.com/ScriptReference/CapsuleCollider-direction.html
+        /// </summary>
+        /// <param name="dir">Direction from a Capsule Collider.</param>
+        /// <returns>CapsuleCollider direction from int to CapsuleDirection</returns>
+        private static CapsuleDirection GetCapsuleDirection(int dir)
+        {
+            return (CapsuleDirection) dir;
         }
     }
 }

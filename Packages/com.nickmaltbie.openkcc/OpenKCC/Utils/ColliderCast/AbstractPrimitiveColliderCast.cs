@@ -33,6 +33,11 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         protected Collider _collider;
 
         /// <summary>
+        /// Hiding flags for the collider component.
+        /// </summary>
+        protected virtual HideFlags ColliderHideFlags => HideFlags.NotEditable;
+
+        /// <summary>
         /// Configure collider component.
         /// </summary>
         public virtual void Awake()
@@ -123,7 +128,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Update the parameters of the collider on a configuration change.
         /// </summary>
-        public abstract void UpdateColliderParameters();
+        public virtual void UpdateColliderParameters()
+        {
+            if (_collider != null)
+            {
+                _collider.hideFlags = ColliderHideFlags;
+            }
+        }
 
         /// <summary>
         /// Setup the collider component associated with this object.

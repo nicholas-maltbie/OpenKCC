@@ -138,6 +138,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <inheritdoc/>
         public override void UpdateColliderParameters()
         {
+            base.UpdateColliderParameters();
             sphereCollider.radius = radius;
             sphereCollider.center = center;
         }

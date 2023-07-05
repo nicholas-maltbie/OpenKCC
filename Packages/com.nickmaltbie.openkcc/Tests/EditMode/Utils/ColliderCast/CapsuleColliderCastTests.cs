@@ -151,6 +151,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
             Assert.AreEqual(colliderCast.DebugCapsuleMesh, colliderCast.DebugCapsuleMesh);
         }
 
+        [Test]
+        public void Validate_GetCapsuleRelativeUp()
+        {
+            Assert.AreEqual(Vector3.up, CapsuleColliderCast.GetCapsuleRelativeUp(CapsuleDirection.Y));
+            Assert.AreEqual(Vector3.right, CapsuleColliderCast.GetCapsuleRelativeUp(CapsuleDirection.X));
+            Assert.AreEqual(Vector3.forward, CapsuleColliderCast.GetCapsuleRelativeUp(CapsuleDirection.Z));
+        }
+
         private GameObject MakeCube(Vector3? position = null)
         {
             var target = GameObject.CreatePrimitive(PrimitiveType.Cube);

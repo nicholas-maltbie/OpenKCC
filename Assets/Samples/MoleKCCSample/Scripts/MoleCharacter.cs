@@ -194,8 +194,10 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
             }
         }
 
-        public void Awake()
+        /// <inheritdoc/>
+        public override void Awake()
         {
+            base.Awake();
             jumpAction = new JumpAction()
             {
                 jumpInput = new Input.BufferedInput()

@@ -104,7 +104,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!136 &3372921313112048411
 CapsuleCollider:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 8
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -121,7 +121,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.45
+  m_Radius: 0.35
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -235,9 +235,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c42e37a994cc4d43a30612e8d4227e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 0.45
+  radius: 0.35
   height: 1.8
   center: {x: 0, y: 0.9, z: 0}
+  capsuleDirection: 1
   capsuleCollider: {fileID: 3372921313112048411}
 --- !u!114 &3372921311804508139
 MonoBehaviour:

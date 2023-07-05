@@ -131,58 +131,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.type
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.center.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.boxSize.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.boxSize.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.boxSize.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.boxCenter.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.sphereRadius
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.capsuleHeight
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.capsuleRadius
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.pointCenter.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.sphereCenter.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.capsuleCenter.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690048273425853709, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
-      propertyPath: config.capsuleDirection
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7302728890703124786, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -231,8 +179,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: VariableShapePlayer
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8181176880036705681, guid: 8763d4343cc42ba41a3758b1f54347f1, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
