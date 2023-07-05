@@ -87,8 +87,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, Vector3 size) = GetParams(position, rotation);
-            return Physics
-                .OverlapBox(center, size / 2, rotation, layerMask, queryTriggerInteraction)
+            int overlap = Physics.OverlapBoxNonAlloc(center, size / 2, OverlapCache, rotation, layerMask, queryTriggerInteraction);
+            return Enumerable.Range(0, overlap).Select(i => OverlapCache[i])
                 .Where(c => c.transform != transform);
         }
 
@@ -102,7 +102,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, Vector3 size) = GetParams(position, rotation, -KCCUtils.Epsilon);
-            return Physics.BoxCastAll(center, size / 2, direction, rotation, distance, layerMask, queryTriggerInteraction)
+            int hits = Physics.BoxCastNonAlloc(center, size / 2, direction, HitCache, rotation, distance, layerMask, queryTriggerInteraction);
+            return Enumerable.Range(0, hits).Select(i => HitCache[i])
                 .Where(hit => hit.collider.transform != transform);
         }
 
@@ -139,6 +140,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <inheritdoc/>
         public override void UpdateColliderParameters()
         {
+            base.UpdateColliderParameters();
             boxCollider.size = size;
             boxCollider.center = center;
         }

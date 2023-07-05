@@ -123,9 +123,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation);
-            return Physics
-                .OverlapCapsule(top, bottom, radius, layerMask, queryTriggerInteraction)
-                .Where(c => c.transform != transform);
+            int overlap = Physics.OverlapCapsuleNonAlloc(top, bottom, radius, OverlapCache, layerMask, queryTriggerInteraction);
+            return Enumerable.Range(0, overlap).Select(i => OverlapCache[i]).Where(c => c.transform != transform);
         }
 
         /// <inheritdoc/>
@@ -138,7 +137,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation);
-            return Physics.CapsuleCastAll(top, bottom, radius, direction, distance, layerMask, queryTriggerInteraction)
+            int hits = Physics.CapsuleCastNonAlloc(top, bottom, radius, direction, HitCache, distance, layerMask, queryTriggerInteraction);
+            return Enumerable.Range(0, hits).Select(i => HitCache[i])
                 .Where(hit => hit.collider.transform != transform);
         }
 

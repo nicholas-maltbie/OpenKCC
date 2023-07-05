@@ -28,6 +28,26 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
     public abstract class AbstractPrimitiveColliderCast : MonoBehaviour, IColliderCast
     {
         /// <summary>
+        /// Cache size for raycast hit.
+        /// </summary>
+        public const int RaycastHitCacheSize = 10;
+
+        /// <summary>
+        /// Cache size for collider overlap.
+        /// </summary>
+        public const int OverlapCacheSize = 10;
+
+        /// <summary>
+        /// Overlap hit cache.
+        /// </summary>
+        protected static Collider[] OverlapCache = new Collider[OverlapCacheSize];
+
+        /// <summary>
+        /// Raycast hit cache.
+        /// </summary>
+        protected static RaycastHit[] HitCache = new RaycastHit[RaycastHitCacheSize];
+
+        /// <summary>
         /// Collider associated with this primitive collider cast.
         /// </summary>
         protected Collider _collider;
