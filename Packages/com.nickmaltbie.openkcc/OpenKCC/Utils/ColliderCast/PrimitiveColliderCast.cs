@@ -33,36 +33,29 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// </summary>
         [Tooltip("Collider type selected for casting.")]
         [SerializeField]
-        public ColliderConfiguration config;
+        public ColliderConfiguration config = new ColliderConfiguration();
 
         /// <summary>
         /// Generated collider for this primitive collider cast.
         /// </summary>
-        /// <value></value>
-        private Collider GeneratedCollider { get; set; }
-
-        /// <summary>
-        /// Get the collider for this primitive collider cast.
-        /// </summary>
-        public override Collider Collider => GeneratedCollider;
-
-        public void Awake()
-        {
-            ConfigureColliders();
-        }
+        [HideInInspector]
+        [SerializeField]
+        private Collider generatedCollider;
 
         /// <summary>
         /// Create the collider for this primitive collider cast.
         /// </summary>
-        public void ConfigureColliders()
+        public override void UpdateColliderParameters()
         {
-            GeneratedCollider = config.AttachCollider(gameObject, true);
+            base.UpdateColliderParameters();
+            generatedCollider = config.AttachCollider(gameObject, true);
+            base._collider = generatedCollider;
             if (config.type == ColliderType.Point)
             {
                 SphereCollider sphere = gameObject.AddComponent<SphereCollider>();
                 sphere.radius = KCCUtils.Epsilon / 2;
                 sphere.center = config.pointCenter;
-                GeneratedCollider = sphere;
+                generatedCollider = sphere;
             }
         }
 
@@ -78,7 +71,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
                     (Vector3 sphereCenter, float sphereRadius) = SphereColliderCast.GetParams(config.Center, config.Radius, position, rotation);
                     return sphereCenter - sphereRadius * (rotation * transform.up);
                 case ColliderType.Capsule:
-                    (_, Vector3 capsuleBottom, float capsuleRadius, _) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, position, rotation);
+                    (_, Vector3 capsuleBottom, float capsuleRadius, _) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, config.CapsuleDirection, position, rotation);
                     return capsuleBottom + capsuleRadius * (rotation * Vector3.down);
                 case ColliderType.Point:
                 default:
@@ -101,7 +94,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
                     hits = Physics.SphereCastAll(sphereCenter, sphereRadius, direction, distance, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Capsule:
-                    (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, position, rotation);
+                    (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, config.CapsuleDirection, position, rotation);
                     hits = Physics.CapsuleCastAll(capsuleTop, capsuleBottom, capsuleRadius, direction, distance, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Point:
@@ -129,7 +122,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
                     overlap = Physics.OverlapSphere(sphereCenter, sphereRadius, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Capsule:
-                    (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, position, rotation);
+                    (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, config.CapsuleDirection, position, rotation);
                     overlap = Physics.OverlapCapsule(capsuleTop, capsuleBottom, capsuleRadius, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Point:
@@ -140,6 +133,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             }
 
             return overlap.Where(collider => collider.transform != transform);
+        }
+
+        /// <inheritdoc/>
+        protected override Collider SetupColliderComponent()
+        {
+            UpdateColliderParameters();
+            return generatedCollider;
         }
     }
 }

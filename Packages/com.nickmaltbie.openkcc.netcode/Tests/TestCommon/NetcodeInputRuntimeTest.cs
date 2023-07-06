@@ -297,16 +297,15 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
         [OneTimeSetUp]
         public virtual void OneTimeSetup()
         {
-#if UNITY_EDITOR
             if (!Application.isPlaying)
             {
-                UnityEngine.SceneManagement.Scene scene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.EmptyScene, UnityEditor.SceneManagement.NewSceneMode.Single);
+                UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.EmptyScene, UnityEditor.SceneManagement.NewSceneMode.Single);
             }
             else
             {
-                UnityEngine.SceneManagement.Scene scene = SceneManager.CreateScene($"EmptyTestScene-{System.Guid.NewGuid()}");
+                SceneManager.CreateScene($"EmptyTestScene-{System.Guid.NewGuid()}");
             }
-#endif
+
             netcodeHelper.OneTimeSetup();
         }
 

@@ -25,21 +25,28 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
     /// <summary>
     /// ColliderCast behaviour intended to work with any box collider shape.
     /// </summary>
-    [RequireComponent(typeof(BoxCollider))]
     public class BoxColliderCast : AbstractPrimitiveColliderCast
     {
         /// <summary>
-        /// Box collider associated with this object.
+        /// Center of the box collider.
         /// </summary>
-        private BoxCollider _boxCollider;
+        [SerializeField]
+        [Tooltip("Center of the box collider.")]
+        public Vector3 center = Vector3.zero;
 
         /// <summary>
-        /// Box Collider associated with this object.
+        /// Size of the box collider in 3D space.
         /// </summary>
-        internal BoxCollider BoxCollider => _boxCollider = _boxCollider ?? GetComponent<BoxCollider>();
+        [SerializeField]
+        [Tooltip("Size of the box collider in 3D space.")]
+        public Vector3 size = Vector3.one;
 
-        /// <inheritdoc/>
-        public override Collider Collider => BoxCollider;
+        /// <summary>
+        /// Box collider associated with this object.
+        /// </summary>
+        [HideInInspector]
+        [SerializeField]
+        private BoxCollider boxCollider;
 
         /// <summary>
         /// Gets transformed parameters describing this sphere collider for a given position and rotation
@@ -69,7 +76,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// and the size along each axis.</returns>
         public (Vector3, Vector3) GetParams(Vector3 position, Quaternion rotation, float buffer = 0)
         {
-            return GetParams(BoxCollider.center, BoxCollider.size, position, rotation, buffer);
+            return GetParams(center, size, position, rotation, buffer);
         }
 
         /// <inheritdoc/>
@@ -80,8 +87,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, Vector3 size) = GetParams(position, rotation);
-            return Physics
-                .OverlapBox(center, size / 2, rotation, layerMask, queryTriggerInteraction)
+            int overlap = Physics.OverlapBoxNonAlloc(center, size / 2, OverlapCache, rotation, layerMask, queryTriggerInteraction);
+            return Enumerable.Range(0, overlap).Select(i => OverlapCache[i])
                 .Where(c => c.transform != transform);
         }
 
@@ -95,7 +102,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, Vector3 size) = GetParams(position, rotation, -KCCUtils.Epsilon);
-            return Physics.BoxCastAll(center, size / 2, direction, rotation, distance, layerMask, queryTriggerInteraction)
+            int hits = Physics.BoxCastNonAlloc(center, size / 2, direction, HitCache, rotation, distance, layerMask, queryTriggerInteraction);
+            return Enumerable.Range(0, hits).Select(i => HitCache[i])
                 .Where(hit => hit.collider.transform != transform);
         }
 
@@ -104,6 +112,45 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         {
             (Vector3 center, Vector3 size) = GetParams(position, rotation, -KCCUtils.Epsilon);
             return center + rotation * Vector3.down * size.y / 2;
+        }
+
+        /// <inheritdoc/>
+        protected override Collider SetupColliderComponent()
+        {
+#if UNITY_EDITOR
+            // Some magic to auto update the parameters from existing collider
+            BoxCollider existingCollider = GetComponent<BoxCollider>();
+            if (boxCollider == null && existingCollider != null)
+            {
+                boxCollider = existingCollider;
+                center = existingCollider.center;
+                size = existingCollider.size;
+            }
+#endif
+
+            boxCollider = gameObject.GetComponent<BoxCollider>();
+            if (boxCollider == null)
+            {
+                boxCollider = gameObject.AddComponent<BoxCollider>();
+            }
+
+            return boxCollider;
+        }
+
+        /// <inheritdoc/>
+        public override void UpdateColliderParameters()
+        {
+            base.UpdateColliderParameters();
+            boxCollider.size = size;
+            boxCollider.center = center;
+        }
+
+        /// <summary>
+        /// Debug function to reset the attached collider attribute.
+        /// </summary>
+        internal void ResetConfigDebug()
+        {
+            boxCollider = null;
         }
     }
 }

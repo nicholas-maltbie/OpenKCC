@@ -66,7 +66,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7761971533017685566}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -82,10 +82,21 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7761971533017685566}
-  serializedVersion: 2
+  serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 1
@@ -248,6 +259,7 @@ MonoBehaviour:
     ditherDistance: 1
     thirdPersonCharacterBase: {fileID: 2439975086902803584}
     transitionTime: 0.1
+    rotatePlayer: 0
 --- !u!114 &7761971533017685351
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,17 +291,26 @@ MonoBehaviour:
   jumpActionReference: {fileID: 1481124759659193975, guid: 59c551f8259784a429773ca4a275eb03, type: 3}
   walkingSpeed: 7.5
   jumpVelocity: 10
+  upFlipThreshold: 80
 --- !u!135 &7851488135037656253
 SphereCollider:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 8
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7761971533017685566}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8044744690027935780
@@ -304,6 +325,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 304549214dc26404ca80af42dc075d31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 0.5
+  center: {x: 0, y: 0, z: 0}
+  sphereCollider: {fileID: 7851488135037656253}
 --- !u!114 &1595728926935731059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,6 +367,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 7761971533017685877}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ea215be6eb5ca6144930b9ab7e19a3cc, type: 3}
@@ -367,7 +392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ea215be6eb5ca6144930b9ab7e19a3cc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.45
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ea215be6eb5ca6144930b9ab7e19a3cc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -418,6 +443,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea215be6eb5ca6144930b9ab7e19a3cc, type: 3}
 --- !u!1 &2439975086902803584 stripped
 GameObject:

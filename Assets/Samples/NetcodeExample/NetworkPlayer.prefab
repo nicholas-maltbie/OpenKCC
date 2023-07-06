@@ -42,7 +42,6 @@ GameObject:
   - component: {fileID: 1928389238801210310}
   - component: {fileID: 1928389238801210309}
   - component: {fileID: 1928389238801210308}
-  - component: {fileID: 1014123492234295141}
   - component: {fileID: 6826506219202058344}
   - component: {fileID: 609951634059087576}
   - component: {fileID: 2198399490605762283}
@@ -82,10 +81,21 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1928389238801210305}
-  serializedVersion: 2
+  serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 1
@@ -93,31 +103,27 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!136 &1928389238801210308
 CapsuleCollider:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 8
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1928389238801210305}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
+  serializedVersion: 2
   m_Radius: 0.45
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!114 &1014123492234295141
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928389238801210305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb8881fd8d6f824459325a88b4790336, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pushPower: 4
 --- !u!114 &6826506219202058344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,6 +234,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c42e37a994cc4d43a30612e8d4227e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 0.45
+  height: 1.8
+  center: {x: 0, y: 0.9, z: 0}
+  capsuleDirection: 1
+  capsuleCollider: {fileID: 1928389238801210308}
 --- !u!114 &2198399490605762283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,6 +317,7 @@ MonoBehaviour:
     ditherDistance: 1
     thirdPersonCharacterBase: {fileID: 2540648659797885176}
     transitionTime: 0.1
+    rotatePlayer: 0
 --- !u!114 &3057974211939587652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,6 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 958f6019d666515419c7bf4b6a76110a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationVersion: v1.0.0
   stepHeight: 0.35
   maxWalkAngle: 60
   layerMask:
@@ -341,6 +354,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 1928389238801210310}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: a6620ec1a85f96046b6f5c723c02c68f, type: 3}
@@ -400,6 +414,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6620ec1a85f96046b6f5c723c02c68f, type: 3}
 --- !u!1 &2540648659797885176 stripped
 GameObject:

@@ -17,6 +17,9 @@
 // SOFTWARE.
 
 using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils.ColliderCast
@@ -228,8 +231,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// based on this collider configuration.
         /// </summary>
         /// <param name="go">Game object to attach collider to.</param>
-        /// <param name="cleanupCollider">Should existing colliders on
-        /// the object be cleaned up.</param>
+        /// <param name="cleanupCollider">Should existing colliders on the object be cleaned up.</param>
         /// <returns>Collider attached to the given game object.</returns>
         public Collider AttachCollider(GameObject go, bool cleanupCollider = true)
         {
@@ -237,7 +239,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             {
                 foreach (Collider col in go.GetComponents<Collider>())
                 {
-                    if (!Application.isPlaying)
+#if UNITY_EDITOR
+                    if (!EditorApplication.isPlaying)
                     {
                         GameObject.DestroyImmediate(col);
                     }
@@ -245,6 +248,10 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
                     {
                         GameObject.Destroy(col);
                     }
+#else
+                    GameObject.Destroy(col);
+#endif
+
                 }
             }
 

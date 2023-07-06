@@ -61,9 +61,9 @@ namespace nickmaltbie.OpenKCC.Editor
             Quaternion rotation)
         {
             Gizmos.color = fillColor;
-            Gizmos.DrawSphere(position + sphereColliderCast.SphereCollider.center, sphereColliderCast.SphereCollider.radius);
+            Gizmos.DrawSphere(position + sphereColliderCast.center, sphereColliderCast.radius);
             Gizmos.color = outlineColor;
-            Gizmos.DrawWireSphere(position + sphereColliderCast.SphereCollider.center, sphereColliderCast.SphereCollider.radius);
+            Gizmos.DrawWireSphere(position + sphereColliderCast.center, sphereColliderCast.radius);
         }
 
         /// <summary>
@@ -84,13 +84,13 @@ namespace nickmaltbie.OpenKCC.Editor
             Gizmos.color = fillColor;
             Gizmos.DrawMesh(
                 capsuleColliderCast.DebugCapsuleMesh,
-                position + capsuleColliderCast.CapsuleCollider.center,
+                position + capsuleColliderCast.center,
                 rotation);
             CapsuleDebug.DrawWireCapsule(
-                position + capsuleColliderCast.CapsuleCollider.center,
+                position + capsuleColliderCast.center,
                 rotation,
-                capsuleColliderCast.CapsuleCollider.radius,
-                capsuleColliderCast.CapsuleCollider.height,
+                capsuleColliderCast.radius,
+                capsuleColliderCast.height,
                 outlineColor);
         }
     }

@@ -17,6 +17,7 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 
@@ -24,7 +25,10 @@ namespace nickmaltbie.OpenKCC.Utils
 {
     /// <summary>
     /// Smoothed window of some value.
+    /// Also, unity cannot detect code coverage stats for generic classes. Going
+    /// to ignore metrics for this class.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class SmoothedWindow<E>
     {
         /// <summary>

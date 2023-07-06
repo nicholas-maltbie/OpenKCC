@@ -27,6 +27,44 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
     /// </summary>
     public abstract class AbstractPrimitiveColliderCast : MonoBehaviour, IColliderCast
     {
+        /// <summary>
+        /// Cache size for raycast hit.
+        /// </summary>
+        public const int RaycastHitCacheSize = 25;
+
+        /// <summary>
+        /// Cache size for collider overlap.
+        /// </summary>
+        public const int OverlapCacheSize = 25;
+
+        /// <summary>
+        /// Overlap hit cache.
+        /// </summary>
+        protected static Collider[] OverlapCache = new Collider[OverlapCacheSize];
+
+        /// <summary>
+        /// Raycast hit cache.
+        /// </summary>
+        protected static RaycastHit[] HitCache = new RaycastHit[RaycastHitCacheSize];
+
+        /// <summary>
+        /// Collider associated with this primitive collider cast.
+        /// </summary>
+        protected Collider _collider;
+
+        /// <summary>
+        /// Hiding flags for the collider component.
+        /// </summary>
+        protected virtual HideFlags ColliderHideFlags => HideFlags.NotEditable;
+
+        /// <summary>
+        /// Configure collider component.
+        /// </summary>
+        public virtual void Start()
+        {
+            SetupCollider();
+        }
+
         /// <inheritdoc/>
         public bool CastSelf(
             Vector3 position,
@@ -88,7 +126,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Primitive collider shape associated with this object.
         /// </summary>
-        public abstract Collider Collider { get; }
+        public Collider Collider => _collider = _collider ?? SetupColliderComponent();
 
         /// <inheritdoc/>
         public abstract Vector3 GetBottom(Vector3 position, Quaternion rotation);
@@ -98,5 +136,31 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
 
         /// <inheritdoc/>
         public abstract IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction);
+
+        /// <summary>
+        /// Update the parameters of the collider on a configuration change.
+        /// </summary>
+        public virtual void UpdateColliderParameters()
+        {
+            if (_collider != null)
+            {
+                _collider.hideFlags = ColliderHideFlags;
+            }
+        }
+
+        /// <summary>
+        /// Setup the collider component associated with this object.
+        /// </summary>
+        /// <returns>Collider created (or one that already exists) for this object.</returns>
+        protected abstract Collider SetupColliderComponent();
+
+        /// <summary>
+        /// Setup the collider associated with this object.
+        /// </summary>
+        public void SetupCollider()
+        {
+            _collider = SetupColliderComponent();
+            UpdateColliderParameters();
+        }
     }
 }

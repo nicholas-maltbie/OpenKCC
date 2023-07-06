@@ -34,22 +34,58 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
     {
         private CapsuleColliderCast colliderCast;
 
-        private CapsuleCollider collider;
-
         [SetUp]
         public void SetUp()
         {
             GameObject go = CreateGameObject();
-            collider = go.AddComponent<CapsuleCollider>();
-            collider.radius = 0.5f;
-            collider.center = Vector3.zero;
-            collider.height = 2;
             colliderCast = go.AddComponent<CapsuleColliderCast>();
+            colliderCast.radius = 0.5f;
+            colliderCast.center = Vector3.zero;
+            colliderCast.height = 2;
+            colliderCast.Start();
+        }
+
+        [Test]
+        public void Validate_LoadCapsuleColliderSettings()
+        {
+            colliderCast = CreateGameObject().AddComponent<CapsuleColliderCast>();
+            CapsuleCollider collider = colliderCast.gameObject.AddComponent<CapsuleCollider>();
+            collider.center = Vector3.zero;
+            collider.height = 2.0f;
+            collider.radius = 0.5f;
+
+            colliderCast.ResetConfigDebug();
+            colliderCast.SetupCollider();
+
+            Assert.AreEqual(Vector3.zero, colliderCast.center);
+            Assert.AreEqual(2.0f, colliderCast.height);
+            Assert.AreEqual(0.5f, colliderCast.radius);
+
+            collider.center = Vector3.forward;
+            collider.height = 5;
+            collider.radius = 1;
+
+            colliderCast.ResetConfigDebug();
+            colliderCast.SetupCollider();
+
+            Assert.AreEqual(Vector3.forward, colliderCast.center);
+            Assert.AreEqual(5, colliderCast.height);
+            Assert.AreEqual(1, colliderCast.radius);
+
+            GameObject.DestroyImmediate(collider);
+            colliderCast.SetupCollider();
+            CapsuleCollider generated = colliderCast.GetComponent<CapsuleCollider>();
+            Assert.IsNotNull(generated);
+
+            Assert.AreEqual(generated.center, colliderCast.center);
+            Assert.AreEqual(generated.height, colliderCast.height);
+            Assert.AreEqual(generated.radius, colliderCast.radius);
         }
 
         [Test]
         public void Validate_GetParams()
         {
+            CapsuleCollider collider = colliderCast.GetComponent<CapsuleCollider>();
             (Vector3 top, Vector3 bottom, float radius, float height) =
                 colliderCast.GetParams(Vector3.zero, Quaternion.Euler(Vector3.zero));
 
@@ -62,6 +98,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         [Test]
         public void Validate_GetBottom()
         {
+            CapsuleCollider collider = colliderCast.GetComponent<CapsuleCollider>();
             TestUtils.AssertInBounds(
                 colliderCast.GetBottom(Vector3.zero, Quaternion.identity),
                 new Vector3(0, -collider.height / 2, 0),
@@ -149,6 +186,14 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         public void Validate_DebugCapsuleMesh()
         {
             Assert.AreEqual(colliderCast.DebugCapsuleMesh, colliderCast.DebugCapsuleMesh);
+        }
+
+        [Test]
+        public void Validate_GetCapsuleRelativeUp()
+        {
+            Assert.AreEqual(Vector3.up, CapsuleColliderCast.GetCapsuleRelativeUp(CapsuleDirection.Y));
+            Assert.AreEqual(Vector3.right, CapsuleColliderCast.GetCapsuleRelativeUp(CapsuleDirection.X));
+            Assert.AreEqual(Vector3.forward, CapsuleColliderCast.GetCapsuleRelativeUp(CapsuleDirection.Z));
         }
 
         private GameObject MakeCube(Vector3? position = null)

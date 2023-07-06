@@ -58,6 +58,22 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             return raycastHitMock;
         }
 
+        public static IRaycastHit SetupDoRaycastInDirection(MockColliderCast colliderCastMock, Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f, bool didHit = false)
+        {
+            IRaycastHit raycastHit = KCCTestUtils.SetupRaycastHitMock(
+                collider,
+                point,
+                normal,
+                distance);
+            colliderCastMock.OnDoRaycastInDirection = (Vector3 position, Vector3 direction, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            {
+                hit = raycastHit;
+                return didHit;
+            };
+
+            return raycastHit;
+        }
+
         public static IRaycastHit SetupCastSelf(MockColliderCast colliderCastMock, Collider collider = null, Vector3 point = default, Vector3 normal = default, float distance = 0.0f, bool didHit = false)
         {
             IRaycastHit raycastHit = KCCTestUtils.SetupRaycastHitMock(

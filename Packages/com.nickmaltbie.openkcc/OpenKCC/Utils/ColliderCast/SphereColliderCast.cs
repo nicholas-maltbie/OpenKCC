@@ -25,21 +25,28 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
     /// <summary>
     /// ColliderCast behaviour intended to work with any sphere collider shape.
     /// </summary>
-    [RequireComponent(typeof(SphereCollider))]
     public class SphereColliderCast : AbstractPrimitiveColliderCast
     {
         /// <summary>
-        /// Sphere collider associated with this object.
+        /// Radius of the sphere.
         /// </summary>
-        private SphereCollider _sphereCollider;
+        [SerializeField]
+        [Tooltip("Radius of the sphere.")]
+        public float radius = 0.5f;
 
         /// <summary>
-        /// Sphere Collider associated with this object.
+        /// Center of the sphere.
         /// </summary>
-        internal SphereCollider SphereCollider => _sphereCollider = _sphereCollider ?? GetComponent<SphereCollider>();
+        [SerializeField]
+        [Tooltip("Center of the sphere.")]
+        public Vector3 center = Vector3.zero;
 
-        /// <inheritdoc/>
-        public override Collider Collider => SphereCollider;
+        /// <summary>
+        /// Sphere collider associated with this object.
+        /// </summary>
+        [HideInInspector]
+        [SerializeField]
+        private SphereCollider sphereCollider;
 
         /// <summary>
         /// Gets transformed parameters describing this sphere collider for a given position and rotation
@@ -54,7 +61,6 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         {
             Vector3 center = rotation * sphereCenter + position;
             float radius = sphereRadius + radiusMod;
-
             return (center, radius);
         }
 
@@ -68,7 +74,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// and the modified radius.</returns>
         public (Vector3, float) GetParams(Vector3 position, Quaternion rotation, float radiusMod = 0.0f)
         {
-            return GetParams(SphereCollider.center, SphereCollider.radius, position, rotation, radiusMod);
+            return GetParams(center, radius, position, rotation, radiusMod);
         }
 
         /// <inheritdoc/>
@@ -79,8 +85,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, float radius) = GetParams(position, rotation);
-            return Physics
-                .OverlapSphere(center, radius, layerMask, queryTriggerInteraction)
+            int overlap = Physics.OverlapSphereNonAlloc(center, radius, OverlapCache, layerMask, queryTriggerInteraction);
+            return Enumerable.Range(0, overlap).Select(i => OverlapCache[i])
                 .Where(c => c.transform != transform);
         }
 
@@ -94,7 +100,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
         {
             (Vector3 center, float radius) = GetParams(position, rotation);
-            return Physics.SphereCastAll(center, radius, direction, distance, layerMask, queryTriggerInteraction)
+            int hits = Physics.SphereCastNonAlloc(center, radius, direction, HitCache, distance, layerMask, queryTriggerInteraction);
+            return Enumerable.Range(0, hits).Select(i => HitCache[i])
                 .Where(hit => hit.collider.transform != transform);
         }
 
@@ -103,6 +110,45 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         {
             (Vector3 center, float radius) = GetParams(position, rotation);
             return center - radius * (rotation * transform.up);
+        }
+
+        /// <inheritdoc/>
+        protected override Collider SetupColliderComponent()
+        {
+#if UNITY_EDITOR
+            // Some magic to auto update the parameters from existing collider
+            SphereCollider existingCollider = GetComponent<SphereCollider>();
+            if (sphereCollider == null && existingCollider != null)
+            {
+                sphereCollider = existingCollider;
+                center = existingCollider.center;
+                radius = existingCollider.radius;
+            }
+#endif
+
+            sphereCollider = gameObject.GetComponent<SphereCollider>();
+            if (sphereCollider == null)
+            {
+                sphereCollider = gameObject.AddComponent<SphereCollider>();
+            }
+
+            return sphereCollider;
+        }
+
+        /// <inheritdoc/>
+        public override void UpdateColliderParameters()
+        {
+            base.UpdateColliderParameters();
+            sphereCollider.radius = radius;
+            sphereCollider.center = center;
+        }
+
+        /// <summary>
+        /// Debug function to reset the attached collider attribute.
+        /// </summary>
+        internal void ResetConfigDebug()
+        {
+            sphereCollider = null;
         }
     }
 }

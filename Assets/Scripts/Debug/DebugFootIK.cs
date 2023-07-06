@@ -128,7 +128,7 @@ namespace nickmaltbie.OpenKCC.Animation
         {
             foreach (Foot foot in Feet)
             {
-                _ = GetFootTarget(foot);
+                GetFootTarget(foot);
                 GetFootGroundedTransform(foot, out _, out _, out _, out _, out _, debugLine: true);
             }
         }
@@ -138,11 +138,6 @@ namespace nickmaltbie.OpenKCC.Animation
         /// </summary>
         private void UpdateFootTargets()
         {
-            _ = Vector3.zero;
-            _ = Quaternion.identity;
-            _ = Vector3.up;
-            _ = transform.forward;
-
             foreach (Foot foot in Feet)
             {
                 FootTarget target = GetFootTarget(foot);
@@ -183,7 +178,6 @@ namespace nickmaltbie.OpenKCC.Animation
                     case DebugType.LiftFeet:
                         if (target.State == FootState.Grounded)
                         {
-                            _ = target.UnderReleaseThreshold();
                             bool grounded = GetFootTargetPosViaHips(foot, out groundedPos, out rotation, out groundNormal, out floor, out footForward, false);
                             if (!grounded)
                             {

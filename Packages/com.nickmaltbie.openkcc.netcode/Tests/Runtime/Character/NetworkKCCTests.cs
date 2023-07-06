@@ -299,7 +299,7 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.Character
             anim.runtimeAnimatorController = controller;
 
             // setup capsule collider
-            CapsuleCollider capsuleCollider = go.GetComponent<CapsuleCollider>();
+            CapsuleCollider capsuleCollider = go.AddComponent<CapsuleCollider>();
             capsuleCollider.center = new Vector3(0, 1, 0);
             capsuleCollider.height = 2.0f;
             capsuleCollider.radius = 0.5f;

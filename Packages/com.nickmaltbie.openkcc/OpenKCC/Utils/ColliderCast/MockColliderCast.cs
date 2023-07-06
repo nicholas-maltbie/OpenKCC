@@ -17,10 +17,15 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace nickmaltbie.OpenKCC.Utils.ColliderCast
 {
+    /// <summary>
+    /// This class is only meant for testing, no reason to include in code coverage metrics.
+    /// </summary>
+    [ExcludeFromCodeCoverage]
     public class MockColliderCast : MonoBehaviour, IColliderCast
     {
         /// <summary>

@@ -41,8 +41,18 @@ namespace nickmaltbie.OpenKCC.Editor
             // Apply changes to the serializedProperty - always do this at the end of OnInspectorGUI.
             if (serializedObject.ApplyModifiedProperties())
             {
-                (target as PrimitiveColliderCast).ConfigureColliders();
+                (target as PrimitiveColliderCast).UpdateColliderParameters();
             }
+        }
+    }
+
+    [CustomEditor(typeof(AbstractPrimitiveColliderCast), true)]
+    public class AbstractPrimitiveColliderCastEditor : UnityEditor.Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+            (target as AbstractPrimitiveColliderCast).SetupCollider();
         }
     }
 }

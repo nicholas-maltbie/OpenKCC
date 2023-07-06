@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7302728890703124798}
   - component: {fileID: 7302728890703124785}
   - component: {fileID: 9195087065671894528}
-  - component: {fileID: 8181176880036705681}
   - component: {fileID: 2388910886379166364}
   - component: {fileID: 7302728892010667456}
   - component: {fileID: 7476057024634496287}
@@ -80,10 +79,21 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7302728890703124789}
-  serializedVersion: 2
+  serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -101,19 +111,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de2923ec207dbd24cbc85162a9a5130c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8181176880036705681
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7302728890703124789}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb8881fd8d6f824459325a88b4790336, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pushPower: 4
 --- !u!114 &2388910886379166364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,11 +260,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   config:
     type: 3
-    center: {x: 0, y: 1, z: 0}
-    size: {x: 1, y: 2, z: 1}
-    radius: 0.5
-    height: 0
+    boxCenter: {x: 0, y: 0, z: 0}
+    boxSize: {x: 1, y: 1, z: 1}
+    sphereCenter: {x: 0, y: 0, z: 0}
+    sphereRadius: 0.5
+    capsuleCenter: {x: 0, y: 0, z: 0}
+    capsuleRadius: 0.5
+    capsuleHeight: 2
     capsuleDirection: 0
+    pointCenter: {x: 0, y: 0, z: 0}
+  generatedCollider: {fileID: 0}
 --- !u!1 &7302728891450753470
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,6 +306,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 7302728890703124786}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: f9a65e0222533fa4292d5c9cce96ca3c, type: 3}
@@ -363,6 +366,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9a65e0222533fa4292d5c9cce96ca3c, type: 3}
 --- !u!95 &3761091271208425112 stripped
 Animator:

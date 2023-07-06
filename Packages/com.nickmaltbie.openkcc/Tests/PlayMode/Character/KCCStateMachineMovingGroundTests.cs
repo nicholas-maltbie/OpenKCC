@@ -72,14 +72,9 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
         )
         {
             kccStateMachine.transform.position = relativePos;
+            yield return null;
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
-
-            // Wait until player is no longer overlapping with object.
-            while (KCCGroundedState.DistanceToGround <= 0)
-            {
-                yield return new WaitForFixedUpdate();
-            }
 
             // Move the box forward and wait a fixed update, the player should
             // move along with the box

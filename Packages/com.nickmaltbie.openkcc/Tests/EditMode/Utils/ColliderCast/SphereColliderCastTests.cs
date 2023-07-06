@@ -34,21 +34,50 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
     {
         private SphereColliderCast sphereCast;
 
-        private SphereCollider sphere;
-
         [SetUp]
         public void SetUp()
         {
             GameObject go = CreateGameObject();
-            sphere = go.AddComponent<SphereCollider>();
-            sphere.radius = 0.5f;
-            sphere.center = Vector3.zero;
             sphereCast = go.AddComponent<SphereColliderCast>();
+            sphereCast.Start();
+        }
+
+        [Test]
+        public void Validate_LoadCapsuleColliderSettings()
+        {
+            sphereCast = CreateGameObject().AddComponent<SphereColliderCast>();
+            SphereCollider collider = sphereCast.gameObject.AddComponent<SphereCollider>();
+            collider.center = Vector3.zero;
+            collider.radius = 0.5f;
+
+            sphereCast.ResetConfigDebug();
+            sphereCast.Start();
+
+            Assert.AreEqual(Vector3.zero, sphereCast.center);
+            Assert.AreEqual(0.5f, sphereCast.radius);
+
+            collider.center = Vector3.forward;
+            collider.radius = 1;
+
+            sphereCast.ResetConfigDebug();
+            sphereCast.Start();
+
+            Assert.AreEqual(Vector3.forward, sphereCast.center);
+            Assert.AreEqual(1, sphereCast.radius);
+
+            GameObject.DestroyImmediate(collider);
+            sphereCast.Start();
+            SphereCollider generated = sphereCast.GetComponent<SphereCollider>();
+            Assert.IsNotNull(generated);
+
+            Assert.AreEqual(generated.center, sphereCast.center);
+            Assert.AreEqual(generated.radius, sphereCast.radius);
         }
 
         [Test]
         public void Validate_GetBottom()
         {
+            SphereCollider sphere = sphereCast.GetComponent<SphereCollider>();
             TestUtils.AssertInBounds(
                 sphereCast.GetBottom(Vector3.zero, Quaternion.identity),
                 new Vector3(0, -sphere.radius, 0),
