@@ -22,7 +22,6 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
-
 namespace nickmaltbie.OpenKCC.Utils.ColliderCast
 {
     /// <summary>

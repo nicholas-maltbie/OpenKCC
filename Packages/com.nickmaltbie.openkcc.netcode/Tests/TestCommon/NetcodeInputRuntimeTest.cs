@@ -299,11 +299,11 @@ namespace nickmaltbie.openkcc.Tests.netcode.TestCommon
         {
             if (!Application.isPlaying)
             {
-                UnityEngine.SceneManagement.Scene scene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.EmptyScene, UnityEditor.SceneManagement.NewSceneMode.Single);
+                _ = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.EmptyScene, UnityEditor.SceneManagement.NewSceneMode.Single);
             }
             else
             {
-                UnityEngine.SceneManagement.Scene scene = SceneManager.CreateScene($"EmptyTestScene-{System.Guid.NewGuid()}");
+                _ = SceneManager.CreateScene($"EmptyTestScene-{System.Guid.NewGuid()}");
             }
 
             netcodeHelper.OneTimeSetup();

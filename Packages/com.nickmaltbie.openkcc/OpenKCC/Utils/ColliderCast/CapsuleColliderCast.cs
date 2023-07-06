@@ -219,6 +219,6 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         internal void ResetConfigDebug()
         {
             capsuleCollider = null;
-        } 
+        }
     }
 }

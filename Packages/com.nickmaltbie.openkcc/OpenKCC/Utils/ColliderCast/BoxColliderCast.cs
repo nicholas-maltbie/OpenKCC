@@ -151,6 +151,6 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         internal void ResetConfigDebug()
         {
             boxCollider = null;
-        } 
+        }
     }
 }

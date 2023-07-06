@@ -29,7 +29,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 #if UNITY_EDITOR
-using UnityEditor;
 #endif
 
 namespace nickmaltbie.OpenKCC.Tests.TestCommon

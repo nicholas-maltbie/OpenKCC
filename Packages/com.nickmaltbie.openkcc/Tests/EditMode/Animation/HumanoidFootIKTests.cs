@@ -257,7 +257,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
                     calls++;
                     return true;
                 };
-            
+
             footIK.UpdateFootPosition(Foot.RightFoot, Vector3.forward);
             Assert.IsTrue(calls >= 2);
         }

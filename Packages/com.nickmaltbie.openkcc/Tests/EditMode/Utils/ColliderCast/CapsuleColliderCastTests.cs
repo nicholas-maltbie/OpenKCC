@@ -82,7 +82,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
             Assert.AreEqual(generated.radius, colliderCast.radius);
         }
 
-
         [Test]
         public void Validate_GetParams()
         {

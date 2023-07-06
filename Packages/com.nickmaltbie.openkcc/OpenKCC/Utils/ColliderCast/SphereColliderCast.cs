@@ -149,6 +149,6 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         internal void ResetConfigDebug()
         {
             sphereCollider = null;
-        } 
+        }
     }
 }
