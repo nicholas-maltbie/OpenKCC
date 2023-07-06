@@ -68,6 +68,9 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.EditMode.Player
                 update++;
                 Assert.IsTrue(update <= maxUpdate);
             }
+
+            // Verify teleporting
+            smooth.OnPlayerTeleport(Vector3.forward, Quaternion.identity);
         }
     }
 }

@@ -88,6 +88,9 @@ namespace nickmaltbie.openkcc.Tests.netcode.Runtime.CameraControls
                 Assert.LessOrEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Pitch);
                 Assert.LessOrEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.Yaw);
                 Assert.LessOrEqual(-cameraController.config.rotationRate * 0.1f * 0.25f, cameraController.PlayerHeading.eulerAngles.y);
+
+                Assert.IsNotNull(cameraController.CameraBase);
+                Assert.IsNotNull(cameraController.PlayerBase);
             }
         }
     }
