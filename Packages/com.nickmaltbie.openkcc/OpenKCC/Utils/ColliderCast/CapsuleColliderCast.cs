@@ -85,7 +85,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <param name="capsuleCenter">Center of the capsule collider in relative position.</param>
         /// <param name="capsuleRadius">Radius of the capsule</param>
         /// <param name="capsuleHeight">Height of the capsule.</param>
-        /// <param name="capsuleDirection">Direction of the capsule.<param>
+        /// <param name="capsuleDirection">Direction of the capsule.</param>
         /// <param name="position">Position of the object.</param>
         /// <param name="rotation">Rotation of the object.</param>
         /// <param name="radiusMod">Modifier to add to radius when computing shape of collider.</param>
@@ -191,7 +191,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <returns></returns>
         public static Vector3 GetCapsuleRelativeUp(CapsuleDirection capsuleDirection)
         {
-            switch(capsuleDirection)
+            switch (capsuleDirection)
             {
                 default:
                 case CapsuleDirection.Y:
@@ -210,7 +210,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <returns>CapsuleCollider direction from int to CapsuleDirection</returns>
         private static CapsuleDirection GetCapsuleDirection(int dir)
         {
-            return (CapsuleDirection) dir;
+            return (CapsuleDirection)dir;
         }
     }
 }
