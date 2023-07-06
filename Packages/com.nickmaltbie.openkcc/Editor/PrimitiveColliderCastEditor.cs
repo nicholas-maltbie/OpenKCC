@@ -45,4 +45,14 @@ namespace nickmaltbie.OpenKCC.Editor
             }
         }
     }
+
+    [CustomEditor(typeof(AbstractPrimitiveColliderCast), true)]
+    public class AbstractPrimitiveColliderCastEditor : UnityEditor.Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+            (target as AbstractPrimitiveColliderCast).SetupCollider();
+        }
+    }
 }

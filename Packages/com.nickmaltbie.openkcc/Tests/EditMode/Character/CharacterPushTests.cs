@@ -93,21 +93,23 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             int hits = 0;
             IRaycastHit noHit = KCCTestUtils.SetupRaycastHitMock(default(Collider), Vector3.zero, Vector3.zero, Mathf.Infinity);
-            IRaycastHit pushableHit = KCCTestUtils.SetupRaycastHitMock(pushable.GetComponent<Collider>(), Vector3.zero, Vector3.up, KCCUtils.Epsilon);
+            IRaycastHit pushableHit = KCCTestUtils.SetupRaycastHitMock(pushable.GetComponent<Collider>(), Vector3.zero, Vector3.up, 0.1f);
             mockColliderCast.OnCastSelf = (Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
             {
                 // Only return hit for first hit
-                if (++hits <= 1)
+                if (hits < 1)
                 {
                     hit = pushableHit;
-                    return false;
+                    hits++;
+                    return true;
                 }
 
                 hit = noHit;
-                return true;
+                return false;
             };
 
-            character.GetMovement(Vector3.forward);
+            character.MovePlayer(Vector3.forward);
+            Assert.IsTrue(hits >= 1);
         }
     }
 }

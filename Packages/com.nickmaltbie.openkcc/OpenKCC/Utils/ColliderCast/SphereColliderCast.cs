@@ -142,5 +142,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             sphereCollider.radius = radius;
             sphereCollider.center = center;
         }
+
+        /// <summary>
+        /// Debug function to reset the attached collider attribute.
+        /// </summary>
+        internal void ResetConfigDebug()
+        {
+            sphereCollider = null;
+        } 
     }
 }

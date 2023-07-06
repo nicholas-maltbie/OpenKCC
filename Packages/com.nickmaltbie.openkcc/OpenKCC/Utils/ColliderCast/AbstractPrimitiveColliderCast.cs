@@ -60,15 +60,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Configure collider component.
         /// </summary>
-        public virtual void Awake()
-        {
-            SetupCollider();
-        }
-
-        /// <summary>
-        /// Update parameters on validation.
-        /// </summary>
-        public virtual void OnValidate()
+        public virtual void Start()
         {
             SetupCollider();
         }
@@ -165,7 +157,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Setup the collider associated with this object.
         /// </summary>
-        protected void SetupCollider()
+        public void SetupCollider()
         {
             _collider = SetupColliderComponent();
             UpdateColliderParameters();

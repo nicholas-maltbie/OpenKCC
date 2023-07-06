@@ -68,6 +68,12 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
 
             // Setup the step hit to return a different normal
             KCCTestUtils.SetupCastSelf(colliderCastMock, default, default, Vector3.forward, KCCUtils.Epsilon, true);
+            KCCTestUtils.SetupDoRaycastInDirection(colliderCastMock, default, default, Vector3.left, KCCUtils.Epsilon, true);
+            groundedState = engine.CheckGrounded(false, true);
+            Assert.AreEqual(Vector3.left, groundedState.SurfaceNormal);
+
+            KCCTestUtils.SetupCastSelf(colliderCastMock, default, default, Vector3.forward, KCCUtils.Epsilon, true);
+            KCCTestUtils.SetupDoRaycastInDirection(colliderCastMock, default, default, Vector3.left, KCCUtils.Epsilon, false);
             groundedState = engine.CheckGrounded(false, true);
             Assert.AreEqual(Vector3.forward, groundedState.SurfaceNormal);
         }

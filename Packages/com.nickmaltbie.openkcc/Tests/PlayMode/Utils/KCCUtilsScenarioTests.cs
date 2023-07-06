@@ -81,7 +81,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
             playerColliderCast.center = new Vector3(0, 1, 0);
             playerColliderCast.radius = 0.5f;
             playerColliderCast.height = 2.0f;
-            playerColliderCast.UpdateColliderParameters();
+            playerColliderCast.SetupCollider();
 
             Mesh capsuleMesh = CapsuleMaker.CapsuleData(depth: 1.0f);
             capsuleMesh.vertices = capsuleMesh.vertices.Select(vert => vert + Vector3.up).ToArray();

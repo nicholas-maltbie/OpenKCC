@@ -144,5 +144,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             boxCollider.size = size;
             boxCollider.center = center;
         }
+
+        /// <summary>
+        /// Debug function to reset the attached collider attribute.
+        /// </summary>
+        internal void ResetConfigDebug()
+        {
+            boxCollider = null;
+        } 
     }
 }

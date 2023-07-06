@@ -28,6 +28,9 @@ using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace nickmaltbie.OpenKCC.Tests.TestCommon
 {
@@ -117,16 +120,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         public override void TearDown()
         {
             InputSystem.RemoveDevice(gamepad);
-
-            if (Application.isPlaying)
-            {
-                GameObject.Destroy(kccStateMachine.gameObject);
-            }
-            else
-            {
-                GameObject.DestroyImmediate(kccStateMachine.gameObject);
-            }
-
+            GameObject.DestroyImmediate(kccStateMachine.gameObject);
             base.TearDown();
         }
     }

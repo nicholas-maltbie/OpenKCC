@@ -141,12 +141,5 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             UpdateColliderParameters();
             return generatedCollider;
         }
-
-        /// <summary>
-        /// Do nothing, this is handled by editor script
-        /// </summary>
-        public override void OnValidate()
-        {
-        }
     }
 }

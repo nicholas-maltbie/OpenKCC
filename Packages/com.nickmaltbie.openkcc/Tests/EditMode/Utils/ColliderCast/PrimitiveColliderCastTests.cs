@@ -133,7 +133,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         public void Validate_PushOutOverlapping_NoOverlap([ValueSource(nameof(ColliderTypes))] ColliderType colliderType)
         {
             colliderCast.config.type = colliderType;
-            colliderCast.Awake();
+            colliderCast.Start();
             TestUtils.AssertInBounds(
                 colliderCast.PushOutOverlapping(Vector3.zero, Quaternion.identity, 10.0f),
                 Vector3.zero,
@@ -144,7 +144,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         public IEnumerator Validate_PushOutOverlapping_OneOverlap([ValueSource(nameof(ColliderTypes))] ColliderType colliderType)
         {
             colliderCast.config.type = colliderType;
-            colliderCast.Awake();
+            colliderCast.Start();
             MakeCube();
             yield return null;
             TestUtils.AssertInBounds(
@@ -157,7 +157,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         public IEnumerator Validate_PushOutOverlapping_MultipleOverlap([ValueSource(nameof(ColliderTypes))] ColliderType colliderType)
         {
             colliderCast.config.type = colliderType;
-            colliderCast.Awake();
+            colliderCast.Start();
             MakeCube();
             var target1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             target1.transform.localScale = Vector3.one;

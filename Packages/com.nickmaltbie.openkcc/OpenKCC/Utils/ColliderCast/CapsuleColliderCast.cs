@@ -212,5 +212,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         {
             return (CapsuleDirection)dir;
         }
+
+        /// <summary>
+        /// Debug function to reset the attached collider attribute.
+        /// </summary>
+        internal void ResetConfigDebug()
+        {
+            capsuleCollider = null;
+        } 
     }
 }

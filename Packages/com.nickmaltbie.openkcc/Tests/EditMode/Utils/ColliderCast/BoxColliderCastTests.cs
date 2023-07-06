@@ -39,6 +39,45 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         {
             GameObject go = CreateGameObject();
             boxCast = go.AddComponent<BoxColliderCast>();
+            boxCast.Start();
+        }
+
+        /// <summary>
+        /// Verify that the awake function for the collider cast will
+        /// load properties form the attached collider if one exists.
+        /// </summary>
+        [Test]
+        public void Validate_LoadBoxColliderSettings()
+        {
+            boxCast = CreateGameObject().AddComponent<BoxColliderCast>();
+            BoxCollider collider = boxCast.gameObject.AddComponent<BoxCollider>();
+            boxCast.enabled = false;
+            collider.center = Vector3.zero;
+            collider.size = Vector3.one;
+
+            boxCast.ResetConfigDebug();
+            boxCast.SetupCollider();
+
+            Assert.AreEqual(Vector3.zero, boxCast.center);
+            Assert.AreEqual(Vector3.one, boxCast.size);
+
+            collider.center = Vector3.forward;
+            collider.size = Vector3.one * 5;
+
+            boxCast.ResetConfigDebug();
+            boxCast.SetupCollider();
+
+            Assert.AreEqual(Vector3.forward, boxCast.center);
+            Assert.AreEqual(Vector3.one * 5, boxCast.size);
+
+            GameObject.DestroyImmediate(collider);
+            boxCast.ResetConfigDebug();
+            boxCast.SetupCollider();
+            BoxCollider generated = boxCast.GetComponent<BoxCollider>();
+            Assert.IsNotNull(generated);
+
+            Assert.AreEqual(generated.center, boxCast.center);
+            Assert.AreEqual(generated.size, boxCast.size);
         }
 
         [Test]

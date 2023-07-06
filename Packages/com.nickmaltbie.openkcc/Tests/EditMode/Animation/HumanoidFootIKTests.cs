@@ -145,6 +145,16 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
         }
 
         /// <summary>
+        /// Test to verify constants for foot ik.
+        /// </summary>
+        [Test]
+        public void Validate_HumanoidFootIK_Constants()
+        {
+            Assert.IsTrue(HumanoidFootIK.Feet.Contains(Foot.LeftFoot));
+            Assert.IsTrue(HumanoidFootIK.Feet.Contains(Foot.RightFoot));
+        }
+
+        /// <summary>
         /// Validate that the <see cref="nickmaltbie.OpenKCC.Animation.HumanoidFootIK.UpdateFeetPositions(Vector3)"/>
         /// will properly translate foot targets to simulate player standing on moving
         /// ground.
@@ -214,6 +224,42 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Animation
             footIK.UpdateFeetPositions(Vector3.forward);
             Assert.AreEqual(FootState.Released, footIK.LeftFootTarget.State);
             Assert.AreEqual(FootState.Released, footIK.RightFootTarget.State);
+
+            // Also do a zero delta to verify skip
+            footIK.UpdateFeetPositions(Vector3.zero);
+            Assert.AreEqual(FootState.Released, footIK.LeftFootTarget.State);
+            Assert.AreEqual(FootState.Released, footIK.RightFootTarget.State);
+        }
+
+        /// <summary>
+        /// Validate that the feet positions use the overlap position when updating position not
+        /// the animator position.
+        /// </summary>
+        [Test]
+        public void Validate_HumanoidFootIK_UpdateFootPositionWhenOverlap()
+        {
+            footIK.RightFootTarget.StartStride(Vector3.forward, Quaternion.identity, CreateGameObject(), Vector3.forward, Vector3.up, false);
+
+            var overlapHit = new MockRaycastHit() { normal = Vector3.up, point = Vector3.forward + Vector3.up };
+            var otherHit = new MockRaycastHit() { normal = Vector3.up, point = Vector3.forward + Vector3.up };
+            int calls = 0;
+            raycastHelperMock.OnDoRaycastInDirection =
+                (Vector3 pos, Vector3 dir, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+                {
+                    if (calls == 0)
+                    {
+                        hit = overlapHit;
+                        calls++;
+                        return true;
+                    }
+
+                    hit = otherHit;
+                    calls++;
+                    return true;
+                };
+            
+            footIK.UpdateFootPosition(Foot.RightFoot, Vector3.forward);
+            Assert.IsTrue(calls >= 2);
         }
 
         /// <summary>

@@ -17,7 +17,11 @@
 // SOFTWARE.
 
 using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
+
 
 namespace nickmaltbie.OpenKCC.Utils.ColliderCast
 {
@@ -236,7 +240,8 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             {
                 foreach (Collider col in go.GetComponents<Collider>())
                 {
-                    if (!Application.isPlaying)
+#if UNITY_EDITOR
+                    if (!EditorApplication.isPlaying)
                     {
                         GameObject.DestroyImmediate(col);
                     }
@@ -244,6 +249,10 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
                     {
                         GameObject.Destroy(col);
                     }
+#else
+                    GameObject.Destroy(col);
+#endif
+
                 }
             }
 
