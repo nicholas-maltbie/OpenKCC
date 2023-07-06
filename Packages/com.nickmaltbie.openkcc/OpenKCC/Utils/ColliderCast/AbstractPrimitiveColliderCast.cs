@@ -134,7 +134,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Primitive collider shape associated with this object.
         /// </summary>
-        public Collider Collider => _collider ??= SetupColliderComponent();
+        public Collider Collider => _collider = _collider ?? SetupColliderComponent();
 
         /// <inheritdoc/>
         public abstract Vector3 GetBottom(Vector3 position, Quaternion rotation);
