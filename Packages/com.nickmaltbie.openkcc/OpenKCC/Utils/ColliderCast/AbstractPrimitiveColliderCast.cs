@@ -30,12 +30,12 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <summary>
         /// Cache size for raycast hit.
         /// </summary>
-        public const int RaycastHitCacheSize = 10;
+        public const int RaycastHitCacheSize = 25;
 
         /// <summary>
         /// Cache size for collider overlap.
         /// </summary>
-        public const int OverlapCacheSize = 10;
+        public const int OverlapCacheSize = 25;
 
         /// <summary>
         /// Overlap hit cache.
