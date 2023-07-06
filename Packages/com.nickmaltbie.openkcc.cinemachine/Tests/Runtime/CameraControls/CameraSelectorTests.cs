@@ -32,12 +32,12 @@ namespace nickmaltbie.OpenKCC.Tests.cinemachine.Runtime.CameraControls
         [UnityTest]
         public IEnumerator Validate_CameraSelector_SingletonInit()
         {
-            _ = InputSystem.AddDevice<Gamepad>();
-            _ = CreateGameObject().AddComponent<CinemachineVirtualCamera>();
-            _ = CreateGameObject().AddComponent<CinemachineVirtualCamera>();
+            InputSystem.AddDevice<Gamepad>();
+            CreateGameObject().AddComponent<CinemachineVirtualCamera>();
+            CreateGameObject().AddComponent<CinemachineVirtualCamera>();
 
             CameraSelector selector1 = CreateGameObject().AddComponent<CameraSelector>();
-            _ = CreateGameObject().AddComponent<CameraSelector>();
+            CreateGameObject().AddComponent<CameraSelector>();
 
             yield return null;
             Assert.AreEqual(selector1, CameraSelector.Instance);

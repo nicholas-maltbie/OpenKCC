@@ -156,12 +156,12 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
 
             if (isPushable)
             {
-                _ = pushable.AddComponent<Pushable>();
+                pushable.AddComponent<Pushable>();
             }
 
             if (addRigidbody)
             {
-                _ = pushable.AddComponent<Rigidbody>();
+                pushable.AddComponent<Rigidbody>();
             }
 
             Rigidbody rigidbody = pushable.GetComponent<Rigidbody>();
