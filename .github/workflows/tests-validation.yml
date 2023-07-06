@@ -47,7 +47,7 @@ jobs:
           testMode: All
           checkName: All Test Results
           customParameters: -testFilter "nickmaltbie.OpenKCC.*" -nographics
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC'
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+nickmaltbie.OpenKCC*,+nickmaltbie.OpenKCC.Tests*'
 
       - name: Copy Coverage Results
         run: |
