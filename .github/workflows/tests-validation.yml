@@ -17,7 +17,10 @@ jobs:
           - version: ""
             project_path: "."
             post_comment: true
-          - version: 2021.3.25f1
+          - version: 2022.3.4f1
+            project_path: ./Versioning/OpenKCC_2022.3
+            post_comment: false
+          - version: 2021.3.28f1
             project_path: ./Versioning/OpenKCC_2021.3
             post_comment: false
           - version: 2020.3.48f1
