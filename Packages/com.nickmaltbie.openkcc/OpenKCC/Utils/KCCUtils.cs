@@ -115,6 +115,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="dist">Maximum distance the kcc can snap.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
         /// <param name="layerMask">Layer mask for computing player collisions.</param>
+        /// <param name="skinWidth">Skin width for computing collisions with IColliderCast.</param>
         /// <returns></returns>
         public static Vector3 GetSnapDelta(
             Vector3 position,
@@ -131,11 +132,12 @@ namespace nickmaltbie.OpenKCC.Utils
                 dist,
                 out IRaycastHit hit,
                 layerMask,
-                queryTriggerInteraction: QueryTriggerInteraction.Ignore);
+                QueryTriggerInteraction.Ignore,
+                0.0f);
 
-            if (didHit && hit.distance > Epsilon)
+            if (didHit && hit.distance > 0)
             {
-                return dir * (hit.distance - Epsilon * 2);
+                return dir * hit.distance;
             }
 
             return Vector3.zero;
@@ -189,13 +191,14 @@ namespace nickmaltbie.OpenKCC.Utils
                 snapPos,
                 rotation,
                 momentum.normalized,
-                config.StepUpDepth + Epsilon,
+                config.StepUpDepth,
                 out IRaycastHit snapHit,
                 config.LayerMask,
-                queryTriggerInteraction: QueryTriggerInteraction.Ignore);
+                QueryTriggerInteraction.Ignore,
+                config.SkinWidth);
 
             // If they can move without instantly hitting something, then snap them up
-            if (!didSnapHit || (snapHit.distance >= Epsilon && snapHit.distance > config.StepUpDepth))
+            if (!didSnapHit || snapHit.distance > config.StepUpDepth)
             {
                 // Have the player move up up to the remaining momentum
                 float distanceMove = Mathf.Min(momentum.magnitude, distanceToSnap);
@@ -337,7 +340,8 @@ namespace nickmaltbie.OpenKCC.Utils
                 distance,
                 out IRaycastHit hit,
                 config.LayerMask,
-                queryTriggerInteraction: QueryTriggerInteraction.Ignore))
+                QueryTriggerInteraction.Ignore,
+                config.SkinWidth))
             {
                 // If there is no hit, move to desired position
                 return new KCCBounce
@@ -352,7 +356,7 @@ namespace nickmaltbie.OpenKCC.Utils
             }
 
             // If we are overlapping, just exit
-            if (hit.distance == 0)
+            if (hit.distance <= 0)
             {
                 return new KCCBounce
                 {

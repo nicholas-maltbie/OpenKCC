@@ -73,7 +73,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
         /// <param name="skinWidth">Buffer around player when casting object.</param>
         /// <returns>True if an object is hit within distance, false otherwise.</returns>
-        bool CastSelf(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction, float skinWidth = 0.0f);
+        bool CastSelf(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction, float skinWidth = 0.01f);
 
         /// <summary>
         /// Get the vector to push this object out of overlapping objects with a max distance.

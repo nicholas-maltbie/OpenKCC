@@ -336,7 +336,8 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.rotation,
                 MaxPushSpeed * unityService.fixedDeltaTime,
                 layerMask,
-                QueryTriggerInteraction.Ignore);
+                QueryTriggerInteraction.Ignore,
+                SkinWidth);
 
             // Allow player to move
             KCCBounce[] bounces = moves.SelectMany(move => GetMovement(move)).ToArray();
@@ -424,7 +425,8 @@ namespace nickmaltbie.OpenKCC.Character
                 -Up,
                 GroundCheckDistance,
                 out IRaycastHit hit,
-                layerMask);
+                layerMask,
+                skinWidth: SkinWidth);
 
             Vector3 normal = hit.normal;
 
@@ -436,9 +438,9 @@ namespace nickmaltbie.OpenKCC.Character
             {
                 // Check if we're walking down stairs
                 bool overrideNormal = ColliderCast.DoRaycastInDirection(
-                    transform.position,
+                    transform.position + skinWidth * Up,
                     -Up,
-                    GroundCheckDistance,
+                    GroundCheckDistance + skinWidth,
                     out IRaycastHit stepHit,
                     layerMask);
                 if (overrideNormal)
@@ -452,7 +454,7 @@ namespace nickmaltbie.OpenKCC.Character
                 onGround: didHit,
                 angle: Vector3.Angle(normal, Up),
                 surfaceNormal: normal,
-                groundHitPosition: hit.distance > 0 ? hit.point : GroundedState.GroundHitPosition,
+                groundHitPosition: GroundedState.GroundHitPosition,
                 floor: hit.collider?.gameObject,
                 groundedDistance: GroundedDistance,
                 maxWalkAngle: MaxWalkAngle);

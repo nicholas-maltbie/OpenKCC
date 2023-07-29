@@ -65,7 +65,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             switch (config.type)
             {
                 case ColliderType.Box:
-                    (Vector3 boxCenter, Vector3 boxSize) = BoxColliderCast.GetParams(config.Center, config.Size, position, rotation, -KCCUtils.Epsilon);
+                    (Vector3 boxCenter, Vector3 boxSize) = BoxColliderCast.GetParams(config.Center, config.Size, position, rotation);
                     return boxCenter + rotation * Vector3.down * boxSize.y / 2;
                 case ColliderType.Sphere:
                     (Vector3 sphereCenter, float sphereRadius) = SphereColliderCast.GetParams(config.Center, config.Radius, position, rotation);
@@ -75,7 +75,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
                     return capsuleBottom + capsuleRadius * (rotation * Vector3.down);
                 case ColliderType.Point:
                 default:
-                    return position + rotation * (config.Center + Vector3.down * KCCUtils.Epsilon);
+                    return position + rotation * config.Center;
             }
         }
 
@@ -106,7 +106,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             }
 
             return hits.Where(hit => hit.collider.transform != transform)
-                .Select(hit => { hit.distance -= skinWidth; return hit; });
+                .Select(hit => { hit.distance = Mathf.Max(hit.distance - skinWidth, 0); return hit; });
         }
 
         /// <inheritdoc/>
@@ -116,15 +116,15 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             switch (config.type)
             {
                 case ColliderType.Box:
-                    (Vector3 boxCenter, Vector3 boxSize) = BoxColliderCast.GetParams(config.Center, config.Size, position, rotation, -skinWidth);
+                    (Vector3 boxCenter, Vector3 boxSize) = BoxColliderCast.GetParams(config.Center, config.Size, position, rotation, skinWidth);
                     overlap = Physics.OverlapBox(boxCenter, boxSize / 2, rotation, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Sphere:
-                    (Vector3 sphereCenter, float sphereRadius) = SphereColliderCast.GetParams(config.Center, config.Radius, position, rotation, -skinWidth);
+                    (Vector3 sphereCenter, float sphereRadius) = SphereColliderCast.GetParams(config.Center, config.Radius, position, rotation, skinWidth);
                     overlap = Physics.OverlapSphere(sphereCenter, sphereRadius, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Capsule:
-                    (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, config.CapsuleDirection, position, rotation, -skinWidth);
+                    (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, config.CapsuleDirection, position, rotation, skinWidth);
                     overlap = Physics.OverlapCapsule(capsuleTop, capsuleBottom, capsuleRadius, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Point:

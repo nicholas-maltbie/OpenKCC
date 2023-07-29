@@ -123,7 +123,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction,
             float skinWidth = 0.0f)
         {
-            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation, -skinWidth);
+            (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation, skinWidth);
             int overlap = Physics.OverlapCapsuleNonAlloc(top, bottom, radius, OverlapCache, layerMask, queryTriggerInteraction);
             return Enumerable.Range(0, overlap).Select(i => OverlapCache[i]).Where(c => c.transform != transform);
         }
@@ -142,7 +142,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             int hits = Physics.CapsuleCastNonAlloc(top, bottom, radius, direction, HitCache, distance + skinWidth, layerMask, queryTriggerInteraction);
             return Enumerable.Range(0, hits).Select(i => HitCache[i])
                 .Where(hit => hit.collider.transform != transform)
-                .Select(hit => { hit.distance -= skinWidth; return hit; });
+                .Select(hit => { hit.distance = Mathf.Max(hit.distance - skinWidth, 0); return hit; });
         }
 
         /// <inheritdoc/>
