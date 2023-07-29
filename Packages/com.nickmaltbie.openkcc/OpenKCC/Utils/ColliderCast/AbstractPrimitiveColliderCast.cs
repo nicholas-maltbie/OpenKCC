@@ -78,7 +78,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         {
             var closest = new RaycastHit() { distance = Mathf.Infinity };
             bool hitSomething = false;
-            foreach (RaycastHit objHit in GetHits(position, rotation, direction, distance, layerMask, queryTriggerInteraction, skinWidth))
+            foreach (RaycastHit objHit in GetHits(position, rotation, direction, distance, layerMask, queryTriggerInteraction, -skinWidth))
             {
                 if (objHit.collider.gameObject.transform != gameObject.transform)
                 {
@@ -99,7 +99,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public virtual Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction, float skinWidth = 0.0f)
         {
             Vector3 pushed = Vector3.zero;
-            foreach (Collider overlap in GetOverlapping(position, rotation, layerMask, queryTriggerInteraction, skinWidth))
+            foreach (Collider overlap in GetOverlapping(position, rotation, layerMask, queryTriggerInteraction, -skinWidth))
             {
                 Physics.ComputePenetration(
                     Collider, position, rotation,

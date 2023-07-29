@@ -139,9 +139,10 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             float skinWidth = 0.01f)
         {
             (Vector3 top, Vector3 bottom, float radius, float height) = GetParams(position, rotation, -skinWidth);
-            int hits = Physics.CapsuleCastNonAlloc(top, bottom, radius, direction, HitCache, distance, layerMask, queryTriggerInteraction);
+            int hits = Physics.CapsuleCastNonAlloc(top, bottom, radius, direction, HitCache, distance + skinWidth, layerMask, queryTriggerInteraction);
             return Enumerable.Range(0, hits).Select(i => HitCache[i])
-                .Where(hit => hit.collider.transform != transform);
+                .Where(hit => hit.collider.transform != transform)
+                .Select(hit => { hit.distance -= skinWidth; return hit; });
         }
 
         /// <inheritdoc/>

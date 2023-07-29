@@ -87,24 +87,26 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             {
                 case ColliderType.Box:
                     (Vector3 boxCenter, Vector3 boxSize) = BoxColliderCast.GetParams(config.Center, config.Size, position, rotation, -skinWidth);
-                    hits = Physics.BoxCastAll(boxCenter, boxSize / 2, direction, rotation, distance, layerMask, queryTriggerInteraction);
+                    hits = Physics.BoxCastAll(boxCenter, boxSize / 2, direction, rotation, distance + skinWidth, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Sphere:
                     (Vector3 sphereCenter, float sphereRadius) = SphereColliderCast.GetParams(config.Center, config.Radius, position, rotation, -skinWidth);
-                    hits = Physics.SphereCastAll(sphereCenter, sphereRadius, direction, distance, layerMask, queryTriggerInteraction);
+                    hits = Physics.SphereCastAll(sphereCenter, sphereRadius, direction, distance + skinWidth, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Capsule:
                     (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, config.CapsuleDirection, position, rotation, -skinWidth);
-                    hits = Physics.CapsuleCastAll(capsuleTop, capsuleBottom, capsuleRadius, direction, distance, layerMask, queryTriggerInteraction);
+                    hits = Physics.CapsuleCastAll(capsuleTop, capsuleBottom, capsuleRadius, direction, distance + skinWidth, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Point:
                 default:
                     Vector3 origin = position + rotation * config.Center;
                     hits = Physics.RaycastAll(origin, direction, distance, layerMask, queryTriggerInteraction);
+                    skinWidth = 0.0f;
                     break;
             }
 
-            return hits.Where(hit => hit.collider.transform != transform);
+            return hits.Where(hit => hit.collider.transform != transform)
+                .Select(hit => { hit.distance -= skinWidth; return hit; });
         }
 
         /// <inheritdoc/>
