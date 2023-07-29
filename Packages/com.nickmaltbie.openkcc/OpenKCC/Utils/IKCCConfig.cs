@@ -64,6 +64,16 @@ namespace nickmaltbie.OpenKCC.Utils
         /// Get the layer mask for computing player collisions.
         /// </summary>
         LayerMask LayerMask { get; }
+
+        /// <summary>
+        /// The character's collision skin width.
+        /// <br/>
+        /// This is dependant on the scale of the world, but should be a small, positive non zero value.
+        /// <br/>
+        /// Reference: CharacterController.skinWidth, Unity Documentation - https://docs.unity3d.com/ScriptReference/CharacterController-skinWidth.html
+        /// Reference: Character Controllers: Character Volume, Nvidia PhysX SDK - https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/CharacterControllers.html#character-volume
+        /// </summary>
+        float SkinWidth { get; }
     }
 
     /// <summary>
@@ -94,5 +104,8 @@ namespace nickmaltbie.OpenKCC.Utils
 
         /// <inheritdoc/>
         public LayerMask LayerMask { get; set; } = ~0;
+
+        /// <inheritdoc/>
+        public float SkinWidth { get; set; } = 0.01f;
     }
 }

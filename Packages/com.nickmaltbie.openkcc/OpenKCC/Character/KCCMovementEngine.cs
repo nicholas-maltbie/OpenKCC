@@ -98,6 +98,11 @@ namespace nickmaltbie.OpenKCC.Character
         public float maxWalkAngle = 60.0f;
 
         /// <summary>
+        /// Skin width for player collisions.
+        /// </summary>
+        public float skinWidth = 0.01f;
+
+        /// <summary>
         /// Upwards direction for the KCC Movement engine.
         /// </summary>
         public virtual Vector3 Up => Vector3.up;
@@ -169,6 +174,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// Maximum speed at which the player can snap down surfaces.
         /// </summary>
         public virtual float MaxSnapDownSpeed => 5.0f;
+
+        /// <inheritdoc/>
+        public virtual float SkinWidth => skinWidth;
 
         /// <summary>
         /// Relative parent configuration for following the ground.
