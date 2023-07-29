@@ -81,7 +81,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
                 point,
                 normal,
                 distance);
-            colliderCastMock.OnCastSelf = (Vector3 position, Quaternion rotation, Vector3 direction, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            colliderCastMock.OnCastSelf = (Vector3 position, Quaternion rotation, Vector3 direction, float dist, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction, float skinWidth) =>
             {
                 hit = raycastHit;
                 return didHit;

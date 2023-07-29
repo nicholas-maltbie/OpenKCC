@@ -37,8 +37,9 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <param name="hit">Information about hit.</param>
         /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
         /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
+        /// <param name="skinWidth">Buffer around player when casting object.</param>
         /// <returns>Is something ahead hit.</returns>
-        public delegate void DoRaycastInDirectionCallback(Vector3 source, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
+        public delegate void DoRaycastInDirectionCallback(Vector3 source, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction, float skinWidth);
 
         /// <summary>
         /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IRaycastHelper.DoRaycastInDirection(Vector3, Vector3, float, out IRaycastHit, int, QueryTriggerInteraction)"/>
@@ -64,7 +65,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <param name="skinWidth">Width of skin of object to use when casting a hit. Essentially buffer
         /// space around the edge of the object.</param>
         /// <returns>True if an object is hit within distance, false otherwise.</returns>
-        public delegate void CastSelfCallback(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
+        public delegate void CastSelfCallback(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction, float skinWidth);
 
         /// <summary>
         /// Callback function for <see cref="nickmaltbie.OpenKCC.Utils.IColliderCast.CastSelf"/>
@@ -75,12 +76,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         /// <param name="distance">Maximum distance of raycast.</param>
         /// <param name="hit">First object hit and related information, will have a distance of Infinity if none
         /// is found.</param>
+        /// <param name="skinWidth">Buffer around player when casting object.</param>
         /// <returns>True if an object is hit within distance, false otherwise.</returns>
-        public delegate bool CastSelfReturns(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction);
+        public delegate bool CastSelfReturns(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction, float skinWidth);
 
-        public delegate Vector3 PushOutOverlappingReturns(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore);
-        public delegate IEnumerable<Collider> GetOverlappingReturns(Vector3 position, Quaternion rotation, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore);
-        public delegate IEnumerable<RaycastHit> GetHitsReturns(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore);
+        public delegate Vector3 PushOutOverlappingReturns(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore, float skinWidth = 0.0f);
+        public delegate IEnumerable<Collider> GetOverlappingReturns(Vector3 position, Quaternion rotation, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore, float skinWidth = 0.0f);
+        public delegate IEnumerable<RaycastHit> GetHitsReturns(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore, float skinWidth = 0.01f);
         public delegate Vector3 GetBottomReturns(Vector3 position, Quaternion rotation);
 
         public CastSelfReturns OnCastSelf;
@@ -90,10 +92,10 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public GetOverlappingReturns OnGetOverlapping;
         public PushOutOverlappingReturns OnPushOutOverlapping;
 
-        public bool CastSelf(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
+        public bool CastSelf(Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore, float skinWidth = 0.01f)
         {
             hit = default;
-            return OnCastSelf?.Invoke(position, rotation, direction, distance, out hit, layerMask, queryTriggerInteraction) ?? false;
+            return OnCastSelf?.Invoke(position, rotation, direction, distance, out hit, layerMask, queryTriggerInteraction, skinWidth) ?? false;
         }
 
         public bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out IRaycastHit stepHit, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
@@ -107,19 +109,19 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             return OnGetBottom?.Invoke(position, rotation) ?? Vector3.zero;
         }
 
-        public IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
+        public IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore, float skinWidth = 0.01f)
         {
-            return OnGetHits?.Invoke(position, rotation, direction, distance, layerMask, queryTriggerInteraction);
+            return OnGetHits?.Invoke(position, rotation, direction, distance, layerMask, queryTriggerInteraction, skinWidth);
         }
 
-        public IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
+        public IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore, float skinWidth = 0.0f)
         {
-            return OnGetOverlapping?.Invoke(position, rotation, layerMask, queryTriggerInteraction);
+            return OnGetOverlapping?.Invoke(position, rotation, layerMask, queryTriggerInteraction, skinWidth);
         }
 
-        public Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
+        public Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore, float skinWidth = 0.0f)
         {
-            return OnPushOutOverlapping?.Invoke(position, rotation, maxDistance, layerMask, queryTriggerInteraction) ?? Vector3.zero;
+            return OnPushOutOverlapping?.Invoke(position, rotation, maxDistance, layerMask, queryTriggerInteraction, skinWidth) ?? Vector3.zero;
         }
     }
 }

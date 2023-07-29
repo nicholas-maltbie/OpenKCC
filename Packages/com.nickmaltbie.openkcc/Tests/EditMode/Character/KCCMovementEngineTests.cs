@@ -237,7 +237,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             IRaycastHit groundCheckHit = KCCTestUtils.SetupRaycastHitMock(box, Vector3.zero, Vector3.up, KCCUtils.Epsilon);
             int hitIdx = 0;
 
-            colliderCastMock.OnCastSelf = (Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction) =>
+            colliderCastMock.OnCastSelf = (Vector3 position, Quaternion rotation, Vector3 direction, float distance, out IRaycastHit hit, int layerMask, QueryTriggerInteraction queryTriggerInteraction, float skinWidth) =>
             {
                 // Only return hit past second cast
                 if (++hitIdx < 2)

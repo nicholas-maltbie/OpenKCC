@@ -84,9 +84,10 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             Vector3 position,
             Quaternion rotation,
             int layerMask = RaycastHelperConstants.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction,
+            float skinWidth = 0.0f)
         {
-            (Vector3 center, Vector3 size) = GetParams(position, rotation);
+            (Vector3 center, Vector3 size) = GetParams(position, rotation, -skinWidth);
             int overlap = Physics.OverlapBoxNonAlloc(center, size / 2, OverlapCache, rotation, layerMask, queryTriggerInteraction);
             return Enumerable.Range(0, overlap).Select(i => OverlapCache[i])
                 .Where(c => c.transform != transform);
@@ -99,9 +100,10 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             Vector3 direction,
             float distance,
             int layerMask = RaycastHelperConstants.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction,
+            float skinWidth = 0.01f)
         {
-            (Vector3 center, Vector3 size) = GetParams(position, rotation, -KCCUtils.Epsilon);
+            (Vector3 center, Vector3 size) = GetParams(position, rotation, -skinWidth);
             int hits = Physics.BoxCastNonAlloc(center, size / 2, direction, HitCache, rotation, distance, layerMask, queryTriggerInteraction);
             return Enumerable.Range(0, hits).Select(i => HitCache[i])
                 .Where(hit => hit.collider.transform != transform);
