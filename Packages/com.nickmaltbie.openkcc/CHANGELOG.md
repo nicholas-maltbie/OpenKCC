@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Added `SkinWidth` parameter to `IKCCConfig` and `KCCMovementEngine` to allow
+    for a buffer space around the character when computing movement to avoid
+    numerical precision errors for physics system.
 * Modified extensions of `AbstractPrimitiveColliderCast` to store their
     collider parameters in the collider cast component itself and copy
     those parameters to the collider. Although if this has not been

@@ -126,7 +126,7 @@ namespace nickmaltbie.OpenKCC.Utils
             float skinWidth = 0.0f)
         {
             bool didHit = colliderCast.CastSelf(
-                position + dir * Epsilon,
+                position,
                 rotation,
                 dir,
                 dist,
@@ -135,7 +135,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 QueryTriggerInteraction.Ignore,
                 skinWidth);
 
-            if (didHit && hit.distance > KCCUtils.Epsilon)
+            if (didHit)
             {
                 return dir * hit.distance;
             }
