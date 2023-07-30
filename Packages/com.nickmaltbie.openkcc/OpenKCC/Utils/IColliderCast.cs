@@ -67,8 +67,6 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="distance">Maximum distance of raycast.</param>
         /// <param name="hit">First object hit and related information, will have a distance of Infinity if none
         /// is found.</param>
-        /// <param name="skinWidth">Width of skin of object to use when casting a hit. Essentially buffer
-        /// space around the edge of the object.</param>
         /// <param name="layerMask">Layer mask for checking which objects to collide with.</param>
         /// <param name="queryTriggerInteraction">Configuration for QueryTriggerInteraction when solving for collisions.</param>
         /// <param name="skinWidth">Buffer around player when casting object.</param>
