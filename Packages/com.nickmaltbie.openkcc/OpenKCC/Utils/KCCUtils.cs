@@ -205,6 +205,7 @@ namespace nickmaltbie.OpenKCC.Utils
                 position += distanceMove * Vector3.up;
                 return true;
             }
+
             // Otherwise move the player back down
             return false;
         }
@@ -261,15 +262,13 @@ namespace nickmaltbie.OpenKCC.Utils
             float distanceToFeet = footVector.magnitude * (isAbove ? 1 : -1);
             bool snappedUp = false;
 
-            if (hit.distance > 0 &&
-                distanceToFeet < config.VerticalSnapUp &&
-                distanceToFeet > 0)
+            if (distanceToFeet < config.VerticalSnapUp)
             {
                 // Sometimes snapping up the exact distance leads to odd behaviour around steps and walls.
                 // It's good to check the maximum and minimum snap distances and take whichever one works.
                 // snap them up the minimum vertical distance
                 snappedUp = AttemptSnapUp(
-                    distanceToFeet + Epsilon,
+                    distanceToFeet,
                     ref momentum,
                     ref position,
                     rotation,
