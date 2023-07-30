@@ -342,7 +342,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
                 // have player attempt to move, they should overlap with object and exit early
                 var bounces = GetBounces(Vector3.forward).ToList();
                 Assert.IsTrue(bounces.Count == 2, $"Expected to find 2 bounces, but instead found {bounces.Count}");
-                KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Invalid, initialPosition: playerPosition.position, finalPosition: playerPosition.position, remainingMomentum: Vector3.zero, initialMomentum: Vector3.forward, log: false);
+                KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Bounce, initialPosition: playerPosition.position, finalPosition: playerPosition.position, remainingMomentum: Vector3.zero, initialMomentum: Vector3.forward, log: false);
                 KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop, initialPosition: playerPosition.position, finalPosition: playerPosition.position, remainingMomentum: Vector3.zero, log: false);
             }
         }
@@ -407,8 +407,8 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
 
                 // Have player move forward until they hit the top of the steps
                 Func<bool> climbedSteps = () => canClimb &&
-                    playerPosition.transform.position.z >= stairBuilder.transform.position.z + size.z &&
-                    playerPosition.transform.position.y >= stairBuilder.transform.position.y + size.y;
+                    playerPosition.transform.position.z >= stairBuilder.transform.position.z + size.z - config.SkinWidth &&
+                    playerPosition.transform.position.y >= stairBuilder.transform.position.y + size.y - config.SkinWidth;
 
                 // Move forward 3 units
                 Vector3 movement = Vector3.forward * 3;
@@ -432,6 +432,7 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
 
                 // If the player can climb the steps, have them move until they climb up all the steps
                 int snapUpCount = 0;
+                int count = 0;
                 while (canClimb && !climbedSteps())
                 {
                     var bounces = GetBounces(movement, config).ToList();
@@ -473,6 +474,13 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Utils
 
                         Assert.IsTrue(climbedSteps());
                         Assert.IsTrue(snapUpCount > 0, $"Expected player to snap up but did not find any snap up events.");
+                    }
+
+                    yield return null;
+                    count++;
+                    if (count > 1000)
+                    {
+                        Assert.Fail();
                     }
                 }
             }

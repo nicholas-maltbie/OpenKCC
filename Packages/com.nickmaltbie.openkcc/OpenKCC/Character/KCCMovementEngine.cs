@@ -98,6 +98,11 @@ namespace nickmaltbie.OpenKCC.Character
         public float maxWalkAngle = 60.0f;
 
         /// <summary>
+        /// Skin width for player collisions.
+        /// </summary>
+        public float skinWidth = 0.01f;
+
+        /// <summary>
         /// Upwards direction for the KCC Movement engine.
         /// </summary>
         public virtual Vector3 Up => Vector3.up;
@@ -170,6 +175,9 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public virtual float MaxSnapDownSpeed => 5.0f;
 
+        /// <inheritdoc/>
+        public virtual float SkinWidth => skinWidth;
+
         /// <summary>
         /// Relative parent configuration for following the ground.
         /// </summary>
@@ -237,7 +245,8 @@ namespace nickmaltbie.OpenKCC.Character
                 -Up,
                 SnapDown,
                 ColliderCast,
-                layerMask);
+                LayerMask,
+                skinWidth);
             transform.position += Vector3.ClampMagnitude(delta, MaxSnapDownSpeed * unityService.fixedDeltaTime);
         }
 
@@ -328,7 +337,8 @@ namespace nickmaltbie.OpenKCC.Character
                 transform.rotation,
                 MaxPushSpeed * unityService.fixedDeltaTime,
                 layerMask,
-                QueryTriggerInteraction.Ignore);
+                QueryTriggerInteraction.Ignore,
+                KCCUtils.Epsilon);
 
             // Allow player to move
             KCCBounce[] bounces = moves.SelectMany(move => GetMovement(move)).ToArray();
@@ -405,8 +415,8 @@ namespace nickmaltbie.OpenKCC.Character
                     -Up,
                     SnapDown,
                     ColliderCast,
-                    layerMask);
-
+                    LayerMask,
+                    SkinWidth);
                 groundCheckPos += snapDelta;
             }
 
@@ -416,10 +426,10 @@ namespace nickmaltbie.OpenKCC.Character
                 -Up,
                 GroundCheckDistance,
                 out IRaycastHit hit,
-                layerMask);
+                layerMask,
+                skinWidth: SkinWidth);
 
             Vector3 normal = hit.normal;
-
             if (snappedUp)
             {
                 normal = GroundedState.SurfaceNormal;
@@ -428,9 +438,9 @@ namespace nickmaltbie.OpenKCC.Character
             {
                 // Check if we're walking down stairs
                 bool overrideNormal = ColliderCast.DoRaycastInDirection(
-                    transform.position,
+                    transform.position + skinWidth * Up,
                     -Up,
-                    GroundCheckDistance,
+                    GroundCheckDistance + skinWidth,
                     out IRaycastHit stepHit,
                     layerMask);
                 if (overrideNormal)
@@ -444,7 +454,7 @@ namespace nickmaltbie.OpenKCC.Character
                 onGround: didHit,
                 angle: Vector3.Angle(normal, Up),
                 surfaceNormal: normal,
-                groundHitPosition: hit.distance > 0 ? hit.point : GroundedState.GroundHitPosition,
+                groundHitPosition: hit.point,
                 floor: hit.collider?.gameObject,
                 groundedDistance: GroundedDistance,
                 maxWalkAngle: MaxWalkAngle);

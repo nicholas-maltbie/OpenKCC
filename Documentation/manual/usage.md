@@ -98,6 +98,8 @@ with the following configurable parameters:
 - @nickmaltbie.OpenKCC.Character.KCCMovementEngine.maxWalkAngle
     \- Maximum angle the player can walk up before
     they start slipping back down.
+- @nickmaltbie.OpenKCC.Character.KCCMovementEngine.skinWidth
+    \- Skin width for player collisions.
 
 ## Making Your Own Custom Kinematic Character Controller
 

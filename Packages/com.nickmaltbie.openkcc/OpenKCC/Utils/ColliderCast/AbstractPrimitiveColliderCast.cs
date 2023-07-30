@@ -73,11 +73,12 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             float distance,
             out IRaycastHit hit,
             int layerMask = RaycastHelperConstants.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction,
+            float skinWidth = 0.01f)
         {
             var closest = new RaycastHit() { distance = Mathf.Infinity };
             bool hitSomething = false;
-            foreach (RaycastHit objHit in GetHits(position, rotation, direction, distance, layerMask, queryTriggerInteraction))
+            foreach (RaycastHit objHit in GetHits(position, rotation, direction, distance, layerMask, queryTriggerInteraction, skinWidth))
             {
                 if (objHit.collider.gameObject.transform != gameObject.transform)
                 {
@@ -95,10 +96,10 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         }
 
         /// <inheritdoc/>
-        public virtual Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
+        public virtual Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction, float skinWidth = 0.0f)
         {
             Vector3 pushed = Vector3.zero;
-            foreach (Collider overlap in GetOverlapping(position, rotation, layerMask, queryTriggerInteraction))
+            foreach (Collider overlap in GetOverlapping(position, rotation, layerMask, queryTriggerInteraction, skinWidth))
             {
                 Physics.ComputePenetration(
                     Collider, position, rotation,
@@ -106,13 +107,13 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
                     out Vector3 direction, out float distance
                 );
 
-                float distPush = Mathf.Min(maxDistance, distance + KCCUtils.Epsilon * 2);
+                float distPush = distance;
                 Vector3 push = direction.normalized * distPush;
                 pushed += push;
                 position += push;
             }
 
-            return pushed;
+            return Vector3.ClampMagnitude(pushed, maxDistance);
         }
 
         /// <inheritdoc/>
@@ -132,10 +133,10 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
         public abstract Vector3 GetBottom(Vector3 position, Quaternion rotation);
 
         /// <inheritdoc/>
-        public abstract IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction);
+        public abstract IEnumerable<Collider> GetOverlapping(Vector3 position, Quaternion rotation, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction, float skinWidth = 0.00f);
 
         /// <inheritdoc/>
-        public abstract IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction);
+        public abstract IEnumerable<RaycastHit> GetHits(Vector3 position, Quaternion rotation, Vector3 direction, float distance, int layerMask = RaycastHelperConstants.DefaultLayerMask, QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction, float skinWidth = 0.01f);
 
         /// <summary>
         /// Update the parameters of the collider on a configuration change.

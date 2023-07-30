@@ -114,7 +114,7 @@ namespace nickmaltbie.OpenKCC.Character.Config
             GroundHitPosition = groundHitPosition;
             Floor = floor;
 
-            StandingOnGround = OnGround && DistanceToGround <= groundedDistance && DistanceToGround > 0;
+            StandingOnGround = OnGround && DistanceToGround <= groundedDistance && DistanceToGround >= 0;
             StandingOnGroundOrOverlap = OnGround && DistanceToGround <= groundedDistance;
             Falling = !StandingOnGround;
             Sliding = StandingOnGround && maxWalkAngle < Angle;

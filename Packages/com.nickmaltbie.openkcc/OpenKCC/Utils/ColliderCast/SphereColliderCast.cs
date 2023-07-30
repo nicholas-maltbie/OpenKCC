@@ -82,9 +82,10 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             Vector3 position,
             Quaternion rotation,
             int layerMask = RaycastHelperConstants.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction,
+            float skinWidth = 0.0f)
         {
-            (Vector3 center, float radius) = GetParams(position, rotation);
+            (Vector3 center, float radius) = GetParams(position, rotation, -skinWidth);
             int overlap = Physics.OverlapSphereNonAlloc(center, radius, OverlapCache, layerMask, queryTriggerInteraction);
             return Enumerable.Range(0, overlap).Select(i => OverlapCache[i])
                 .Where(c => c.transform != transform);
@@ -97,12 +98,18 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             Vector3 direction,
             float distance,
             int layerMask = RaycastHelperConstants.DefaultLayerMask,
-            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction)
+            QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction,
+            float skinWidth = 0.01f)
         {
-            (Vector3 center, float radius) = GetParams(position, rotation);
-            int hits = Physics.SphereCastNonAlloc(center, radius, direction, HitCache, distance, layerMask, queryTriggerInteraction);
+            (Vector3 center, float radius) = GetParams(position, rotation, -skinWidth);
+            int hits = Physics.SphereCastNonAlloc(center, radius, direction, HitCache, distance + skinWidth, layerMask, queryTriggerInteraction);
             return Enumerable.Range(0, hits).Select(i => HitCache[i])
-                .Where(hit => hit.collider.transform != transform);
+                .Where(hit => hit.collider.transform != transform)
+                .Select(hit =>
+                {
+                    hit.distance = Mathf.Max(hit.distance - skinWidth, 0);
+                    return hit;
+                });
         }
 
         /// <inheritdoc/>

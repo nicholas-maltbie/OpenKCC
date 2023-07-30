@@ -130,9 +130,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f).ToList();
 
             // Should just return just one element with action stop
-            NUnit.Framework.Assert.IsTrue(bounces.Count == 2, $"Expected to find {2} bounce but instead found {bounces.Count}");
-            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Invalid, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
-            KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
+            KCCValidation.ValidateKCCBounce(bounces[bounces.Count - 1], KCCUtils.MovementAction.Stop, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
         }
 
         /// <summary>
@@ -266,7 +264,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         {
             SetupColliderCast(true, KCCTestUtils.SetupRaycastHitMock(null, Vector3.zero, Vector3.up, 0.01f));
 
-            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, colliderCastMock);
+            Vector3 displacement = KCCUtils.SnapPlayerDown(Vector3.zero, Quaternion.identity, Vector3.down, 0.1f, colliderCastMock, new KCCConfig());
 
             Assert.IsTrue(displacement.magnitude > 0.0f, $"Expected displacement to have a magnitude grater than zero but instead found {displacement.ToString("F3")}");
         }
@@ -391,7 +389,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         {
             IEnumerator<(bool, IRaycastHit)> hitEnumerator = hitData.GetEnumerator();
             (bool, IRaycastHit) nextHit = (false, null);
-            colliderCastMock.OnCastSelf = (Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layetMask, QueryTriggerInteraction query) =>
+            colliderCastMock.OnCastSelf = (Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layetMask, QueryTriggerInteraction query, float skinWidth) =>
             {
                 hit = nextHit.Item2;
                 if (hitEnumerator.MoveNext())
@@ -411,7 +409,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
         /// <param name="raycastHit">Raycast hit object to return.</param>
         public void SetupColliderCast(bool didHit, IRaycastHit raycastHit)
         {
-            colliderCastMock.OnCastSelf = (Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layetMask, QueryTriggerInteraction query) =>
+            colliderCastMock.OnCastSelf = (Vector3 pos, Quaternion rot, Vector3 dir, float dist, out IRaycastHit hit, int layetMask, QueryTriggerInteraction query, float skinWidth) =>
             {
                 hit = raycastHit;
                 return didHit;

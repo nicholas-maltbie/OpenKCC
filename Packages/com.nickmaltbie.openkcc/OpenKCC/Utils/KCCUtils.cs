@@ -114,7 +114,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
-        /// <param name="layerMask">Layer mask for computing player collisions.</param>
+        /// <param name="kccConfig">Configuration for character controller.</param>
         /// <returns></returns>
         public static Vector3 GetSnapDelta(
             Vector3 position,
@@ -122,20 +122,22 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 dir,
             float dist,
             IColliderCast colliderCast,
-            int layerMask = RaycastHelperConstants.DefaultLayerMask)
+            int layerMask = RaycastHelperConstants.DefaultLayerMask,
+            float skinWidth = 0.0f)
         {
             bool didHit = colliderCast.CastSelf(
-                position + dir * Epsilon,
+                position,
                 rotation,
                 dir,
                 dist,
                 out IRaycastHit hit,
                 layerMask,
-                queryTriggerInteraction: QueryTriggerInteraction.Ignore);
+                QueryTriggerInteraction.Ignore,
+                skinWidth);
 
-            if (didHit && hit.distance > Epsilon)
+            if (didHit)
             {
-                return dir * (hit.distance - Epsilon * 2);
+                return dir * hit.distance;
             }
 
             return Vector3.zero;
@@ -149,7 +151,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
-        /// <param name="layerMask">Layer mask for computing player collisions.</param>
+        /// <param name="kccConfig">Configuration for character controller.</param>
         /// <returns>Final position of player after snapping.</returns>
         public static Vector3 SnapPlayerDown(
             Vector3 position,
@@ -157,9 +159,9 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 dir,
             float dist,
             IColliderCast colliderCast,
-            int layerMask = RaycastHelperConstants.DefaultLayerMask)
+            IKCCConfig kccConfig)
         {
-            return position + GetSnapDelta(position, rotation, dir, dist, colliderCast, layerMask);
+            return position + GetSnapDelta(position, rotation, dir, dist, colliderCast, kccConfig.LayerMask, kccConfig.SkinWidth);
         }
 
         /// <summary>
@@ -189,19 +191,21 @@ namespace nickmaltbie.OpenKCC.Utils
                 snapPos,
                 rotation,
                 momentum.normalized,
-                config.StepUpDepth + Epsilon,
+                config.StepUpDepth,
                 out IRaycastHit snapHit,
                 config.LayerMask,
-                queryTriggerInteraction: QueryTriggerInteraction.Ignore);
+                QueryTriggerInteraction.Ignore,
+                config.SkinWidth);
 
             // If they can move without instantly hitting something, then snap them up
-            if (!didSnapHit || (snapHit.distance >= Epsilon && snapHit.distance > config.StepUpDepth))
+            if (!didSnapHit || snapHit.distance > config.StepUpDepth)
             {
                 // Have the player move up up to the remaining momentum
                 float distanceMove = Mathf.Min(momentum.magnitude, distanceToSnap);
                 position += distanceMove * Vector3.up;
                 return true;
             }
+
             // Otherwise move the player back down
             return false;
         }
@@ -258,15 +262,13 @@ namespace nickmaltbie.OpenKCC.Utils
             float distanceToFeet = footVector.magnitude * (isAbove ? 1 : -1);
             bool snappedUp = false;
 
-            if (hit.distance > 0 &&
-                distanceToFeet < config.VerticalSnapUp &&
-                distanceToFeet > 0)
+            if (distanceToFeet < config.VerticalSnapUp)
             {
                 // Sometimes snapping up the exact distance leads to odd behaviour around steps and walls.
                 // It's good to check the maximum and minimum snap distances and take whichever one works.
                 // snap them up the minimum vertical distance
                 snappedUp = AttemptSnapUp(
-                    distanceToFeet + Epsilon,
+                    distanceToFeet,
                     ref momentum,
                     ref position,
                     rotation,
@@ -337,7 +339,8 @@ namespace nickmaltbie.OpenKCC.Utils
                 distance,
                 out IRaycastHit hit,
                 config.LayerMask,
-                queryTriggerInteraction: QueryTriggerInteraction.Ignore))
+                QueryTriggerInteraction.Ignore,
+                config.SkinWidth))
             {
                 // If there is no hit, move to desired position
                 return new KCCBounce
@@ -348,20 +351,6 @@ namespace nickmaltbie.OpenKCC.Utils
                     remainingMomentum = Vector3.zero,
                     hit = hit,
                     action = MovementAction.Move,
-                };
-            }
-
-            // If we are overlapping, just exit
-            if (hit.distance == 0)
-            {
-                return new KCCBounce
-                {
-                    initialPosition = initialPosition,
-                    finalPosition = initialPosition,
-                    initialMomentum = initialMomentum,
-                    remainingMomentum = Vector3.zero,
-                    hit = hit,
-                    action = MovementAction.Invalid,
                 };
             }
 
@@ -441,12 +430,7 @@ namespace nickmaltbie.OpenKCC.Utils
             {
                 KCCBounce bounce = SingleKCCBounce(position, momentum, movement, rotation, config);
 
-                if (bounce.action == MovementAction.Invalid)
-                {
-                    yield return bounce;
-                    break;
-                }
-                else if (bounce.action == MovementAction.SnapUp)
+                if (bounce.action == MovementAction.SnapUp)
                 {
                     didSnapUp = momentum.magnitude > KCCUtils.Epsilon;
                 }
@@ -466,7 +450,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didSnapUp)
             {
-                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp, config.ColliderCast, config.LayerMask);
+                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp, config.ColliderCast, config);
             }
 
             // We're done, player was moved as part of loop
