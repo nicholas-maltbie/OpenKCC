@@ -106,7 +106,11 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             }
 
             return hits.Where(hit => hit.collider.transform != transform)
-                .Select(hit => { hit.distance = Mathf.Max(hit.distance - skinWidth, 0); return hit; });
+                .Select(hit =>
+                {
+                    hit.distance = Mathf.Max(hit.distance - skinWidth, 0);
+                    return hit;
+                });
         }
 
         /// <inheritdoc/>

@@ -142,7 +142,11 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             int hits = Physics.CapsuleCastNonAlloc(top, bottom, radius, direction, HitCache, distance + skinWidth, layerMask, queryTriggerInteraction);
             return Enumerable.Range(0, hits).Select(i => HitCache[i])
                 .Where(hit => hit.collider.transform != transform)
-                .Select(hit => { hit.distance = Mathf.Max(hit.distance - skinWidth, 0); return hit; });
+                .Select(hit =>
+                {
+                    hit.distance = Mathf.Max(hit.distance - skinWidth, 0);
+                    return hit;
+                });
         }
 
         /// <inheritdoc/>
