@@ -430,12 +430,7 @@ namespace nickmaltbie.OpenKCC.Utils
             {
                 KCCBounce bounce = SingleKCCBounce(position, momentum, movement, rotation, config);
 
-                if (bounce.action == MovementAction.Invalid)
-                {
-                    yield return bounce;
-                    break;
-                }
-                else if (bounce.action == MovementAction.SnapUp)
+                if (bounce.action == MovementAction.SnapUp)
                 {
                     didSnapUp = momentum.magnitude > KCCUtils.Epsilon;
                 }
