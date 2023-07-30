@@ -354,20 +354,6 @@ namespace nickmaltbie.OpenKCC.Utils
                 };
             }
 
-            // If we are overlapping, just exit
-            if (hit.distance <= 0)
-            {
-                return new KCCBounce
-                {
-                    initialPosition = initialPosition,
-                    finalPosition = initialPosition,
-                    initialMomentum = initialMomentum,
-                    remainingMomentum = Vector3.zero,
-                    hit = hit,
-                    action = MovementAction.Invalid,
-                };
-            }
-
             float fraction = hit.distance / distance;
             // Set the fraction of remaining movement (minus some small value)
             Vector3 deltaBounce = remainingMomentum * fraction;
