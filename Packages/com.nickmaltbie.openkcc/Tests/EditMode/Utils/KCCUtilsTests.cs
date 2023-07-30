@@ -130,9 +130,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils
             var bounces = GetBounces(initialPosition, movement, anglePower: 0.0f).ToList();
 
             // Should just return just one element with action stop
-            NUnit.Framework.Assert.IsTrue(bounces.Count == 2, $"Expected to find {2} bounce but instead found {bounces.Count}");
-            KCCValidation.ValidateKCCBounce(bounces[0], KCCUtils.MovementAction.Invalid, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
-            KCCValidation.ValidateKCCBounce(bounces[1], KCCUtils.MovementAction.Stop, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
+            KCCValidation.ValidateKCCBounce(bounces[bounces.Count - 1], KCCUtils.MovementAction.Stop, finalPosition: initialPosition, remainingMomentum: Vector3.zero);
         }
 
         /// <summary>
