@@ -245,7 +245,8 @@ namespace nickmaltbie.OpenKCC.Character
                 -Up,
                 SnapDown,
                 ColliderCast,
-                layerMask);
+                LayerMask,
+                skinWidth);
             transform.position += Vector3.ClampMagnitude(delta, MaxSnapDownSpeed * unityService.fixedDeltaTime);
         }
 
@@ -337,7 +338,7 @@ namespace nickmaltbie.OpenKCC.Character
                 MaxPushSpeed * unityService.fixedDeltaTime,
                 layerMask,
                 QueryTriggerInteraction.Ignore,
-                SkinWidth);
+                KCCUtils.Epsilon);
 
             // Allow player to move
             KCCBounce[] bounces = moves.SelectMany(move => GetMovement(move)).ToArray();
@@ -414,8 +415,8 @@ namespace nickmaltbie.OpenKCC.Character
                     -Up,
                     SnapDown,
                     ColliderCast,
-                    layerMask);
-
+                    LayerMask,
+                    SkinWidth);
                 groundCheckPos += snapDelta;
             }
 
@@ -429,7 +430,6 @@ namespace nickmaltbie.OpenKCC.Character
                 skinWidth: SkinWidth);
 
             Vector3 normal = hit.normal;
-
             if (snappedUp)
             {
                 normal = GroundedState.SurfaceNormal;
@@ -454,7 +454,7 @@ namespace nickmaltbie.OpenKCC.Character
                 onGround: didHit,
                 angle: Vector3.Angle(normal, Up),
                 surfaceNormal: normal,
-                groundHitPosition: GroundedState.GroundHitPosition,
+                groundHitPosition: hit.point,
                 floor: hit.collider?.gameObject,
                 groundedDistance: GroundedDistance,
                 maxWalkAngle: MaxWalkAngle);

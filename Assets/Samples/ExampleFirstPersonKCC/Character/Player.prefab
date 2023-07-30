@@ -70,7 +70,7 @@ Transform:
   - {fileID: 1928389238472999755}
   - {fileID: 2110423193989123606}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1928389238801210314
 MonoBehaviour:
@@ -133,7 +133,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!136 &1928389238801210308
 CapsuleCollider:
-  m_ObjectHideFlags: 8
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -194,63 +194,63 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 8ea09493-fee6-42c4-ac08-4022f4cc5408
-    m_ActionName: Player/Move[/Keyboard/e,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+    m_ActionName: 'Player/Move[/Keyboard/e,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: bca05cba-8116-4a1d-9624-dc2929c1d827
-    m_ActionName: Player/Jump[/Keyboard/f]
+    m_ActionName: 'Player/Jump[/Keyboard/f]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 0ed934b6-561e-48cb-a120-77501fb43610
-    m_ActionName: Player/Interact[/Keyboard/e]
+    m_ActionName: 'Player/Interact[/Keyboard/e]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: e1d5dee9-5e26-4579-9d27-657776fa136c
-    m_ActionName: Player/Fire[/Mouse/leftButton]
+    m_ActionName: 'Player/Fire[/Mouse/leftButton]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 7bafe59b-a70f-48e9-ac67-802ef9097aef
-    m_ActionName: Player/Sprint[/Keyboard/leftShift]
+    m_ActionName: 'Player/Sprint[/Keyboard/leftShift]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: fb8d5e39-01f1-46e5-98de-be5b1d1f8f23
-    m_ActionName: Player/Look[/Mouse/delta]
+    m_ActionName: 'Player/Look[/Mouse/delta]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 3320648e-a821-491f-bb3b-9cde6b475a53
-    m_ActionName: Player/Zoom[/Mouse/scroll]
+    m_ActionName: 'Player/Zoom[/Mouse/scroll]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: e9ea2153-a41c-4da0-9c54-c767c562bb40
-    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+    m_ActionName: 'UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 558b280e-5543-4776-b4e4-43e4b1fb8b60
-    m_ActionName: UI/Submit[/Keyboard/enter]
+    m_ActionName: 'UI/Submit[/Keyboard/enter]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 8d0c0094-dc57-4415-bf10-a3f3e0ff1f6b
-    m_ActionName: UI/Cancel[/Keyboard/escape]
+    m_ActionName: 'UI/Cancel[/Keyboard/escape]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 816778a0-1877-4b52-a8dc-ea745d71233e
-    m_ActionName: UI/Point[/Mouse/position]
+    m_ActionName: 'UI/Point[/Mouse/position]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: e72873b5-76f9-4821-a13f-221cee17d091
-    m_ActionName: UI/Click[/Mouse/leftButton]
+    m_ActionName: 'UI/Click[/Mouse/leftButton]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 9e8e5a65-b053-4aa6-926d-f089d369fe8b
-    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
+    m_ActionName: 'UI/ScrollWheel[/Mouse/scroll]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 1520ee3a-e59c-4097-8c3f-2fa121a7b26d
-    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
+    m_ActionName: 'UI/MiddleClick[/Mouse/middleButton]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 426533ef-12d3-4aff-a0c0-12e26cb118c9
-    m_ActionName: UI/RightClick[/Mouse/rightButton]
+    m_ActionName: 'UI/RightClick[/Mouse/rightButton]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 8ea2ed25-c28d-4812-9f01-a5b2bde212d7
@@ -315,6 +315,7 @@ MonoBehaviour:
   serializationVersion: v1.0.0
   stepHeight: 0.35
   maxWalkAngle: 60
+  skinWidth: 0.01
   layerMask:
     serializedVersion: 2
     m_Bits: 4294967295

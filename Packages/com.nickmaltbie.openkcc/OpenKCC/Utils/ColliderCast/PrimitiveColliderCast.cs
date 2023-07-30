@@ -116,15 +116,15 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             switch (config.type)
             {
                 case ColliderType.Box:
-                    (Vector3 boxCenter, Vector3 boxSize) = BoxColliderCast.GetParams(config.Center, config.Size, position, rotation, skinWidth);
+                    (Vector3 boxCenter, Vector3 boxSize) = BoxColliderCast.GetParams(config.Center, config.Size, position, rotation, -skinWidth);
                     overlap = Physics.OverlapBox(boxCenter, boxSize / 2, rotation, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Sphere:
-                    (Vector3 sphereCenter, float sphereRadius) = SphereColliderCast.GetParams(config.Center, config.Radius, position, rotation, skinWidth);
+                    (Vector3 sphereCenter, float sphereRadius) = SphereColliderCast.GetParams(config.Center, config.Radius, position, rotation, -skinWidth);
                     overlap = Physics.OverlapSphere(sphereCenter, sphereRadius, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Capsule:
-                    (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, config.CapsuleDirection, position, rotation, skinWidth);
+                    (Vector3 capsuleTop, Vector3 capsuleBottom, float capsuleRadius, float capsuleHeight) = CapsuleColliderCast.GetParams(config.Center, config.Radius, config.Height, config.CapsuleDirection, position, rotation, -skinWidth);
                     overlap = Physics.OverlapCapsule(capsuleTop, capsuleBottom, capsuleRadius, layerMask, queryTriggerInteraction);
                     break;
                 case ColliderType.Point:

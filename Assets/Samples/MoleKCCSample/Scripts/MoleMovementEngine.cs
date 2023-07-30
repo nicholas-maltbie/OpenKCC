@@ -98,7 +98,8 @@ namespace nickmaltbie.OpenKCC.MoleKCCSample
                     -Up,
                     1.0f,
                     ColliderCast,
-                    layerMask);
+                    layerMask,
+                    skinWidth);
                 transform.position += Vector3.ClampMagnitude(delta, MaxSnapDownSpeed * unityService.fixedDeltaTime);
             }
 

@@ -114,8 +114,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
-        /// <param name="layerMask">Layer mask for computing player collisions.</param>
-        /// <param name="skinWidth">Skin width for computing collisions with IColliderCast.</param>
+        /// <param name="kccConfig">Configuration for character controller.</param>
         /// <returns></returns>
         public static Vector3 GetSnapDelta(
             Vector3 position,
@@ -123,7 +122,8 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 dir,
             float dist,
             IColliderCast colliderCast,
-            int layerMask = RaycastHelperConstants.DefaultLayerMask)
+            int layerMask = RaycastHelperConstants.DefaultLayerMask,
+            float skinWidth = 0.0f)
         {
             bool didHit = colliderCast.CastSelf(
                 position + dir * Epsilon,
@@ -133,9 +133,9 @@ namespace nickmaltbie.OpenKCC.Utils
                 out IRaycastHit hit,
                 layerMask,
                 QueryTriggerInteraction.Ignore,
-                0.0f);
+                skinWidth);
 
-            if (didHit && hit.distance > 0)
+            if (didHit && hit.distance > KCCUtils.Epsilon)
             {
                 return dir * hit.distance;
             }
@@ -151,7 +151,7 @@ namespace nickmaltbie.OpenKCC.Utils
         /// <param name="dir">Direction to snap the kcc down.</param>
         /// <param name="dist">Maximum distance the kcc can snap.</param>
         /// <param name="colliderCast">Collider cast component associated with the KCC.</param>
-        /// <param name="layerMask">Layer mask for computing player collisions.</param>
+        /// <param name="kccConfig">Configuration for character controller.</param>
         /// <returns>Final position of player after snapping.</returns>
         public static Vector3 SnapPlayerDown(
             Vector3 position,
@@ -159,9 +159,9 @@ namespace nickmaltbie.OpenKCC.Utils
             Vector3 dir,
             float dist,
             IColliderCast colliderCast,
-            int layerMask = RaycastHelperConstants.DefaultLayerMask)
+            IKCCConfig kccConfig)
         {
-            return position + GetSnapDelta(position, rotation, dir, dist, colliderCast, layerMask);
+            return position + GetSnapDelta(position, rotation, dir, dist, colliderCast, kccConfig.LayerMask, kccConfig.SkinWidth);
         }
 
         /// <summary>
@@ -470,7 +470,7 @@ namespace nickmaltbie.OpenKCC.Utils
 
             if (didSnapUp)
             {
-                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp, config.ColliderCast, config.LayerMask);
+                position = SnapPlayerDown(position, rotation, -config.Up, config.VerticalSnapUp, config.ColliderCast, config);
             }
 
             // We're done, player was moved as part of loop

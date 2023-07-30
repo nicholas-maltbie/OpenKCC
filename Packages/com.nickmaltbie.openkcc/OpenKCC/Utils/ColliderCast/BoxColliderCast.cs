@@ -87,7 +87,7 @@ namespace nickmaltbie.OpenKCC.Utils.ColliderCast
             QueryTriggerInteraction queryTriggerInteraction = RaycastHelperConstants.DefaultQueryTriggerInteraction,
             float skinWidth = 0.0f)
         {
-            (Vector3 center, Vector3 size) = GetParams(position, rotation, skinWidth);
+            (Vector3 center, Vector3 size) = GetParams(position, rotation, -skinWidth);
             int overlap = Physics.OverlapBoxNonAlloc(center, size / 2, OverlapCache, rotation, layerMask, queryTriggerInteraction);
             return Enumerable.Range(0, overlap).Select(i => OverlapCache[i])
                 .Where(c => c.transform != transform);
