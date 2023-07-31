@@ -241,7 +241,7 @@ If you want to help with the project, feel free to make some
 changes and submit a PR to the repo.
 
 This project is developed using Unity Release
-[2023.1.3f1](https://unity3d.com/unity/whats-new/2023.1.3).
+[2023.1.6f1](https://unity3d.com/unity/whats-new/2023.1.6).
 Install this version of Unity from Unity Hub using this link:
 [unityhub://2023.1.3f1/e00e24c187a5](unityhub://2023.1.3f1/e00e24c187a5).
 
