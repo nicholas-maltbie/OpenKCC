@@ -2,10 +2,8 @@
     "name": "nickmaltbie.OpenKCC.netcode.common",
     "rootNamespace": "nickmaltbie.OpenKCC.netcode.common",
     "references": [
-        "WebSocket Transport for Netcode for GameObjects",
         "Unity.Netcode.Components",
         "Unity.Netcode.Runtime",
-        "nickmaltbie.statemachineunity.netcode",
         "nickmaltbie.ScreenManager",
         "nickmaltbie.StateMachineUnity",
         "nickmaltbie.ScreenManager.TestCommon",

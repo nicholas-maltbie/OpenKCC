@@ -1,5 +1,9 @@
 # Certificate Setup
 
+*Note*: As of 08/03/23, this feature is currently broken.
+See Unity Transport's docs for details on how to configure this if needed:
+[https://docs-multiplayer.unity3d.com/transport/current/secure-connection/#generate-keys-and-certificates](https://docs-multiplayer.unity3d.com/transport/current/secure-connection/#generate-keys-and-certificates)
+
 So, in order to get this program to work over https protocol, using
 secure socket layer, you need to include the flag for a secure websocket.
 Not too hard in theory, but in order to setup a secure socket layer
