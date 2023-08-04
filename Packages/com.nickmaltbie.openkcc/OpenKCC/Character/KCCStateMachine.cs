@@ -92,6 +92,16 @@ namespace nickmaltbie.OpenKCC.Character
         internal JumpAction jumpAction;
 
         /// <summary>
+        /// Camera controls associated with the player.
+        /// </summary>
+        protected ICameraControls _cameraControls;
+
+        /// <summary>
+        /// Movement engine for controlling the kinematic character controller.
+        /// </summary>
+        protected KCCMovementEngine movementEngine;
+
+        /// <summary>
         /// Override move action for testing.
         /// </summary>
         private InputAction overrideMoveAction;
@@ -120,19 +130,14 @@ namespace nickmaltbie.OpenKCC.Character
         }
 
         /// <summary>
-        /// Camera controls associated with the player.
-        /// </summary>
-        protected ICameraControls _cameraControls;
-
-        /// <summary>
-        /// Movement engine for controlling the kinematic character controller.
-        /// </summary>
-        protected KCCMovementEngine movementEngine;
-
-        /// <summary>
         /// Current velocity of the player.
         /// </summary>
         public Vector3 Velocity { get; protected set; }
+
+        /// <summary>
+        /// Input movement from player input updated each frame.
+        /// </summary>
+        public Vector3 InputMovement { get; private set; }
 
         /// <summary>
         /// Get the camera controls associated with the state machine.
@@ -147,10 +152,8 @@ namespace nickmaltbie.OpenKCC.Character
             Quaternion.Euler(0, transform.eulerAngles.y, 0);
 
         /// <summary>
-        /// Input movement from player input updated each frame.
+        /// Idle state for KCC state machine, not moving.
         /// </summary>
-        public Vector3 InputMovement { get; private set; }
-
         [InitialState]
         [Animation(IdleAnimState, 0.35f, true)]
         [Transition(typeof(StartMoveInput), typeof(WalkingState))]
@@ -160,6 +163,9 @@ namespace nickmaltbie.OpenKCC.Character
         [MovementSettings]
         public class IdleState : State { }
 
+        /// <summary>
+        /// Jumping state for KCC state machine.
+        /// </summary>
         [Animation(JumpAnimState, 0.1f, true)]
         [TransitionOnAnimationComplete(typeof(FallingState), 0.15f, true)]
         [AnimationTransition(typeof(GroundedEvent), typeof(LandingState), 0.35f, true, 0.25f)]
@@ -167,6 +173,9 @@ namespace nickmaltbie.OpenKCC.Character
         [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class JumpState : State { }
 
+        /// <summary>
+        /// Landing state for KCC state machine.
+        /// </summary>
         [Animation(LandingAnimState, 0.1f, true)]
         [TransitionOnAnimationComplete(typeof(IdleState), 0.25f, true)]
         [AnimationTransition(typeof(StartMoveInput), typeof(WalkingState), 0.35f, true)]
@@ -176,6 +185,10 @@ namespace nickmaltbie.OpenKCC.Character
         [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class LandingState : State { }
 
+        /// <summary>
+        /// Walking state for KCC state machine when player is giving
+        /// some movement input.
+        /// </summary>
         [Animation(WalkingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
@@ -185,6 +198,10 @@ namespace nickmaltbie.OpenKCC.Character
         [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class WalkingState : State { }
 
+        /// <summary>
+        /// Sprinting state for KCC state machine when player is giving
+        /// input and performing the sprint action.
+        /// </summary>
         [Animation(SprintingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(StopMoveInput), typeof(IdleState))]
@@ -194,6 +211,10 @@ namespace nickmaltbie.OpenKCC.Character
         [MovementSettings(SpeedConfig = nameof(sprintSpeed))]
         public class SprintingState : State { }
 
+        /// <summary>
+        /// Sliding state for KCC state machine for when the player
+        /// is moving along a sloped surface too step to walk up.
+        /// </summary>
         [Animation(SlidingAnimState, 0.35f, true, 0.1f)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(LeaveGroundEvent), typeof(FallingState))]
@@ -201,6 +222,10 @@ namespace nickmaltbie.OpenKCC.Character
         [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class SlidingState : State { }
 
+        /// <summary>
+        /// Falling state for KCC state machine when the player has no
+        /// ground below them.
+        /// </summary>
         [Animation(FallingAnimState, 0.35f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
@@ -209,6 +234,10 @@ namespace nickmaltbie.OpenKCC.Character
         [MovementSettings(SpeedConfig = nameof(walkingSpeed))]
         public class FallingState : State { }
 
+        /// <summary>
+        /// Long falling for playing animation when player has been falling
+        /// for a long period of time.
+        /// </summary>
         [Animation(LongFallingAnimState, 0.1f, true)]
         [Transition(typeof(JumpEvent), typeof(JumpState))]
         [Transition(typeof(SteepSlopeEvent), typeof(SlidingState))]
