@@ -161,7 +161,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     [MenuItem("Build/Mole Sample/Demo/Windows64 Build")]
     public static void WindowsBuild_MoleSample()
     {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.IL2CPP);
 
         var options = new BuildPlayerOptions
         {
@@ -217,7 +217,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     [MenuItem("Build/Netcode/Demo/WebGL Build")]
     public static void WebGLBuild_Netcode()
     {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.WebGL, ScriptingImplementation.IL2CPP);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.WebGL, ScriptingImplementation.IL2CPP);
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
 
         // Get file path of build.
@@ -236,7 +236,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     [MenuItem("Build/Netcode/Demo/MacOS Build")]
     public static void MacOSBuild_Netcode()
     {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
 
         // Get file path of build.
         string path = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-MacOS-Netcode-{VersionNumber}");
@@ -253,7 +253,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     [MenuItem("Build/Netcode/Demo/Linux Build")]
     public static void LinuxBuild_Netcode()
     {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.IL2CPP);
 
         // Get file path of build.
         string path = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-Linux-Netcode-{VersionNumber}");
@@ -268,7 +268,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     [MenuItem("Build/Netcode/Demo/Windows64 Build")]
     public static void WindowsBuild_Netcode()
     {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.IL2CPP);
 
         var options = new BuildPlayerOptions
         {
@@ -292,7 +292,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     [MenuItem("Build/Main/Demo/WebGL Build")]
     public static void WebGLBuild()
     {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.WebGL, ScriptingImplementation.IL2CPP);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.WebGL, ScriptingImplementation.IL2CPP);
         PlayerSettings.WebGL.template = "PROJECT:Better2020";
 
         // Get file path of build.
@@ -311,7 +311,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     [MenuItem("Build/Main/Demo/MacOS Build")]
     public static void MacOSBuild()
     {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
 
         // Get file path of build.
         string path = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-MacOS-{VersionNumber}");
@@ -328,7 +328,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     [MenuItem("Build/Main/Demo/Linux Build")]
     public static void LinuxBuild()
     {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.IL2CPP);
 
         // Get file path of build.
         string path = Path.Combine(BuildDirectory, $"{Constants.ProjectName}-Linux-{VersionNumber}");
@@ -343,7 +343,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     [MenuItem("Build/Main/Demo/Windows64 Build")]
     public static void WindowsBuild()
     {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.IL2CPP);
 
         var options = new BuildPlayerOptions
         {
@@ -426,7 +426,7 @@ public class ScriptBatch : IPostprocessBuildWithReport, IPreprocessBuildWithRepo
     /// </summary>
     public static void TestBuild_Win64()
     {
-        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+        PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
 
         var options = new BuildPlayerOptions
         {
