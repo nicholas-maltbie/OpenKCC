@@ -177,7 +177,6 @@ already included in the project:
     }
   ],
   "dependencies": {
-    "com.community.netcode.transport.websocket": "git+https://github.com/Unity-Technologies/multiplayer-community-contributions?path=/Transports/com.community.netcode.transport.websocket",
     "com.nickmaltbie.recolorshaderunity": "1.0.0",
     "com.unity.inputsystem": "1.4.4",
     "com.nickmaltbie.testutilsunity": "1.0.0",
