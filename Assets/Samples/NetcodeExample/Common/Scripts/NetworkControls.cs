@@ -189,17 +189,19 @@ namespace nickmaltbie.OpenKCC.netcode.Common
             if (action == NMActionType.Offline)
             {
                 // Override the hosting transport with an offline version
-                NetworkTransport offlineTransport = NetworkManager.Singleton.gameObject.AddComponent<OfflineNetworkTransport>();
+                NetworkTransport offlineTransport = NetworkManager.Singleton.gameObject.GetComponent<OfflineNetworkTransport>() ?? NetworkManager.Singleton.gameObject.AddComponent<OfflineNetworkTransport>();
                 NetworkManager.Singleton.NetworkConfig.NetworkTransport = offlineTransport;
                 NetworkManager.Singleton.StartHost();
                 return;
             }
-
-            var networkTransport = NetworkManager.Singleton.NetworkConfig.NetworkTransport as UnityTransport;
-            ConnectionAddressData connectionData = networkTransport.ConnectionData;
-            connectionData.Address = serverAddress.text;
-            connectionData.Port = ushort.Parse(serverPort.text);
-            networkTransport.ConnectionData = connectionData;
+            else
+            {
+                UnityTransport networkTransport = NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>() ?? NetworkManager.Singleton.gameObject.AddComponent<UnityTransport>();
+                ConnectionAddressData connectionData = networkTransport.ConnectionData;
+                connectionData.Address = serverAddress.text;
+                connectionData.Port = ushort.Parse(serverPort.text);
+                networkTransport.ConnectionData = connectionData;
+            }
 
             switch (action)
             {
