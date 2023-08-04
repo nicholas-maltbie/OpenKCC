@@ -39,7 +39,11 @@ namespace nickmaltbie.OpenKCC.CameraControls
         public void Start()
         {
             cameraController = GetComponent<CameraController>();
+#if UNITY_2020_OR_NEWER
             audioListener = GameObject.FindFirstObjectByType<AudioListener>();
+#else
+            audioListener = GameObject.FindObjectOfType<AudioListener>();
+#endif
         }
 
         public void LateUpdate()
