@@ -19,19 +19,22 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading;
-using Netcode.Transports.WebSocket;
 using nickmaltbie.ScreenManager;
 using TMPro;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.Netcode.Transports.UTP.UnityTransport;
 
 namespace nickmaltbie.OpenKCC.netcode.Common
 {
     public class NetworkControls : MonoBehaviour
     {
+        public const string ServerCommonName = "OpenKCCServer";
+
         public Button hostButton;
         public Button clientButton;
         public Button serverButton;
@@ -39,9 +42,6 @@ namespace nickmaltbie.OpenKCC.netcode.Common
         public TMP_InputField serverAddress;
         public TMP_InputField serverPort;
         public TMP_Text debugMessage;
-        public TMP_InputField certPassword;
-        public TMP_InputField certificatePath;
-        public Toggle secureConnection;
 
         public string onlineScreen;
         public string offlineScreen;
@@ -70,8 +70,6 @@ namespace nickmaltbie.OpenKCC.netcode.Common
             {
                 hostButton.gameObject.SetActive(false);
                 serverButton.gameObject.SetActive(false);
-                certPassword.gameObject.SetActive(false);
-                certificatePath.gameObject.SetActive(false);
             }
 
             hostButton.onClick.AddListener(() => StartNetworkManager(NMActionType.Host));
@@ -79,14 +77,17 @@ namespace nickmaltbie.OpenKCC.netcode.Common
             serverButton.onClick.AddListener(() => StartNetworkManager(NMActionType.Server));
             playOffline.onClick.AddListener(() => StartNetworkManager(NMActionType.Offline));
 
-            var networkTransport = NetworkManager.Singleton.NetworkConfig.NetworkTransport as WebSocketTransport;
+            var networkTransport = NetworkManager.Singleton.NetworkConfig.NetworkTransport as UnityTransport;
 
             serverAddress.onValueChanged.AddListener(address =>
             {
                 if (IPAddress.TryParse(address, out _))
                 {
-                    networkTransport.ConnectAddress = address;
+                    ConnectionAddressData connectionData = networkTransport.ConnectionData;
+                    connectionData.Address = address;
+                    networkTransport.ConnectionData = connectionData;
                     debugMessage.text = $"Valid Server IP Address!";
+
                     if (dnsLookupAction != null && !dnsLookupAction.IsCompleted)
                     {
                         previousCancellationToken?.Cancel();
@@ -134,11 +135,14 @@ namespace nickmaltbie.OpenKCC.netcode.Common
                         $"Resolving host entry {address}");
                 }
             });
+
             serverPort.onValueChanged.AddListener(port =>
             {
                 if (ushort.TryParse(port, out ushort parsed))
                 {
-                    networkTransport.Port = parsed;
+                    ConnectionAddressData connectionData = networkTransport.ConnectionData;
+                    connectionData.Port = parsed;
+                    networkTransport.ConnectionData = connectionData;
                     debugMessage.text = $"Valid Server Port!";
                 }
                 else
@@ -167,26 +171,11 @@ namespace nickmaltbie.OpenKCC.netcode.Common
                 }
                 else
                 {
-                    NetworkManager.Singleton.GetComponent<NetworkTransport>().Initialize(NetworkManager.Singleton);
+
                 }
             }
 
             previousConnected = connectedState;
-        }
-
-        private void SetupCert(WebSocketTransport transport)
-        {
-            if (!string.IsNullOrEmpty(certificatePath.text))
-            {
-                var cert = new X509Certificate2(certificatePath.text, certPassword.text);
-                transport.SecureConnection = true;
-                transport.CertificateBase64String = Convert.ToBase64String(cert.Export(X509ContentType.Pkcs12, string.Empty));
-            }
-            else
-            {
-                transport.SecureConnection = false;
-                transport.CertificateBase64String = string.Empty;
-            }
         }
 
         public void StartNetworkManager(NMActionType action)
@@ -195,13 +184,6 @@ namespace nickmaltbie.OpenKCC.netcode.Common
             {
                 debugMessage.text = $"Already setup as a client or server, please disconnect before trying again";
                 return;
-            }
-
-            // Cleanup network transports if they exist.
-            NetworkTransport oldTransport = NetworkManager.Singleton.gameObject.GetComponent<NetworkTransport>();
-            if (oldTransport != null)
-            {
-                GameObject.Destroy(oldTransport);
             }
 
             if (action == NMActionType.Offline)
@@ -213,25 +195,21 @@ namespace nickmaltbie.OpenKCC.netcode.Common
                 return;
             }
 
-            WebSocketTransport networkTransport = NetworkManager.Singleton.gameObject.AddComponent<WebSocketTransport>();
-            NetworkManager.Singleton.NetworkConfig.NetworkTransport = networkTransport;
-            networkTransport.ConnectAddress = serverAddress.text;
-            networkTransport.Port = ushort.Parse(serverPort.text);
-            networkTransport.SecureConnection = secureConnection.isOn;
+            var networkTransport = NetworkManager.Singleton.NetworkConfig.NetworkTransport as UnityTransport;
+            ConnectionAddressData connectionData = networkTransport.ConnectionData;
+            connectionData.Address = serverAddress.text;
+            connectionData.Port = ushort.Parse(serverPort.text);
+            networkTransport.ConnectionData = connectionData;
 
             switch (action)
             {
                 case NMActionType.Host:
-                    // Setup the cert if one is provided
-                    SetupCert(networkTransport);
                     NetworkManager.Singleton.StartHost();
                     break;
                 case NMActionType.Client:
                     NetworkManager.Singleton.StartClient();
                     break;
                 case NMActionType.Server:
-                    // Setup the cert if one is provided
-                    SetupCert(networkTransport);
                     NetworkManager.Singleton.StartServer();
                     break;
             }
