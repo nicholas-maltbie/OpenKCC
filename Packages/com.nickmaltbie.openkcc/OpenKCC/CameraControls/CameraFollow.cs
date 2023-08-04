@@ -39,7 +39,7 @@ namespace nickmaltbie.OpenKCC.CameraControls
         public void Start()
         {
             cameraController = GetComponent<CameraController>();
-            audioListener = GameObject.FindObjectOfType<AudioListener>();
+            audioListener = GameObject.FindFirstObjectByType<AudioListener>();
         }
 
         public void LateUpdate()
