@@ -23,6 +23,7 @@ using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
+using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
 {
@@ -111,6 +112,20 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
             GameObject target = MakeCube(Vector3.forward * dist);
             Assert.IsTrue(boxCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, dist + 1, out IRaycastHit hit));
             Assert.IsTrue(hit.rigidbody.gameObject == target);
+        }
+
+        [Test]
+        public void Validate_NoBounceWithZeroDistance()
+        {
+            MakeCube();
+            var config = new KCCConfig
+            {
+                ColliderCast = boxCast,
+                SkinWidth = 0.1f,
+            };
+            KCCBounce bounce = KCCUtils.SingleKCCBounce(Vector3.up, Vector3.forward, Vector3.forward, Quaternion.identity, config);
+            Assert.AreEqual(MovementAction.Move, bounce.action);
+            Assert.AreEqual(bounce.finalPosition - bounce.initialPosition, Vector3.forward);
         }
 
         [Test]
