@@ -114,6 +114,20 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
         }
 
         [Test]
+        public void Validate_GetOverlapSkinWidth()
+        {
+            MakeCube();
+            Assert.IsNotEmpty(boxCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0));
+            Assert.IsEmpty(boxCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.1f));
+            Assert.IsEmpty(boxCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.2f));
+            Assert.IsEmpty(boxCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.3f));
+            Assert.IsEmpty(boxCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.4f));
+            Assert.IsEmpty(boxCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.5f));
+            Assert.IsNotEmpty(boxCast.GetOverlapping(Vector3.forward * 0.5f, Quaternion.identity, skinWidth: 0.1f));
+            Assert.IsEmpty(boxCast.GetOverlapping(Vector3.forward * 1.5f, Quaternion.identity, skinWidth: 0.1f));
+        }
+
+        [Test]
         public void Validate_GetOverlapping([NUnit.Framework.Range(1, 10, 2)] int numOverlap)
         {
             GameObject[] targets = Enumerable.Range(0, numOverlap).Select(_ => MakeCube()).ToArray();

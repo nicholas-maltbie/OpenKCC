@@ -161,6 +161,20 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
             Assert.IsTrue(hit.rigidbody.gameObject == target);
         }
 
+        [Test]
+        public void Validate_GetOverlapSkinWidth()
+        {
+            MakeCube();
+            Assert.IsNotEmpty(sphereCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0));
+            Assert.IsEmpty(sphereCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.1f));
+            Assert.IsEmpty(sphereCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.2f));
+            Assert.IsEmpty(sphereCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.3f));
+            Assert.IsEmpty(sphereCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.4f));
+            Assert.IsEmpty(sphereCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.5f));
+            Assert.IsNotEmpty(sphereCast.GetOverlapping(Vector3.forward * 0.5f, Quaternion.identity, skinWidth: 0.1f));
+            Assert.IsEmpty(sphereCast.GetOverlapping(Vector3.forward * 1.5f, Quaternion.identity, skinWidth: 0.1f));
+        }
+
         private GameObject MakeCube(Vector3? position = null)
         {
             var target = GameObject.CreatePrimitive(PrimitiveType.Cube);
