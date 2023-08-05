@@ -16,6 +16,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.Generic;
 using nickmaltbie.OpenKCC.Character;
 using nickmaltbie.OpenKCC.Character.Action;
 using nickmaltbie.OpenKCC.Character.Animation;
@@ -39,6 +40,8 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
     /// </summary>
     public class KCCStateMachineTestBase : TestBase
     {
+        protected InputActionAsset inputActionAsset;
+
         protected StickControl moveStick;
         protected ButtonControl jumpButton;
         protected ButtonControl sprintButton;
@@ -57,7 +60,7 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         {
             base.Setup();
 
-            GameObject go = CreateGameObject();
+            var go = new GameObject();
             CapsuleCollider capsuleCollider = go.AddComponent<CapsuleCollider>();
             go.AddComponent<CapsuleColliderCast>();
             capsuleCollider.center = new Vector3(0, 1, 0);
@@ -83,12 +86,9 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
             anim.runtimeAnimatorController = controller;
 
             var jumpInput = new BufferedInput();
-            PlayerInput playerInput = go.AddComponent<PlayerInput>();
             gamepad = InputSystem.AddDevice<Gamepad>();
-            InputActionAsset inputActionAsset = CreateScriptableObject<InputActionAsset>();
+            inputActionAsset = ScriptableObject.CreateInstance<InputActionAsset>();
             InputActionMap actionMap = inputActionAsset.AddActionMap("testMap");
-            playerInput.actions = inputActionAsset;
-            playerInput.currentActionMap = actionMap;
             jumpButton = gamepad.aButton;
             sprintButton = gamepad.bButton;
             moveStick = gamepad.leftStick;
@@ -119,7 +119,8 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
         public override void TearDown()
         {
             InputSystem.RemoveDevice(gamepad);
-            GameObject.DestroyImmediate(kccStateMachine.gameObject);
+            Object.DestroyImmediate(kccStateMachine.gameObject);
+            ScriptableObject.DestroyImmediate(inputActionAsset);
             base.TearDown();
         }
     }

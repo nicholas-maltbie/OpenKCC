@@ -63,7 +63,6 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
         {
             base.TearDown();
             PlayerInputUtils.playerMovementState = PlayerInputState.Allow;
-
         }
 
         [Test]

@@ -56,13 +56,20 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
         public override void Setup()
         {
             base.Setup();
-            floor = CreateGameObject();
+            floor = new GameObject();
             BoxCollider box = floor.AddComponent<BoxCollider>();
             box.center = Vector3.zero;
             box.size = new Vector3(10, 1, 10);
             box.transform.position = Vector3.zero;
             box.transform.rotation = Quaternion.identity;
             floor.transform.position = new Vector3(0, -0.5f, 0);
+        }
+
+        [TearDown]
+        public override void TearDown()
+        {
+            base.TearDown();
+            GameObject.DestroyImmediate(floor);
         }
 
         [UnityTest]
