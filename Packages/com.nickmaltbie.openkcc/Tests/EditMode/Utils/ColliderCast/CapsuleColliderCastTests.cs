@@ -23,6 +23,7 @@ using nickmaltbie.OpenKCC.Utils.ColliderCast;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
+using static nickmaltbie.OpenKCC.Utils.KCCUtils;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
 {
@@ -180,6 +181,34 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Utils.ColliderCast
             GameObject target = MakeCube(Vector3.forward * 1);
             Assert.IsTrue(colliderCast.CastSelf(Vector3.zero, Quaternion.identity, Vector3.forward, 5, out IRaycastHit hit));
             Assert.IsTrue(hit.rigidbody.gameObject == target);
+        }
+
+        [Test]
+        public void Validate_NoBounceWithZeroDistance()
+        {
+            MakeCube();
+            var config = new KCCConfig
+            {
+                ColliderCast = colliderCast,
+                SkinWidth = 0.1f,
+            };
+            KCCBounce bounce = KCCUtils.SingleKCCBounce(Vector3.up * 1.5f, Vector3.forward, Vector3.forward, Quaternion.identity, config);
+            Assert.AreEqual(MovementAction.Move, bounce.action);
+            Assert.AreEqual(bounce.finalPosition - bounce.initialPosition, Vector3.forward);
+        }
+
+        [Test]
+        public void Validate_GetOverlapSkinWidth()
+        {
+            MakeCube();
+            Assert.IsNotEmpty(colliderCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0));
+            Assert.IsEmpty(colliderCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.1f));
+            Assert.IsEmpty(colliderCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.2f));
+            Assert.IsEmpty(colliderCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.3f));
+            Assert.IsEmpty(colliderCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.4f));
+            Assert.IsEmpty(colliderCast.GetOverlapping(Vector3.forward, Quaternion.identity, skinWidth: 0.5f));
+            Assert.IsNotEmpty(colliderCast.GetOverlapping(Vector3.forward * 0.5f, Quaternion.identity, skinWidth: 0.1f));
+            Assert.IsEmpty(colliderCast.GetOverlapping(Vector3.forward * 1.5f, Quaternion.identity, skinWidth: 0.1f));
         }
 
         [Test]

@@ -104,5 +104,19 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character.Config
             Assert.IsTrue(kccGroundedState.Sliding);
             Assert.IsTrue(kccGroundedState.DistanceToGround == 0.001f);
         }
+
+        [Test]
+        public void Validate_KCCGroundedState_SkinWidth()
+        {
+            KCCTestUtils.SetupCastSelf(colliderCastMock, normal: Vector3.up, distance: 0, didHit: true);
+            movementEngine.skinWidth = 0.1f;
+            kccGroundedState = movementEngine.CheckGrounded(false, false);
+
+            TestUtils.AssertInBounds(kccGroundedState.Angle, 0.0f);
+            Assert.IsTrue(kccGroundedState.StandingOnGround);
+            Assert.IsTrue(kccGroundedState.StandingOnGroundOrOverlap);
+            Assert.IsTrue(kccGroundedState.DistanceToGround == 0);
+            Assert.IsFalse(kccGroundedState.Sliding);
+        }
     }
 }
