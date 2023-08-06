@@ -313,7 +313,7 @@ namespace nickmaltbie.OpenKCC.Character
             {
                 Velocity += Physics.gravity * unityService.fixedDeltaTime;
             }
-            else if (movementEngine.GroundedState.StandingOnGround)
+            else if (movementEngine.GroundedState.StandingOnGround && !movementEngine.MovingUp(Velocity))
             {
                 Velocity = Vector3.zero;
             }

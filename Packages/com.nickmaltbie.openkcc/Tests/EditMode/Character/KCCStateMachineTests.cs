@@ -46,7 +46,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             base.Setup();
 
             unityServiceMock = new MockUnityService();
-            colliderCastMock = new MockColliderCast();
+            colliderCastMock = kccStateMachine.gameObject.AddComponent<MockColliderCast>();
             cameraControlsMock = new MockCameraControls();
 
             unityServiceMock.deltaTime = 1.0f;
@@ -184,6 +184,23 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.Character
             Assert.IsTrue(KCCGroundedState.StandingOnGround);
             Assert.IsFalse(KCCGroundedState.Sliding);
             Assert.IsFalse(KCCGroundedState.Falling);
+        }
+
+        [Test]
+        public void Validate_KCCStateMachine_DontCancelVelocityWhenMovingUp()
+        {
+            KCCTestUtils.SetupCastSelf(colliderCastMock, distance: 0.001f, normal: Vector3.up, didHit: true);
+            kccStateMachine.Update();
+
+            // Set the character's velocity to some upward value
+            kccStateMachine.ApplyJump(Vector3.up * 5);
+
+            // Assert that the velocity is not zeroed out despite the player being
+            // grounded at the current time.
+            kccStateMachine.FixedUpdate();
+
+            Assert.IsTrue(KCCGroundedState.StandingOnGround);
+            Assert.AreNotEqual(Vector3.zero, kccStateMachine.Velocity);
         }
 
         [Test]

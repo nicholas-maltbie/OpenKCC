@@ -90,22 +90,95 @@ namespace nickmaltbie.OpenKCC.Character
         /// <summary>
         /// Height of a step that the player can climb up.
         /// </summary>
+        [Tooltip("Height of a step that the player can climb up.")]
         public float stepHeight = 0.35f;
 
         /// <summary>
         /// Max angle the player can walk up before slipping.
         /// </summary>
+        [Tooltip("Max angle the player can walk up before slipping.")]
         public float maxWalkAngle = 60.0f;
 
         /// <summary>
         /// Skin width for player collisions.
         /// </summary>
+        [Tooltip("Skin width for player collisions.")]
         public float skinWidth = 0.01f;
+
+        /// <summary>
+        /// Layermask for computing player collisions.
+        /// </summary>
+        [Tooltip("Layermask for computing player collisions.")]
+        public LayerMask layerMask = RaycastHelperConstants.DefaultLayerMask;
+
+        /// <summary>
+        /// Unity service for managing calls to static variables in
+        /// a testable manner.
+        /// </summary>
+        protected IUnityService unityService = UnityService.Instance;
+
+        /// <summary>
+        /// Collider cast for player shape.
+        /// </summary>
+        public IColliderCast _colliderCast;
+
+        /// <summary>
+        /// Previous position of the player for calculating moving ground position.
+        /// </summary>
+        protected Vector3 previousPosition = Vector3.zero;
+
+        /// <summary>
+        /// Approximated world velocity of the player.
+        /// </summary>
+        public SmoothedVector worldVelocity = new SmoothedVector(10);
+
+        /// <inheritdoc/>
+        public bool CanSnapUp => GroundedState.OnGround;
+
+        /// <summary>
+        /// Snap down distance for player snapping down.
+        /// </summary>
+        public virtual float SnapDown => stepHeight * 2f;
+
+        /// <summary>
+        /// Max default launch velocity for the player from unlabeled
+        /// surfaces.
+        /// </summary>
+        public virtual float MaxDefaultLaunchVelocity => DefaultMaxLaunchVelocity;
+
+        /// <summary>
+        /// Maximum speed at which the player can snap down surfaces.
+        /// </summary>
+        public virtual float MaxSnapDownSpeed => 5.0f;
 
         /// <summary>
         /// Upwards direction for the KCC Movement engine.
         /// </summary>
         public virtual Vector3 Up => Vector3.up;
+
+        /// <inheritdoc/>
+        public virtual int MaxBounces => DefaultMaxBounces;
+
+        /// <inheritdoc/>
+        public virtual float VerticalSnapUp => stepHeight;
+
+        /// <inheritdoc/>
+        public virtual float StepUpDepth => DefaultStepUpDepth;
+
+        /// <inheritdoc/>
+        public virtual float AnglePower => DefaultAnglePower;
+
+        /// <inheritdoc/>
+        public virtual float SkinWidth => skinWidth;
+
+        /// <inheritdoc/>
+        public virtual LayerMask LayerMask => layerMask;
+
+        /// <summary>
+        /// Max push speed of the player in units per second when pushing
+        /// out of overlapping objects.
+        /// </summary>
+        public float MaxPushSpeed => DefaultMaxPushSpeed;
 
         /// <summary>
         /// Collider cast for player movement.
@@ -127,57 +200,6 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public virtual float MaxWalkAngle => maxWalkAngle;
 
-        /// <inheritdoc/>
-        public virtual int MaxBounces => DefaultMaxBounces;
-
-        /// <inheritdoc/>
-        public virtual float VerticalSnapUp => stepHeight;
-
-        /// <inheritdoc/>
-        public virtual float StepUpDepth => DefaultStepUpDepth;
-
-        /// <inheritdoc/>
-        public virtual float AnglePower => DefaultAnglePower;
-
-        /// <summary>
-        /// Max push speed of the player in units per second when pushing
-        /// out of overlapping objects.
-        /// </summary>
-        public float MaxPushSpeed => DefaultMaxPushSpeed;
-
-        /// <summary>
-        /// Layermask for computing player collisions.
-        /// </summary>
-        public LayerMask layerMask = RaycastHelperConstants.DefaultLayerMask;
-
-        /// <inheritdoc/>
-        public bool CanSnapUp => GroundedState.OnGround;
-
-        /// <summary>
-        /// Unity service for managing calls to static variables in
-        /// a testable manner.
-        /// </summary>
-        protected IUnityService unityService = UnityService.Instance;
-
-        /// <summary>
-        /// Snap down distance for player snapping down.
-        /// </summary>
-        public virtual float SnapDown => stepHeight * 2f;
-
-        /// <summary>
-        /// Max default launch velocity for the player from unlabeled
-        /// surfaces.
-        /// </summary>
-        public virtual float MaxDefaultLaunchVelocity => DefaultMaxLaunchVelocity;
-
-        /// <summary>
-        /// Maximum speed at which the player can snap down surfaces.
-        /// </summary>
-        public virtual float MaxSnapDownSpeed => 5.0f;
-
-        /// <inheritdoc/>
-        public virtual float SkinWidth => skinWidth;
-
         /// <summary>
         /// Relative parent configuration for following the ground.
         /// </summary>
@@ -188,23 +210,13 @@ namespace nickmaltbie.OpenKCC.Character
         /// </summary>
         public KCCGroundedState GroundedState { get; protected set; }
 
-        /// <inheritdoc/>
-        public virtual LayerMask LayerMask => layerMask;
-
         /// <summary>
-        /// Collider cast for player shape.
+        /// Setup and configure the movement engine.
         /// </summary>
-        public IColliderCast _colliderCast;
-
-        /// <summary>
-        /// Previous position of the player for calculating moving ground position.
-        /// </summary>
-        protected Vector3 previousPosition = Vector3.zero;
-
-        /// <summary>
-        /// Approximated world velocity of the player.
-        /// </summary>
-        public SmoothedVector worldVelocity = new SmoothedVector(10);
+        public void Awake()
+        {
+            previousPosition = transform.position;
+        }
 
         /// <summary>
         /// Is the a movement vector is moving in the direction
@@ -213,41 +225,6 @@ namespace nickmaltbie.OpenKCC.Character
         public bool MovingUp(Vector3 move)
         {
             return Vector3.Dot(move, Up) > 0;
-        }
-
-        public void Awake()
-        {
-            previousPosition = transform.position;
-        }
-
-        /// <summary>
-        /// Should the player snap down after a movement.
-        /// </summary>
-        /// <param name="snappedUp">Did the player snap up during their movement.</param>
-        /// <param name="moves">Movement bounces of the player.</param>
-        /// <returns>True if the player should snap down, false otherwise.</returns>
-        protected virtual bool ShouldSnapDown(bool snappedUp, IEnumerable<Vector3> moves)
-        {
-            return !snappedUp &&
-                GroundedState.StandingOnGround &&
-                !GroundedState.Sliding &&
-                !moves.Any(move => MovingUp(move));
-        }
-
-        /// <summary>
-        /// Snap the player down onto the ground
-        /// </summary>
-        protected virtual void SnapPlayerDown()
-        {
-            Vector3 delta = KCCUtils.GetSnapDelta(
-                transform.position,
-                transform.rotation,
-                -Up,
-                SnapDown,
-                ColliderCast,
-                LayerMask,
-                skinWidth);
-            transform.position += Vector3.ClampMagnitude(delta, MaxSnapDownSpeed * unityService.fixedDeltaTime);
         }
 
         /// <summary>
@@ -480,6 +457,36 @@ namespace nickmaltbie.OpenKCC.Character
                     layerMask = ~0;
                 }
             }
+        }
+
+        /// <summary>
+        /// Should the player snap down after a movement.
+        /// </summary>
+        /// <param name="snappedUp">Did the player snap up during their movement.</param>
+        /// <param name="moves">Movement bounces of the player.</param>
+        /// <returns>True if the player should snap down, false otherwise.</returns>
+        protected virtual bool ShouldSnapDown(bool snappedUp, IEnumerable<Vector3> moves)
+        {
+            return !snappedUp &&
+                GroundedState.StandingOnGround &&
+                !GroundedState.Sliding &&
+                !moves.Any(move => MovingUp(move));
+        }
+
+        /// <summary>
+        /// Snap the player down onto the ground
+        /// </summary>
+        protected virtual void SnapPlayerDown()
+        {
+            Vector3 delta = KCCUtils.GetSnapDelta(
+                transform.position,
+                transform.rotation,
+                -Up,
+                SnapDown,
+                ColliderCast,
+                LayerMask,
+                skinWidth);
+            transform.position += Vector3.ClampMagnitude(delta, MaxSnapDownSpeed * unityService.fixedDeltaTime);
         }
     }
 }
