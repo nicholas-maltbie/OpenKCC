@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Fixed small bug in `KCCStateMachine` causing player to stop jumping
+    when they are walking up steps or slopes.
 * Added `SkinWidth` parameter to `IKCCConfig` and `KCCMovementEngine` to allow
     for a buffer space around the character when computing movement to avoid
     numerical precision errors for physics system.
