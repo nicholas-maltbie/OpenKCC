@@ -95,8 +95,26 @@
           var url = new URL(window.location.toLocaleString());
           if (url.searchParams.has("scene"))
           {
-            unityInstance.SendMessage("SceneLoader", "LoadScene", url.searchParams.get("scene"))
+            unityInstance.SendMessage("StaticLoaders", "LoadScene", url.searchParams.get("scene"))
           }
+
+          function detectMobile() {
+            const toMatch = [
+              /Android/i,
+              /webOS/i,
+              /iPhone/i,
+              /iPad/i,
+              /iPod/i,
+              /BlackBerry/i,
+              /Windows Phone/i
+            ];
+            
+            return toMatch.some((toMatchItem) => {
+              return navigator.userAgent.match(toMatchItem);
+            });
+          }
+
+          unityInstance.SendMessage("StaticLoaders", "SetVisible", detectMobile().toString())
 
           loadingCover.style.display = "none";
           if (canFullscreen) {

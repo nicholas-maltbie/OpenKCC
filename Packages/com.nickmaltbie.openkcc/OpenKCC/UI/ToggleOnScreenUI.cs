@@ -29,16 +29,8 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             Toggle toggle = GetComponent<Toggle>();
             toggle.onValueChanged.AddListener(value =>
             {
-                if (value)
-                {
-                    OnScreenUIManager.Instance?.EnableOnScreenInput();
-                }
-                else
-                {
-                    OnScreenUIManager.Instance?.DisableOnScreenInput();
-                }
+                OnScreenUIManager.Instance?.UpdateState(value);
             });
-
             toggle.SetIsOnWithoutNotify(OnScreenUIManager.Instance?.EnabledState ?? false);
         }
     }

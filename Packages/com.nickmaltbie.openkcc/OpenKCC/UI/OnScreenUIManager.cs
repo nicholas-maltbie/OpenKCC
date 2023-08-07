@@ -24,10 +24,11 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 {
     public class OnScreenUIManager : MonoBehaviour
     {
+        public static bool DefaultState = false;
         public static OnScreenUIManager Instance { get; private set; }
 
         public InputActionReference lookAction;
-        public bool EnabledState = false;
+        public bool EnabledState { get; private set; } = DefaultState;
 
         private CursorStateOnMenuLoad cursorState;
         private CanvasGroup canvasGroup;
@@ -39,7 +40,10 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             cursorState = gameObject.GetComponentInParent<CursorStateOnMenuLoad>();
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
             lookActionDefault = lookAction.action.bindings[0];
+        }
 
+        public void Start()
+        {
             if (EnabledState)
             {
                 EnableOnScreenInput();
@@ -50,7 +54,20 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             }
         }
 
-        public void DisableOnScreenInput()
+        public void UpdateState(bool value)
+        {
+            EnabledState = value;
+            if (value)
+            {
+                EnableOnScreenInput();
+            }
+            else
+            {
+                DisableOnScreenInput();
+            }
+        }
+
+        protected void DisableOnScreenInput()
         {
             lookAction?.action.ApplyBindingOverride(0, lookActionDefault);
             canvasGroup.alpha = 0.0f;
@@ -60,7 +77,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             cursorState.cursorLockMode = CursorLockMode.Locked;
         }
 
-        public void EnableOnScreenInput()
+        protected void EnableOnScreenInput()
         {
             lookAction?.action.ApplyBindingOverride(0, string.Empty);
             canvasGroup.alpha = 1.0f;
