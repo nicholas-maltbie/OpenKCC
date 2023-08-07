@@ -315,7 +315,7 @@ namespace nickmaltbie.OpenKCC.Character
                 MaxPushSpeed * unityService.fixedDeltaTime,
                 layerMask,
                 QueryTriggerInteraction.Ignore,
-                KCCUtils.Epsilon);
+                SkinWidth / 2);
 
             // Allow player to move
             KCCBounce[] bounces = moves.SelectMany(move => GetMovement(move)).ToArray();

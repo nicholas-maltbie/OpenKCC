@@ -47,23 +47,21 @@ namespace nickmaltbie.OpenKCC.Tests.PlayMode.Character
             box.size = new Vector3(1000, 1, 1000);
 
             // Setup positions of ground and player.
-            ground.transform.position = new Vector3(0.2f, -0.5f, 0);
+            ground.transform.position = new Vector3(0.2f, -Mathf.Sqrt(2));
             ground.transform.rotation = Quaternion.Euler(0, 0, 45);
             Vector3 initialPosition = Vector3.zero;
             moveEngine.transform.position = initialPosition;
 
             yield return new WaitForFixedUpdate();
-            yield return null;
 
             // Ensure the player does not slide when they are upadted a lot of times.
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 100 * 60; i++)
             {
                 // Assume plaer inputs no movement.
                 moveEngine.MovePlayer(Vector3.zero);
-
-                yield return new WaitForFixedUpdate();
-                yield return null;
             }
+
+            yield return new WaitForFixedUpdate();
 
             // Assert that player has not moved.
             TestUtils.AssertInBounds(moveEngine.transform.position, initialPosition);
