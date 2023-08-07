@@ -39,7 +39,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
             Instance = this;
             cursorState = gameObject.GetComponentInParent<CursorStateOnMenuLoad>();
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
-            lookActionDefault = lookAction.action.bindings[0];
+            lookActionDefault = lookAction?.action.bindings[0] ?? new InputBinding(string.Empty);
         }
 
         public void Start()
