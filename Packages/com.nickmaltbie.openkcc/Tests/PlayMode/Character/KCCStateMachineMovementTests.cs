@@ -18,7 +18,6 @@
 
 using System.Collections;
 using nickmaltbie.OpenKCC.Tests.TestCommon;
-using nickmaltbie.OpenKCC.Utils;
 using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
