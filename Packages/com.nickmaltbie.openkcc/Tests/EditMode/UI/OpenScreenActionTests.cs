@@ -16,7 +16,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections;
 using System.Collections.Generic;
 using nickmaltbie.OpenKCC.UI.Actions;
 using nickmaltbie.ScreenManager;
@@ -24,7 +23,6 @@ using nickmaltbie.TestUtilsUnity.Tests.TestCommon;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.TestTools;
 
 namespace nickmaltbie.OpenKCC.Tests.EditMode.UI
 {
@@ -62,7 +60,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.UI
             Assert.AreEqual(screen1.gameObject.name, uiManager.CurrentScreen);
             PressAndRelease(gamepad.aButton);
             Assert.AreEqual(screen3.gameObject.name, uiManager.CurrentScreen);
-            
+
             uiManager.SetScreen(screen1.gameObject.name);
             Assert.AreEqual(screen1.gameObject.name, uiManager.CurrentScreen);
             PressAndRelease(gamepad.aButton);

@@ -40,7 +40,7 @@ namespace nickmaltbie.OpenKCC.Tests.EditMode.UI
 
             GameObject go = CreateGameObject();
             Toggle toggle = go.AddComponent<Toggle>();
-            ToggleOnScreenUI  playerMovement = go.AddComponent<ToggleOnScreenUI>();
+            ToggleOnScreenUI playerMovement = go.AddComponent<ToggleOnScreenUI>();
 
             playerMovement.Start();
             toggle.isOn = true;

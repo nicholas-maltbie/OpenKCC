@@ -28,7 +28,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
     /// Rebind an individual button input action
     /// </summary>
     public class SelectiveRebindInput : MonoBehaviour, IBindingControl
-    {        
+    {
         /// <summary>
         /// Prefix for input mapping for saving to player preferences
         /// </summary>
