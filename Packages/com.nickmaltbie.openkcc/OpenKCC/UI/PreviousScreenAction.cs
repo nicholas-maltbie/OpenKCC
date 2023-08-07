@@ -24,10 +24,9 @@ using static UnityEngine.InputSystem.InputAction;
 namespace nickmaltbie.OpenKCC.UI.Actions
 {
     [RequireComponent(typeof(MenuController))]
-    public class OpenScreenAction : MonoBehaviour, IScreenComponent
+    public class PreviousScreenAction : MonoBehaviour, IScreenComponent
     {
         public InputActionReference action;
-        public GameObject screen;
 
         public void OnScreenLoaded()
         {
@@ -41,7 +40,7 @@ namespace nickmaltbie.OpenKCC.UI.Actions
 
         public void OpenScreen(CallbackContext context)
         {
-            GetComponent<MenuController>().SetScreen(screen);
+            GetComponent<MenuController>().PreviousScreen();
         }
     }
 }
