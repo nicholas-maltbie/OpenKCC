@@ -140,7 +140,11 @@ namespace nickmaltbie.OpenKCC.UI.Actions
         public void RebindComplete()
         {
             string overridePath = inputAction.action.bindings[0].overridePath;
+#if UNITY_2020_3_OR_NEWER
             foreach (PlayerInput input in GameObject.FindObjectsByType<PlayerInput>(FindObjectsSortMode.None))
+#else
+            foreach (PlayerInput input in GameObject.FindObjectsOfType<PlayerInput>())
+#endif
             {
                 input.actions.FindAction(inputAction.name)?.ApplyBindingOverride(0, overridePath);
             }
