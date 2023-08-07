@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Added basic buttons and controls for look, jump, and move actions for
+    the character controller that can be enabled manually and are automatically
+    loaded when the game is opened from a mobile device in a web browser.
 * Fixed small bug in `KCCStateMachine` causing player to stop jumping
     when they are walking up steps or slopes.
 * Added `SkinWidth` parameter to `IKCCConfig` and `KCCMovementEngine` to allow

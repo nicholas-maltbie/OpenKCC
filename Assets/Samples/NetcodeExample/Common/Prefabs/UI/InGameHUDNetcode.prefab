@@ -5,8 +5,13 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1083708595982879359, guid: a6b724ce986920c46859b833b6f1bc83, type: 3}
+      propertyPath: screen
+      value: 
+      objectReference: {fileID: 8410473727390391349, guid: 096f31d0428114a43afc88bce9356f6b, type: 3}
     - target: {fileID: 6101108449083475876, guid: a6b724ce986920c46859b833b6f1bc83, type: 3}
       propertyPath: m_Name
       value: InGameHUDNetcode
@@ -100,4 +105,7 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8410473727390391349, guid: 096f31d0428114a43afc88bce9356f6b, type: 3}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6b724ce986920c46859b833b6f1bc83, type: 3}
