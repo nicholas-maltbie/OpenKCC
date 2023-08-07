@@ -61,10 +61,10 @@ namespace nickmaltbie.OpenKCC.Tests.TestCommon
 
             var go = new GameObject();
             CapsuleCollider capsuleCollider = go.AddComponent<CapsuleCollider>();
-            go.AddComponent<CapsuleColliderCast>();
             capsuleCollider.center = new Vector3(0, 1, 0);
             capsuleCollider.height = 2.0f;
             capsuleCollider.radius = 0.5f;
+            go.AddComponent<CapsuleColliderCast>();
 
             var controller = new AnimatorController();
             controller.AddLayer("base");
