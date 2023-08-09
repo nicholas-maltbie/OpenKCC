@@ -5,6 +5,9 @@ A Kinematic Character Controller (KCC) provides a
 way to control a character avatar as a kinematic object that will interact with
 the environment.
 
+![Bunny logo for OpenKCC project - a white bunny with the letters OpenKCC
+  written in outlined boxes in front of it.](Demo/bunny_logo.png)
+
 OpenKCC is an open source project hosted at
 [https://github.com/nicholas-maltbie/OpenKCC](https://github.com/nicholas-maltbie/OpenKCC)
 
