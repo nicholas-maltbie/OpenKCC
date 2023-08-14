@@ -28,9 +28,14 @@
       "path": "Samples~/SimplifiedDemoKCC"
     },
     {
-      "displayName": "Example collider shapes",
+      "displayName": "Various Collider Shapes",
       "description": "Example collider shapes besides basic capsule for a player.",
       "path": "Samples~/ExampleColliderShapes"
+    },
+    {
+      "displayName": "Example OpenKCC and Navmesh",
+      "description": "Example navmesh agent controlled by OpenKCC movement engine.",
+      "path": "Samples~/NavmeshExample"
     }
   ],
   "dependencies": {

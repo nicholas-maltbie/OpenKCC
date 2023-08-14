@@ -1,0 +1,23 @@
+{
+    "name": "nickmaltbie.OpenKCC.navmesh.example",
+    "rootNamespace": "nickmaltbie.OpenKCC.navmesh.example",
+    "references": [
+        "nickmaltbie.OpenKCC",
+        "nickmaltbie.ScreenManager",
+        "nickmaltbie.StateMachineUnity",
+        "nickmaltbie.ScreenManager.TestCommon",
+        "nickmaltbie.TestUtilsUnity",
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "Unity.AI.Navigation"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
