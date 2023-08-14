@@ -24,6 +24,9 @@ using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Source - RyanGarber https://discussions.unity.com/t/unityexception-could-not-find-the-requested-platform-texture-settings-this-is-incorrect-did-initialization-fail/274469
+/// </summary>
 public class FixTexturePlatformSettings : AssetPostprocessor
 {
     private static readonly string[] Settings =
