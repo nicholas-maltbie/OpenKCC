@@ -53,7 +53,7 @@ public class FixTexturePlatformSettings : AssetPostprocessor
     public void OnPostprocessTexture(Texture2D texture)
     {
         // Ignore library assets
-        if (assetPath.StartsWith("Packages") && !assetPath.StartsWith("Packages\com.nickmaltbie.openkcc"))
+        if (assetPath.StartsWith("Packages"))
         {
             return;
         }
