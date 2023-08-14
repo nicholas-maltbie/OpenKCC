@@ -17,7 +17,6 @@
 // SOFTWARE.
 
 using nickmaltbie.OpenKCC.Character;
-using nickmaltbie.StateMachineUnity.Fixed;
 using UnityEngine;
 using UnityEngine.AI;
 
