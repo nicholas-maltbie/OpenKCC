@@ -26,8 +26,29 @@ namespace nickmaltbie.OpenKCC.navmesh.example
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(KCCMovementEngine))]
     [RequireComponent(typeof(NavMeshAgent))]
-    public class KCCNavMeshAgent : FixedSM
+    public class KCCNavMeshAgent : MonoBehaviour
     {
+        public GameObject target;
+        private NavMeshAgent agent;
+        private KCCMovementEngine movementEngine;
 
+        public void Awake()
+        {
+            agent = GetComponent<NavMeshAgent>();
+            agent.updatePosition = false;
+            agent.updateRotation = false;
+            movementEngine = GetComponent<KCCMovementEngine>();
+        }
+
+        public void Update()
+        {
+            agent.SetDestination(target.transform.position);
+        }
+
+        public void FixedUpdate()
+        {
+            movementEngine.MovePlayer(agent.velocity * Time.fixedDeltaTime);
+            agent.nextPosition = transform.position;
+        }
     }
 }
