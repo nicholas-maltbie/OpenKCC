@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+* Added basic navmesh example for using OpenKCC movement engine with a navmesh
+    agent to simulate basic path finding.
 * Added basic buttons and controls for look, jump, and move actions for
     the character controller that can be enabled manually and are automatically
     loaded when the game is opened from a mobile device in a web browser.

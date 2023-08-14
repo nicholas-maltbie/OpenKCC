@@ -82,6 +82,15 @@
       },
       "url": "https://registry.npmjs.org"
     },
+    "com.unity.ai.navigation": {
+      "version": "1.1.4",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.ai": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.burst": {
       "version": "1.8.7",
       "depth": 1,
@@ -384,6 +393,12 @@
       "source": "git",
       "dependencies": {},
       "hash": "f45424822189ebd875d864a17d7f03b72eafbff7"
+    },
+    "com.unity.modules.ai": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {}
     },
     "com.unity.modules.animation": {
       "version": "1.0.0",

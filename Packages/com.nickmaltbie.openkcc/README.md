@@ -131,13 +131,18 @@ projects:
   version 5.0 or newer
 * [com.unity.render-pipelines.universal](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@11.0/manual/index.html)
   version 10.0 or newer
+* [com.unity.ai.navigation](https://docs.unity3d.com/Packages/com.unity.ai.navigation@1.0/manual/index.html)
+  version 1.0 or newer (for the navmesh sample).
 
 The samples in the project include:
 
 * ExampleFirstPersonKCC - Example first person character controller with a basic
   test scene.
 * SimplifiedDemoKCC - Simplified character controller with basic movement scripts.
-* ExampleColliderShapes - Example of different collider shapes for players.
+* Various Collider Shapes - Example collider shapes besides basic capsule for
+  a player.
+* Example OpenKCC and Navmesh - Example navmesh agent controlled by
+  OpenKCC movement engine.
 
 ## Documentation
 
