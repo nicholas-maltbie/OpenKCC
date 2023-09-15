@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## In Progress
 
+## [1.5.0] 2024-09-14
+
 * Added basic navmesh example for using OpenKCC movement engine with a navmesh
     agent to simulate basic path finding.
 * Added basic buttons and controls for look, jump, and move actions for
